@@ -10,4 +10,75 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Users {
+  id          Int          @id @default(autoincrement())
+  email       String       @unique
+  name        String
+  password    String
+  assessments Assessment[] @relation("AssessmentsToUsers")
+  modules     Module[]     @relation("ModulesToUsers")
+  role        Role
+}
 
+enum Role {
+  ps_team
+  module_leader
+  internal_moderator
+  panel_member
+  external_examiner
+  system_admin
+}
+
+model Module {
+  id             Int          @id @default(autoincrement())
+  module_name    String
+  module_code    String       @unique
+  assessments    Assessment[]
+  module_leaders Users[]      @relation("ModulesToUsers")
+}
+
+model Assessment {
+  id              Int        @id @default(autoincrement())
+  assessment_name String
+  assessment_type String
+  hand_out_week   DateTime
+  hand_in_week    DateTime
+  module          Module     @relation(fields: [module_id], references: [id])
+  module_id       Int
+  assignees       Users[]    @relation("AssessmentsToUsers")
+  part            Part[]
+  Response        Response[]
+}
+
+model Part {
+  id           Int         @id @default(autoincrement())
+  part_title   String
+  part_number  Int
+  Question     Question[]
+  Assessment   Assessment[]
+}
+
+model Question {
+  id             Int        @id @default(autoincrement())
+  question_title String
+  part_id        Int
+  Part           Part       @relation(fields: [part_id], references: [id])
+  Response       Response[]
+}
+
+model Response {
+  id            Int        @id @default(autoincrement())
+  value         String
+  data_type     Data_type
+  assessment_id Int
+  Assessment    Assessment @relation(fields: [assessment_id], references: [id])
+  question_id   Int
+  Question      Question   @relation(fields: [question_id], references: [id])
+}
+
+enum Data_type {
+  boolean
+  string
+  integer
+  date_time
+}

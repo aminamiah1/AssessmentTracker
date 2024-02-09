@@ -13,7 +13,7 @@ export async function DELETE(request: NextRequest) {
       // Validate user ID
       if (!id) {
         return new NextResponse(
-            JSON.stringify({ message: "Missing user ID" }),
+            JSON.stringify({ message: "Missing user ID." }),
             {
                 status: 400,
             }
@@ -43,7 +43,7 @@ export async function DELETE(request: NextRequest) {
     } catch (error) {
       console.error('Error deleting user:', error);
       return new NextResponse(
-        JSON.stringify({ message: "Error internal server error" }),
+        JSON.stringify({ message: "Error internal server error." }),
         {
             status: 500,
         }

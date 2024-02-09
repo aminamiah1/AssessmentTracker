@@ -18,7 +18,7 @@ RUN npm run build
 
 # From error logs in:
 # https://console.openshift.cs.cf.ac.uk/k8s/ns/assessment-tracker/pods/assessmenttracking-5d4746bfcc-99q6z/logs
-RUN sudo chown -R 1000900000:0 "/.npm"
+RUN chown -R 1000900000:0 "/.npm"
 
 EXPOSE 3000
 

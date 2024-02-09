@@ -13,19 +13,19 @@ unit-test-job: # This job runs in the test stage.
     stage: test # It only starts when the job in the build stage completes successfully.
     script:
         - echo "EXAMPLE Running unit tests... This will take about 10 seconds."
-        - sleep 10
         - echo "EXAMPLE Code coverage is 90%"
 
 lint-test-job: # This job also runs in the test stage.
     stage: test # It can run at the same time as unit-test-job (in parallel).
     script:
         - echo "EXAMPLE Linting code... This will take about 10 seconds."
-        - sleep 10
         - echo "EXAMPLE No lint issues found."
 
 deploy-job: # This job runs in the deploy stage.
     stage: deploy # It only runs when *both* jobs in the test stage complete successfully.
     # environment: production
+    image: openshift/origin-cli
     script:
-        - echo "EXAMPLE Deploying application..."
-        - echo "EXAMPLE Application successfully deployed."
+        - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL
+        - oc project $OPENSHIFT_PROJECT
+        - oc rollout latest dc/assessmenttracking-cicd-dockerfile

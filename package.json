@@ -9,6 +9,7 @@
     "lint": "next lint",
     "cy:open": "cypress open",
     "test:e2e": "cypress run --spec \"cypress/e2e/*.cy.ts\"",
+    "coverage:e2e": "npx nyc@latest npm run test:e2e",
     "prepare": "husky"
   },
   "dependencies": {

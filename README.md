@@ -31,6 +31,7 @@ To start using the Cypress GUI, run:
 Others may be added as more tests are added.
 
 `npm run test:e2e`
+`npm run coverage:e2e`
 
 If you plan to add any different paths for whatever reason inside the cypress folder, be sure to update the .gitlab-ci.yml and npm run test:all script in package.json as well with the updated tests so that we know all tests are running.
 

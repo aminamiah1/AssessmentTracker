@@ -26,6 +26,6 @@ deploy-job: # This job runs in the deploy stage.
     # environment: production
     image: openshift/origin-cli
     script:
-        - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL
+        - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
         - oc project $OPENSHIFT_PROJECT
         - oc rollout latest dc/assessmenttracking-cicd-dockerfile

@@ -5,6 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -18,6 +22,7 @@ model Users {
   assessments Assessment[] @relation("AssessmentsToUsers")
   modules     Module[]     @relation("ModulesToUsers")
   role        Role
+  set_assessments  Assessment[]
 }
 
 enum Role {
@@ -45,17 +50,19 @@ model Assessment {
   hand_in_week    DateTime
   module          Module     @relation(fields: [module_id], references: [id])
   module_id       Int
+  setter_id       Int?
+  setter          Users?     @relation(fields: [setter_id], references: [id])
   assignees       Users[]    @relation("AssessmentsToUsers")
   part            Part[]
   Response        Response[]
 }
 
 model Part {
-  id           Int         @id @default(autoincrement())
-  part_title   String
-  part_number  Int
-  Question     Question[]
-  Assessment   Assessment[]
+  id          Int          @id @default(autoincrement())
+  part_title  String
+  part_number Int
+  Question    Question[]
+  Assessment  Assessment[]
 }
 
 model Question {

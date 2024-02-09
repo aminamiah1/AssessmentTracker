@@ -3,12 +3,13 @@ stages: # List of stages for jobs, and their order of execution
     - test
     - deploy
 
-services:
-    - docker:dind
-
 build-job: # This job runs in the build stage, which runs first.
     stage: build
     image: docker:latest
+    variables:
+        DOCKER_HOST: tcp://localhost:2375/
+    services:
+        - docker:dind
     script:
         - echo "$CI_COMMIT_BRANCH:$CI_COMMIT_SHORT_SHA @ $REGISTRY_HOST"
         - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD $REGISTRY_HOST

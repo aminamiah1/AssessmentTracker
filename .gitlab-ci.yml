@@ -6,9 +6,6 @@ stages: # List of stages for jobs, and their order of execution
 services:
     - docker:dind
 
-variables:
-    DOCKER_HOST: tcp://localhost:2375
-
 build-job: # This job runs in the build stage, which runs first.
     stage: build
     image: docker:latest

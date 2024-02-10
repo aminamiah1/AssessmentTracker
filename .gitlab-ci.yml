@@ -32,5 +32,4 @@ deploy-job: # This job runs in the deploy stage.
         - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
         - oc project $OPENSHIFT_PROJECT
         - oc registry login --registry $REGISTRY_HOST
-        - oc image mirror image-registry.openshift-image-registry.svc:5000/assessment-tracker/assessmenttracking-cicd-dockerfile:latest $REGISTRY_HOST/$REGISTRY_PATH/assessmenttracking-cicd-dockerfile:latest
         - oc start-build assessmenttracking-cicd-dockerfile --follow

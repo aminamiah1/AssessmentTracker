@@ -5,6 +5,7 @@ stages: # List of stages for jobs, and their order of execution
 
 build-job: # This job runs in the build stage, which runs first.
     stage: build
+    image: node:18.18.2-alpine3.18 # Same image as the base image in the Dockerfile
     script:
         - npm run build
 

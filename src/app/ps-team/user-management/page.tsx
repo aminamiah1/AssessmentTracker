@@ -1,12 +1,19 @@
 "use client"; 
-import React from 'react';
+import React, { useState } from 'react';
 import UsersTable from '../../components/ps-team/UsersTable';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import CreateUser from '../../components/ps-team/CreateUser';
 
 export default function ManageUsersPSTeam() {
+  const [showCreateUserForm, setShowCreateUserForm] = useState(false);
+
+  const handleCloseCreateUserForm = () => {
+    setShowCreateUserForm(false);
+  };
+
   return (
     <Container fluid className="p-4">
-      <Row className="text-center">
+      <Row>
         <Col>
           <h1 className="text-3xl">User Management</h1>
         </Col>
@@ -18,7 +25,7 @@ export default function ManageUsersPSTeam() {
       </Row>
       <Row className="text-center">
         <Col>
-          <Button variant="success">Add New User</Button>
+          <CreateUser onClose={handleCloseCreateUserForm} />
         </Col>
       </Row>
     </Container>

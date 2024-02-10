@@ -4,26 +4,27 @@ import axios from 'axios';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { toast } from 'react-toastify';
 
 interface User {
   id: number;
   email: string;
   name: string;
-  role: string;
+  roles: [];
 }
 
 const UsersTable: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+     const fetchUsers = async () => {
      const response = await axios.get('/api/ps-team/get-users');
      // Filter users by lowest ID first
      const filteredUsers = response.data.sort((a: any, b: any) => a.id - b.id);
      setUsers(filteredUsers);
     };
     fetchUsers();
-  }, []);
+  }, users);
 
   const columns = React.useMemo(
     () => [
@@ -40,8 +41,8 @@ const UsersTable: React.FC = () => {
         accessor: 'name',
       },
       {
-        Header: 'Role',
-        accessor: 'role',
+        Header: 'Roles',
+        accessor: (user: User) => user.roles.join(', '),
       },
       {
         Header: 'Delete',
@@ -54,7 +55,7 @@ const UsersTable: React.FC = () => {
       {
         Header: 'Edit',
         accessor: (id: any) => (
-          <Button variant="success" onClick={() => handleDelete(id)}>
+          <Button variant="success" onClick={() => handleEdit(id)}>
             Edit
           </Button>
         ),
@@ -68,6 +69,12 @@ const UsersTable: React.FC = () => {
     columns,
     data: users
   });
+
+  
+  const handleEdit = async (user: any) => {
+    var id = user.id;
+    //To Do
+  };
 
   const handleDelete = async (user: any) => {
     try {
@@ -83,29 +90,29 @@ const UsersTable: React.FC = () => {
       })
         .then(response => {
           if (response.ok) {
-            // Handle successful deletion
-            console.log('User deleted successfully');
+            // Handle successful deletion and update users array to re-set table
             setUsers(users.filter((u) => u.id !== id));
           } else {
-            // Handle errors with toast message to add
-            console.error('Error deleting user:', response.statusText);
+            // Handle errors with toast message to inform user
+            toast.error("'Error deleting user");
           }
         })
         .catch(error => {
-          // Handle network errors with toast to add
-          console.error('Network error:', error);
+          // Handle network errors with toast to inform user
+          toast.error("Network error");
       });
 
       // Success message with toast to add
+      toast.success('Delete user successful!');
       
     } catch (error) {
-      // Display an error message to the user to do with toast message
-      console.log("error" + error)
+      // Display an error message to the user with toast message
+      toast.error("Error deleting user");
     } 
   };
 
   return (
-    <Table striped bordered hover responsive variant="dark" {...getTableProps()}>
+    <Table bordered hover responsive variant="light" {...getTableProps()}>
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>

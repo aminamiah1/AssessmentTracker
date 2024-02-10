@@ -21,7 +21,7 @@ model Users {
   password    String
   assessments Assessment[] @relation("AssessmentsToUsers")
   modules     Module[]     @relation("ModulesToUsers")
-  role        Role
+  roles       Role[]       
   set_assessments  Assessment[]
 }
 

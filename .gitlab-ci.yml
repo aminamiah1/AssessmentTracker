@@ -8,13 +8,9 @@ build-job: # This job runs in the build stage, which runs first.
     image: docker:latest
     services:
         - name: docker:dind
-          command:
-              [
-                  "--host=unix:///var/run/docker.sock",
-                  "--host=tcp://localhost:2375",
-              ]
-    variables:
-        DOCKER_HOST: tcp://localhost:2375
+    before_script:
+        - uname -a
+        - docker info
     script:
         - echo "$CI_COMMIT_BRANCH:$CI_COMMIT_SHORT_SHA @ $REGISTRY_HOST"
         - docker info

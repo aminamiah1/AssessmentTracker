@@ -19,9 +19,9 @@ RUN npm run build
 # From error logs in:
 # https://console.openshift.cs.cf.ac.uk/k8s/ns/assessment-tracker/pods/assessmenttracking-5d4746bfcc-99q6z/logs
 USER root
-RUN chown -R 1001:0 /app
+# RUN chown -R 1001:0 /app
 
-USER 1001
+# USER 1001
 
 EXPOSE 3000
 

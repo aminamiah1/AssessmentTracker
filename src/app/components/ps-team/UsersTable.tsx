@@ -5,16 +5,21 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import EditUser from './EditUser';
 
 interface User {
   id: number;
   email: string;
   name: string;
+  password: string;
   roles: [];
 }
 
 const UsersTable: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [showEditUserModal, setShowEditUserModal] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<User | null>(null);
 
   useEffect(() => {
      const fetchUsers = async () => {
@@ -73,7 +78,32 @@ const UsersTable: React.FC = () => {
   
   const handleEdit = async (user: any) => {
     var id = user.id;
-    //To Do
+    fetch(`/api/ps-team/get-user?id=${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json' 
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          // Parse the JSON response and pass user details
+          return response.json();
+        } else {
+          // Handle errors with toast message to inform user
+          toast.error("Error getting user");
+          throw new Error("Error getting user");
+        }
+      })
+      .then(data => {
+        // Set userToEdit state with received data
+        setUserToEdit(data);
+        // Show the edit user modal
+        setShowEditUserModal(true);
+      })
+      .catch(error => {
+        // Handle network errors with toast to inform user
+        toast.error("Network error" + error);
+    });
   };
 
   const handleDelete = async (user: any) => {
@@ -112,6 +142,8 @@ const UsersTable: React.FC = () => {
   };
 
   return (
+    <>
+    <EditUser show={showEditUserModal} onClose={() => setShowEditUserModal(false)} userToEdit={userToEdit} />
     <Table bordered hover responsive variant="light" {...getTableProps()}>
       <thead>
         {headerGroups.map((headerGroup) => (
@@ -135,6 +167,7 @@ const UsersTable: React.FC = () => {
         })}
       </tbody>
     </Table>
+    </>
   );
 };
 

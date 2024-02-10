@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import UsersTable from '../../components/ps-team/UsersTable';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import CreateUser from '../../components/ps-team/CreateUser';
+import { ToastContainer } from 'react-toastify'
 
 export default function ManageUsersPSTeam() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
@@ -13,6 +14,7 @@ export default function ManageUsersPSTeam() {
 
   return (
     <Container fluid className="p-4">
+      <ToastContainer /> 
       <Row>
         <Col>
           <h1 className="text-3xl">User Management</h1>

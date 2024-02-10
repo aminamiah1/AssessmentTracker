@@ -1,0 +1,162 @@
+import React, { useState, FormEvent, useEffect } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { toast } from 'react-toastify';
+import { Form, Button, Modal, Toast } from 'react-bootstrap';
+import { Role } from '@prisma/client';
+import Select from 'react-select';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Define the structure of a user
+interface User {
+    id: number;
+    email: string;
+    name: string;
+    password: string;
+    roles: [];
+}
+
+interface EditUserProps {
+    onClose: () => void; 
+    userToEdit: User | null; // Added property to receive user data for editing
+    show: boolean; // Prop to control modal visibility
+}
+
+// Create a set of available role options
+const rolesOptionsSet = new Set(Object.values(Role));
+
+// Convert the set of role options into an array of objects compatible with react-select
+const rolesOptionsForSelect = Array.from(rolesOptionsSet).map((role) => ({
+  value: role,
+  label: role,
+}));
+
+// Define the EditUser component
+const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show}) => {
+
+    const [user, setUser] = useState<User>(userToEdit ? userToEdit : {
+        id: 0,
+        email: '',
+        name: '',
+        password: '',
+        roles: []
+    });
+
+    //Update user details depending on user selected in table
+    useEffect(() => {
+        setUser(userToEdit ? userToEdit : {
+            id: 0,
+            email: '',
+            name: '',
+            password: '',
+            roles: []
+       })
+    }, [userToEdit]);
+
+    // Handle change in input fields
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setUser({
+          ...user,
+          [event.target.name]: event.target.name === 'selectedRoles'
+            // @ts-ignore
+            ? event.target.value.map((role) => role.value) // Extract role values
+            : event.target.value,
+        });
+    };
+    
+    // Handle form submission
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        // @ts-ignore
+        const existingRolesValues = userToEdit ? userToEdit.roles.map((role) => role) : [];
+        const selectedRolesValues = new Set(user.roles.map((role) => role.value));
+        const combinedRolesValues = new Set([...selectedRolesValues, ...existingRolesValues,])
+        // Use the correct API endpoint for updating users
+        const response = await fetch("/api/ps-team/edit-users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: user.id, 
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            roles: Array.from(combinedRolesValues),
+          }),
+        });
+        if (!response.ok) {
+          const errorData = await response.text();
+          toast.error('You entered incorrect details, please try again');
+          throw new Error(errorData || "Failed to edit user");
+        }
+         // Update the users array to re-render the table with the new user
+         setUser({
+          id: 0,
+          email: '',
+          name: '',
+          password: '',
+          roles: [],
+        });
+        // Close the modal after successful user edit
+        toast.success('User edited successfully!');
+    };
+  
+    return (
+      <>
+          <Modal show={show} onHide={onClose} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit User</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="formEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={user.email}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="formName">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  value={user.name}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="formPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={user.password}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="formRoles">
+                <Form.Label>Roles</Form.Label>
+                <Select
+                  // @ts-ignore
+                  options={rolesOptionsForSelect}
+                  value={user.roles}
+                  // @ts-ignore
+                  onChange={(selectedRoles) => setUser({ ...user, roles: selectedRoles })}
+                  isMulti
+                  className="react-select-container" 
+                />
+              </Form.Group>
+              <Button variant="success" type="submit" style={{marginTop: "1rem"}}>
+                Edit User
+              </Button>
+            </Form>
+          </Modal.Body>
+        </Modal>
+      </>
+    );
+  };
+  
+export default EditUser;

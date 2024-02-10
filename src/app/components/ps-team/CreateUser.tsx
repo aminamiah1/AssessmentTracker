@@ -4,7 +4,9 @@ import { toast } from 'react-toastify';
 import { Form, Button, Modal, Toast } from 'react-bootstrap';
 import { Role } from '@prisma/client';
 import Select from 'react-select';
+import 'react-toastify/dist/ReactToastify.css';
 
+// Define the structure of a user
 interface User {
   id: number;
   email: string;
@@ -13,17 +15,21 @@ interface User {
   password: string;
 }
 
+// Define the properties for CreateUser component
 interface CreateUserProps {
     onClose: () => void; 
 }
 
+// Create a set of available role options
 const rolesOptionsSet = new Set(Object.values(Role));
 
+// Convert the set of role options into an array of objects compatible with react-select
 const rolesOptionsForSelect = Array.from(rolesOptionsSet).map((role) => ({
   value: role,
   label: role,
 }));
 
+// Define the CreateUser component
 const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
     const [show, setShow] = useState(false); // State for modal visibility
 
@@ -39,6 +45,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    // Handle change in input fields
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setNewUser({
         ...newUser,
@@ -49,9 +56,10 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
       });
     };
     
+    // Handle form submission
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-         // @ts-ignore
+        // @ts-ignore
         const selectedRolesValues = new Set(newUser.roles.map((role) => role.value));
         const response = await fetch("/api/ps-team/create-users", {
           method: "POST",
@@ -65,12 +73,21 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
         });
         if (!response.ok) {
           const errorData = await response.text();
+          toast.error('User either already exists or incorrect details entered, please try again');
           throw new Error(errorData || "Failed to add user");
         }
+         // Update the users array to re-render the table with the new user
+         setNewUser({
+          id: 0,
+          email: '',
+          name: '',
+          password: '',
+          roles: [],
+        });
+        // Close the modal after successful user creation
+        setShow(false);
         toast.success('User added successfully!');
-  };
-
-
+    };
   
     return (
       <>
@@ -136,4 +153,4 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
     );
   };
   
-  export default CreateUser;
+export default CreateUser;

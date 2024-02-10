@@ -12,7 +12,7 @@ build-job: # This job runs in the build stage, which runs first.
         DOCKER_HOST: tcp://localhost:2375/
     script:
         - echo "$CI_COMMIT_BRANCH:$CI_COMMIT_SHORT_SHA @ $REGISTRY_HOST"
-        - service docker start
+        - systemctl docker start
         - docker info
         - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD $REGISTRY_HOST
         - docker build -t $REGISTRY_HOST/$REGISTRY_PATH/$CI_COMMIT_BRANCH:$CI_COMMIT_SHORT_SHA .

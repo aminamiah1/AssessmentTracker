@@ -119,6 +119,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
                 <Form.Control
                   type="email"
                   name="email"
+                  data-cy="email"
                   value={newUser.email}
                   onChange={handleChange}
                   required
@@ -129,6 +130,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
                 <Form.Control
                   type="text"
                   name="name"
+                  data-cy="name"
                   value={newUser.name}
                   onChange={handleChange}
                   required
@@ -139,6 +141,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
                 <Form.Control
                   type="password"
                   name="password"
+                  data-cy="password"
                   value={newUser.password}
                   onChange={handleChange}
                   required
@@ -147,6 +150,8 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
               <Form.Group controlId="formRoles">
                 <Form.Label>Roles</Form.Label>
                 <Select
+                  data-cy="roles" 
+                  id="roles"
                   // @ts-ignore
                   options={rolesOptionsForSelect.map((role) => ({
                     ...role,
@@ -156,10 +161,10 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
                   // @ts-ignore
                   onChange={(selectedRoles) => setNewUser({ ...newUser, roles: selectedRoles })}
                   isMulti
-                  className="react-select-container" 
+                  className="react-select-container"
                 />
               </Form.Group>
-              <Button variant="success" type="submit" style={{marginTop: "1rem"}}>
+              <Button data-cy="CreateUser"  variant="success" type="submit" style={{marginTop: "1rem"}}>
                 Create User
               </Button>
             </Form>

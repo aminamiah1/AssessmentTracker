@@ -149,6 +149,7 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show, updateUs
                 <Form.Control
                   type="email"
                   name="email"
+                  data-cy="email"
                   value={user.email}
                   onChange={handleChange}
                   required
@@ -159,6 +160,7 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show, updateUs
                 <Form.Control
                   type="text"
                   name="name"
+                  data-cy="name"
                   value={user.name}
                   onChange={handleChange}
                   required
@@ -167,6 +169,7 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show, updateUs
               <Form.Group controlId="formPassword">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
+                  data-cy="password"
                   type="password"
                   name="password"
                   value={user.password}
@@ -189,7 +192,7 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show, updateUs
                   className="react-select-container" 
                 />
               </Form.Group>
-              <Button variant="success" type="submit" style={{marginTop: "1rem"}}>
+              <Button data-cy="EditUser" variant="success" type="submit" style={{marginTop: "1rem"}}>
                 Edit User
               </Button>
             </Form>

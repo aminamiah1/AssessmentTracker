@@ -150,7 +150,10 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
                 <Form.Label>Roles</Form.Label>
                 <Select
                   // @ts-ignore
-                  options={rolesOptionsForSelect}
+                  options={rolesOptionsForSelect.map((role) => ({
+                    ...role,
+                    key: role.value
+                  }))}
                   value={newUser.roles}
                   // @ts-ignore
                   onChange={(selectedRoles) => setNewUser({ ...newUser, roles: selectedRoles })}

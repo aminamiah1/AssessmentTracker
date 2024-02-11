@@ -30,6 +30,7 @@ const rolesOptionsSet = new Set(Object.values(Role));
 const rolesOptionsForSelect = Array.from(rolesOptionsSet).map((role) => ({
   value: role,
   label: role,
+  key: role
 }));
 
 // Define the EditUser component
@@ -54,6 +55,7 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show, updateUs
         const transformedRoles = userToEdit.roles.map((role) => ({
           value: role, 
           label: role,
+          key: role
         }));
     
         // Set the user state with transformed roles
@@ -176,7 +178,10 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show, updateUs
                 <Form.Label>Roles</Form.Label>
                 <Select
                   // @ts-ignore
-                  options={rolesOptionsForSelect}
+                  options={rolesOptionsForSelect.map((role) => ({
+                    ...role,
+                    key: role.value
+                  }))}
                   value={user.roles}
                   // @ts-ignore
                   onChange={(selectedRoles) => setUser({ ...user, roles: selectedRoles })}

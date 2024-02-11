@@ -151,21 +151,29 @@ const UsersTable: React.FC = () => {
     <EditUser show={showEditUserModal} onClose={() => setShowEditUserModal(false)} userToEdit={userToEdit} updateUsers={handleUpdateUsers} />
     <Table bordered hover responsive variant="light" {...getTableProps()}>
       <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+        {headerGroups.map((headerGroup, headerGroupIndex) => (
+          // @ts-ignore
+          <tr key={`header-group-${headerGroupIndex}`} {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column, columnIndex) => (
+              // @ts-ignore
+              <th key={`header-${headerGroupIndex}-${columnIndex}`} {...column.getHeaderProps()}>
+                {column.render('Header')}
+              </th>
             ))}
           </tr>
         ))}
       </thead>
       <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
+        {rows.map((row, rowIndex) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => (
-                <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+            // @ts-ignore
+            <tr key={`row-${rowIndex}`} {...row.getRowProps()}>
+              {row.cells.map((cell, cellIndex) => (
+                // @ts-ignore
+                <td key={`cell-${rowIndex}-${cellIndex}`} {...cell.getCellProps()}>
+                  {cell.render('Cell')}
+                </td>
               ))}
             </tr>
           );

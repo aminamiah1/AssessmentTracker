@@ -6,6 +6,7 @@ import CreateUser from '../../components/ps-team/CreateUser';
 import { ToastContainer } from 'react-toastify'
 
 export default function ManageUsersPSTeam() {
+  // Handle showing the create user form
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
 
   const handleCloseCreateUserForm = () => {

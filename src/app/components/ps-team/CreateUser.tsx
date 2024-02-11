@@ -1,7 +1,7 @@
-import React, { useState, FormEvent, useEffect } from "react";
+import React, { useState, FormEvent} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
-import { Form, Button, Modal, Toast } from 'react-bootstrap';
+import { Form, Button, Modal} from 'react-bootstrap';
 import { Role } from '@prisma/client';
 import Select from 'react-select';
 import 'react-toastify/dist/ReactToastify.css';
@@ -42,10 +42,11 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
       roles: [], 
     });
   
+    // Handle closing and showing the pop-up modal form
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    // Handle change in input fields
+    // Handle changes in input fields
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setNewUser({
         ...newUser,
@@ -59,8 +60,18 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
     // Handle form submission
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        // Check if roles are empty
+        if (newUser.roles.length === 0) {
+          toast.error('Please select at least one role for the user');
+          return; // Prevent form submission
+        }
+
         // @ts-ignore
+        // Get the selected roles of the user from the drop-down multi-selector
         const selectedRolesValues = new Set(newUser.roles.map((role) => role.value));
+
+        // Create the user using the api endpoint
         const response = await fetch("/api/ps-team/create-users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -71,11 +82,14 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
             roles: Array.from(selectedRolesValues),
           }),
         });
+
+        // Alert the user if the api response failed
         if (!response.ok) {
           const errorData = await response.text();
-          toast.error('User either already exists or incorrect details entered, please try again');
+          toast.error('User either already exists or incorrect details entered or database server failed, please try again');
           throw new Error(errorData || "Failed to add user");
         }
+
          // Update the users array to re-render the table with the new user
          setNewUser({
           id: 0,
@@ -84,6 +98,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
           password: '',
           roles: [],
         });
+
         // Close the modal after successful user creation
         setShow(false);
         toast.success('User added successfully!');

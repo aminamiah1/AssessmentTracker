@@ -102,7 +102,7 @@ const UsersTable: React.FC = () => {
       })
       .catch(error => {
         // Handle network errors with toast to inform user
-        toast.error("Network error" + error);
+        toast.error("Network error please try again");
     });
   };
 
@@ -129,7 +129,7 @@ const UsersTable: React.FC = () => {
         })
         .catch(error => {
           // Handle network errors with toast to inform user
-          toast.error("Network error");
+          toast.error("Network error please try again");
       });
 
       // Success message with toast to add
@@ -141,9 +141,14 @@ const UsersTable: React.FC = () => {
     } 
   };
 
+  const handleUpdateUsers = () => {
+    const filteredUsers = users.sort((a: any, b: any) => a.id - b.id);
+    setUsers(filteredUsers);
+  };
+
   return (
     <>
-    <EditUser show={showEditUserModal} onClose={() => setShowEditUserModal(false)} userToEdit={userToEdit} />
+    <EditUser show={showEditUserModal} onClose={() => setShowEditUserModal(false)} userToEdit={userToEdit} updateUsers={handleUpdateUsers} />
     <Table bordered hover responsive variant="light" {...getTableProps()}>
       <thead>
         {headerGroups.map((headerGroup) => (

@@ -15,10 +15,12 @@ interface User {
     roles: [];
 }
 
+// Props
 interface EditUserProps {
-    onClose: () => void; 
+    onClose: () => void; // Prop to close modal form
     userToEdit: User | null; // Added property to receive user data for editing
     show: boolean; // Prop to control modal visibility
+    updateUsers: () => void; // Prop to update table after succesful edit of user
 }
 
 // Create a set of available role options
@@ -31,8 +33,9 @@ const rolesOptionsForSelect = Array.from(rolesOptionsSet).map((role) => ({
 }));
 
 // Define the EditUser component
-const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show}) => {
+const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show, updateUsers}) => {
 
+    // Set the existing user's details or get blank user details
     const [user, setUser] = useState<User>(userToEdit ? userToEdit : {
         id: 0,
         email: '',
@@ -41,15 +44,32 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show}) => {
         roles: []
     });
 
-    //Update user details depending on user selected in table
+    // Update user details depending on user selected in table
     useEffect(() => {
-        setUser(userToEdit ? userToEdit : {
-            id: 0,
-            email: '',
-            name: '',
-            password: '',
-            roles: []
-       })
+
+      // If user to edit exists
+      if (userToEdit) {
+
+        // Transform existing roles to the expected format
+        const transformedRoles = userToEdit.roles.map((role) => ({
+          value: role, 
+          label: role,
+        }));
+    
+        // Set the user state with transformed roles
+        setUser({
+          ...userToEdit,
+          // @ts-ignore
+          roles: transformedRoles,
+        }); 
+
+      } else {
+        // If no user data, set an empty array for roles
+        setUser({
+          ...user,
+          roles: [],
+        });
+      }
     }, [userToEdit]);
 
     // Handle change in input fields
@@ -66,11 +86,18 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show}) => {
     // Handle form submission
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        // Check if roles are empty
+        if (user.roles.length === 0) {
+          toast.error('Please select at least one role for the user.');
+          return; // Prevent form submission
+        }
+
         // @ts-ignore
-        const existingRolesValues = userToEdit ? userToEdit.roles.map((role) => role) : [];
+        // Get the selected user's roles
         const selectedRolesValues = new Set(user.roles.map((role) => role.value));
-        const combinedRolesValues = new Set([...selectedRolesValues, ...existingRolesValues,])
-        // Use the correct API endpoint for updating users
+
+        // Use the API endpoint for updating users and send the user details
         const response = await fetch("/api/ps-team/edit-users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -79,15 +106,18 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show}) => {
             name: user.name,
             email: user.email,
             password: user.password,
-            roles: Array.from(combinedRolesValues),
+            roles: Array.from(selectedRolesValues),
           }),
         });
+
+        // Alert the user if the api response failed
         if (!response.ok) {
-          const errorData = await response.text();
-          toast.error('You entered incorrect details, please try again');
-          throw new Error(errorData || "Failed to edit user");
+            const errorData = await response.text();
+            toast.error('You entered incorrect details or database server failed, please try again');
+            throw new Error(errorData || "Failed to edit user");
         }
-         // Update the users array to re-render the table with the new user
+
+         // Update the users array to empty as user submitted
          setUser({
           id: 0,
           email: '',
@@ -95,8 +125,13 @@ const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show}) => {
           password: '',
           roles: [],
         });
+
         // Close the modal after successful user edit
         toast.success('User edited successfully!');
+        onClose();
+
+        // Refresh the users table to reflect new details
+        updateUsers(); 
     };
   
     return (

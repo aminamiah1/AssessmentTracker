@@ -7,8 +7,6 @@ export async function DELETE(request: NextRequest) {
     try {
       // Extract user ID from request query parameters or body
       const { id } = await request.json();
-
-      console.log(id)
   
       // Validate user ID
       if (!id) {

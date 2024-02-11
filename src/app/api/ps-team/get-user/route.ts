@@ -26,7 +26,6 @@ export async function GET(request: NextRequest) {
   
       // Check if user was found and return details
       if (user) {
-        console.log(user);
         return Response.json(user);
       } else {
         console.error('Error retrieving user');

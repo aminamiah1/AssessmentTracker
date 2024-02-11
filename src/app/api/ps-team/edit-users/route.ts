@@ -29,7 +29,6 @@ export async function POST(request: NextRequest) {
     // Update user data
     const updatedUser = await prisma.users.update({
       where: { id },
-      // @ts-ignore
       data: { name, email, password, roles } // Update desired fields
     });
 

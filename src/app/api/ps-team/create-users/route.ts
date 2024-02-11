@@ -26,7 +26,6 @@ export async function POST(request: NextRequest) {
         }
 
         const newUser = await prisma.users.create({
-            // @ts-ignore
             data: {name, email, password, roles: roles}
         });
 

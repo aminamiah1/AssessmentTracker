@@ -11,8 +11,7 @@ export async function GET(request: NextRequest) {
       // Extract user ID from request query parameters or body
       const url = new URL(request.url)
       const idString = url.searchParams.get("id")
-      // @ts-ignore
-      const id = parseInt(idString, 10);
+      const id = parseInt(idString as any, 10);
 
       // Check if the user ID is missing from the request query
       if (!id) {

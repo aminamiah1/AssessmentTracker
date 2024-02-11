@@ -38,7 +38,6 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
       email: '',
       name: '',
       password: '',
-      // @ts-ignore
       roles: [], 
     });
   
@@ -50,9 +49,9 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setNewUser({
         ...newUser,
-        [event.target.name]: event.target.name === 'selectedRoles'
+        [event.target.name]: event.target.name === 'selectedRoles' 
           // @ts-ignore
-          ? event.target.value.map((role) => role.value) // Extract role values
+          ? event.target.value.map((role: { value: any; }) => role.value) // Extract role values
           : event.target.value,
       });
     };
@@ -67,9 +66,8 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
           return; // Prevent form submission
         }
 
-        // @ts-ignore
         // Get the selected roles of the user from the drop-down multi-selector
-        const selectedRolesValues = new Set(newUser.roles.map((role) => role.value));
+        const selectedRolesValues = new Set(newUser.roles.map((role) => role['value']));
 
         // Create the user using the api endpoint
         const response = await fetch("/api/ps-team/create-users", {

@@ -29,51 +29,7 @@ const UsersTable: React.FC = () => {
      setUsers(filteredUsers);
     };
     fetchUsers();
-  }, users);
-
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: 'ID',
-        accessor: 'id',
-      },
-      {
-        Header: 'Email',
-        accessor: 'email',
-      },
-      {
-        Header: 'Name',
-        accessor: 'name',
-      },
-      {
-        Header: 'Roles',
-        accessor: (user: User) => user.roles.join(', '),
-      },
-      {
-        Header: 'Delete',
-        accessor: (id: any) => (
-          <Button variant="danger" onClick={() => handleDelete(id)}>
-            Delete
-          </Button>
-        ),
-      },
-      {
-        Header: 'Edit',
-        accessor: (id: any) => (
-          <Button variant="success" onClick={() => handleEdit(id)}>
-            Edit
-          </Button>
-        ),
-      },
-    ],
-    []
-  );
-  
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-    // @ts-ignore
-    columns,
-    data: users
-  });
+  }, [users]);
 
   
   const handleEdit = async (user: any) => {
@@ -145,6 +101,50 @@ const UsersTable: React.FC = () => {
     const filteredUsers = users.sort((a: any, b: any) => a.id - b.id);
     setUsers(filteredUsers);
   };
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'ID',
+        accessor: 'id',
+      },
+      {
+        Header: 'Email',
+        accessor: 'email',
+      },
+      {
+        Header: 'Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Roles',
+        accessor: (user: User) => user.roles.join(', '),
+      },
+      {
+        Header: 'Delete',
+        accessor: (id: any) => (
+          <Button variant="danger" onClick={() => handleDelete(id)}>
+            Delete
+          </Button>
+        ),
+      },
+      {
+        Header: 'Edit',
+        accessor: (id: any) => (
+          <Button variant="success" onClick={() => handleEdit(id)}>
+            Edit
+          </Button>
+        ),
+      },
+    ],
+    []
+  );
+  
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+    // @ts-ignore
+    columns,
+    data: users
+  });
 
   return (
     <>

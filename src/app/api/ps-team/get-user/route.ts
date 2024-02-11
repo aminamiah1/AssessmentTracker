@@ -3,6 +3,9 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+//Force api route to dynamically render
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
     try {
       // Extract user ID from request query parameters or body

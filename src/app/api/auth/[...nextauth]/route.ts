@@ -13,7 +13,7 @@ export default NextAuth({
         email: { label: "Email", type: "text", placeholder: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (credentials) {
           const user = await prisma.users.findUnique({
             where: {
@@ -26,9 +26,8 @@ export default NextAuth({
             user.password &&
             (await bcrypt.compare(credentials.password, user.password))
           ) {
-            //bcrypt finds the hashed password then unhashes it to compare to the password they input
             return {
-              id: user.id.toString(),
+              id: user.id.toString(), // Convert numeric ID to string
               name: user.name,
               email: user.email,
             };
@@ -39,17 +38,19 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async session({ session, token }) {
-      if (token.sub) {
-        session.user.id = token.sub;
-      }
-      return session;
-    },
     async jwt({ token, user }) {
       if (user) {
-        token.sub = user.id;
+        token.id = user.id; // Store user ID in JWT
+        token.email = user.email;
       }
       return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string; //uses the types folder to prevent errors
+        session.user.email = token.email as string;
+      }
+      return session;
     },
   },
 });

@@ -117,3 +117,35 @@ For open source projects, say how it is licensed.
 ## Project status
 
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+## API Documentation
+
+## PS Team
+
+# Get All Users(GET)
+
+To get all users the ps team can use the api located at localhost:3000/api/ps-team/get-users to retrieve all users
+
+# Get User(GET)
+
+To get a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/get-user?id=0(example) and pass details in the request query
+
+# Edit User(POST)
+
+To edit a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/edit-users and pass details in the request body
+
+# Delete User(DELETE)
+
+To delete a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/delete-user and pass details in the request body
+
+# Create User(POST) 
+
+To create a user, the ps team can use the api located at localhost:3000/api/ps-team/get-user and pass details in the request body
+
+## Page Documentation
+
+## PS Team
+
+# User management dashboard
+
+Located at localhost:3000/ps-team/user-management, the ps team can add, edit, delete or view all users in a nicely-presented crud operation table with pop-up forms for editing and adding new users.

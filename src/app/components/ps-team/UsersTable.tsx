@@ -44,6 +44,9 @@ const UsersTable: React.FC = () => {
   };
   
   const handleEdit = async (user: any) => {
+
+    setSearch(''); // Reset search to show all users
+
     var id = user.id;
     fetch(`/api/ps-team/get-user?id=${id}`, {
       method: 'GET',
@@ -75,6 +78,8 @@ const UsersTable: React.FC = () => {
 
   const handleDelete = async (user: any) => {
     try {
+
+      setSearch(''); // Reset search to show all users
 
       var id = user.id;
 

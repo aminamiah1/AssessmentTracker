@@ -118,6 +118,10 @@ For open source projects, say how it is licensed.
 
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
 
+## Prisma database set up 
+
+Create a new .env file in the cloned root repository and place the string DATABASE_URL="OUR_CLOUD_DB_STRING_PROVIDED_TO_YOU" and in your terminal from root, please execute the following "npx prisma generate" first to generate the schema and create ERD and then "npx prisma db pull" to pull latest database changes, you can then go ahead and execute "npm run dev" to launch the app in dev server and the data should load for you.
+
 ## API Documentation
 
 ## PS Team

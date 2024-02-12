@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useTable} from 'react-table';
 import axios from 'axios';
 import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EditUser from './EditUser';
+import { Form, FormControl, FormLabel, Button } from 'react-bootstrap'; 
 
 interface User {
   id: number;
@@ -20,17 +20,28 @@ const UsersTable: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [showEditUserModal, setShowEditUserModal] = useState(false);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
+  const [search, setSearch] = React.useState('');
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]); // New state for filtered view
 
   useEffect(() => {
-     const fetchUsers = async () => {
-     const response = await axios.get('/api/ps-team/get-users');
-     // Filter users by lowest ID first
-     const filteredUsers = response.data.sort((a: any, b: any) => a.id - b.id);
-     setUsers(filteredUsers);
+    const fetchUsers = async () => {
+      // Fetch users only when component mounts or search is cleared
+      if (!search) {
+        const response = await axios.get('/api/ps-team/get-users');
+        const sortedUsers = response.data.sort((a: any, b: any) => a.id - b.id);
+        setUsers(sortedUsers);
+        setFilteredUsers(sortedUsers); // Initialize filtered view with all users
+      }
     };
+  
     fetchUsers();
-  }, [users]);
+  }, [search, users]); // Run effect when search or user array changes
+  
 
+  const handleSearch = (event: any) => {
+    setSearch(event.target.value);
+    setFilteredUsers(users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase())));
+  };
   
   const handleEdit = async (user: any) => {
     var id = user.id;
@@ -143,11 +154,20 @@ const UsersTable: React.FC = () => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     // @ts-ignore
     columns,
-    data: users
+    data: filteredUsers
   });
 
   return (
     <>
+    <Form className="d-flex align-items-center mb-3">
+      <FormControl
+        id="search"
+        type="text"
+        value={search}
+        onChange={handleSearch}
+        placeholder="Enter name..."
+      />
+    </Form>
     <EditUser show={showEditUserModal} onClose={() => setShowEditUserModal(false)} userToEdit={userToEdit} updateUsers={handleUpdateUsers} />
     <Table bordered hover responsive variant="light" {...getTableProps()}>
       <thead>

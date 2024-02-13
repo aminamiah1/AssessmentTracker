@@ -1,11 +1,12 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import { PrismaClient } from "@prisma/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export default NextAuth({
+const authOptions: NextAuthOptions = {
+  // adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -13,8 +14,8 @@ export default NextAuth({
         email: { label: "Email", type: "text", placeholder: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
-        if (credentials) {
+      async authorize(credentials) {
+        if (credentials && credentials.email && credentials.password) {
           const user = await prisma.users.findUnique({
             where: {
               email: credentials.email,
@@ -47,10 +48,14 @@ export default NextAuth({
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id as string; //uses the types folder to prevent errors
+        session.user.id = token.id as string; // Ensure the ID is a string
         session.user.email = token.email as string;
       }
       return session;
     },
   },
-});
+};
+
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST };

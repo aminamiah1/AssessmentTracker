@@ -15,7 +15,7 @@ async function createUser(
   email: string,
   name: string,
   password: string,
-  role: Role,
+  roles: Role,
 ): Promise<void> {
   const hashedPassword = await hashPassword(password);
 
@@ -24,17 +24,7 @@ async function createUser(
       email,
       name,
       password: hashedPassword,
-      role,
     },
   });
   console.log("User created:", user);
 }
-
-// Function to verify a user's password during login
-async function verifyPassword(
-  userSubmittedPassword: string,
-  storedHashedPassword: string,
-): Promise<boolean> {
-  return await bcrypt.compare(userSubmittedPassword, storedHashedPassword);
-}
-// isn't being used but keep it for now

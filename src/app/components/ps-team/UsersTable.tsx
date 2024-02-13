@@ -190,14 +190,14 @@ const UsersTable: React.FC = () => {
       <Table bordered hover responsive variant="light" {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup, headerGroupIndex) => (
-            // @ts-ignore
             <tr
+              // @ts-ignore
               key={`header-group-${headerGroupIndex}`}
               {...headerGroup.getHeaderGroupProps()}
             >
               {headerGroup.headers.map((column, columnIndex) => (
-                // @ts-ignore
                 <th
+                  // @ts-ignore
                   key={`header-${headerGroupIndex}-${columnIndex}`}
                   {...column.getHeaderProps()}
                 >
@@ -214,8 +214,8 @@ const UsersTable: React.FC = () => {
               // @ts-ignore
               <tr key={`row-${rowIndex}`} {...row.getRowProps()}>
                 {row.cells.map((cell, cellIndex) => (
-                  // @ts-ignore
                   <td
+                    // @ts-ignore
                     key={`cell-${rowIndex}-${cellIndex}`}
                     {...cell.getCellProps()}
                   >

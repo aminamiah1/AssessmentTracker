@@ -45,7 +45,6 @@ To start using the Cypress GUI, run:
 `npm run cy:open`
 
 ### Useful Commands
-
 Others may be added as more tests are added.
 
 `npm run test:e2e`
@@ -135,3 +134,39 @@ For open source projects, say how it is licensed.
 ## Project status
 
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+## Prisma database set up 
+
+Create a new .env file in the cloned root repository and place the string DATABASE_URL="OUR_CLOUD_DB_STRING_PROVIDED_TO_YOU" and in your terminal from root, please execute the following "npx prisma generate" first to generate the schema and create ERD and then "npx prisma db pull" to pull latest database changes, you can then go ahead and execute "npm run dev" to launch the app in dev server and the data should load for you.
+
+## API Documentation
+
+## PS Team
+
+# Get All Users(GET)
+
+To get all users the ps team can use the api located at localhost:3000/api/ps-team/get-users to retrieve all users
+
+# Get User(GET)
+
+To get a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/get-user?id=0(example) and pass details in the request query
+
+# Edit User(POST)
+
+To edit a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/edit-users and pass details in the request body
+
+# Delete User(DELETE)
+
+To delete a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/delete-user and pass details in the request body
+
+# Create User(POST) 
+
+To create a user, the ps team can use the api located at localhost:3000/api/ps-team/get-user and pass details in the request body
+
+## Page Documentation
+
+## PS Team
+
+# User management dashboard
+
+Located at localhost:3000/ps-team/user-management, the ps team can add, edit, delete or view all users in a nicely-presented crud operation table with pop-up forms for editing and adding new users.

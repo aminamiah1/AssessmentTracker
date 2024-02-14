@@ -11,7 +11,7 @@ describe("Add User Form", () => {
     cy.get('[data-cy="name"]').type("New User");
     cy.get('[data-cy="email"]').type("newuser@example.com");
     cy.get('[data-cy="password"]').type("examplepass");
-    cy.get("#react-select-3-input").type("module_leader{enter}{enter}");
+    cy.get("[id^=react-select-3-input]").type("module_leader{enter}{enter}");
     cy.intercept("POST", "/api/ps-team/create-users", {
       statusCode: 200,
       body: {

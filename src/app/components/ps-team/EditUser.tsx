@@ -201,8 +201,8 @@ const EditUser: React.FC<EditUserProps> = ({
                   key: role.value,
                 }))}
                 value={user.roles}
-                // @ts-ignore
                 onChange={(selectedRoles) =>
+                  // @ts-ignore
                   setUser({ ...user, roles: selectedRoles })
                 }
                 isMulti

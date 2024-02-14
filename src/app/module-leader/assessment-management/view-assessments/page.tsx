@@ -18,11 +18,15 @@ interface Assessment {
 
 export default function ViewAssessmentsModuleLeaders() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
+  const [setterId, setSetterId] = useState(1); // Module leader 1 for now
 
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
-      const response = await axios.get("/api/module-leader/get-assessments");
+      // Getting response as module leader 1 while waiting for login feature
+      const response = await axios.get(
+        `/api/module-leader/get-assessments/?id=${setterId}`,
+      );
       const sortedAssessments = response.data.sort(
         (a: any, b: any) => a.id - b.id,
       );

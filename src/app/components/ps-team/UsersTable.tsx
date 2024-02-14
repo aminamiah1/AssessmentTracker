@@ -22,6 +22,7 @@ const UsersTable: React.FC = () => {
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
   const [search, setSearch] = React.useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]); // New state for filtered view
+  const [refetch, setRefetch] = useState(0);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -35,7 +36,7 @@ const UsersTable: React.FC = () => {
     };
 
     fetchUsers();
-  }, [search, users]); // Run effect when search or user array changes
+  }, [search, refetch]); // Run effect when search changes
 
   const handleSearch = (event: any) => {
     setSearch(event.target.value);
@@ -114,6 +115,7 @@ const UsersTable: React.FC = () => {
 
       // Success message with toast to add
       toast.success("Delete user successful!");
+      setRefetch(refetch + 1);
     } catch (error) {
       // Display an error message to the user with toast message
       toast.error("Error deleting user");
@@ -186,6 +188,8 @@ const UsersTable: React.FC = () => {
         onClose={() => setShowEditUserModal(false)}
         userToEdit={userToEdit}
         updateUsers={handleUpdateUsers}
+        setRefetch={setRefetch}
+        refetch={refetch}
       />
       <Table bordered hover responsive variant="light" {...getTableProps()}>
         <thead>

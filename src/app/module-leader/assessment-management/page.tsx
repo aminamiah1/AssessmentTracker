@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
+import Link from "next/link";
 import { ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -27,15 +28,17 @@ export default function ManageAssessmentsModuleLeaders() {
           </Button>
         </Col>
         <Col xs="auto" className="mb-2">
-          <Button variant="dark" style={{ height: "20rem", width: "20rem" }}>
-            <div>
-              <i
-                className="bi bi-envelope-paper"
-                style={{ fontSize: "10rem" }}
-              ></i>
-            </div>
-            <div>View Assessments Created</div>
-          </Button>
+          <Link href="/module-leader/assessment-management/view-assessments">
+            <Button variant="dark" style={{ height: "20rem", width: "20rem" }}>
+              <div>
+                <i
+                  className="bi bi-envelope-paper"
+                  style={{ fontSize: "10rem" }}
+                ></i>
+              </div>
+              <div>View Assessments Created</div>
+            </Button>
+          </Link>
         </Col>
       </Row>
     </Container>

@@ -8,7 +8,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Easy workaround to prevent cypress proxy error... Remove it :D
-RUN sed -i '/cypress/d' package.json
+# RUN sed -i '/cypress/d' package.json
+# Cypress needed for npm install... let's see if it works
 
 # Install project dependencies
 RUN npm install

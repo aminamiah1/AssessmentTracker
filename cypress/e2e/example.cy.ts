@@ -1,9 +1,9 @@
-describe('ts-example', () => { 
+describe("ts-example", () => {
   beforeEach(() => {
-    cy.visit('/');
+    cy.visit("/");
   });
 
-  it('should run example test', () => {
+  it("should run example test", () => {
     expect(true).to.be.true;
   });
 });

@@ -45,6 +45,7 @@ To start using the Cypress GUI, run:
 `npm run cy:open`
 
 ### Useful Commands
+
 Others may be added as more tests are added.
 
 `npm run test:e2e`

@@ -166,8 +166,8 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
                   key: role.value,
                 }))}
                 value={newUser.roles}
-                // @ts-ignore
                 onChange={(selectedRoles) =>
+                  // @ts-ignore
                   setNewUser({ ...newUser, roles: selectedRoles })
                 }
                 isMulti

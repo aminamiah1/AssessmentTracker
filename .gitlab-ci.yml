@@ -109,6 +109,7 @@ dev-test:
     - build-dev
   image: cypress/base:20.11.0
   script:
+    - npm i
     - npm start &
     - npm run test:e2e
 

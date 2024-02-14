@@ -14,7 +14,24 @@ Fill this in :)
 
 ## CI/CD
 
-A section with all things CI or CD!
+The infrastructure for this project is as follows:
+
+- Docker
+- GitLab CI
+- OpenShift
+
+It's currently set up to build images on staging - `release-X` - and production - `main` - branches. These images are then built on OpenShift before being pushed to `registry.git.cf.ac.uk`. It wasn't a requirement to have these images hosted on the GitLab registry, it was just more of a preference to have the images in a central location.
+
+After the images are pushed to the registry, they're tagged accordingly:
+
+- Staging
+  - Gets pushed with an original tag referencing the branch name and commit short SHA
+  - Has another tag created called `latest`, to produce `staging:latest`
+- Production
+  - Gets pushed with an original tag referencing the time of the job build
+  - Has another tag created called `stable` if the tests pass
+
+After these images are pushed, the e2e and unit tests begin. After the tests are successful, GitLab CI triggers an OpenShift deployment to get the apps on a public-facing URL (through a VPN, but close enough).
 
 ### Important links
 

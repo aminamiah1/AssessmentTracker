@@ -36,3 +36,181 @@ deploy-job: # This job runs in the deploy stage.
         - oc project $OPENSHIFT_PROJECT
         - oc registry login --registry $REGISTRY_HOST
         - oc start-build assessmenttracking-cicd-dockerfile --follow
+  - build
+  - test
+  - prepare-deploy
+  - deploy
+
+variables:
+  PROD_TAG: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+  CI_COMMIT_LABEL: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+
+################
+# BUILD STAGES #
+################
+
+# This will only run for main and release branches
+# i.e. production and staging branches
+build-image:
+  stage: build
+  only:
+    - main
+    - /^release-\d+$/
+  image: openshift/origin-cli
+  script:
+    - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
+    - oc project $OPENSHIFT_PROJECT
+    - oc version
+
+    # Create a new build configuration for the application for production or staging,
+    # depending on what branch we're on:
+    # - If the branch is 'main', create a production build
+    # - If the branch is 'release-*', create a staging build
+    #
+    # The build configuration is created from a template file, and the template file
+    # is parameterized with the commit label (descriptive) and SHA (unique identifier).
+    #
+    # Templating has been used because we want to keep a history of images with different
+    # tags, and this templating allows us to create a new build configuration for each
+    # new commit, and then delete it after the build is complete.
+    #
+    # This job will follow along with the OpenShift build, and fail if the build fails.
+    - >
+      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+        echo "Building production...";
+        oc process build-config-prod \
+          -p CI_COMMIT_LABEL=$PROD_TAG \
+          -l name=build-$CI_COMMIT_SHORT_SHA | oc create -f -;
+        oc start-build assessmenttracking-prod-generated-$PROD_TAG --follow --wait;
+        oc delete buildconfig assessmenttracking-prod-generated-$PROD_TAG
+
+      elif [[ "$CI_COMMIT_REF_NAME" == "release"* ]]; then
+        echo "Building staging image from branch $CI_COMMIT_REF_NAME...";
+        oc process build-config-staging \
+          -p CI_COMMIT_LABEL=$CI_COMMIT_LABEL \
+          -p CI_COMMIT_SHA=$CI_COMMIT_SHA \
+          -l name=build-$CI_COMMIT_LABEL | oc create -f -;
+        oc start-build assessmenttracking-staging-generated-$CI_COMMIT_LABEL --follow --wait;
+        oc delete buildconfig assessmenttracking-staging-generated-$CI_COMMIT_LABEL
+      fi
+
+# This will run for all other branches
+build-dev:
+  stage: build
+  except:
+    - main
+    - /^release-\d+$/
+  image: node:20.11.0-alpine3.18
+  script:
+    - echo $PROD_TAG
+    - echo $CI_COMMIT_LABEL
+    - echo "Building development bundle..."
+    - npm i
+    - npm run build
+  artifacts:
+    paths:
+      - .next/
+    when: on_success
+    expire_in: "30 days"
+
+###############
+# TEST STAGES #
+###############
+
+staging-test:
+  stage: test
+  only:
+    - /^release-\d+$/
+  image: cypress/base:20.11.0
+  services:
+    - $REGISTRY_HOST/$REGISTRY_PATH/staging:$CI_COMMIT_LABEL
+  script:
+    - echo "Hello from staging testing!"
+
+prod-test:
+  stage: test
+  only:
+    - main
+  image: cypress/base:20.11.0
+  services:
+    - $REGISTRY_HOST/$REGISTRY_PATH/prod:$PROD_TAG
+  script:
+    - echo "Hello from prod testing!"
+
+dev-test:
+  stage: test
+  except:
+    - main
+    - /^release-\d+$/
+  dependencies:
+    - build-dev
+  image: cypress/base:20.11.0
+  script:
+    - npm i
+    - npm start &
+    - npm run test:e2e
+
+lint-test-job:
+  stage: test
+  script:
+    - echo "EXAMPLE Linting code... This will take about 10 seconds."
+    - echo "EXAMPLE No lint issues found."
+
+##########################
+# DEPLOYMENT PREPARATION #
+##########################
+
+# Tag the images just created as the "latest" or "stable"
+# "latest" for release branches, "stable" for main branch
+update-prod-tag:
+  stage: prepare-deploy
+  only:
+    - main
+  image: alpine:3.19
+  needs:
+    - prod-test
+  script:
+    - apk add skopeo
+    - skopeo login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD --tls-verify=false -v $REGISTRY_HOST
+    - >
+      echo "Updating tags for production...";
+      skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:$PROD_TAG docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:stable;
+
+update-staging-tag:
+  stage: prepare-deploy
+  only:
+    - /^release-\d+$/
+  image: alpine:3.19
+  needs:
+    - staging-test
+  script:
+    - apk add skopeo
+    - skopeo login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD --tls-verify=false -v $REGISTRY_HOST
+    - >
+      echo "Updating tags for staging...";
+      skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:$CI_COMMIT_LABEL docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:latest;
+
+################
+# DEPLOY STAGE #
+################
+
+deploy-openshift:
+  stage: deploy
+  only:
+    - main
+    - /^release-\d+$/
+  image: openshift/origin-cli
+  script:
+    - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
+    - oc project $OPENSHIFT_PROJECT
+
+    # Check if the current branch is 'main'
+    - >
+      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+        echo "Deploying production...";
+        oc rollout latest dc/assessment-tracker-prod;
+
+      elif [[ "$CI_COMMIT_REF_NAME" == "release"* ]]; then
+        echo "Deploying staging...";
+        oc rollout latest dc/assessment-tracker-staging;
+      fi

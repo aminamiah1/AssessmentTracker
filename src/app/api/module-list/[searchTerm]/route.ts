@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+const prisma = new PrismaClient();
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { searchTerm: string } },
 ) {
-  const prisma = new PrismaClient();
-
   try {
     // Get modules either by module name, module code, or by module leader name
     const modules = await prisma.module.findMany({

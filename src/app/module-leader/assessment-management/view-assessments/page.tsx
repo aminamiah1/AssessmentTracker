@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import AssessmentTile from "../../../components/module-leader/AssessmentTile";
 
 interface Assessment {
   id: number;
@@ -13,6 +14,7 @@ interface Assessment {
   hand_out_week: Date;
   hand_in_week: Date;
   module_id: number;
+  module_name: string;
   assignees: [];
 }
 
@@ -40,10 +42,9 @@ export default function ViewAssessmentsModuleLeaders() {
     <Container fluid className="p-4">
       <ToastContainer />
       <Row>
-        <Col className="text-center">
-          <h1 className="text-3xl">Your Assessments Overview</h1>
-          {assessments.length > 0 && <h1>{assessments[0].assessment_name}</h1>}
-        </Col>
+        {assessments.map((assessment) => (
+          <AssessmentTile key={assessment.id} assessment={assessment} />
+        ))}
       </Row>
     </Container>
   );

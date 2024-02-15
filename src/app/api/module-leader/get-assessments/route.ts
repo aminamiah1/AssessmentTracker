@@ -20,9 +20,34 @@ export async function GET(request: Request) {
     // Fetch assessments with error handling
     const assessments = await prisma.assessment.findMany({
       where: { setter_id: userId },
+      select: {
+        id: true,
+        assessment_name: true,
+        assessment_type: true,
+        hand_out_week: true,
+        hand_in_week: true,
+        module_id: true,
+        assignees: { select: { name: true } }, // Select desired assignee field
+      },
     });
 
-    return Response.json(assessments);
+    // Fetch module names using Prisma
+    const moduleNames = await prisma.module.findMany({
+      where: {
+        id: { in: assessments.map((assessment: any) => assessment.module_id) },
+      },
+      select: { id: true, module_name: true },
+    });
+
+    // Map module names to assessments
+    const assessmentsWithModules = assessments.map((assessment: any) => ({
+      ...assessment,
+      module_name: moduleNames.find(
+        (module: any) => module.id === assessment.module_id,
+      )?.module_name,
+    }));
+
+    return Response.json(assessmentsWithModules);
   } catch (error) {
     console.error(error);
     return Response.json(

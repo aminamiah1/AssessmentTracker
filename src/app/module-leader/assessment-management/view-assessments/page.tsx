@@ -41,6 +41,9 @@ export default function ViewAssessmentsModuleLeaders() {
   return (
     <Container fluid className="p-4">
       <ToastContainer />
+      <Col style={{ marginBottom: "2rem", marginTop: "2rem" }}>
+        <h1 className="text-3xl">Your Assessments Overview</h1>
+      </Col>
       <Row>
         {assessments.map((assessment) => (
           <AssessmentTile key={assessment.id} assessment={assessment} />

@@ -6,6 +6,9 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import AssessmentTile from "../../../components/module-leader/AssessmentTile";
+import arrowReturn from "../../../components/module-leader/assets/arrowReturn.png";
+import Image from "next/image";
+import Link from "next/link";
 
 interface Assessment {
   id: number;
@@ -42,12 +45,29 @@ export default function ViewAssessmentsModuleLeaders() {
     <Container fluid className="p-4">
       <ToastContainer />
       <Col style={{ marginBottom: "2rem", marginTop: "2rem" }}>
-        <h1 className="text-3xl">Your Assessments Overview</h1>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Link href={"/module-leader/assessment-management"}>
+            <Image
+              src={arrowReturn}
+              alt="return arrow"
+              style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
+            />
+          </Link>
+          <h1 className="text-3xl">Your Assessments Overview</h1>
+        </div>
       </Col>
       <Row>
-        {assessments.map((assessment) => (
-          <AssessmentTile key={assessment.id} assessment={assessment} />
-        ))}
+        {assessments.length > 0 ? (
+          <Row>
+            {assessments.map((assessment) => (
+              <AssessmentTile key={assessment.id} assessment={assessment} />
+            ))}
+          </Row>
+        ) : (
+          <div className="text-center">
+            You don't have any assessments yet...
+          </div>
+        )}
       </Row>
     </Container>
   );

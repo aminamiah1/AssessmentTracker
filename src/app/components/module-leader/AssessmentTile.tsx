@@ -1,16 +1,56 @@
-import React from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import React, { useState } from "react";
+import { Card, Col, Row, Modal, Button } from "react-bootstrap";
 import { format } from "date-fns";
 import Image from "next/image";
 import trashCan from "./assets/trashCan.png";
 import profilePic from "./assets/profilePic.png";
+import editIcon from "./assets/editIcon.png";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AssessmentTile = ({ assessment }: { assessment: any }) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDelete = () => {
+    // Delete assessment logic
+    try {
+      var id = assessment.id;
+
+      fetch(`/api/module-leader/delete-assessment?id=${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            // Handle successful deletion and re-load the assessment viewing page to reflect changes
+            toast.success("Delete assessment successful!");
+            window.location.reload();
+          } else {
+            // Handle errors with toast message to inform user
+            toast.error("'Error deleting assessment");
+          }
+        })
+        .catch((error) => {
+          // Handle network errors with toast to inform user
+          console.log(error);
+          toast.error("Network error please try again");
+        });
+    } catch (error) {
+      // Display an error message to the assessment with toast message
+      toast.error("Error deleting assessment");
+    }
+  };
+
   return (
     <Col
       className="grid flex-grow-1 col-12 col-md-6"
       style={{ marginBottom: "1rem" }}
     >
+      <ToastContainer />
       <Card style={{ boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)" }}>
         <Card.Body>
           <Row>
@@ -24,7 +64,21 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
               }}
             >
               <Card.Title>
-                <a href="">{assessment.assessment_name}</a>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <a href="">{assessment.assessment_name}</a>
+                  <button>
+                    <Image
+                      className="object-cover"
+                      src={editIcon}
+                      alt="edit icon"
+                      style={{
+                        height: "2rem",
+                        width: "2rem",
+                        marginLeft: "1rem",
+                      }}
+                    />
+                  </button>
+                </div>
               </Card.Title>
               <Card.Text>
                 <br />
@@ -37,11 +91,11 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
                     Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")} ●
                     Stage: {0} of 11
                   </h6>
-                  <button>
+                  <button onClick={() => setShowDeleteModal(true)}>
                     <Image
                       className="object-cover"
                       src={trashCan}
-                      alt="Trash Can"
+                      alt="trash can delete"
                       style={{ height: "2rem", width: "2rem" }}
                     />
                   </button>
@@ -82,6 +136,24 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
           </Row>
         </Card.Body>
       </Card>
+
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Assessment?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete the assessment "
+          {assessment.assessment_name}"?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Col>
   );
 };

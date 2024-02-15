@@ -11,13 +11,16 @@ export default function ManageAssessmentsModuleLeaders() {
     <Container fluid className="p-4">
       <ToastContainer />
       <Row>
-        <Col className="text-center">
+        <Col
+          className="text-center"
+          style={{ marginBottom: "2rem", marginTop: "2rem" }}
+        >
           <h1 className="text-3xl">Your Assessments</h1>
         </Col>
       </Row>
       <Row
         className="d-flex align-items-center justify-content-center"
-        style={{ height: "80vh" }}
+        style={{ height: "70vh" }}
       >
         <Col xs="auto" className="mb-2">
           <Button variant="dark" style={{ height: "20rem", width: "20rem" }}>

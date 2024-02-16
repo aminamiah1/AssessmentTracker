@@ -2,6 +2,8 @@
 FROM node:20.11.0-alpine3.18
 
 ENV DATABASE_URL ${DATABASE_URL}
+ENV NEXTAUTH_URL ${NEXTAUTH_URL}
+ENV NEXTAUTH_SECRET ${NEXTAUTH_SECRET}
 
 # Set the working directory inside the container
 WORKDIR /app

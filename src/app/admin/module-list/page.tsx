@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { MdDelete, MdEdit } from "react-icons/md";
 
-import SearchBar from "@/app/components/SearchBar/SearchBar";
 import Link from "next/link";
+
+import SearchBar from "@/app/components/SearchBar/SearchBar";
 
 type ModuleData = {
   id: number;
@@ -23,6 +25,8 @@ async function getModules(searchTerm: string) {
 export default function ModuleList() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [modules, setModules] = useState<ModuleData>([]);
+
+  const router = useRouter();
 
   const onSearch = (term: string) => {
     setSearchTerm(term);
@@ -71,9 +75,12 @@ export default function ModuleList() {
                 <p>Module Code: {module.module_code}</p>
               </div>
               <div className="flex gap-4">
-                <button className="px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <Link
+                  href={`/admin/module-list/edit/${module.module_code}`}
+                  className="px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
                   <MdEdit />
-                </button>
+                </Link>
                 <button className="px-3 py-2 text-2xl border rounded transition-all bg-red-600 dark:bg-red-800 text-gray-100 hover:bg-red-700">
                   <MdDelete />
                 </button>

@@ -24,13 +24,11 @@ import Select from "react-select";
 import axios from "axios";
 
 interface Assessment {
-  id: number;
   assessment_name: string;
   assessment_type: string;
   hand_out_week: Date;
   hand_in_week: Date;
   module_id: number;
-  module_name: string;
   setter_id: number;
   assignees: [];
 }
@@ -43,14 +41,12 @@ export default function CreateAssessmentModuleLeaders() {
   const [users, setUsers] = useState();
 
   const [assessment, setAssessment] = useState<Assessment>({
-    id: 0,
     assessment_name: "",
     assessment_type: "",
     hand_out_week: new Date(2024, 1, 26),
     hand_in_week: new Date(2024, 1, 26),
     module_id: 0,
-    module_name: "",
-    setter_id: 0,
+    setter_id: setterId,
     assignees: [],
   });
 
@@ -65,7 +61,6 @@ export default function CreateAssessmentModuleLeaders() {
         value: module.id,
         label: module.module_name,
       }));
-      console.log(response);
       setModules(processedModules);
     };
 
@@ -86,10 +81,23 @@ export default function CreateAssessmentModuleLeaders() {
     fetchAssignees();
   }, []);
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    // To add
+  const handleTextChange = (event: any) => {
+    console.log(assessment);
+    setAssessment({
+      ...assessment,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleDateChange = (date: any, field: any) => {
+    setAssessment({
+      ...assessment,
+      [field]: date,
+    });
+  };
+
+  const handleSelectChange = (selectedOption: any, fieldName: any) => {
+    setAssessment({ ...assessment, [fieldName]: selectedOption });
   };
 
   return (
@@ -114,20 +122,22 @@ export default function CreateAssessmentModuleLeaders() {
                 type="text"
                 placeholder="Enter assessment name"
                 value={assessment.assessment_name}
-                onChange={handleChange}
+                onChange={handleTextChange}
+                name="assessment_name"
                 required
                 className="form-control shadow-none rounded-0"
               />
             </FormGroup>
 
-            <FormGroup controlId="module" style={{ marginTop: "1rem" }}>
+            <FormGroup controlId="module_id" style={{ marginTop: "1rem" }}>
               <Row>
                 <FormLabel>Module:</FormLabel>
                 <Select
                   // @ts-ignore
+                  onChange={(option) => handleSelectChange(option, "module_id")}
                   options={modules}
-                  data-cy="module"
-                  id="module"
+                  data-cy="module_id"
+                  id="module_id"
                   value={assessment.module_id}
                   className="react-select-container"
                 />
@@ -139,8 +149,9 @@ export default function CreateAssessmentModuleLeaders() {
               <FormControl
                 type="text"
                 placeholder="Enter assessment type..."
+                name="assessment_type"
                 value={assessment.assessment_type}
-                onChange={handleChange}
+                onChange={handleTextChange}
                 required
                 className="form-control shadow-none rounded-0"
               />
@@ -154,10 +165,7 @@ export default function CreateAssessmentModuleLeaders() {
                 <Row>
                   <DatePicker
                     selected={assessment.hand_out_week}
-                    onChange={(date: Date) => {
-                      const d = new Date(date).toLocaleDateString("fr-FR");
-                      console.log(d);
-                    }}
+                    onChange={(date) => handleDateChange(date, "hand_out_week")}
                     dateFormat="yyyy-MM-dd"
                     placeholderText="Select date"
                     required
@@ -175,10 +183,7 @@ export default function CreateAssessmentModuleLeaders() {
                 <Row>
                   <DatePicker
                     selected={assessment.hand_in_week}
-                    onChange={(date: Date) => {
-                      const d = new Date(date).toLocaleDateString("en-EN");
-                      console.log(d);
-                    }}
+                    onChange={(date) => handleDateChange(date, "hand_in_week")}
                     dateFormat="yyyy-MM-dd"
                     placeholderText="Select date"
                     required
@@ -193,6 +198,7 @@ export default function CreateAssessmentModuleLeaders() {
                 <FormLabel>Assignees:</FormLabel>
                 <Select
                   // @ts-ignore
+                  onChange={(option) => handleSelectChange(option, "assignees")}
                   options={users}
                   data-cy="assignees"
                   id="assignees"

@@ -24,7 +24,6 @@ build-image:
     - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
     - oc project $OPENSHIFT_PROJECT
     - oc version
-    - npx prisma generate
 
     # Create a new build configuration for the application for production or staging,
     # depending on what branch we're on:

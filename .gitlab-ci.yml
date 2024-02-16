@@ -43,6 +43,7 @@ build-image:
         echo "Building production...";
         oc process build-config-prod \
           -p CI_COMMIT_LABEL=$PROD_TAG \
+          -p CI_DATABASE_URL=$DATABASE_URL \
           -l name=build-$CI_COMMIT_SHORT_SHA | oc create -f -;
         oc start-build assessmenttracking-prod-generated-$PROD_TAG --follow --wait;
         oc delete buildconfig assessmenttracking-prod-generated-$PROD_TAG

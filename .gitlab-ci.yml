@@ -52,6 +52,7 @@ build-image:
         oc process build-config-staging \
           -p CI_COMMIT_LABEL=$CI_COMMIT_LABEL \
           -p CI_COMMIT_SHA=$CI_COMMIT_SHA \
+          -p CI_DATABASE_URL=$DATABASE_URL \
           -l name=build-$CI_COMMIT_LABEL | oc create -f -;
         oc start-build assessmenttracking-staging-generated-$CI_COMMIT_LABEL --follow --wait;
         oc delete buildconfig assessmenttracking-staging-generated-$CI_COMMIT_LABEL

@@ -1,6 +1,8 @@
 # Use the official Node.js image as the base image
 FROM node:20.11.0-alpine3.18
 
+ENV DATABASE_URL ${DATABASE_URL}
+
 # Set the working directory inside the container
 WORKDIR /app
 

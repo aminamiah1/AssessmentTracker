@@ -21,6 +21,7 @@ import arrowReturn from "../../../components/module-leader/assets/arrowReturn.pn
 import Image from "next/image";
 import Link from "next/link";
 import Select from "react-select";
+import axios from "axios";
 
 interface Assessment {
   id: number;
@@ -35,6 +36,12 @@ interface Assessment {
 }
 
 export default function CreateAssessmentModuleLeaders() {
+  const [setterId, setSetterId] = useState(1); // Module leader 1 for now
+
+  const [modules, setModules] = useState();
+
+  const [users, setUsers] = useState();
+
   const [assessment, setAssessment] = useState<Assessment>({
     id: 0,
     assessment_name: "",
@@ -46,6 +53,38 @@ export default function CreateAssessmentModuleLeaders() {
     setter_id: 0,
     assignees: [],
   });
+
+  useEffect(() => {
+    const fetchModules = async () => {
+      // Fetch modules by setter only when component mounts
+      // Getting response as module leader 1 while waiting for login feature
+      const response = await axios.get(
+        `/api/module-leader/get-modules/?id=${setterId}`,
+      );
+      const processedModules = response.data[0].modules.map((module: any) => ({
+        value: module.id,
+        label: module.module_name,
+      }));
+      console.log(response);
+      setModules(processedModules);
+    };
+
+    fetchModules();
+
+    const fetchAssignees = async () => {
+      // Fetch all users to assign
+      // Getting response as module leader 1 while waiting for login feature
+      const response = await axios.get(`/api/module-leader/get-users`);
+      console.log(response.data);
+      const processedUsers = response.data.map((user: any) => ({
+        value: user.id,
+        label: user.name + " ● Roles: " + user.roles,
+      }));
+      setUsers(processedUsers);
+    };
+
+    fetchAssignees();
+  }, []);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -81,23 +120,25 @@ export default function CreateAssessmentModuleLeaders() {
               />
             </FormGroup>
 
-            <FormGroup controlId="moduleID" style={{ marginTop: "1rem" }}>
-              <FormLabel>Find module by module code: </FormLabel>
-              <FormControl
-                type="text"
-                placeholder="Enter module code"
-                value={assessment.module_id}
-                onChange={handleChange}
-                required
-                className="form-control shadow-none rounded-0"
-              />
+            <FormGroup controlId="module" style={{ marginTop: "1rem" }}>
+              <Row>
+                <FormLabel>Module:</FormLabel>
+                <Select
+                  // @ts-ignore
+                  options={modules}
+                  data-cy="module"
+                  id="module"
+                  value={assessment.module_id}
+                  className="react-select-container"
+                />
+              </Row>
             </FormGroup>
 
             <FormGroup controlId="assessmentType" style={{ marginTop: "1rem" }}>
               <FormLabel>Assessment type: </FormLabel>
               <FormControl
                 type="text"
-                placeholder="Enter module code"
+                placeholder="Enter assessment type..."
                 value={assessment.assessment_type}
                 onChange={handleChange}
                 required
@@ -147,22 +188,12 @@ export default function CreateAssessmentModuleLeaders() {
               </Row>
             </FormGroup>
 
-            <FormGroup controlId="setter" style={{ marginTop: "1rem" }}>
-              <Row>
-                <FormLabel>Setter:</FormLabel>
-                <Select
-                  data-cy="setter"
-                  id="setter"
-                  value={assessment.setter_id}
-                  className="react-select-container"
-                />
-              </Row>
-            </FormGroup>
-
             <FormGroup controlId="assignees" style={{ marginTop: "1rem" }}>
               <Row>
                 <FormLabel>Assignees:</FormLabel>
                 <Select
+                  // @ts-ignore
+                  options={users}
                   data-cy="assignees"
                   id="assignees"
                   value={assessment.assignees}

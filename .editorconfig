@@ -1,0 +1,11 @@
+# Is the top-most .editorconfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+max_line_length = 80
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = true

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 import {
   Container,
   Row,
@@ -22,13 +22,15 @@ import Image from "next/image";
 import Link from "next/link";
 import Select from "react-select";
 import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 interface Assessment {
   assessment_name: string;
   assessment_type: string;
   hand_out_week: Date;
   hand_in_week: Date;
-  module_id: number;
+  module: [];
   setter_id: number;
   assignees: [];
 }
@@ -45,7 +47,7 @@ export default function CreateAssessmentModuleLeaders() {
     assessment_type: "",
     hand_out_week: new Date(2024, 1, 26),
     hand_in_week: new Date(2024, 1, 26),
-    module_id: 0,
+    module: [],
     setter_id: setterId,
     assignees: [],
   });
@@ -100,8 +102,55 @@ export default function CreateAssessmentModuleLeaders() {
     setAssessment({ ...assessment, [fieldName]: selectedOption });
   };
 
+  // Handle form submission
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // Check if assignees or modules are empty
+    if (assessment.assignees.length === 0 || assessment.module.length === 0) {
+      toast.error(
+        "Please select at least one asignee or module for the assessment",
+      );
+      return; // Prevent form submission
+    }
+
+    // Get the selected assignees from the drop-down multi-selector
+    const selectedAssigneesValues = new Set(
+      assessment.assignees.map((assignee) => assignee["value"]),
+    );
+
+    // Create the assessment using the api endpoint
+    const response = await fetch("/api/module-leader/create-assessment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        assessment_name: assessment.assessment_name,
+        assessment_type: assessment.assessment_type,
+        hand_out_week: assessment.hand_in_week,
+        hand_in_week: assessment.hand_out_week,
+        // @ts-ignore
+        module_id: assessment.module.value,
+        setter_id: setterId,
+        assigneesList: Array.from(selectedAssigneesValues),
+      }),
+    });
+
+    // Alert the user if the api response failed
+    if (!response.ok) {
+      const errorData = await response.text();
+      toast.error(
+        "Assessment either already exists or incorrect details entered or database server failed, please try again",
+      );
+      throw new Error(errorData || "Failed to add assessment");
+    }
+
+    toast.success("Assessment added successfully!");
+    window.location.reload();
+  };
+
   return (
     <Container fluid className="p-4">
+      <ToastContainer />
       <Row className="justify-content-center">
         <Col md={8}>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -115,7 +164,7 @@ export default function CreateAssessmentModuleLeaders() {
             <h1 className="text-3xl">Create Assessment</h1>
           </div>
 
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <FormGroup controlId="assessmentName" style={{ marginTop: "1rem" }}>
               <FormLabel>Assessment title:</FormLabel>
               <FormControl
@@ -129,16 +178,16 @@ export default function CreateAssessmentModuleLeaders() {
               />
             </FormGroup>
 
-            <FormGroup controlId="module_id" style={{ marginTop: "1rem" }}>
+            <FormGroup controlId="module" style={{ marginTop: "1rem" }}>
               <Row>
                 <FormLabel>Module:</FormLabel>
                 <Select
                   // @ts-ignore
-                  onChange={(option) => handleSelectChange(option, "module_id")}
+                  onChange={(option) => handleSelectChange(option, "module")}
                   options={modules}
-                  data-cy="module_id"
-                  id="module_id"
-                  value={assessment.module_id}
+                  data-cy="module"
+                  id="module"
+                  value={assessment.module}
                   className="react-select-container"
                 />
               </Row>

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,23 +12,14 @@ datasource db {
 }
 
 model Users {
-  id          Int          @id @default(autoincrement())
-  email       String       @unique
-  name        String
-  password    String
-  assessments Assessment[] @relation("AssessmentsToUsers")
-  modules     Module[]     @relation("ModulesToUsers")
-  role        Role
-  set_assessments  Assessment[]
-}
-
-enum Role {
-  ps_team
-  module_leader
-  internal_moderator
-  panel_member
-  external_examiner
-  system_admin
+  id              Int          @id @default(autoincrement())
+  email           String       @unique
+  name            String
+  password        String
+  roles           Role[]
+  set_assessments Assessment[]
+  assessments     Assessment[] @relation("AssessmentsToUsers")
+  modules         Module[]     @relation("ModulesToUsers")
 }
 
 model Module {
@@ -48,13 +36,13 @@ model Assessment {
   assessment_type String
   hand_out_week   DateTime
   hand_in_week    DateTime
-  module          Module     @relation(fields: [module_id], references: [id])
   module_id       Int
   setter_id       Int?
+  module          Module     @relation(fields: [module_id], references: [id])
   setter          Users?     @relation(fields: [setter_id], references: [id])
-  assignees       Users[]    @relation("AssessmentsToUsers")
-  part            Part[]
   Response        Response[]
+  part            Part[]     @relation("AssessmentToPart")
+  assignees       Users[]    @relation("AssessmentsToUsers")
 }
 
 model Part {
@@ -62,7 +50,7 @@ model Part {
   part_title  String
   part_number Int
   Question    Question[]
-  Assessment  Assessment[]
+  Assessment  Assessment[] @relation("AssessmentToPart")
 }
 
 model Question {
@@ -78,9 +66,18 @@ model Response {
   value         String
   data_type     Data_type
   assessment_id Int
-  Assessment    Assessment @relation(fields: [assessment_id], references: [id])
   question_id   Int
+  Assessment    Assessment @relation(fields: [assessment_id], references: [id])
   Question      Question   @relation(fields: [question_id], references: [id])
+}
+
+enum Role {
+  ps_team
+  module_leader
+  internal_moderator
+  panel_member
+  external_examiner
+  system_admin
 }
 
 enum Data_type {

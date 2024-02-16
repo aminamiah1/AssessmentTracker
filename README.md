@@ -1,24 +1,65 @@
 # AssessmentTracking
 
+## Table of Contents
 
+- [Getting started](#getting-started)
+- [CI/CD](#cicd)
+  - [Important links](#important-links)
+- [Cypress](#cypress)
+- [Contributing](#contributing)
 
 ## Getting started
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Fill this in :)
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## CI/CD
 
-## Add your files
+The infrastructure for this project is as follows:
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- Docker
+- GitLab CI
+- OpenShift
 
-```
-cd existing_repo
-git remote add origin https://git.cardiff.ac.uk/c21063494/assessmenttracking.git
-git branch -M main
-git push -uf origin main
-```
+It's currently set up to build images on staging - `release-X` - and production - `main` - branches. These images are then built on OpenShift before being pushed to `registry.git.cf.ac.uk`. It wasn't a requirement to have these images hosted on the GitLab registry, it was just more of a preference to have the images in a central location.
+
+After the images are pushed to the registry, they're tagged accordingly:
+
+- Staging
+  - Gets pushed with an original tag referencing the branch name and commit short SHA
+  - Has another tag created called `latest`, to produce `staging:latest`
+- Production
+  - Gets pushed with an original tag referencing the time of the job build
+  - Has another tag created called `stable` if the tests pass
+
+After these images are pushed, the e2e and unit tests begin. After the tests are successful, GitLab CI triggers an OpenShift deployment to get the apps on a public-facing URL (through a VPN, but close enough).
+
+### Important links
+
+- [Husky in CI](https://typicode.github.io/husky/how-to.html#ci-server-and-docker)
+  - To prevent husky from installing in a CI or Docker environment
+
+## Cypress
+
+To start using the Cypress GUI, run:
+
+`npm run cy:open`
+
+### Useful Commands
+Others may be added as more tests are added.
+
+`npm run test:e2e`
+`npm run coverage:e2e`
+
+If you plan to add any different paths for whatever reason inside the cypress folder, be sure to update the .gitlab-ci.yml and npm run test:all script in package.json as well with the updated tests so that we know all tests are running.
+
+## Contributing
+
+This project uses ESLint, Editorconfig, and Prettier, in conjunction with Husky;
+
+- [ESLint](https://eslint.org/) for analysing issues with code, such as unused variables
+- [Editorconfig](https://editorconfig.org/) to let developer experiences with code formatting [stay consistent across many different IDEs](https://editorconfig.org/#pre-installed), regardless of formatters
+- [Prettier](https://prettier.io/) for formatting code - max line lengths, no tabs+spaces mixed, keyword spacing
+- [Husky](https://github.com/typicode/husky) to enable formatting to occur to all files before committing to git
 
 ## Integrate with your tools
 
@@ -42,41 +83,40 @@ Use the built-in continuous integration in GitLab.
 - [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
 - [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
 
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
 ## Name
+
 Choose a self-explaining name for your project.
 
 ## Description
+
 Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
 
 ## Badges
+
 On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
 
 ## Visuals
+
 Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
 
 ## Installation
+
 Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
 
 ## Usage
+
 Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
 ## Support
+
 Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
 
 ## Roadmap
+
 If you have ideas for releases in the future, it is a good idea to list them in the README.
 
 ## Contributing
+
 State if you are open to contributions and what your requirements are for accepting them.
 
 For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
@@ -84,10 +124,49 @@ For people who want to make changes to your project, it's helpful to have some d
 You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
 
 ## Authors and acknowledgment
+
 Show your appreciation to those who have contributed to the project.
 
 ## License
+
 For open source projects, say how it is licensed.
 
 ## Project status
+
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+## Prisma database set up 
+
+Create a new .env file in the cloned root repository and place the string DATABASE_URL="OUR_CLOUD_DB_STRING_PROVIDED_TO_YOU" and in your terminal from root, please execute the following "npx prisma generate" first to generate the schema and create ERD and then "npx prisma db pull" to pull latest database changes, you can then go ahead and execute "npm run dev" to launch the app in dev server and the data should load for you.
+
+## API Documentation
+
+## PS Team
+
+# Get All Users(GET)
+
+To get all users the ps team can use the api located at localhost:3000/api/ps-team/get-users to retrieve all users
+
+# Get User(GET)
+
+To get a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/get-user?id=0(example) and pass details in the request query
+
+# Edit User(POST)
+
+To edit a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/edit-users and pass details in the request body
+
+# Delete User(DELETE)
+
+To delete a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/delete-user and pass details in the request body
+
+# Create User(POST) 
+
+To create a user, the ps team can use the api located at localhost:3000/api/ps-team/get-user and pass details in the request body
+
+## Page Documentation
+
+## PS Team
+
+# User management dashboard
+
+Located at localhost:3000/ps-team/user-management, the ps team can add, edit, delete or view all users in a nicely-presented crud operation table with pop-up forms for editing and adding new users.

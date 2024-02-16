@@ -14,8 +14,6 @@ async function createResponse() {
       question_id: 2
     },
   });
-
-  console.log('Created reponse:', response);
 }
 
 createResponse()

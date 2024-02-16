@@ -1,31 +1,185 @@
-stages:          # List of stages for jobs, and their order of execution
+stages: # List of stages for jobs, and their order of execution
   - build
   - test
+  - prepare-deploy
   - deploy
 
-build-job:       # This job runs in the build stage, which runs first.
+variables:
+  PROD_TAG: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+  CI_COMMIT_LABEL: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+
+################
+# BUILD STAGES #
+################
+
+# This will only run for main and release branches
+# i.e. production and staging branches
+build-image:
   stage: build
+  only:
+    - main
+    - /^release-\d+$/
+  image: openshift/origin-cli
   script:
-    - echo "EXAMPLE Compiling the code..."
-    - echo "EXAMPLE Compile complete."
+    - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
+    - oc project $OPENSHIFT_PROJECT
+    - oc version
 
-unit-test-job:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
+    # Create a new build configuration for the application for production or staging,
+    # depending on what branch we're on:
+    # - If the branch is 'main', create a production build
+    # - If the branch is 'release-*', create a staging build
+    #
+    # The build configuration is created from a template file, and the template file
+    # is parameterized with the commit label (descriptive) and SHA (unique identifier).
+    #
+    # Templating has been used because we want to keep a history of images with different
+    # tags, and this templating allows us to create a new build configuration for each
+    # new commit, and then delete it after the build is complete.
+    #
+    # This job will follow along with the OpenShift build, and fail if the build fails.
+    - >
+      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+        echo "Building production...";
+        oc process build-config-prod \
+          -p CI_COMMIT_LABEL=$PROD_TAG \
+          -p CI_DATABASE_URL=$DATABASE_URL \
+          -p CI_NEXTAUTH_URL=$NEXTAUTH_URL \
+          -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
+          -l name=build-$CI_COMMIT_SHORT_SHA | oc create -f -;
+        oc start-build assessmenttracking-prod-generated-$PROD_TAG --follow --wait;
+        oc delete buildconfig assessmenttracking-prod-generated-$PROD_TAG
+
+      elif [[ "$CI_COMMIT_REF_NAME" == "release"* ]]; then
+        echo "Building staging image from branch $CI_COMMIT_REF_NAME...";
+        oc process build-config-staging \
+          -p CI_COMMIT_LABEL=$CI_COMMIT_LABEL \
+          -p CI_COMMIT_SHA=$CI_COMMIT_SHA \
+          -p CI_DATABASE_URL=$DATABASE_URL \
+          -p CI_NEXTAUTH_URL=$NEXTAUTH_URL \
+          -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
+          -l name=build-$CI_COMMIT_LABEL | oc create -f -;
+        oc start-build assessmenttracking-staging-generated-$CI_COMMIT_LABEL --follow --wait;
+        oc delete buildconfig assessmenttracking-staging-generated-$CI_COMMIT_LABEL
+      fi
+
+# This will run for all other branches
+build-dev:
+  stage: build
+  except:
+    - main
+    - /^release-\d+$/
+  image: node:20.11.0-alpine3.18
   script:
-    - echo "EXAMPLE Running unit tests... This will take about 10 seconds."
-    - sleep 10
-    - echo "EXAMPLE Code coverage is 90%"
+    - echo $PROD_TAG
+    - echo $CI_COMMIT_LABEL
+    - echo "Building development bundle..."
+    - npm i
+    - npm run build
+  artifacts:
+    paths:
+      - .next/
+    when: on_success
+    expire_in: "30 days"
 
-lint-test-job:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
+###############
+# TEST STAGES #
+###############
+
+staging-test:
+  stage: test
+  only:
+    - /^release-\d+$/
+  image: cypress/base:20.11.0
+  services:
+    - $REGISTRY_HOST/$REGISTRY_PATH/staging:$CI_COMMIT_LABEL
+  script:
+    - echo "Hello from staging testing!"
+
+prod-test:
+  stage: test
+  only:
+    - main
+  image: cypress/base:20.11.0
+  services:
+    - $REGISTRY_HOST/$REGISTRY_PATH/prod:$PROD_TAG
+  script:
+    - echo "Hello from prod testing!"
+
+dev-test:
+  stage: test
+  except:
+    - main
+    - /^release-\d+$/
+  dependencies:
+    - build-dev
+  image: cypress/base:20.11.0
+  script:
+    - npm i
+    - npm start &
+    - npm run test:e2e
+
+lint-test-job:
+  stage: test
   script:
     - echo "EXAMPLE Linting code... This will take about 10 seconds."
-    - sleep 10
     - echo "EXAMPLE No lint issues found."
 
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  # environment: production
+##########################
+# DEPLOYMENT PREPARATION #
+##########################
+
+# Tag the images just created as the "latest" or "stable"
+# "latest" for release branches, "stable" for main branch
+update-prod-tag:
+  stage: prepare-deploy
+  only:
+    - main
+  image: alpine:3.19
+  needs:
+    - prod-test
   script:
-    - echo "EXAMPLE Deploying application..."
-    - echo "EXAMPLE Application successfully deployed."
+    - apk add skopeo
+    - skopeo login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD --tls-verify=false -v $REGISTRY_HOST
+    - >
+      echo "Updating tags for production...";
+      skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:$PROD_TAG docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:stable;
+
+update-staging-tag:
+  stage: prepare-deploy
+  only:
+    - /^release-\d+$/
+  image: alpine:3.19
+  needs:
+    - staging-test
+  script:
+    - apk add skopeo
+    - skopeo login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD --tls-verify=false -v $REGISTRY_HOST
+    - >
+      echo "Updating tags for staging...";
+      skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:$CI_COMMIT_LABEL docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:latest;
+
+################
+# DEPLOY STAGE #
+################
+
+deploy-openshift:
+  stage: deploy
+  only:
+    - main
+    - /^release-\d+$/
+  image: openshift/origin-cli
+  script:
+    - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
+    - oc project $OPENSHIFT_PROJECT
+
+    # Check if the current branch is 'main'
+    - >
+      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+        echo "Deploying production...";
+        oc rollout latest dc/assessment-tracker-prod;
+
+      elif [[ "$CI_COMMIT_REF_NAME" == "release"* ]]; then
+        echo "Deploying staging...";
+        oc rollout latest dc/assessment-tracker-staging;
+      fi

@@ -23,12 +23,17 @@ export default function ManageAssessmentsModuleLeaders() {
         style={{ height: "70vh" }}
       >
         <Col xs="auto" className="mb-2">
-          <Button variant="dark" style={{ height: "20rem", width: "20rem" }}>
-            <div>
-              <i className="bi bi-newspaper" style={{ fontSize: "10rem" }}></i>
-            </div>
-            <div>Create Assessment</div>
-          </Button>
+          <Link href="/module-leader/assessment-management/create-assessment">
+            <Button variant="dark" style={{ height: "20rem", width: "20rem" }}>
+              <div>
+                <i
+                  className="bi bi-newspaper"
+                  style={{ fontSize: "10rem" }}
+                ></i>
+              </div>
+              <div>Create Assessment</div>
+            </Button>
+          </Link>
         </Col>
         <Col xs="auto" className="mb-2">
           <Link href="/module-leader/assessment-management/view-assessments">

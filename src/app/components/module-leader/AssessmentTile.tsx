@@ -108,30 +108,36 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
               style={{ marginTop: "1rem", marginBottom: "1rem" }}
             >
               <h6>Assignees</h6>
-              <div>
-                {assessment.assignees.map((assignee: any) => (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      backgroundColor: "lightgray",
-                      padding: "0.3rem",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <Image
-                      src={profilePic}
-                      alt="Trash Can"
+              {assessment.assignees.length > 0 ? (
+                // If there are assignees, render them
+                <div>
+                  {assessment.assignees.map((assignee: any) => (
+                    <div
                       style={{
-                        height: "2rem",
-                        width: "2rem",
-                        marginRight: "1rem",
+                        display: "flex",
+                        alignItems: "center",
+                        backgroundColor: "lightgray",
+                        padding: "0.3rem",
+                        marginBottom: "1rem",
                       }}
-                    />
-                    <h6 key={assignee.id}>{assignee.name}</h6>
-                  </div>
-                ))}
-              </div>
+                    >
+                      <Image
+                        src={profilePic}
+                        alt="Trash Can"
+                        style={{
+                          height: "2rem",
+                          width: "2rem",
+                          marginRight: "1rem",
+                        }}
+                      />
+                      <h6 key={assignee.id}>{assignee.name}</h6>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                // If there are no assignees, display a message
+                <p style={{ textAlign: "center" }}>No assignees assigned</p>
+              )}
             </Col>
           </Row>
         </Card.Body>

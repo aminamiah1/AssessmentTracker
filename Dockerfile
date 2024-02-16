@@ -17,7 +17,10 @@ RUN npm install
 # Copy the rest of the application code to the container
 COPY . .
 
-# prisma connection
+# Include fix from this issue:
+# https://github.com/keonik/prisma-erd-generator/issues/145
+ENV DISABLE_ERD true
+# Generate the prisma client with the prisma schema (to allow imports to succeed)
 RUN npx prisma generate
 
 # Build the Next.js application

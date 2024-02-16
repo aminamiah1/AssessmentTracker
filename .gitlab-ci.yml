@@ -44,7 +44,7 @@ build-image:
         oc process build-config-prod \
           -p CI_COMMIT_LABEL=$PROD_TAG \
           -p CI_DATABASE_URL=$DATABASE_URL \
-          -p CI_NEXTAUTH_URL=$NEXTAUTH_URL \
+          -p CI_NEXTAUTH_URL=$NEXTAUTHPROD_URL \
           -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
           -l name=build-$CI_COMMIT_SHORT_SHA | oc create -f -;
         oc start-build assessmenttracking-prod-generated-$PROD_TAG --follow --wait;
@@ -56,7 +56,7 @@ build-image:
           -p CI_COMMIT_LABEL=$CI_COMMIT_LABEL \
           -p CI_COMMIT_SHA=$CI_COMMIT_SHA \
           -p CI_DATABASE_URL=$DATABASE_URL \
-          -p CI_NEXTAUTH_URL=$NEXTAUTH_URL \
+          -p CI_NEXTAUTH_URL=$NEXTAUTHSTAGING_URL \
           -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
           -l name=build-$CI_COMMIT_LABEL | oc create -f -;
         oc start-build assessmenttracking-staging-generated-$CI_COMMIT_LABEL --follow --wait;

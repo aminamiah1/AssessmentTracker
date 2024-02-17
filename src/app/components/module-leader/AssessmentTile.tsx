@@ -8,6 +8,7 @@ import editIcon from "./assets/editIcon.png";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
 
 const AssessmentTile = ({ assessment }: { assessment: any }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -65,8 +66,11 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
             >
               <Card.Title>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <a href="">{assessment.assessment_name}</a>
-                  <button>
+                  <Link
+                    href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <a>{assessment.assessment_name}</a>
                     <Image
                       className="object-cover"
                       src={editIcon}
@@ -77,7 +81,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
                         marginLeft: "1rem",
                       }}
                     />
-                  </button>
+                  </Link>
                 </div>
               </Card.Title>
               <Card.Text>

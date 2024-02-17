@@ -24,8 +24,10 @@ import Select from "react-select";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface Assessment {
+  id: number;
   assessment_name: string;
   assessment_type: string;
   hand_out_week: Date;
@@ -38,11 +40,27 @@ interface Assessment {
 export default function CreateAssessmentModuleLeaders() {
   const [setterId, setSetterId] = useState(1); // Module leader 1 for now
 
-  const [modules, setModules] = useState();
+  const [isEdit, setIsEdit] = useState(false); //Check if the form is in edit mode
 
-  const [users, setUsers] = useState();
+  const [loading, setLoading] = useState(true); // Initialize loading state to true
+
+  const [modules, setModules] = useState(); // Variable to hold all modules in the system
+
+  const [moduleId, setModuleId] = useState(null); // Variable to hold existing assessment module ID
+
+  const [users, setUsers] = useState(); // Variable to hold all users in the system
+
+  const router = useRouter();
+
+  const [assignees, setAssignees] = useState(); // Variable to hold all assignees of an existing assessment
+
+  const searchParams = useSearchParams();
+
+  // @ts-ignore
+  const params = searchParams.get("id");
 
   const [assessment, setAssessment] = useState<Assessment>({
+    id: 0,
     assessment_name: "",
     assessment_type: "",
     hand_out_week: new Date(2024, 1, 26),
@@ -66,13 +84,10 @@ export default function CreateAssessmentModuleLeaders() {
       setModules(processedModules);
     };
 
-    fetchModules();
-
     const fetchAssignees = async () => {
       // Fetch all users to assign
       // Getting response as module leader 1 while waiting for login feature
       const response = await axios.get(`/api/module-leader/get-users`);
-      console.log(response.data);
       const processedUsers = response.data.map((user: any) => ({
         value: user.id,
         label: user.name + " ● Roles: " + user.roles,
@@ -80,11 +95,96 @@ export default function CreateAssessmentModuleLeaders() {
       setUsers(processedUsers);
     };
 
-    fetchAssignees();
+    // Fetch the assessment to be edited data
+    const fetchAssessmentData = async (params: any) => {
+      // Fetch the assessment with the id provided in the search param
+      fetch(`/api/module-leader/get-assessment?id=${params}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            // Parse the JSON response and pass user details
+            return response.json();
+          } else {
+            // Handle errors with toast message to inform user
+            toast.error("Error getting user");
+            throw new Error("Error getting user");
+          }
+        })
+        .then((data) => {
+          // Set assessment to edit state with received data
+          const {
+            id,
+            assessment_name,
+            assessment_type,
+            hand_out_week,
+            hand_in_week,
+            setterId,
+          } = data;
+          setAssessment((prevState) => ({
+            ...prevState,
+            id,
+            assessment_name,
+            assessment_type,
+            hand_out_week,
+            hand_in_week,
+            setterId,
+          }));
+          setModuleId(data.module_id);
+          setAssignees(data.assignees);
+        })
+        .catch((error) => {
+          // Handle network errors with toast to inform user
+          toast.error("Network error please try again");
+        });
+    };
+
+    //Check if there are params and change to edit form, if not then continue with create form
+    if (params) {
+      setIsEdit(true);
+      fetchAssignees();
+      fetchModules();
+      fetchAssessmentData(params);
+    } else {
+      fetchAssignees();
+      fetchModules();
+    }
+
+    setLoading(false); // Set loading to false once data fetching is complete
   }, []);
 
+  useEffect(() => {
+    // This effect runs when the modules and assignees state is updated on editing assessment
+    if (modules && moduleId) {
+      // Find the default module with moduleId and set it as the default value
+      // @ts-ignore
+      const defaultModule = modules.find((module) => module.value === moduleId);
+      if (defaultModule) {
+        setAssessment((prevState) => ({
+          ...prevState,
+          module: defaultModule,
+        }));
+      }
+
+      if (assignees) {
+        // Find the default assignees for the assessment and select them in the drop-down selector
+        // @ts-ignore
+        const defaultAssignees = assignees.map((user: any) => ({
+          value: user.id,
+          label: user.name + " ● Roles: " + user.roles,
+        }));
+        setAssessment((prevState) => ({
+          ...prevState,
+          assignees: defaultAssignees,
+        }));
+      }
+    }
+  }, [modules, users, assignees, moduleId]); // Runs if editing the assessment
+
   const handleTextChange = (event: any) => {
-    console.log(assessment);
     setAssessment({
       ...assessment,
       [event.target.name]: event.target.value,
@@ -119,156 +219,206 @@ export default function CreateAssessmentModuleLeaders() {
       assessment.assignees.map((assignee) => assignee["value"]),
     );
 
-    // Create the assessment using the api endpoint
-    const response = await fetch("/api/module-leader/create-assessment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        assessment_name: assessment.assessment_name,
-        assessment_type: assessment.assessment_type,
-        hand_out_week: assessment.hand_in_week,
-        hand_in_week: assessment.hand_out_week,
-        // @ts-ignore
-        module_id: assessment.module.value,
-        setter_id: setterId,
-        assigneesList: Array.from(selectedAssigneesValues),
-      }),
-    });
+    if (isEdit) {
+      // Update the assessment using the api endpoint
+      const response = await fetch("/api/module-leader/edit-assessment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: assessment.id,
+          assessment_name: assessment.assessment_name,
+          assessment_type: assessment.assessment_type,
+          hand_out_week: assessment.hand_out_week,
+          hand_in_week: assessment.hand_in_week,
+          // @ts-ignore
+          module_id: assessment.module.value,
+          setter_id: setterId,
+          assigneesList: Array.from(selectedAssigneesValues),
+        }),
+      });
 
-    // Alert the user if the api response failed
-    if (!response.ok) {
-      const errorData = await response.text();
-      toast.error(
-        "Assessment either already exists or incorrect details entered or database server failed, please try again",
-      );
-      throw new Error(errorData || "Failed to add assessment");
+      // Alert the user if the api response failed
+      if (!response.ok) {
+        const errorData = await response.text();
+        toast.error(
+          "Assessment either already exists or incorrect details entered or database server failed, please try again",
+        );
+        throw new Error(errorData || "Failed to add assessment");
+      }
+
+      toast.success("Assessment edited successfully!");
+      router.push("/module-leader/assessment-management/view-assessments");
+    } else {
+      // Create the assessment using the api endpoint
+      const response = await fetch("/api/module-leader/create-assessment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          assessment_name: assessment.assessment_name,
+          assessment_type: assessment.assessment_type,
+          hand_out_week: assessment.hand_out_week,
+          hand_in_week: assessment.hand_in_week,
+          // @ts-ignore
+          module_id: assessment.module.value,
+          setter_id: setterId,
+          assigneesList: Array.from(selectedAssigneesValues),
+        }),
+      });
+
+      // Alert the user if the api response failed
+      if (!response.ok) {
+        const errorData = await response.text();
+        toast.error(
+          "Assessment either already exists or incorrect details entered or database server failed, please try again",
+        );
+        throw new Error(errorData || "Failed to add assessment");
+      }
+
+      toast.success("Assessment added successfully!");
+      router.push("/module-leader/assessment-management/view-assessments");
     }
-
-    toast.success("Assessment added successfully!");
-    window.location.reload();
   };
 
   return (
     <Container fluid className="p-4">
       <ToastContainer />
-      <Row className="justify-content-center">
-        <Col md={8}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <Link href={"/module-leader/assessment-management"}>
-              <Image
-                src={arrowReturn}
-                alt="return arrow"
-                style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
-              />
-            </Link>
-            <h1 className="text-3xl">Create Assessment</h1>
-          </div>
-
-          <Form onSubmit={handleSubmit}>
-            <FormGroup controlId="assessmentName" style={{ marginTop: "1rem" }}>
-              <FormLabel>Assessment title:</FormLabel>
-              <FormControl
-                type="text"
-                placeholder="Enter assessment name"
-                value={assessment.assessment_name}
-                onChange={handleTextChange}
-                name="assessment_name"
-                required
-                className="form-control shadow-none rounded-0"
-              />
-            </FormGroup>
-
-            <FormGroup controlId="module" style={{ marginTop: "1rem" }}>
-              <Row>
-                <FormLabel>Module:</FormLabel>
-                <Select
-                  // @ts-ignore
-                  onChange={(option) => handleSelectChange(option, "module")}
-                  options={modules}
-                  data-cy="module"
-                  id="module"
-                  value={assessment.module}
-                  className="react-select-container"
+      {loading ? ( // Conditionally render loading indicator
+        <div>Loading form...</div>
+      ) : (
+        <Row className="justify-content-center">
+          <Col md={8}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Link href={"/module-leader/assessment-management"}>
+                <Image
+                  src={arrowReturn}
+                  alt="return arrow"
+                  style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
                 />
-              </Row>
-            </FormGroup>
+              </Link>
+              <h1 className="text-3xl">
+                {" "}
+                {isEdit ? "Edit Assessment" : "Create Assessment"}
+              </h1>
+            </div>
 
-            <FormGroup controlId="assessmentType" style={{ marginTop: "1rem" }}>
-              <FormLabel>Assessment type: </FormLabel>
-              <FormControl
-                type="text"
-                placeholder="Enter assessment type..."
-                name="assessment_type"
-                value={assessment.assessment_type}
-                onChange={handleTextChange}
-                required
-                className="form-control shadow-none rounded-0"
-              />
-            </FormGroup>
+            <Form onSubmit={handleSubmit}>
+              <FormGroup
+                controlId="assessmentName"
+                style={{ marginTop: "1rem" }}
+              >
+                <FormLabel>Assessment title:</FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="Enter assessment name"
+                  value={assessment.assessment_name}
+                  onChange={handleTextChange}
+                  name="assessment_name"
+                  required
+                  className="form-control shadow-none rounded-0"
+                />
+              </FormGroup>
 
-            <FormGroup controlId="handOutWeek" style={{ marginTop: "1rem" }}>
-              <Row>
+              <FormGroup controlId="module" style={{ marginTop: "1rem" }}>
                 <Row>
-                  <FormLabel>Hand out week: </FormLabel>
-                </Row>
-                <Row>
-                  <DatePicker
-                    selected={assessment.hand_out_week}
-                    onChange={(date) => handleDateChange(date, "hand_out_week")}
-                    dateFormat="yyyy-MM-dd"
-                    placeholderText="Select date"
-                    required
-                    className="form-control shadow-none rounded-0"
+                  <FormLabel>Module:</FormLabel>
+                  <Select
+                    // @ts-ignore
+                    onChange={(option) => handleSelectChange(option, "module")}
+                    options={modules}
+                    data-cy="module"
+                    id="module"
+                    value={assessment.module}
+                    className="react-select-container"
                   />
                 </Row>
-              </Row>
-            </FormGroup>
+              </FormGroup>
 
-            <FormGroup controlId="handInWeek" style={{ marginTop: "1rem" }}>
-              <Row>
+              <FormGroup
+                controlId="assessmentType"
+                style={{ marginTop: "1rem" }}
+              >
+                <FormLabel>Assessment type: </FormLabel>
+                <FormControl
+                  type="text"
+                  placeholder="Enter assessment type..."
+                  name="assessment_type"
+                  value={assessment.assessment_type}
+                  onChange={handleTextChange}
+                  required
+                  className="form-control shadow-none rounded-0"
+                />
+              </FormGroup>
+
+              <FormGroup controlId="handOutWeek" style={{ marginTop: "1rem" }}>
                 <Row>
-                  <FormLabel>Hand in week: </FormLabel>
+                  <Row>
+                    <FormLabel>Hand out week: </FormLabel>
+                  </Row>
+                  <Row>
+                    <DatePicker
+                      selected={assessment.hand_out_week}
+                      onChange={(date) =>
+                        handleDateChange(date, "hand_out_week")
+                      }
+                      dateFormat="yyyy-MM-dd"
+                      placeholderText="Select date"
+                      required
+                      className="form-control shadow-none rounded-0"
+                    />
+                  </Row>
                 </Row>
+              </FormGroup>
+
+              <FormGroup controlId="handInWeek" style={{ marginTop: "1rem" }}>
                 <Row>
-                  <DatePicker
-                    selected={assessment.hand_in_week}
-                    onChange={(date) => handleDateChange(date, "hand_in_week")}
-                    dateFormat="yyyy-MM-dd"
-                    placeholderText="Select date"
-                    required
-                    className="form-control shadow-none rounded-0"
+                  <Row>
+                    <FormLabel>Hand in week: </FormLabel>
+                  </Row>
+                  <Row>
+                    <DatePicker
+                      selected={assessment.hand_in_week}
+                      onChange={(date) =>
+                        handleDateChange(date, "hand_in_week")
+                      }
+                      dateFormat="yyyy-MM-dd"
+                      placeholderText="Select date"
+                      required
+                      className="form-control shadow-none rounded-0"
+                    />
+                  </Row>
+                </Row>
+              </FormGroup>
+
+              <FormGroup controlId="assignees" style={{ marginTop: "1rem" }}>
+                <Row>
+                  <FormLabel>Assignees:</FormLabel>
+                  <Select
+                    // @ts-ignore
+                    onChange={(option) =>
+                      handleSelectChange(option, "assignees")
+                    }
+                    options={users}
+                    data-cy="assignees"
+                    id="assignees"
+                    value={assessment.assignees}
+                    isMulti
+                    className="react-select-container"
                   />
                 </Row>
-              </Row>
-            </FormGroup>
+              </FormGroup>
 
-            <FormGroup controlId="assignees" style={{ marginTop: "1rem" }}>
-              <Row>
-                <FormLabel>Assignees:</FormLabel>
-                <Select
-                  // @ts-ignore
-                  onChange={(option) => handleSelectChange(option, "assignees")}
-                  options={users}
-                  data-cy="assignees"
-                  id="assignees"
-                  value={assessment.assignees}
-                  isMulti
-                  className="react-select-container"
-                />
-              </Row>
-            </FormGroup>
-
-            <Button
-              variant="primary"
-              type="submit"
-              className="btn btn-primary rounded-0"
-              style={{ marginTop: "1rem" }}
-            >
-              Create Assessment
-            </Button>
-          </Form>
-        </Col>
-      </Row>
+              <Button
+                variant="primary"
+                type="submit"
+                className="btn btn-primary rounded-0"
+                style={{ marginTop: "1rem" }}
+              >
+                {isEdit ? "Edit Assessment" : "Create Assessment"}
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      )}
     </Container>
   );
 }

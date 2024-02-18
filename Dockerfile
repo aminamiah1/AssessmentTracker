@@ -1,6 +1,10 @@
 # Use the official Node.js image as the base image
 FROM node:20.11.0-alpine3.18
 
+ENV DATABASE_URL ${DATABASE_URL}
+ENV NEXTAUTH_URL ${NEXTAUTH_URL}
+ENV NEXTAUTH_SECRET ${NEXTAUTH_SECRET}
+
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -16,6 +20,12 @@ RUN npm install
 
 # Copy the rest of the application code to the container
 COPY . .
+
+# Include fix from this issue:
+# https://github.com/keonik/prisma-erd-generator/issues/145
+ENV DISABLE_ERD true
+# Generate the prisma client with the prisma schema (to allow imports to succeed)
+RUN npx prisma generate
 
 # Build the Next.js application
 RUN npm run build

@@ -1,7 +1,7 @@
 describe("Add User Form", () => {
   // Visit the user management page
   beforeEach(() => {
-    cy.visit("http://localhost:3000/ps-team/user-management");
+    cy.visit("/ps-team/user-management");
   });
 
   // Add a new user

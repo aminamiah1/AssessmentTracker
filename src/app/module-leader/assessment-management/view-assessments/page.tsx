@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -24,6 +24,7 @@ interface Assessment {
 export default function ViewAssessmentsModuleLeaders() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [setterId, setSetterId] = useState(1); // Module leader 1 for now
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchAssessments = async () => {
@@ -41,6 +42,18 @@ export default function ViewAssessmentsModuleLeaders() {
     fetchAssessments();
   }, []);
 
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredAssessments = assessments.filter(
+    (assessment) =>
+      assessment.assessment_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      assessment.module_name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   return (
     <Container fluid className="p-4">
       <ToastContainer />
@@ -57,15 +70,29 @@ export default function ViewAssessmentsModuleLeaders() {
         </div>
       </Col>
       <Row>
-        {assessments.length > 0 ? (
+        <Form.Group
+          as={Col}
+          controlId="searchBar"
+          style={{ marginBottom: "1rem" }}
+        >
+          <Form.Control
+            type="text"
+            placeholder="Search by assessment name or module name"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </Form.Group>
+      </Row>
+      <Row>
+        {filteredAssessments.length > 0 ? (
           <Row>
-            {assessments.map((assessment) => (
+            {filteredAssessments.map((assessment) => (
               <AssessmentTile key={assessment.id} assessment={assessment} />
             ))}
           </Row>
         ) : (
           <div className="text-center">
-            You don't have any assessments yet...
+            No assessments found matching the search criteria...
           </div>
         )}
       </Row>

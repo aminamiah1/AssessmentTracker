@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       }, // Select desired assignee field
     });
 
-    // Ensure user exists
+    // Ensure assessment exists
     if (!existingAssessment) {
       return new NextResponse(
         JSON.stringify({ message: "Assessment not found" }),
@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Take off the existing connected assignees to the assessment
     const takeOffExistingAssignees = await prisma.assessment.update({
       where: { id },
       data: {
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Update user data
+    // Update assessment data
     const updatedAssessment = await prisma.assessment.update({
       where: { id },
       data: {
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
       }, // Update desired fields
     });
 
-    // Return updated user data
+    // Return updated assessment data
     return new NextResponse(JSON.stringify(updatedAssessment), { status: 200 });
   } catch (error) {
     console.error(error);

@@ -22,9 +22,9 @@ interface Assessment {
 }
 
 export default function ViewAssessmentsModuleLeaders() {
-  const [assessments, setAssessments] = useState<Assessment[]>([]);
-  const [setterId, setSetterId] = useState(1); // Module leader 1 for now
-  const [searchTerm, setSearchTerm] = useState("");
+  const [assessments, setAssessments] = useState<Assessment[]>([]); // Variable to hold an array of assessment object types
+  const [setterId, setSetterId] = useState(1); // Module leader 1 for now until personalized
+  const [searchTerm, setSearchTerm] = useState(""); // Set the search term to blank for default
 
   useEffect(() => {
     const fetchAssessments = async () => {
@@ -37,7 +37,6 @@ export default function ViewAssessmentsModuleLeaders() {
         (a: any, b: any) => a.id - b.id,
       );
       setAssessments(sortedAssessments);
-      console.log(sortedAssessments);
     };
     fetchAssessments();
   }, []);
@@ -46,6 +45,7 @@ export default function ViewAssessmentsModuleLeaders() {
     setSearchTerm(event.target.value);
   };
 
+  // Filter assessments when user searches by assessment name or module name assessment is tied to.
   const filteredAssessments = assessments.filter(
     (assessment) =>
       assessment.assessment_name

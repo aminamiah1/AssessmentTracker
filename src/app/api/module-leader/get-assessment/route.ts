@@ -37,7 +37,6 @@ export async function GET(request: NextRequest) {
 
     // Check if assessment was found and return details
     if (assessment) {
-      console.log(assessment);
       return Response.json(assessment);
     } else {
       console.error("Error retrieving assessment");

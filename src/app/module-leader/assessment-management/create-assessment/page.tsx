@@ -1,3 +1,4 @@
+// Import used libraries
 "use client";
 import React, { useState, useEffect, FormEvent } from "react";
 import {
@@ -26,6 +27,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
 
+// Interface for the assessment model
 interface Assessment {
   id: number;
   assessment_name: string;
@@ -38,7 +40,7 @@ interface Assessment {
 }
 
 export default function CreateAssessmentModuleLeaders() {
-  const [setterId, setSetterId] = useState(1); // Module leader 1 for now
+  const [setterId, setSetterId] = useState(1); // Module leader 1 for now need to personalize
 
   const [isEdit, setIsEdit] = useState(false); //Check if the form is in edit mode
 
@@ -50,15 +52,16 @@ export default function CreateAssessmentModuleLeaders() {
 
   const [users, setUsers] = useState(); // Variable to hold all users in the system
 
-  const router = useRouter();
+  const router = useRouter(); // Create next router object
 
   const [assignees, setAssignees] = useState(); // Variable to hold all assignees of an existing assessment
 
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); // Create search params object
 
   // @ts-ignore
-  const params = searchParams.get("id"); // Get the id of the assessment to edit from the search params
+  const params = searchParams.get("id"); // Get the id of the assessment to edit from the search params object
 
+  // Default assessment object used on create form mode as default
   const [assessment, setAssessment] = useState<Assessment>({
     id: 0,
     assessment_name: "",
@@ -184,6 +187,7 @@ export default function CreateAssessmentModuleLeaders() {
     }
   }, [modules, users, assignees, moduleId]); // Runs if editing the assessment
 
+  // Handle text changes for the form
   const handleTextChange = (event: any) => {
     setAssessment({
       ...assessment,
@@ -191,6 +195,7 @@ export default function CreateAssessmentModuleLeaders() {
     });
   };
 
+  // Handle date changes for the form
   const handleDateChange = (date: any, field: any) => {
     setAssessment({
       ...assessment,
@@ -198,6 +203,7 @@ export default function CreateAssessmentModuleLeaders() {
     });
   };
 
+  // Handle select drop-down changes for the form
   const handleSelectChange = (selectedOption: any, fieldName: any) => {
     setAssessment({ ...assessment, [fieldName]: selectedOption });
   };
@@ -211,7 +217,7 @@ export default function CreateAssessmentModuleLeaders() {
       toast.error(
         "Please select at least one asignee or module for the assessment",
       );
-      return; // Prevent form submission
+      return; // Then prevent form submission
     }
 
     // Get the selected assignees from the drop-down multi-selector
@@ -282,7 +288,7 @@ export default function CreateAssessmentModuleLeaders() {
   return (
     <Container fluid className="p-4">
       <ToastContainer />
-      {loading ? ( // Conditionally render loading indicator
+      {loading ? ( // Conditionally render loading indicator or show the create assessment form
         <div>Loading form...</div>
       ) : (
         <Row className="justify-content-center">

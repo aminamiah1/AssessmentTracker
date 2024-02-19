@@ -32,8 +32,6 @@ export async function POST(request: NextRequest) {
 
     const assigneesIds = assigneesList.map((userId: any) => ({ id: userId }));
 
-    console.log("module id" + module_id);
-
     const newAssessment = await prisma.assessment.create({
       data: {
         assessment_name,

@@ -57,7 +57,7 @@ export default function CreateAssessmentModuleLeaders() {
   const searchParams = useSearchParams();
 
   // @ts-ignore
-  const params = searchParams.get("id");
+  const params = searchParams.get("id"); // Get the id of the assessment to edit from the search params
 
   const [assessment, setAssessment] = useState<Assessment>({
     id: 0,
@@ -291,6 +291,7 @@ export default function CreateAssessmentModuleLeaders() {
               <Link href={"/module-leader/assessment-management"}>
                 <Image
                   src={arrowReturn}
+                  className="arrowReturn"
                   alt="return arrow"
                   style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
                 />
@@ -312,6 +313,7 @@ export default function CreateAssessmentModuleLeaders() {
                   placeholder="Enter assessment name"
                   value={assessment.assessment_name}
                   onChange={handleTextChange}
+                  data-cy="name"
                   name="assessment_name"
                   required
                   className="form-control shadow-none rounded-0"
@@ -342,6 +344,7 @@ export default function CreateAssessmentModuleLeaders() {
                   type="text"
                   placeholder="Enter assessment type..."
                   name="assessment_type"
+                  data-cy="type"
                   value={assessment.assessment_type}
                   onChange={handleTextChange}
                   required
@@ -364,6 +367,7 @@ export default function CreateAssessmentModuleLeaders() {
                       placeholderText="Select date"
                       required
                       className="form-control shadow-none rounded-0"
+                      data-cy="handOutDate"
                     />
                   </Row>
                 </Row>
@@ -384,6 +388,7 @@ export default function CreateAssessmentModuleLeaders() {
                       placeholderText="Select date"
                       required
                       className="form-control shadow-none rounded-0"
+                      data-cy="handInDate"
                     />
                   </Row>
                 </Row>
@@ -409,6 +414,7 @@ export default function CreateAssessmentModuleLeaders() {
 
               <Button
                 variant="primary"
+                data-cy="CreateAssessment"
                 type="submit"
                 className="btn btn-primary rounded-0"
                 style={{ marginTop: "1rem" }}

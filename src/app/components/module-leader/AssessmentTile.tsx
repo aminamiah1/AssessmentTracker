@@ -72,7 +72,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
                   >
                     <a>{assessment.assessment_name}</a>
                     <Image
-                      className="object-cover"
+                      className="object-cover editAssessment"
                       src={editIcon}
                       alt="edit icon"
                       style={{

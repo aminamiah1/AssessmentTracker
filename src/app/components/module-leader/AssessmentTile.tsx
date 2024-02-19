@@ -117,6 +117,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
                 <div>
                   {assessment.assignees.map((assignee: any) => (
                     <div
+                      key={assignee.id}
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -153,7 +154,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
         </Modal.Header>
         <Modal.Body>
           Are you sure you want to delete the assessment "
-          {assessment.assessment_name}"?
+          {assessment.assessment_name.replace(/"/g, "&quot;")}"?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>

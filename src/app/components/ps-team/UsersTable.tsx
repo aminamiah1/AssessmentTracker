@@ -88,7 +88,7 @@ const UsersTable: React.FC = () => {
 
   const handleDelete = async (user: any) => {
     try {
-      setSearch(""); // Reset search to show all users
+      setSearch(" "); // Reset search to show all users
 
       var id = user.id;
 
@@ -102,6 +102,7 @@ const UsersTable: React.FC = () => {
         .then((response) => {
           if (response.ok) {
             // Handle successful deletion and update users array to re-set table
+            setSearch(""); //Reset search
             setUsers(users.filter((u) => u.id !== id));
           } else {
             // Handle errors with toast message to inform user
@@ -115,7 +116,7 @@ const UsersTable: React.FC = () => {
 
       // Success message with toast to add
       toast.success("Delete user successful!");
-      setRefetch(refetch + 1);
+      setRefetch(refetch + 1); //Refetch all user details
     } catch (error) {
       // Display an error message to the user with toast message
       toast.error("Error deleting user");

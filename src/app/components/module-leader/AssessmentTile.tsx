@@ -153,8 +153,8 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
           <Modal.Title>Delete Assessment?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete the assessment "
-          {assessment.assessment_name.replace(/"/g, "&quot;")}"?
+          Are you sure you want to delete the assessment
+          {" " + assessment.assessment_name}?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>

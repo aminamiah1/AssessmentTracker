@@ -37,6 +37,7 @@ export async function editModuleName(formData: FormData) {
   }
 
   revalidatePath("/admin/module-list");
+  redirect("/admin/module-list");
 }
 
 export async function editModuleCode(formData: FormData) {

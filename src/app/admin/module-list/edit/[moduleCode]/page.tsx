@@ -10,8 +10,8 @@ export default async function EditModule({
   return (
     <>
       <div className="flex flex-col justify-center items-center p-10 w-full min-h-fit h-full">
-        <div className="flex flex-col gap-6 justify-center items-center w-2/5 min-w-fit px-4 py-8 border-2 rounded-xl">
-          <h3 className="text-2xl font-bold text-gray-900">
+        <div className="flex flex-col gap-6 justify-center items-center w-2/5 min-w-fit px-4 py-8 rounded text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border dark:border-gray-700 shadow-md dark:shadow-gray-500">
+          <h3 className="text-2xl font-bold">
             Edit Module {params.moduleCode}
           </h3>
           <form action={editModuleName} className="flex flex-col gap-2">
@@ -21,7 +21,7 @@ export default async function EditModule({
               value={params.moduleCode}
             />
             <label
-              className="flex justify-start items-center col-span-2 text-gray-900"
+              className="flex justify-start items-center col-span-2"
               htmlFor="module-name"
             >
               Change Module Name
@@ -34,7 +34,7 @@ export default async function EditModule({
                 id="module-name"
               />
               <button
-                className="flex justify-start items-center text-2xl text-gray-900"
+                className="flex justify-start items-center text-2xl"
                 type="submit"
               >
                 <RiSave3Fill />
@@ -48,7 +48,7 @@ export default async function EditModule({
               value={params.moduleCode}
             />
             <label
-              className="flex justify-start items-center col-span-2 text-gray-900"
+              className="flex justify-start items-center col-span-2"
               htmlFor="module-code"
             >
               Change Module Code
@@ -61,7 +61,7 @@ export default async function EditModule({
                 id="module-code"
               />
               <button
-                className="flex justify-start items-center text-2xl text-gray-900"
+                className="flex justify-start items-center text-2xl"
                 type="submit"
               >
                 <RiSave3Fill />

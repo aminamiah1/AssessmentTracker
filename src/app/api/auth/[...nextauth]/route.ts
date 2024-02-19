@@ -43,6 +43,7 @@ const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id; // Store user ID in JWT
         token.email = user.email;
+        token.name = user.name;
       }
       return token;
     },
@@ -50,8 +51,12 @@ const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.id as string; // Ensure the ID is a string
         session.user.email = token.email as string;
+        session.user.name = token.name as string;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return baseUrl + "/admin/homepage";
     },
   },
 };

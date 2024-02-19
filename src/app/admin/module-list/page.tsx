@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
 import { MdDelete, MdEdit } from "react-icons/md";
-
 import SearchBar from "@/app/components/SearchBar/SearchBar";
 import Link from "next/link";
+import AuthContext from "@/app/utils/authContext";
 
 type ModuleData = {
   id: number;
@@ -13,16 +13,23 @@ type ModuleData = {
 }[];
 
 async function getModules(searchTerm: string) {
-  // Get modules from api endpoint
   const data = await fetch(`/api/module-list/${searchTerm}`, {
     next: { revalidate: 3600 },
   });
   return data.json();
 }
 
-export default function ModuleList() {
+function ModuleList() {
+  const { data: session, status } = useSession(); // Use useSession to get session and status
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [modules, setModules] = useState<ModuleData>([]);
+
+  useEffect(() => {
+    // Redirect to sign-in if not authenticated
+    if (status === "unauthenticated") {
+      signIn();
+    }
+  }, [status]);
 
   const onSearch = (term: string) => {
     setSearchTerm(term);
@@ -33,9 +40,21 @@ export default function ModuleList() {
       const fetchedModules: ModuleData = await getModules(searchTerm);
       setModules(fetchedModules);
     }
-    fetchModules();
-  }, [searchTerm]);
+    if (session) {
+      // Fetch modules only if the session exists
+      fetchModules();
+    }
+  }, [searchTerm, session]);
 
+  if (status === "loading") {
+    return <p>Loading...</p>; // Show a loading message while checking session status
+  }
+
+  if (!session) {
+    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+  }
+
+  // Render the module list if authenticated
   return (
     <>
       <div>
@@ -85,3 +104,11 @@ export default function ModuleList() {
     </>
   );
 }
+
+const WrappedModuleList = () => (
+  <AuthContext>
+    <ModuleList />
+  </AuthContext>
+);
+
+export default WrappedModuleList;

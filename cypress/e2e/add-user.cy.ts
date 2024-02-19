@@ -1,4 +1,4 @@
-describe("Add User", () => {
+describe("Admin Dashboard", () => {
   beforeEach(() => {
     cy.intercept("GET", "http://localhost:3000/api/auth/session", {
       statusCode: 200,
@@ -7,9 +7,8 @@ describe("Add User", () => {
         expires: "date-string",
       },
     });
-    cy.visit("/ps-team/user-management");
+    cy.visit("http://localhost:3000/ps-team/user-management");
   });
-
   // Add a new user
   it("allows a ps-team member to add a user", () => {
     // Can add a user

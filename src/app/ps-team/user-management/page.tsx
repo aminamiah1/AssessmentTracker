@@ -1,21 +1,39 @@
-"use client"; 
-import React, { useState } from 'react';
-import UsersTable from '../../components/ps-team/UsersTable';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import CreateUser from '../../components/ps-team/CreateUser';
-import { ToastContainer } from 'react-toastify'
+"use client";
+import React, { useState, useEffect } from "react"; // Import useEffect
+import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
+import UsersTable from "../../components/ps-team/UsersTable";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import CreateUser from "../../components/ps-team/CreateUser";
+import { ToastContainer } from "react-toastify";
+import AuthContext from "@/app/utils/authContext";
 
-export default function ManageUsersPSTeam() {
-  // Handle showing the create user form
+function ManageUsersPSTeam() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
+  const { data: session, status } = useSession(); // Use useSession to get session and status
+
+  useEffect(() => {
+    // Redirect to sign-in if not authenticated
+    if (status === "unauthenticated") {
+      signIn();
+    }
+  }, [status]);
 
   const handleCloseCreateUserForm = () => {
     setShowCreateUserForm(false);
   };
 
+  if (status === "loading") {
+    return <p>Loading...</p>; // Show a loading message while checking session status
+  }
+
+  if (!session) {
+    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+  }
+
+  // Render the user management interface if authenticated
   return (
     <Container fluid className="p-4">
-      <ToastContainer /> 
+      <ToastContainer />
       <Row>
         <Col>
           <h1 className="text-3xl">User Management</h1>
@@ -28,9 +46,25 @@ export default function ManageUsersPSTeam() {
       </Row>
       <Row className="text-center">
         <Col>
-          <CreateUser onClose={handleCloseCreateUserForm} />
+          {/* Conditionally render CreateUser based on showCreateUserForm state */}
+          {showCreateUserForm && (
+            <CreateUser onClose={handleCloseCreateUserForm} />
+          )}
+          {!showCreateUserForm && (
+            <Button onClick={() => setShowCreateUserForm(true)}>
+              Create New User
+            </Button>
+          )}
         </Col>
       </Row>
     </Container>
   );
 }
+
+const WrappedManageUsersPSTeam = () => (
+  <AuthContext>
+    <ManageUsersPSTeam />
+  </AuthContext>
+);
+
+export default WrappedManageUsersPSTeam;

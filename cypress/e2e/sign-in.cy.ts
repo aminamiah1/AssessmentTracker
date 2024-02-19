@@ -1,10 +1,14 @@
 describe("Authentication", () => {
-  it("should log in successfully with correct credentials", () => {
+  it("should log in successfully with correct credentials and greet the user", () => {
     cy.visit("/api/auth/signin");
 
+    //Fill in login form with corrent credentials
     cy.get('input[name="email"]').type("SC@cardiff.ac.uk");
     cy.get('input[name="password"]').type("example");
     cy.get('button[type="submit"]').click();
+    cy.url().should("include", "/admin/homepage");
+    const expectedUserName = "Sarah Connely";
+    cy.get("body").should("contain", `Hi ${expectedUserName}!`);
   });
 
   it("should display an error with incorrect credentials", () => {

@@ -1,6 +1,12 @@
-describe("Add User Form", () => {
-  // Visit the user management page
+describe("Add User", () => {
   beforeEach(() => {
+    cy.intercept("GET", "http://localhost:3000/api/auth/session", {
+      statusCode: 200,
+      body: {
+        user: { name: "John", email: "admin@example.com", role: "admin" },
+        expires: "date-string",
+      },
+    });
     cy.visit("/ps-team/user-management");
   });
 

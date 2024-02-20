@@ -1,6 +1,7 @@
 // Import used libraries
 "use client";
 import React, { useState, useEffect, FormEvent } from "react";
+import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
 import {
   Container,
   Row,
@@ -26,6 +27,7 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
+import AuthContext from "@/app/utils/authContext";
 
 // Interface for the assessment model
 interface Assessment {
@@ -39,10 +41,12 @@ interface Assessment {
   assignees: [];
 }
 
-export default function CreateAssessmentModuleLeaders() {
-  const [setterId, setSetterId] = useState(1); // Module leader 1 for now need to personalize
+function CreateAssessmentModuleLeaders() {
+  const [setterId, setSetterId] = useState(0);
 
   const [isEdit, setIsEdit] = useState(false); //Check if the form is in edit mode
+
+  const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
 
   const [loading, setLoading] = useState(true); // Initialize loading state to true
 
@@ -58,6 +62,8 @@ export default function CreateAssessmentModuleLeaders() {
 
   const searchParams = useSearchParams(); // Create search params object
 
+  const { data: session, status } = useSession(); // Use useSession to get session and status
+
   // @ts-ignore
   const params = searchParams.get("id"); // Get the id of the assessment to edit from the search params object
 
@@ -72,6 +78,26 @@ export default function CreateAssessmentModuleLeaders() {
     setter_id: setterId,
     assignees: [],
   });
+
+  useEffect(() => {
+    if (session != null) {
+      //Check here from session.user.roles array if one of the entires is module_leader to set is module leader to true
+      const checkRoles = () => {
+        const roles = session.user.roles;
+        if (roles.includes("module_leader")) {
+          setIsModuleLeader(true);
+          //Set the assessment setter id to the current user
+          setSetterId(parseInt(session.user.id as any, 10));
+        } else {
+          signIn();
+        }
+      };
+
+      checkRoles();
+    } else if (status === "unauthenticated") {
+      signIn();
+    }
+  }, [status]);
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -146,22 +172,22 @@ export default function CreateAssessmentModuleLeaders() {
     };
 
     //Check if there are params and change to edit form, if not then continue with create form
-    if (params) {
+    if (params && isModuleLeader === true && setterId != 0) {
       setIsEdit(true);
       fetchAssignees();
       fetchModules();
       fetchAssessmentData(params);
-    } else {
+    } else if (isModuleLeader === true && setterId != 0) {
       fetchAssignees();
       fetchModules();
     }
 
-    setLoading(false); // Set loading to false once data fetching is complete
-  }, []);
+    setLoading(false); // Set loading to false once data is fetched
+  }, [isModuleLeader]);
 
   useEffect(() => {
     // This effect runs when the modules and assignees state is updated on editing assessment
-    if (modules && moduleId) {
+    if (modules && moduleId && isModuleLeader === true && setterId != 0) {
       // Find the default module with moduleId and set it as the default value
       // @ts-ignore
       const defaultModule = modules.find((module) => module.value === moduleId);
@@ -185,7 +211,7 @@ export default function CreateAssessmentModuleLeaders() {
         }));
       }
     }
-  }, [modules, users, assignees, moduleId]); // Runs if editing the assessment
+  }, [modules, users, assignees, moduleId, isModuleLeader]); // Runs if editing the assessment and is a module leader
 
   // Handle text changes for the form
   const handleTextChange = (event: any) => {
@@ -284,6 +310,14 @@ export default function CreateAssessmentModuleLeaders() {
       router.push("/module-leader/assessment-management/view-assessments");
     }
   };
+
+  if (status === "loading") {
+    return <p>Loading...</p>; // Show a loading message while checking session status
+  }
+
+  if (!session) {
+    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+  }
 
   return (
     <Container fluid className="p-4">
@@ -434,3 +468,11 @@ export default function CreateAssessmentModuleLeaders() {
     </Container>
   );
 }
+
+const WrappedCreateAssessment = () => (
+  <AuthContext>
+    <CreateAssessmentModuleLeaders />
+  </AuthContext>
+);
+
+export default WrappedCreateAssessment;

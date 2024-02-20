@@ -9,6 +9,8 @@ import AssessmentTile from "../../../components/module-leader/AssessmentTile";
 import arrowReturn from "../../../components/module-leader/assets/arrowReturn.png";
 import Image from "next/image";
 import Link from "next/link";
+import AuthContext from "@/app/utils/authContext";
+import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
 
 interface Assessment {
   id: number;
@@ -21,10 +23,33 @@ interface Assessment {
   assignees: [];
 }
 
-export default function ViewAssessmentsModuleLeaders() {
+function ViewAssessmentsModuleLeaders() {
   const [assessments, setAssessments] = useState<Assessment[]>([]); // Variable to hold an array of assessment object types
-  const [setterId, setSetterId] = useState(1); // Module leader 1 for now until personalized
+  const [setterId, setSetterId] = useState(0);
   const [searchTerm, setSearchTerm] = useState(""); // Set the search term to blank for default
+  const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
+  const { data: session, status } = useSession(); // Use useSession to get session and status
+
+  useEffect(() => {
+    if (session != null) {
+      // Check here from session.user.roles array if one of the entires is module_leader to set is module leader to true
+      const checkRoles = () => {
+        const roles = session.user.roles;
+        if (roles.includes("module_leader")) {
+          // Set the assessment setter id to the current user
+          setSetterId(parseInt(session.user.id as any, 10));
+          // Set the current user as a module leader to true
+          setIsModuleLeader(true);
+        } else if (roles.includes("module_leader") === false) {
+          signIn();
+        }
+      };
+
+      checkRoles();
+    } else if (status === "unauthenticated") {
+      signIn();
+    }
+  }, [status]);
 
   useEffect(() => {
     const fetchAssessments = async () => {
@@ -38,8 +63,11 @@ export default function ViewAssessmentsModuleLeaders() {
       );
       setAssessments(sortedAssessments);
     };
-    fetchAssessments();
-  }, []);
+
+    if (isModuleLeader === true && setterId != 0) {
+      fetchAssessments();
+    }
+  }, [isModuleLeader]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -53,6 +81,14 @@ export default function ViewAssessmentsModuleLeaders() {
         .includes(searchTerm.toLowerCase()) ||
       assessment.module_name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  if (status === "loading") {
+    return <p>Loading...</p>; // Show a loading message while checking session status
+  }
+
+  if (!session) {
+    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+  }
 
   return (
     <Container fluid className="p-4">
@@ -99,3 +135,11 @@ export default function ViewAssessmentsModuleLeaders() {
     </Container>
   );
 }
+
+const WrappedViewAssessments = () => (
+  <AuthContext>
+    <ViewAssessmentsModuleLeaders />
+  </AuthContext>
+);
+
+export default WrappedViewAssessments;

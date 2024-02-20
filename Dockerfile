@@ -1,10 +1,17 @@
 # Use the official Node.js image as the base image
-FROM node:20.11.0-alpine3.18
+FROM node:20.11.0
+# -alpine3.18
+
+# Accept DATABASE_URL as an argument during build
+ARG DATABASE_URL_OLD
+ARG NEXTAUTH_URL
+ARG NEXTAUTH_SECRET
 
 ENV DATABASE_URL_OLD ${DATABASE_URL_OLD}
 ENV NEXTAUTH_URL ${NEXTAUTH_URL}
 ENV NEXTAUTH_SECRET ${NEXTAUTH_SECRET}
 
+RUN echo $DATABASE_URL_OLD
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -12,7 +19,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Easy workaround to prevent cypress proxy error... Remove it :D
-# RUN sed -i '/cypress/d' package.json
+#RUN sed -i '/cypress/d' package.json
 # Cypress needed for npm install... let's see if it works
 
 # Install project dependencies

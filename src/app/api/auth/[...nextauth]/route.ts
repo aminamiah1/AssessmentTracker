@@ -44,6 +44,7 @@ const authOptions: NextAuthOptions = {
         token.id = user.id; // Store user ID in JWT
         token.email = user.email;
         token.name = user.name;
+        token.roles = user.roles;
       }
       return token;
     },
@@ -52,6 +53,7 @@ const authOptions: NextAuthOptions = {
         session.user.id = token.id as string; // Ensure the ID is a string
         session.user.email = token.email as string;
         session.user.name = token.name as string;
+        session.user.roles = token.roles as string;
       }
       return session;
     },

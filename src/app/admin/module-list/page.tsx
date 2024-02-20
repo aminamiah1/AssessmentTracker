@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
+import { useSession, signIn } from "next-auth/react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import SearchBar from "@/app/components/SearchBar/SearchBar";
 import Link from "next/link";
@@ -20,7 +20,7 @@ async function getModules(searchTerm: string) {
 }
 
 function ModuleList() {
-  const { data: session, status } = useSession(); // Use useSession to get session and status
+  const { data: session, status } = useSession();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [modules, setModules] = useState<ModuleData>([]);
 

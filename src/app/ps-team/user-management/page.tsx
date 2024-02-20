@@ -12,8 +12,19 @@ function ManageUsersPSTeam() {
   const { data: session, status } = useSession(); // Use useSession to get session and status
 
   useEffect(() => {
-    // Redirect to sign-in if not authenticated
-    if (status === "unauthenticated") {
+    if (session != null) {
+      //Check here from session.user.roles array if one of the entires is ps team member
+      const checkRoles = () => {
+        const roles = session.user.roles;
+        if (roles.includes("ps_team")) {
+          return; // Continue to use the table if ps team member role assigned
+        } else {
+          signIn();
+        }
+      };
+
+      checkRoles();
+    } else if (status === "unauthenticated") {
       signIn();
     }
   }, [status]);

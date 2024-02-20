@@ -3,7 +3,12 @@ describe("Admin Dashboard", () => {
     cy.intercept("GET", "http://localhost:3000/api/auth/session", {
       statusCode: 200,
       body: {
-        user: { name: "John", email: "admin@example.com", role: "admin" },
+        user: {
+          name: "John",
+          id: 1000,
+          email: "admin@example.com",
+          roles: ["module_leader", "ps_team"],
+        },
         expires: "date-string",
       },
     });

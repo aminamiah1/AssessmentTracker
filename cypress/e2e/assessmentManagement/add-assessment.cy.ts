@@ -1,6 +1,18 @@
 describe("Add Assessment Form", () => {
   // Visit the add assessment form
   beforeEach(() => {
+    cy.intercept("GET", "http://localhost:3000/api/auth/session", {
+      statusCode: 200,
+      body: {
+        user: {
+          name: "John",
+          id: 1000,
+          email: "admin@example.com",
+          roles: ["module_leader", "ps_team"],
+        },
+        expires: "date-string",
+      },
+    });
     cy.visit(
       "http://localhost:3000/module-leader/assessment-management/create-assessment",
     );
@@ -10,9 +22,9 @@ describe("Add Assessment Form", () => {
   it("allows a module leader to add a assessment", () => {
     // Add the new assessment through the create new assessment form
     cy.get('[data-cy="name"]').type("New Assessment");
-    cy.get("[id^=react-select-3-input]").type("{enter}{enter}");
     cy.get('[data-cy="type"]').type("Test");
     cy.get("[id^=react-select-5-input]").type("{enter}{enter}");
+
     cy.intercept("POST", "/api/module-leader/create-assessment", {
       statusCode: 200,
       body: {

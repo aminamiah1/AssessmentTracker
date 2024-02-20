@@ -106,11 +106,15 @@ function CreateAssessmentModuleLeaders() {
       const response = await axios.get(
         `/api/module-leader/get-modules/?id=${setterId}`,
       );
-      const processedModules = response.data[0].modules.map((module: any) => ({
-        value: module.id,
-        label: module.module_name,
-      }));
-      setModules(processedModules);
+      if (response.data.length > 0) {
+        const processedModules = response.data[0].modules.map(
+          (module: any) => ({
+            value: module.id,
+            label: module.module_name,
+          }),
+        );
+        setModules(processedModules);
+      }
     };
 
     const fetchAssignees = async () => {

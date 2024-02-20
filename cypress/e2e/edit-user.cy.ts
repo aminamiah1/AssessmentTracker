@@ -1,6 +1,12 @@
-describe("Edit User Form", () => {
-  // Visit the user management page
+describe("Admin Dashboard", () => {
   beforeEach(() => {
+    cy.intercept("GET", "http://localhost:3000/api/auth/session", {
+      statusCode: 200,
+      body: {
+        user: { name: "John", email: "admin@example.com", role: "admin" },
+        expires: "date-string",
+      },
+    });
     cy.visit("http://localhost:3000/ps-team/user-management");
   });
 

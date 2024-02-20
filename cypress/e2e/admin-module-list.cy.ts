@@ -24,7 +24,19 @@ describe("Admin module list page", () => {
   ];
 
   beforeEach(() => {
+    // Mock the authentication check by intercepting the auth/session call
+    cy.intercept("GET", "**/api/auth/session", {
+      statusCode: 200,
+      body: {
+        user: { name: "Admin User", email: "admin@example.com", role: "admin" },
+        expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // Expires in 2 hours
+      },
+    }).as("getSession");
+
     cy.visit("/admin/module-list");
+
+    // Wait for the mock session to ensure the user is "logged in"
+    cy.wait("@getSession");
   });
 
   it("should display the page title", () => {

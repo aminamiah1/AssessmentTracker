@@ -1,11 +1,11 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import { PrismaClient } from "@prisma/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-const authOptions: NextAuthOptions = {
+const handler = NextAuth({
   // adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -31,7 +31,6 @@ const authOptions: NextAuthOptions = {
               id: user.id.toString(), // Convert numeric ID to string
               name: user.name,
               email: user.email,
-              roles: user.roles,
             };
           }
         }
@@ -54,7 +53,7 @@ const authOptions: NextAuthOptions = {
         session.user.id = token.id as string; // Ensure the ID is a string
         session.user.email = token.email as string;
         session.user.name = token.name as string;
-        session.user.roles = token.roles;
+        session.user.roles = token.roles as string;
       }
       return session;
     },
@@ -62,8 +61,6 @@ const authOptions: NextAuthOptions = {
       return baseUrl + "/admin/homepage";
     },
   },
-};
+});
 
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST, authOptions };
+export { handler as GET, handler as POST };

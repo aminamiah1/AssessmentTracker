@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET(
   req: NextRequest,
@@ -10,7 +9,7 @@ export async function GET(
   const prisma = new PrismaClient();
 
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession();
     if (!session || session.user.roles !== "module_leader") {
       // If there is no session, the user is unauthenticated
       return new NextResponse(JSON.stringify({ message: "Forbidden" }), {

@@ -1,9 +1,16 @@
 import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
 
 const prisma = new PrismaClient();
 
 export async function GET(request: Request) {
   try {
+    const session = await getServerSession();
+
+    if (!session) {
+      return Response.json({ error: "Must be logged in" }, { status: 401 });
+    }
+
     // Validate and extract userId from query parameters
     const url = new URL(request.url);
     const idString = url.searchParams.get("id");

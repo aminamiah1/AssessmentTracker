@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
 
 const prisma = new PrismaClient();
 
 export async function DELETE(request: NextRequest) {
   try {
+    const session = await getServerSession();
+
+    if (!session) {
+      return Response.json({ error: "Must be logged in" }, { status: 401 });
+    }
+
     // Extract assessment ID from request query body
     const { id } = await request.json();
 

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
+import { getServerSession } from "next-auth/next";
 
 const prisma = new PrismaClient();
 
@@ -8,6 +10,12 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession();
+
+    if (!session) {
+      return Response.json({ error: "Must be logged in" }, { status: 401 });
+    }
+
     // Extract user ID from request query parameters or body
     const url = new URL(request.url);
     const idString = url.searchParams.get("id");

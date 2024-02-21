@@ -54,6 +54,8 @@ function ModuleList() {
     return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
   }
 
+  console.log(module);
+
   // Render the module list if authenticated
   return (
     <>

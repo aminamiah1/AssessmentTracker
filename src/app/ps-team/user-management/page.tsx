@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react"; // Import useEffect
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
+import React, { useState, useEffect } from "react";
+import { useSession, signIn } from "next-auth/react";
 import UsersTable from "../../components/ps-team/UsersTable";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import CreateUser from "../../components/ps-team/CreateUser";
@@ -9,7 +9,7 @@ import AuthContext from "@/app/utils/authContext";
 
 function ManageUsersPSTeam() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
-  const { data: session, status } = useSession(); // Use useSession to get session and status
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     // Redirect to sign-in if not authenticated
@@ -23,11 +23,20 @@ function ManageUsersPSTeam() {
   };
 
   if (status === "loading") {
-    return <p>Loading...</p>; // Show a loading message while checking session status
+    return <p>Loading...</p>;
+    // Show a loading message while checking session status
   }
 
   if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+    return <p>Redirecting to sign-in...</p>;
+    // This will be briefly shown before the signIn() effect redirects the user
+  }
+
+  const hasRequiredRole = session.user.roles?.includes("ps_team");
+  console.log(session.user.roles);
+
+  if (!hasRequiredRole) {
+    return <p>You do not have permission to view this page.</p>;
   }
 
   // Render the user management interface if authenticated

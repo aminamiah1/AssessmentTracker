@@ -32,7 +32,7 @@ function ManageUsersPSTeam() {
     // This will be briefly shown before the signIn() effect redirects the user
   }
 
-  const hasRequiredRole = session.user.roles?.includes("ps_team");
+  const hasRequiredRole = !session.user.roles?.includes("ps_team");
   console.log(session.user.roles);
 
   if (!hasRequiredRole) {

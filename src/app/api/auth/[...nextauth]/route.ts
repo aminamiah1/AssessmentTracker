@@ -1,6 +1,6 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
@@ -8,12 +8,16 @@ const prisma = new PrismaClient();
 
 const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+  },
+
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text", placeholder: "email" },
-        password: { label: "Password", type: "password" },
+        password: { label: "Hello", type: "password", placeholder: "password" },
       },
       async authorize(credentials) {
         if (credentials && credentials.email && credentials.password) {
@@ -32,7 +36,6 @@ const handler = NextAuth({
               id: user.id.toString(), // Convert numeric ID to string
               name: user.name,
               email: user.email,
-              roles: user.roles,
             };
           }
         }

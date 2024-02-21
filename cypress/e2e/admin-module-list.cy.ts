@@ -28,7 +28,11 @@ describe("Admin module list page", () => {
     cy.intercept("GET", "**/api/auth/session", {
       statusCode: 200,
       body: {
-        user: { name: "Admin User", email: "admin@example.com", role: "admin" },
+        user: {
+          name: "Admin User",
+          email: "admin@example.com",
+          role: "module_leader",
+        },
         expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // Expires in 2 hours
       },
     }).as("getSession");

@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession();
-    if (!session || session.user.roles !== "ps_team") {
+    if (!session) {
       // If there is no session, the user is unauthenticated
       return new NextResponse(JSON.stringify({ message: "Forbidden" }), {
         status: 403,

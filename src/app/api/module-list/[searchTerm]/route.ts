@@ -10,7 +10,7 @@ export async function GET(
 
   try {
     const session = await getServerSession();
-    if (!session || session.user.roles !== "module_leader") {
+    if (!session) {
       // If there is no session, the user is unauthenticated
       return new NextResponse(JSON.stringify({ message: "Forbidden" }), {
         status: 403,

@@ -20,7 +20,8 @@ function ManageUsersPSTeam() {
         if (roles.includes("ps_team")) {
           setIsPSTeam(true);
         } else {
-          setIsPSTeam(false); // Set to false if not part of ps_team
+          setIsPSTeam(false);
+          // Set to false if not part of ps_team
         }
       };
 
@@ -32,7 +33,8 @@ function ManageUsersPSTeam() {
   }, [session, status]);
 
   if (status === "loading") {
-    return <p>Loading...</p>; // Show a loading message while checking session status
+    return <p>Loading...</p>;
+    // Show a loading message while checking session status
   }
 
   if (!isPSTeam) {

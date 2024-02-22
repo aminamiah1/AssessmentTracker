@@ -21,40 +21,41 @@ async function getModules(searchTerm: string) {
 
 function ModuleList() {
   const { data: session, status } = useSession();
+  const [isModuleLeader, setIsModuleLeader] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [modules, setModules] = useState<ModuleData>([]);
 
   useEffect(() => {
-    // Redirect to sign-in if not authenticated
-    if (status === "unauthenticated") {
+    if (session != null) {
+      const checkRoles = () => {
+        const roles = session.user.roles;
+        console.log(session.user.roles);
+        if (roles.includes("module_leader")) {
+          setIsModuleLeader(true);
+        } else {
+          setIsModuleLeader(false);
+        }
+      };
+
+      checkRoles();
+    } else if (status === "unauthenticated") {
+      // If not a authenticated user then make them sign-in
       signIn();
     }
-  }, [status]);
+  }, [session, status]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+    // Show a loading message while checking session status
+  }
+
+  if (!isModuleLeader) {
+    return <p>You are not authorised to view this</p>;
+  }
 
   const onSearch = (term: string) => {
     setSearchTerm(term);
   };
-
-  useEffect(() => {
-    async function fetchModules() {
-      const fetchedModules: ModuleData = await getModules(searchTerm);
-      setModules(fetchedModules);
-    }
-    if (session) {
-      // Fetch modules only if the session exists
-      fetchModules();
-    }
-  }, [searchTerm, session]);
-
-  if (status === "loading") {
-    return <p>Loading...</p>; // Show a loading message while checking session status
-  }
-
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
-
-  console.log(module);
 
   // Render the module list if authenticated
   return (

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useTable } from "react-table";
+import Image from "next/image"; // Importing Image component from Next.js
 import axios from "axios";
 import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditUser from "./EditUser";
+import searchImg from "./assets/search.png";
+import editImg from "./assets/editIcon.png";
+import trashCan from "./assets/trashCan.png";
 import { Form, FormControl, FormLabel, Button } from "react-bootstrap";
 
 interface User {
@@ -131,35 +135,65 @@ const UsersTable: React.FC = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "ID",
-        accessor: "id",
+        Header: "Name",
+        accessor: "name",
       },
       {
         Header: "Email",
         accessor: "email",
       },
       {
-        Header: "Name",
-        accessor: "name",
-      },
-      {
         Header: "Roles",
-        accessor: (user: User) => user.roles.join(", "),
+        accessor: (user: User) => {
+          const capitalizedRoles = user.roles.map((role: string) => {
+            if (role.toLowerCase() === "module_leader") {
+              return "Module Leader";
+            } else if (role.toLowerCase() === "ps_team") {
+              return "PS Team";
+            } else if (role.toLowerCase() === "internal_moderator") {
+              return "Internal Moderator";
+            } else if (role.toLowerCase() === "external_examiner") {
+              return "External Examiner";
+            } else if (role.toLowerCase() === "panel_member") {
+              return "Panel Member";
+            } else if (role.toLowerCase() === "system_admin") {
+              return "System Admin";
+            } else {
+              return (
+                role.replace("_", " ").charAt(0).toUpperCase() + role.slice(1)
+              ); // Capitalize first letter for other roles
+            }
+          });
+          return capitalizedRoles.join(" ● ");
+        },
       },
       {
         Header: "Delete",
         accessor: (id: any) => (
-          <Button variant="danger" onClick={() => handleDelete(id)}>
-            Delete
-          </Button>
+          <button
+            onClick={() => handleDelete(id)}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <Image
+              className="object-cover"
+              src={trashCan}
+              alt="trash can delete"
+              style={{ height: "3rem", width: "3rem" }}
+            />
+          </button>
         ),
       },
       {
         Header: "Edit",
         accessor: (id: any) => (
-          <Button variant="success" onClick={() => handleEdit(id)}>
-            Edit
-          </Button>
+          <button onClick={() => handleEdit(id)}>
+            <Image
+              className="object-cover"
+              src={editImg}
+              alt="edit user icon"
+              style={{ height: "3rem", width: "3rem" }}
+            />
+          </button>
         ),
       },
     ],
@@ -176,12 +210,28 @@ const UsersTable: React.FC = () => {
   return (
     <>
       <Form className="d-flex align-items-center mb-3">
+        <Image
+          alt="search"
+          className="object-cover"
+          src={searchImg}
+          style={{
+            width: "2rem",
+            paddingBottom: "1rem",
+            marginLeft: "1rem",
+            marginRight: "1rem",
+          }}
+        />
         <FormControl
           id="search"
           type="text"
           value={search}
           onChange={handleSearch}
           placeholder="Enter name or user role..."
+          style={{
+            marginBottom: "2rem",
+            padding: "1rem",
+            boxShadow: "5px 5px black, 15px 15px 15px 15px #2b355400",
+          }}
         />
       </Form>
       <EditUser
@@ -192,7 +242,19 @@ const UsersTable: React.FC = () => {
         setRefetch={setRefetch}
         refetch={refetch}
       />
-      <Table bordered hover responsive variant="light" {...getTableProps()}>
+      <Table
+        bordered
+        hover
+        responsive
+        variant="light"
+        {...getTableProps()}
+        style={{
+          fontSize: "larger",
+          backgroundColor: "white",
+          border: "20px black",
+          boxShadow: "5px 5px black, 15px 15px 15px 15px #2b355400",
+        }}
+      >
         <thead>
           {headerGroups.map((headerGroup, headerGroupIndex) => (
             <tr

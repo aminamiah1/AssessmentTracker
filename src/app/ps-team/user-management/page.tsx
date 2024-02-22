@@ -9,35 +9,39 @@ import AuthContext from "@/app/utils/authContext";
 
 function ManageUsersPSTeam() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
+  const [isPSTeam, setIsPSTeam] = useState(false);
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    // Redirect to sign-in if not authenticated
-    if (status === "unauthenticated") {
+    if (session != null) {
+      const checkRoles = () => {
+        const roles = session.user.roles;
+        console.log(session.user.roles);
+        if (roles.includes("ps_team")) {
+          setIsPSTeam(true);
+        } else if (roles.includes("ps_team") === false) {
+          return <p> You are not authorised to view this </p>;
+        }
+      };
+
+      checkRoles();
+    } else if (status === "unauthenticated") {
+      // If not a authenticated user then make them sign-in
       signIn();
     }
   }, [status]);
 
-  const handleCloseCreateUserForm = () => {
-    setShowCreateUserForm(false);
-  };
-
   if (status === "loading") {
-    return <p>Loading...</p>;
-    // Show a loading message while checking session status
+    return <p>Loading...</p>; // Show a loading message while checking session status
   }
 
   if (!session) {
-    return <p>Redirecting to sign-in...</p>;
-    // This will be briefly shown before the signIn() effect redirects the user
+    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
   }
 
-  const hasRequiredRole = !session.user.roles?.includes("ps_team");
-  console.log(session.user.roles);
-
-  if (!hasRequiredRole) {
-    return <p>You do not have permission to view this page.</p>;
-  }
+  const handleCloseCreateUserForm = () => {
+    setShowCreateUserForm(false);
+  };
 
   // Render the user management interface if authenticated
   return (

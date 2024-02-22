@@ -19,8 +19,8 @@ function ManageUsersPSTeam() {
         console.log(session.user.roles);
         if (roles.includes("ps_team")) {
           setIsPSTeam(true);
-        } else if (roles.includes("ps_team") === false) {
-          return <p> You are not authorised to view this </p>;
+        } else {
+          setIsPSTeam(false); // Set to false if not part of ps_team
         }
       };
 
@@ -29,14 +29,14 @@ function ManageUsersPSTeam() {
       // If not a authenticated user then make them sign-in
       signIn();
     }
-  }, [status]);
+  }, [session, status]);
 
   if (status === "loading") {
     return <p>Loading...</p>; // Show a loading message while checking session status
   }
 
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+  if (!isPSTeam) {
+    return <p>You are not authorised to view this</p>;
   }
 
   const handleCloseCreateUserForm = () => {

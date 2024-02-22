@@ -77,11 +77,11 @@ export default function ModuleList() {
               <div className="flex gap-4">
                 <Link
                   href={`/admin/module-list/edit/${module.module_code}`}
-                  className="px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="edit-button px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   <MdEdit />
                 </Link>
-                <button className="px-3 py-2 text-2xl border rounded transition-all bg-red-600 dark:bg-red-800 text-gray-100 hover:bg-red-700">
+                <button className="delete-button px-3 py-2 text-2xl border rounded transition-all bg-red-600 dark:bg-red-800 text-gray-100 hover:bg-red-700">
                   <MdDelete />
                 </button>
               </div>

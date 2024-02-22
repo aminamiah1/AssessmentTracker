@@ -1,21 +1,27 @@
 describe("Edit User", () => {
   beforeEach(() => {
-    cy.intercept("GET", "http://localhost:3000/api/auth/session", {
+    cy.intercept("GET", "**/api/auth/session", {
       statusCode: 200,
       body: {
-        user: { name: "John", email: "admin@example.com", role: "ps_team" },
-        expires: "date-string",
+        user: {
+          name: "Admin User",
+          email: "admin@example.com",
+          role: "ps_team",
+        },
+        expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // Expires in 2 hours
       },
-    });
-    cy.visit("http://localhost:3000/ps-team/user-management");
+    }).as("getSession");
+
+    cy.visit("/ps-team/user-management");
+
+    // Wait for the mock session to ensure the user is "logged in"
+    cy.wait("@getSession");
   });
 
-  //Edit a user
-  it("allows a ps-team member to  edit a user", () => {
-    // Can edit a user
+  it("allows a ps-team member to edit a user", () => {
     cy.contains("button", "Edit").click();
-    cy.get('[data-cy="name"]').type("New User Test");
-    cy.get('[data-cy="email"]').type("newusertest@example.com");
-    cy.get('[data-cy="password"]').type("examplepass");
+    cy.get('[data-cy="name"]').clear().type("New User Test");
+    cy.get('[data-cy="email"]').clear().type("newusertest@example.com");
+    cy.get('[data-cy="password"]').clear().type("examplepass");
   });
 });

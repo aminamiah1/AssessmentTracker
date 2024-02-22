@@ -9,22 +9,6 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession();
-    if (!session) {
-      // If there is no session, the user is unauthenticated
-      return new NextResponse(JSON.stringify({ message: "Forbidden" }), {
-        status: 403,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    return new NextResponse(
-      JSON.stringify({ message: "Internal Server Error" }),
-      { status: 500 },
-    );
-  }
-
-  try {
     // Extract user ID from request query parameters or body
     const url = new URL(request.url);
     const idString = url.searchParams.get("id");

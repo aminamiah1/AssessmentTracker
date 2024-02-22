@@ -10,7 +10,7 @@ import EditUser from "./EditUser";
 import searchImg from "./assets/search.png";
 import editImg from "./assets/editIcon.png";
 import trashCan from "./assets/trashCan.png";
-import { Form, FormControl, FormLabel, Button } from "react-bootstrap";
+import { Form, FormControl, FormLabel, Button, Modal } from "react-bootstrap";
 
 interface User {
   id: number;
@@ -27,6 +27,9 @@ const UsersTable: React.FC = () => {
   const [search, setSearch] = React.useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]); // New state for filtered view
   const [refetch, setRefetch] = useState(0);
+  // State variable for managing the visibility of the delete confirmation modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -120,6 +123,7 @@ const UsersTable: React.FC = () => {
 
       // Success message with toast to add
       toast.success("Delete user successful!");
+      setShowDeleteModal(false);
       setRefetch(refetch + 1); //Refetch all user details
     } catch (error) {
       // Display an error message to the user with toast message
@@ -171,7 +175,10 @@ const UsersTable: React.FC = () => {
         Header: "Delete",
         accessor: (id: any) => (
           <button
-            onClick={() => handleDelete(id)}
+            onClick={() => {
+              setUserToDelete(id);
+              setShowDeleteModal(true);
+            }} // Show modal after successful fetch
             style={{ display: "flex", justifyContent: "center" }}
           >
             <Image
@@ -294,6 +301,39 @@ const UsersTable: React.FC = () => {
           })}
         </tbody>
       </Table>
+
+      {/* Modal for confirming user deletion */}
+      <Modal
+        show={showDeleteModal && userToDelete !== null}
+        onHide={() => setShowDeleteModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {userToDelete ? (
+              <p>Delete user: {userToDelete.name}?</p>
+            ) : (
+              <p>Delete user</p>
+            )}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {userToDelete ? (
+            <p>Are you sure you want to delete user: {userToDelete.name}?</p>
+          ) : (
+            <p>Are you sure you want to delete the selected user?</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          {/* Button to cancel deletion */}
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          {/* Button to confirm deletion */}
+          <Button variant="danger" onClick={() => handleDelete(userToDelete)}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

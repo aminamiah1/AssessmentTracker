@@ -3,7 +3,7 @@ describe("Authentication", () => {
     cy.visit("/api/auth/signin");
 
     //Fill in login form with corrent credentials
-    cy.get('input[name="email"]').type("SC@cardiff.ac.uk");
+    cy.get('input[name="email"]').type("sc@cardiff.ac.uk");
     cy.get('input[name="password"]').type("example");
     cy.get('button[type="submit"]').click();
     cy.url().should("include", "/admin/homepage");

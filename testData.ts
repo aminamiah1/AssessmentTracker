@@ -4,7 +4,7 @@ const example_date = new Date(2024, 1, 26);
 
 //To add example test data insert script
 async function createResponse() {
-  const response = await prisma.assessment.create({
+  const response = await prisma.response.create({
     data: {
       value: "true",
       data_type: "boolean",

@@ -211,9 +211,14 @@ const EditUser: React.FC<EditUserProps> = ({
             </Form.Group>
             <Button
               data-cy="EditUser"
-              variant="success"
+              variant="dark"
               type="submit"
-              style={{ marginTop: "1rem" }}
+              style={{
+                marginTop: "1rem",
+                height: "5rem",
+                width: "29rem",
+                fontSize: "larger",
+              }}
             >
               Edit User
             </Button>

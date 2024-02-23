@@ -17,9 +17,12 @@ model Users {
   name            String
   password        String
   roles           Role[]
+  image           String?
   set_assessments Assessment[]
   assessments     Assessment[] @relation("AssessmentsToUsers")
   modules         Module[]     @relation("ModulesToUsers")
+
+  @@map("users")
 }
 
 model Module {
@@ -40,7 +43,7 @@ model Assessment {
   setter_id       Int?
   module          Module     @relation(fields: [module_id], references: [id], onDelete: Cascade)
   setter          Users?     @relation(fields: [setter_id], references: [id], onDelete: Cascade)
-  Response        Response[] 
+  Response        Response[]
   part            Part[]     @relation("AssessmentToPart")
   assignees       Users[]    @relation("AssessmentsToUsers")
 }

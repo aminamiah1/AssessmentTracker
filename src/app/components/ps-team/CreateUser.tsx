@@ -31,7 +31,7 @@ const rolesOptionsForSelect = Array.from(rolesOptionsSet).map((role) => ({
 
 // Define the CreateUser component
 const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
-  const [show, setShow] = useState(false); // State for modal visibility
+  const [show, setShow] = useState(true); // State for modal visibility
 
   const [newUser, setNewUser] = useState<User>({
     id: 0,
@@ -112,16 +112,25 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
 
   return (
     <>
-      <Button variant="success" onClick={handleShow}>
+      <Button
+        onClick={handleShow}
+        variant="dark"
+        style={{
+          marginTop: "1rem",
+          height: "5rem",
+          width: "20rem",
+          fontSize: "larger",
+        }}
+      >
         Create New User
       </Button>
 
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Create User</Modal.Title>
+          <Modal.Title>Create New User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} style={{ justifyContent: "center" }}>
             <Form.Group controlId="formEmail">
               <Form.Label>Email address</Form.Label>
               <Form.Control
@@ -176,11 +185,16 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
             </Form.Group>
             <Button
               data-cy="CreateUser"
-              variant="success"
+              variant="dark"
               type="submit"
-              style={{ marginTop: "1rem" }}
+              style={{
+                marginTop: "1rem",
+                height: "5rem",
+                width: "29rem",
+                fontSize: "larger",
+              }}
             >
-              Create User
+              Create New User
             </Button>
           </Form>
         </Modal.Body>

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
+import { useSession, signIn } from "next-auth/react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import SearchBar from "@/app/components/SearchBar/SearchBar";
 import Link from "next/link";
@@ -20,39 +20,42 @@ async function getModules(searchTerm: string) {
 }
 
 function ModuleList() {
-  const { data: session, status } = useSession(); // Use useSession to get session and status
+  const { data: session, status } = useSession();
+  const [isModuleLeader, setIsModuleLeader] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [modules, setModules] = useState<ModuleData>([]);
 
   useEffect(() => {
-    // Redirect to sign-in if not authenticated
-    if (status === "unauthenticated") {
+    if (session != null) {
+      const checkRoles = () => {
+        const roles = session.user.roles;
+        console.log(session.user.roles);
+        if (roles.includes("module_leader")) {
+          setIsModuleLeader(true);
+        } else {
+          setIsModuleLeader(false);
+        }
+      };
+
+      checkRoles();
+    } else if (status === "unauthenticated") {
+      // If not a authenticated user then make them sign-in
       signIn();
     }
-  }, [status]);
+  }, [session, status]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+    // Show a loading message while checking session status
+  }
+
+  if (!isModuleLeader) {
+    return <p>You are not authorised to view this</p>;
+  }
 
   const onSearch = (term: string) => {
     setSearchTerm(term);
   };
-
-  useEffect(() => {
-    async function fetchModules() {
-      const fetchedModules: ModuleData = await getModules(searchTerm);
-      setModules(fetchedModules);
-    }
-    if (session) {
-      // Fetch modules only if the session exists
-      fetchModules();
-    }
-  }, [searchTerm, session]);
-
-  if (status === "loading") {
-    return <p>Loading...</p>; // Show a loading message while checking session status
-  }
-
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
 
   // Render the module list if authenticated
   return (
@@ -90,10 +93,13 @@ function ModuleList() {
                 <p>Module Code: {module.module_code}</p>
               </div>
               <div className="flex gap-4">
-                <button className="px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <Link
+                  href={`/admin/module-list/edit/${module.module_code}`}
+                  className="edit-button px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
                   <MdEdit />
-                </button>
-                <button className="px-3 py-2 text-2xl border rounded transition-all bg-red-600 dark:bg-red-800 text-gray-100 hover:bg-red-700">
+                </Link>
+                <button className="delete-button px-3 py-2 text-2xl border rounded transition-all bg-red-600 dark:bg-red-800 text-gray-100 hover:bg-red-700">
                   <MdDelete />
                 </button>
               </div>

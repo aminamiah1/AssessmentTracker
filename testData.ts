@@ -1,6 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+import prisma from "@/app/db";
 
 const example_date = new Date(2024, 1, 26);
 
@@ -8,11 +6,10 @@ const example_date = new Date(2024, 1, 26);
 async function createResponse() {
   const response = await prisma.assessment.create({
     data: {
-      assessment_name: "Group Coding Project",
-      assessment_type: "Group",
-      hand_out_week: example_date,
-      hand_in_week: example_date,
-      module_id: 1,
+      value: "true",
+      data_type: "boolean",
+      assessment_id: 1,
+      question_id: 2,
     },
   });
 }

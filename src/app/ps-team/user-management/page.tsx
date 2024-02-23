@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react"; // Import useEffect
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
+import React, { useState, useEffect } from "react";
+import { useSession, signIn } from "next-auth/react";
 import UsersTable from "../../components/ps-team/UsersTable";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import CreateUser from "../../components/ps-team/CreateUser";
@@ -9,45 +9,51 @@ import AuthContext from "@/app/utils/authContext";
 
 function ManageUsersPSTeam() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
-  const { data: session, status } = useSession(); // Use useSession to get session and status
+  const [isPSTeam, setIsPSTeam] = useState(false);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     if (session != null) {
-      //Check here from session.user.roles array if one of the entires is ps team member
       const checkRoles = () => {
         const roles = session.user.roles;
+        console.log(session.user.roles);
         if (roles.includes("ps_team")) {
-          return; // Continue to use the table if ps team member role assigned
+          setIsPSTeam(true);
         } else {
-          signIn();
+          setIsPSTeam(false);
+          // Set to false if not part of ps_team
         }
       };
 
       checkRoles();
     } else if (status === "unauthenticated") {
+      // If not a authenticated user then make them sign-in
       signIn();
     }
-  }, [status]);
+  }, [session, status]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+    // Show a loading message while checking session status
+  }
+
+  if (!isPSTeam) {
+    return <p>You are not authorised to view this</p>;
+  }
 
   const handleCloseCreateUserForm = () => {
     setShowCreateUserForm(false);
   };
-
-  if (status === "loading") {
-    return <p>Loading...</p>; // Show a loading message while checking session status
-  }
-
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
 
   // Render the user management interface if authenticated
   return (
     <Container fluid className="p-4">
       <ToastContainer />
       <Row>
-        <Col>
-          <h1 className="text-3xl">User Management</h1>
+        <Col style={{ display: "flex", marginBottom: "2.5rem" }}>
+          <h1 className="text-3xl" style={{ fontSize: "xx-large" }}>
+            User Management
+          </h1>
         </Col>
       </Row>
       <Row>
@@ -62,7 +68,16 @@ function ManageUsersPSTeam() {
             <CreateUser onClose={handleCloseCreateUserForm} />
           )}
           {!showCreateUserForm && (
-            <Button onClick={() => setShowCreateUserForm(true)}>
+            <Button
+              onClick={() => setShowCreateUserForm(true)}
+              variant="dark"
+              style={{
+                marginTop: "1rem",
+                height: "5rem",
+                width: "20rem",
+                fontSize: "larger",
+              }}
+            >
               Create New User
             </Button>
           )}

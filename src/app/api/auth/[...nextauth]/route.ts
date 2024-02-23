@@ -6,13 +6,12 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 const authOptions: NextAuthOptions = {
-  // adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text", placeholder: "email" },
-        password: { label: "Password", type: "password" },
+        password: { label: "Hello", type: "password", placeholder: "password" },
       },
       async authorize(credentials) {
         if (credentials && credentials.email && credentials.password) {
@@ -50,11 +49,12 @@ const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
+      session.user = session.user || {};
       if (token) {
-        session.user.id = token.id as string; // Ensure the ID is a string
+        session.user.id = token.id as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
-        session.user.roles = token.roles as string; // Added roles to check if they can access module leader specific assessment management page
+        session.user.roles = token.roles as string;
       }
       return session;
     },

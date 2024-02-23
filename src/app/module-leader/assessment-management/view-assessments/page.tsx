@@ -3,8 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import AssessmentTile from "../../../components/module-leader/AssessmentTile";
 import arrowReturn from "../../../components/module-leader/assets/arrowReturn.png";
 import Image from "next/image";
@@ -95,7 +93,7 @@ function ViewAssessmentsModuleLeaders() {
   }
 
   return (
-    <Container fluid className="p-4">
+    <Container fluid className="p-4 bg-white h-screen text-black">
       <ToastContainer />
       <Col style={{ marginBottom: "2rem", marginTop: "2rem" }}>
         <div style={{ display: "flex", alignItems: "center" }}>

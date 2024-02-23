@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import Link from "next/link";
 import { ToastContainer } from "react-toastify";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import AuthContext from "@/app/utils/authContext";
 import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
@@ -45,48 +44,34 @@ function ManageAssessmentsModuleLeaders() {
   }
 
   return (
-    <Container fluid className="p-4">
+    <div className="p-4 bg-white h-screen">
       <ToastContainer />
-      <Row>
-        <Col
-          className="text-center"
-          style={{ marginBottom: "2rem", marginTop: "2rem" }}
-        >
-          <h1 className="text-3xl">Your Assessments</h1>
-        </Col>
-      </Row>
-      <Row
-        className="d-flex align-items-center justify-content-center"
-        style={{ height: "70vh" }}
-      >
-        <Col xs="auto" className="mb-2">
+      <div className="text-center mb-8 mt-8">
+        <h1 className="text-3xl">Your Assessments</h1>
+      </div>
+      <div className="flex justify-center items-center pt-40">
+        <div className="mb-8">
           <Link href="/module-leader/assessment-management/create-assessment">
-            <Button variant="dark" style={{ height: "20rem", width: "20rem" }}>
+            <button className="bg-gray-800 text-white h-80 w-80 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none mr-5">
               <div>
-                <i
-                  className="bi bi-newspaper"
-                  style={{ fontSize: "10rem" }}
-                ></i>
+                <i className="bi bi-newspaper text-9xl"></i>
               </div>
               <div>Create Assessment</div>
-            </Button>
+            </button>
           </Link>
-        </Col>
-        <Col xs="auto" className="mb-2">
+        </div>
+        <div className="mb-8">
           <Link href="/module-leader/assessment-management/view-assessments">
-            <Button variant="dark" style={{ height: "20rem", width: "20rem" }}>
+            <button className="bg-gray-800 text-white h-80 w-80 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
               <div>
-                <i
-                  className="bi bi-envelope-paper"
-                  style={{ fontSize: "10rem" }}
-                ></i>
+                <i className="bi bi-envelope-paper text-9xl"></i>
               </div>
               <div>View Assessments Created</div>
-            </Button>
+            </button>
           </Link>
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 }
 

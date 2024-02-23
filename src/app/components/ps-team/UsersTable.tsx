@@ -242,6 +242,7 @@ const UsersTable: React.FC = () => {
             return (
               // @ts-ignore
               <tr
+                // @ts-ignore
                 key={`row-${rowIndex}`}
                 {...row.getRowProps()}
                 className="border border-black"

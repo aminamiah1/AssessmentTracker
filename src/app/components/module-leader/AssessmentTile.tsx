@@ -52,138 +52,99 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
 
   return (
     // Assessment tile layout using Bootstrap grid system
-    <Col
-      className="grid flex-grow-1 col-12 col-md-6"
-      style={{ marginBottom: "1rem" }}
-    >
-      {/* Container for toast notifications */}
+    <div className="flex-grow-1 col-12 md:col-6 mb-4">
       <ToastContainer />
-      {/* Card component for displaying assessment details */}
-      <Card style={{ boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)" }}>
-        <Card.Body>
-          <Row>
-            {/* Left side of the card displaying assessment details */}
-            <Col
-              xs={12}
-              md={8}
-              style={{
-                borderRight: "2px solid #ddd",
-                marginTop: "1rem",
-                marginBottom: "1rem",
-              }}
-            >
-              <Card.Title>
-                {/* Link to assessment editing page */}
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Link
-                    href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
-                    style={{ display: "flex", alignItems: "center" }}
-                  >
-                    <a>{assessment.assessment_name}</a>
-                    {/* Edit icon */}
-                    <Image
-                      className="object-cover editAssessment"
-                      src={editIcon}
-                      alt="edit icon"
-                      style={{
-                        height: "2rem",
-                        width: "2rem",
-                        marginLeft: "1rem",
-                      }}
-                    />
-                  </Link>
-                </div>
-              </Card.Title>
-              <Card.Text>
-                <br />
-                {/* Displaying module name, assessment type, due date, and stage */}
-                <h6>
+      <div className="bg-white shadow-md">
+        <div className="p-4 md:p-6 border-b-2 border-gray-300">
+          <div className="md:flex md:items-center">
+            <div className="md:w-2/3">
+              <div className="flex items-center">
+                <Link
+                  href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                  className="flex items-center"
+                >
+                  <a className="text-blue-500 hover:text-blue-700">
+                    {assessment.assessment_name}
+                  </a>
+                  <Image
+                    className="object-cover editAssessment ml-4"
+                    src={editIcon}
+                    alt="edit icon"
+                    width={32}
+                    height={32}
+                  />
+                </Link>
+              </div>
+              <p className="mt-4">
+                <span className="text-sm text-gray-700">
                   {assessment.module_name} ● {assessment.assessment_type}
-                </h6>
+                </span>
                 <br />
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <h6 style={{ marginRight: "1rem" }}>
-                    Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")} ●
-                    Stage: {0} of 11
-                  </h6>
-                  {/* Button to open delete confirmation modal */}
-                  <button onClick={() => setShowDeleteModal(true)}>
-                    <Image
-                      className="object-cover"
-                      src={trashCan}
-                      alt="trash can delete"
-                      style={{ height: "2rem", width: "2rem" }}
-                    />
-                  </button>
-                </div>
-              </Card.Text>
-            </Col>
-            {/* Right side of the card displaying assignees */}
-            <Col
-              xs={12}
-              md={4}
-              style={{ marginTop: "1rem", marginBottom: "1rem" }}
-            >
-              <h6>Assignees</h6>
-              {/* Conditional rendering based on the presence of assignees */}
+                <span className="text-sm text-gray-700">
+                  Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")} ●
+                  Stage: {0} of 11
+                </span>
+              </p>
+            </div>
+            <div className="md:w-1/3 mt-4 md:mt-0">
+              <h6 className="mb-2">Assignees</h6>
               {assessment.assignees.length > 0 ? (
                 <div>
-                  {/* Mapping over assignees and displaying their names */}
                   {assessment.assignees.map((assignee: any) => (
                     <div
                       key={assignee.id}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        backgroundColor: "lightgray",
-                        padding: "0.3rem",
-                        marginBottom: "1rem",
-                      }}
+                      className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
                     >
-                      {/* Profile picture icon */}
                       <Image
                         src={profilePic}
-                        alt="Trash Can"
-                        style={{
-                          height: "2rem",
-                          width: "2rem",
-                          marginRight: "1rem",
-                        }}
+                        alt="Profile Pic"
+                        width={32}
+                        height={32}
+                        className="mr-2"
                       />
-                      <h6 key={assignee.id}>{assignee.name}</h6>
+                      <span className="text-sm">{assignee.name}</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                // Displaying a message if no assignees are assigned
-                <p style={{ textAlign: "center" }}>No assignees assigned</p>
+                <p className="text-center text-gray-500">
+                  No assignees assigned
+                </p>
               )}
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+            </div>
+          </div>
+        </div>
+        <div className="p-4 md:p-6 flex justify-between">
+          <button onClick={() => setShowDeleteModal(true)}>
+            <Image
+              src={trashCan}
+              alt="trash can delete"
+              width={32}
+              height={32}
+              className="cursor-pointer"
+            />
+          </button>
+        </div>
+      </div>
 
-      {/* Modal for confirming assessment deletion */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Delete Assessment?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           Are you sure you want to delete the assessment{" "}
-          {" " + assessment.assessment_name}?
+          {assessment.assessment_name}?
         </Modal.Body>
         <Modal.Footer>
-          {/* Button to cancel deletion */}
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Cancel
           </Button>
-          {/* Button to confirm deletion */}
           <Button variant="danger" onClick={handleDelete}>
             Delete
           </Button>
         </Modal.Footer>
       </Modal>
-    </Col>
+    </div>
   );
 };
 

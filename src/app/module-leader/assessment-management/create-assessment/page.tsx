@@ -2,21 +2,7 @@
 "use client";
 import React, { useState, useEffect, FormEvent } from "react";
 import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Form,
-  FormGroup,
-  FormLabel,
-  FormControl,
-  Dropdown,
-  DropdownButton,
-} from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import arrowReturn from "../../../components/module-leader/assets/arrowReturn.png";
@@ -329,152 +315,135 @@ function CreateAssessmentModuleLeaders() {
   }
 
   return (
-    <Container fluid className="p-4">
+    <div className="p-4 bg-white h-screen text-black">
       <ToastContainer />
-      {loading ? ( // Conditionally render loading indicator or show the create assessment form
+      {loading ? (
         <div>Loading form...</div>
       ) : (
-        <Row className="justify-content-center">
-          <Col md={8}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Link href={"/module-leader/assessment-management"}>
-                <Image
-                  src={arrowReturn}
-                  className="arrowReturn"
-                  alt="return arrow"
-                  style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
-                />
-              </Link>
-              <h1 className="text-3xl">
-                {" "}
-                {isEdit ? "Edit Assessment" : "Create Assessment"}
-              </h1>
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center mb-4">
+            <Link href={"/module-leader/assessment-management"}>
+              <Image
+                src={arrowReturn}
+                className="arrowReturn"
+                alt="return arrow"
+                width={32}
+                height={32}
+              />
+            </Link>
+            <h1 className="text-3xl ml-2">
+              {isEdit ? "Edit Assessment" : "Create Assessment"}
+            </h1>
+          </div>
+
+          <form onSubmit={handleSubmit} className="text-black">
+            <div className="mb-4">
+              <label htmlFor="assessmentName" className="font-bold">
+                Assessment Title
+              </label>
+              <input
+                type="text"
+                id="assessmentName"
+                placeholder="Enter assessment name"
+                value={assessment.assessment_name}
+                onChange={handleTextChange}
+                name="assessment_name"
+                required
+                className="form-input w-full mb-4 border border-gray-300 p-4 border-b-4 border-black"
+              />
             </div>
 
-            <Form onSubmit={handleSubmit}>
-              <FormGroup
-                controlId="assessmentName"
-                style={{ marginTop: "1rem" }}
-              >
-                <FormLabel>Assessment title:</FormLabel>
-                <FormControl
-                  type="text"
-                  placeholder="Enter assessment name"
-                  value={assessment.assessment_name}
-                  onChange={handleTextChange}
-                  data-cy="name"
-                  name="assessment_name"
-                  required
-                  className="form-control shadow-none rounded-0"
+            <div className="mb-4">
+              <label htmlFor="module" className="font-bold">
+                Module
+              </label>
+              <div className="w-full mb-6">
+                <Select
+                  onChange={(option) => handleSelectChange(option, "module")}
+                  options={modules}
+                  id="module"
+                  value={assessment.module}
+                  className="react-select-container"
                 />
-              </FormGroup>
+              </div>
+            </div>
 
-              <FormGroup controlId="module" style={{ marginTop: "1rem" }}>
-                <Row>
-                  <FormLabel>Module:</FormLabel>
-                  <Select
-                    // @ts-ignore
-                    onChange={(option) => handleSelectChange(option, "module")}
-                    options={modules}
-                    data-cy="module"
-                    id="module"
-                    value={assessment.module}
-                    className="react-select-container"
-                  />
-                </Row>
-              </FormGroup>
+            <div className="mb-4">
+              <label htmlFor="assessmentType" className="font-bold">
+                Assessment Type
+              </label>
+              <input
+                type="text"
+                id="assessmentType"
+                placeholder="Enter assessment type..."
+                name="assessment_type"
+                value={assessment.assessment_type}
+                onChange={handleTextChange}
+                required
+                className="form-input w-full mb-4 border border-gray-300 border-b-4 p-4 border-black"
+              />
+            </div>
 
-              <FormGroup
-                controlId="assessmentType"
-                style={{ marginTop: "1rem" }}
-              >
-                <FormLabel>Assessment type: </FormLabel>
-                <FormControl
-                  type="text"
-                  placeholder="Enter assessment type..."
-                  name="assessment_type"
-                  data-cy="type"
-                  value={assessment.assessment_type}
-                  onChange={handleTextChange}
+            <div className="mb-4">
+              <label htmlFor="handOutWeek" className="font-bold">
+                Hand Out Week
+              </label>
+              <div className="w-full">
+                <DatePicker
+                  selected={assessment.hand_out_week}
+                  onChange={(date) => handleDateChange(date, "hand_out_week")}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Select date"
                   required
-                  className="form-control shadow-none rounded-0"
+                  className="form-input mb-4 border border-gray-300 border-b-4 border-black p-4"
                 />
-              </FormGroup>
+              </div>
+            </div>
 
-              <FormGroup controlId="handOutWeek" style={{ marginTop: "1rem" }}>
-                <Row>
-                  <Row>
-                    <FormLabel>Hand out week: </FormLabel>
-                  </Row>
-                  <Row>
-                    <DatePicker
-                      selected={assessment.hand_out_week}
-                      onChange={(date) =>
-                        handleDateChange(date, "hand_out_week")
-                      }
-                      dateFormat="yyyy-MM-dd"
-                      placeholderText="Select date"
-                      required
-                      className="form-control shadow-none rounded-0"
-                      data-cy="handOutDate"
-                    />
-                  </Row>
-                </Row>
-              </FormGroup>
+            <div className="mb-4">
+              <label htmlFor="handInWeek" className="font-bold">
+                Hand In Week
+              </label>
+              <div className="w-full">
+                <DatePicker
+                  selected={assessment.hand_in_week}
+                  onChange={(date) => handleDateChange(date, "hand_in_week")}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Select date"
+                  required
+                  className="form-input w-full mb-4 border border-gray-300 border-b-4 border-black p-4"
+                />
+              </div>
+            </div>
 
-              <FormGroup controlId="handInWeek" style={{ marginTop: "1rem" }}>
-                <Row>
-                  <Row>
-                    <FormLabel>Hand in week: </FormLabel>
-                  </Row>
-                  <Row>
-                    <DatePicker
-                      selected={assessment.hand_in_week}
-                      onChange={(date) =>
-                        handleDateChange(date, "hand_in_week")
-                      }
-                      dateFormat="yyyy-MM-dd"
-                      placeholderText="Select date"
-                      required
-                      className="form-control shadow-none rounded-0"
-                      data-cy="handInDate"
-                    />
-                  </Row>
-                </Row>
-              </FormGroup>
+            <div className="mb-4">
+              <label htmlFor="assignees" className="font-bold">
+                Assignees
+              </label>
+              <div className="mb-4">
+                <Select
+                  onChange={(option) => handleSelectChange(option, "assignees")}
+                  options={users}
+                  id="assignees"
+                  value={assessment.assignees}
+                  isMulti
+                  className="react-select-container mb-6"
+                />
+              </div>
+            </div>
 
-              <FormGroup controlId="assignees" style={{ marginTop: "1rem" }}>
-                <Row>
-                  <FormLabel>Assignees:</FormLabel>
-                  <Select
-                    // @ts-ignore
-                    onChange={(option) =>
-                      handleSelectChange(option, "assignees")
-                    }
-                    options={users}
-                    data-cy="assignees"
-                    id="assignees"
-                    value={assessment.assignees}
-                    isMulti
-                    className="react-select-container"
-                  />
-                </Row>
-              </FormGroup>
-
-              <Button
-                variant="primary"
-                data-cy="CreateAssessment"
+            <div className="h-screen">
+              <button
                 type="submit"
-                className="btn btn-primary rounded-0"
-                style={{ marginTop: "1rem" }}
+                className="bg-gray-700 hover:bg-azure-700 text-white font-bold rounded w-full py-7"
               >
                 {isEdit ? "Edit Assessment" : "Create Assessment"}
-              </Button>
-            </Form>
-          </Col>
-        </Row>
+              </button>
+            </div>
+          </form>
+        </div>
       )}
-    </Container>
+    </div>
   );
 }
 

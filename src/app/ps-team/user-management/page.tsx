@@ -68,7 +68,16 @@ function ManageUsersPSTeam() {
             <CreateUser onClose={handleCloseCreateUserForm} />
           )}
           {!showCreateUserForm && (
-            <Button onClick={() => setShowCreateUserForm(true)}>
+            <Button
+              onClick={() => setShowCreateUserForm(true)}
+              variant="dark"
+              style={{
+                marginTop: "1rem",
+                height: "5rem",
+                width: "20rem",
+                fontSize: "larger",
+              }}
+            >
               Create New User
             </Button>
           )}

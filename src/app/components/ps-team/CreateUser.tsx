@@ -31,7 +31,7 @@ const rolesOptionsForSelect = Array.from(rolesOptionsSet).map((role) => ({
 
 // Define the CreateUser component
 const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
-  const [show, setShow] = useState(false); // State for modal visibility
+  const [show, setShow] = useState(true); // State for modal visibility
 
   const [newUser, setNewUser] = useState<User>({
     id: 0,
@@ -122,7 +122,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
           fontSize: "larger",
         }}
       >
-        Create User
+        Create New User
       </Button>
 
       <Modal show={show} onHide={handleClose} centered>

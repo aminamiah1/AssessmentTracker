@@ -51,4 +51,4 @@ RUN chmod +x entrypoint.sh
 ENV DATABASE_URL ${DATABASE_URL_LIVE}
 
 # Need to deploy DB migrations before starting the server
-CMD ["source", "entrypoint.sh"]
+CMD ["./entrypoint.sh"]

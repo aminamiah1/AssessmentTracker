@@ -1,12 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-
+import { useSession, signIn } from "next-auth/react";
 import { MdDelete, MdEdit } from "react-icons/md";
-
-import Link from "next/link";
-
 import SearchBar from "@/app/components/SearchBar/SearchBar";
+import Link from "next/link";
+import AuthContext from "@/app/utils/authContext";
 
 type ModuleData = {
   id: number;
@@ -15,31 +13,51 @@ type ModuleData = {
 }[];
 
 async function getModules(searchTerm: string) {
-  // Get modules from api endpoint
   const data = await fetch(`/api/module-list/${searchTerm}`, {
     next: { revalidate: 3600 },
   });
   return data.json();
 }
 
-export default function ModuleList() {
+function ModuleList() {
+  const { data: session, status } = useSession();
+  const [isModuleLeader, setIsModuleLeader] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [modules, setModules] = useState<ModuleData>([]);
 
-  const router = useRouter();
+  useEffect(() => {
+    if (session != null) {
+      const checkRoles = () => {
+        const roles = session.user.roles;
+        console.log(session.user.roles);
+        if (roles.includes("module_leader")) {
+          setIsModuleLeader(true);
+        } else {
+          setIsModuleLeader(false);
+        }
+      };
+
+      checkRoles();
+    } else if (status === "unauthenticated") {
+      // If not a authenticated user then make them sign-in
+      signIn();
+    }
+  }, [session, status]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+    // Show a loading message while checking session status
+  }
+
+  if (!isModuleLeader) {
+    return <p>You are not authorised to view this</p>;
+  }
 
   const onSearch = (term: string) => {
     setSearchTerm(term);
   };
 
-  useEffect(() => {
-    async function fetchModules() {
-      const fetchedModules: ModuleData = await getModules(searchTerm);
-      setModules(fetchedModules);
-    }
-    fetchModules();
-  }, [searchTerm]);
-
+  // Render the module list if authenticated
   return (
     <>
       <div>
@@ -92,3 +110,11 @@ export default function ModuleList() {
     </>
   );
 }
+
+const WrappedModuleList = () => (
+  <AuthContext>
+    <ModuleList />
+  </AuthContext>
+);
+
+export default WrappedModuleList;

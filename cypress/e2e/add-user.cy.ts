@@ -1,6 +1,6 @@
 // describe("Add User", () => {
 //   beforeEach(() => {
-//     cy.intercept("GET", "http://localhost:3000/api/auth/session", {
+//     cy.intercept("GET", "/api/auth/session", {
 //       statusCode: 200,
 //       body: {
 //         user: {
@@ -11,7 +11,7 @@
 //         expires: "date-string",
 //       },
 //     });
-//     cy.visit("http://localhost:3000/ps-team/user-management");
+//     cy.visit("/ps-team/user-management");
 //   });
 //   // Add a new user
 //   it("allows a ps-team member to add a user", () => {

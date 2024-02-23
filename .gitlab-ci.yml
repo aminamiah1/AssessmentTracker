@@ -1,31 +1,68 @@
-stages: # List of stages for jobs, and their order of execution
+stages:
   - build
+  - cleanup
   - test
   - prepare-deploy
   - deploy
 
 variables:
-  PROD_TAG: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+  # For testing
+  DISABLE_ERD: "true"
+  # Don't need password to connect to CI postgres service; trust auth is enabled
+  DATABASE_URL: postgres://postgres@postgres/$POSTGRES_DB
+  NEXTAUTH_URL: $NEXTAUTH_URL
+  NEXTAUTH_SECRET: $NEXTAUTH_SECRET
+
+  # For image building
   CI_COMMIT_LABEL: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
-  DATABASE_URL: $DATABASE_URL_OLD
+  PROD_TAG: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
+  PROD_CONFIG_NAME: assessmenttracking-prod-generated-$PROD_TAG
+  STAGING_CONFIG_NAME: assessmenttracking-staging-generated-$CI_COMMIT_LABEL
+
+###############
+# JOB ANCHORS #
+###############
+
+.do-openshift-login: &do-openshift-login
+  - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
+  - oc project $OPENSHIFT_PROJECT
+  - oc version
+
+.use-openshift: &use-openshift
+  only:
+    - main
+    - /^release-\d+$/
+  image: openshift/origin-cli
+  before_script: # will allow for concatenation with script in the job
+    - *do-openshift-login
+
+.use-postgres:
+  services: &use-postgres
+    - name: postgres:12.18
+      alias: postgres
+      variables:
+        POSTGRES_DB: $POSTGRES_DB
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+        POSTGRES_HOST_AUTH_METHOD: trust
+
+.set-up-app-environment: &set-up-app-environment
+  - echo "Creating $CI_JOB_STAGE database..."
+  - psql -h postgres -U postgres -c "CREATE DATABASE $POSTGRES_DB;"
+  - echo "Setting up app environment..."
+  - npm ci
+  - npx prisma generate
+  - npx prisma db push
 
 ################
 # BUILD STAGES #
 ################
 
-# This will only run for main and release branches
-# i.e. production and staging branches
 build-image:
+  <<: *use-openshift
   stage: build
-  only:
-    - main
-    - /^release-\d+$/
-  image: openshift/origin-cli
+  needs: [] # Run immediately, don't wait for other jobs
   script:
-    - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
-    - oc project $OPENSHIFT_PROJECT
-    - oc version
-
     # Create a new build configuration for the application for production or staging,
     # depending on what branch we're on:
     # - If the branch is 'main', create a production build
@@ -44,143 +81,203 @@ build-image:
         echo "Building production...";
         oc process build-config-prod \
           -p CI_COMMIT_LABEL=$PROD_TAG \
-          -p CI_DATABASE_URL_OLD=$DATABASE_URL_OLD \
+          -p CI_DATABASE_URL_LIVE=$DATABASE_URL_PROD \
+          -p CI_DATABASE_URL_BUILD=${DATABASE_URL_PROD}?schema=$CI_COMMIT_SHORT_SHA \
           -p CI_NEXTAUTH_URL=$NEXTAUTHPROD_URL \
           -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
           -l name=build-$CI_COMMIT_SHORT_SHA | oc create -f -;
-        oc start-build assessmenttracking-prod-generated-$PROD_TAG --follow --wait;
-        oc delete buildconfig assessmenttracking-prod-generated-$PROD_TAG
+        oc start-build $PROD_CONFIG_NAME --follow --wait;
 
       elif [[ "$CI_COMMIT_REF_NAME" == "release"* ]]; then
         echo "Building staging image from branch $CI_COMMIT_REF_NAME...";
         oc process build-config-staging \
           -p CI_COMMIT_LABEL=$CI_COMMIT_LABEL \
           -p CI_COMMIT_SHA=$CI_COMMIT_SHA \
-          -p CI_DATABASE_URL_OLD=$DATABASE_URL_OLD \
+          -p CI_DATABASE_URL_LIVE=$DATABASE_URL_STAGING \
+          -p CI_DATABASE_URL_BUILD=${DATABASE_URL_STAGING}?schema=$CI_COMMIT_SHORT_SHA \
           -p CI_NEXTAUTH_URL=$NEXTAUTHSTAGING_URL \
           -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
           -l name=build-$CI_COMMIT_LABEL | oc create -f -;
-        oc start-build assessmenttracking-staging-generated-$CI_COMMIT_LABEL --follow --wait;
-        oc delete buildconfig assessmenttracking-staging-generated-$CI_COMMIT_LABEL
+        oc start-build $STAGING_CONFIG_NAME --follow --wait;
       fi
 
-# This will run for all other branches
-build-dev:
+# We want to run this regardless - this is the actual build that testing
+# will be performed on.  It should be the same as the production build:
+# - Same base image
+# - Same environment variables being used (different values, but same keys)
+# - Same build process
+build-test-bundle:
   stage: build
-  except:
-    - main
-    - /^release-\d+$/
   image: node:20.11.0-alpine3.18
-  script:
-    - echo $PROD_TAG
-    - echo $CI_COMMIT_LABEL
-    - echo "Building development bundle..."
-    - npm i
-    - npm run build
+  services: *use-postgres
   artifacts:
     paths:
       - .next/
     when: on_success
     expire_in: "30 days"
+  needs: [] # Run immediately, don't wait for other jobs
+  before_script:
+    - echo "Installing postgresql client"
+    - apk update && apk add postgresql-client
+  script:
+    - *set-up-app-environment
+    - npm run build
+
+###############
+# CLEANUP JOB #
+###############
+
+# Need to include this so that a cleanup job can occur
+# after the build job has completed or failed
+clean-up-builds:
+  <<: *use-openshift
+  stage: cleanup
+  when: always
+  needs:
+    - build-image
+  script:
+    - >
+      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+        echo "Cleaning up production build...";
+        oc delete buildconfig $PROD_CONFIG_NAME;
+      elif [[ "$CI_COMMIT_REF_NAME" == "release"* ]]; then
+        echo "Cleaning up staging build...";
+        oc delete buildconfig $STAGING_CONFIG_NAME;
+      fi
 
 ###############
 # TEST STAGES #
 ###############
-
-staging-test:
+test:
   stage: test
-  only:
-    - /^release-\d+$/
   image: cypress/base:20.11.0
-  services:
-    - $REGISTRY_HOST/$REGISTRY_PATH/staging:$CI_COMMIT_LABEL
-  script:
-    - echo "Hello from staging testing!"
-
-prod-test:
-  stage: test
-  only:
-    - main
-  image: cypress/base:20.11.0
-  services:
-    - $REGISTRY_HOST/$REGISTRY_PATH/prod:$PROD_TAG
-  script:
-    - echo "Hello from prod testing!"
-
-dev-test:
-  stage: test
-  except:
-    - main
-    - /^release-\d+$/
+  services: *use-postgres
+  artifacts:
+    paths:
+      # we want to store any screenshots created from failed tests
+      # so debugging can be made a little easier if the test failures
+      # are not reproducible in local environments :)
+      - cypress/screenshots
+    when: on_failure
+    expire_in: "90 days"
   dependencies:
-    - build-dev
-  image: cypress/base:20.11.0
+    - build-test-bundle
+  before_script:
+    - echo "Installing postgresql client"
+    - apt-get update && apt-get install -y postgresql-client
   script:
-    - npm i
+    - *set-up-app-environment
     - npm start &
     - npm run test:e2e
-
-lint-test-job:
-  stage: test
-  script:
-    - echo "EXAMPLE Linting code... This will take about 10 seconds."
-    - echo "EXAMPLE No lint issues found."
 
 ##########################
 # DEPLOYMENT PREPARATION #
 ##########################
 
-# Tag the images just created as the "latest" or "stable"
-# "latest" for release branches, "stable" for main branch
-update-prod-tag:
+# We want to create a backup of the database before deploying
+# to production or staging. This is so that we can rollback to
+# a previous state if something goes wrong with the deployment.
+.use-openshift-backup: &use-openshift-backup
+  <<: *use-openshift
   stage: prepare-deploy
+  needs:
+    - test
+  artifacts:
+    paths:
+      - postgres-data
+    when: on_success
+    expire_in: "30 days"
+  variables:
+    HOST_DIR: /var/lib/pgsql/backups
+    LOCAL_DIR: ./postgres-data
+  script:
+    # Ensure the backups directory exists
+    - oc exec $POD_NAME -- mkdir -p $HOST_DIR
+    # Create the actual backup
+    - oc exec $POD_NAME -- pg_basebackup -h localhost -U postgres -D $HOST_DIR/$CI_COMMIT_SHA -Ft -z -P -Xs -v
+
+    # Create the local directory to store the backup in GitLab
+    - mkdir -p $LOCAL_DIR
+    # Download the backup from the pod
+    - oc rsync --progress $POD_NAME:$HOST_DIR/$CI_COMMIT_SHA $LOCAL_DIR
+
+create-prod-db-backup:
+  <<: *use-openshift-backup
   only:
     - main
-  image: alpine:3.19
-  needs:
-    - prod-test
-  script:
-    - apk add skopeo
-    - skopeo login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD --tls-verify=false -v $REGISTRY_HOST
-    - >
-      echo "Updating tags for production...";
-      skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:$PROD_TAG docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:stable;
+  before_script:
+    - *do-openshift-login
+    # Need to extract the pod name from the postgres service;
+    # rsync works by pod name, not service name
+    - PODS=$(oc get pods -l name=postgresql-prod | grep "Running")
+    - echo "$PODS"
+    - POD_REGEX="(postgresql-prod[^ ]+)"
+    - if [[ $PODS =~ $POD_REGEX ]]; then export POD_NAME="${BASH_REMATCH[1]}"; fi
+    - echo "$POD_NAME"
 
-update-staging-tag:
-  stage: prepare-deploy
+create-staging-db-backup:
+  <<: *use-openshift-backup
   only:
     - /^release-\d+$/
+  before_script:
+    - *do-openshift-login
+    - PODS=$(oc get pods -l name=postgresql-staging | grep "Running")
+    - echo "$PODS"
+    - POD_REGEX="(postgresql-staging[^ ]+)"
+    - if [[ $PODS =~ $POD_REGEX ]]; then export POD_NAME="${BASH_REMATCH[1]}"; fi
+    - echo "$POD_NAME"
+
+#-----------------------------------------#
+
+.update-tag-template: &update-tag-template
+  stage: prepare-deploy
   image: alpine:3.19
   needs:
-    - staging-test
-  script:
+    - test
+  before_script:
     - apk add skopeo
     - skopeo login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD --tls-verify=false -v $REGISTRY_HOST
-    - >
-      echo "Updating tags for staging...";
-      skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:$CI_COMMIT_LABEL docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:latest;
+
+update-prod-tag:
+  <<: *update-tag-template
+  only:
+    - main
+  script:
+    - echo "Updating tags for production...";
+    - skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:$PROD_TAG docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:stable;
+
+update-staging-tag:
+  <<: *update-tag-template
+  only:
+    - /^release-\d+$/
+  script:
+    - echo "Updating tags for staging...";
+    - skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:$CI_COMMIT_LABEL docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:latest;
 
 ################
 # DEPLOY STAGE #
 ################
 
-deploy-openshift:
+deploy-prod-openshift:
+  <<: *use-openshift
   stage: deploy
+  needs:
+    - create-prod-db-backup
+    - update-prod-tag
   only:
     - main
-    - /^release-\d+$/
-  image: openshift/origin-cli
   script:
-    - oc login --token=$OPENSHIFT_TOKEN --server=$OPENSHIFT_API_URL --insecure-skip-tls-verify=true
-    - oc project $OPENSHIFT_PROJECT
+    - echo "Deploying production...";
+    - oc rollout latest dc/assessment-tracker-prod;
 
-    # Check if the current branch is 'main'
-    - >
-      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
-        echo "Deploying production...";
-        oc rollout latest dc/assessment-tracker-prod;
-
-      elif [[ "$CI_COMMIT_REF_NAME" == "release"* ]]; then
-        echo "Deploying staging...";
-        oc rollout latest dc/assessment-tracker-staging;
-      fi
+deploy-staging-openshift:
+  <<: *use-openshift
+  stage: deploy
+  needs:
+    - create-staging-db-backup
+    - update-staging-tag
+  only:
+    - /^release-\d+$/
+  script:
+    - echo "Deploying staging...";
+    - oc rollout latest dc/assessment-tracker-staging;

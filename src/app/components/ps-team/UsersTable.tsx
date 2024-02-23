@@ -193,7 +193,7 @@ const UsersTable: React.FC = () => {
       {
         Header: "Edit",
         accessor: (id: any) => (
-          <button onClick={() => handleEdit(id)}>
+          <button onClick={() => handleEdit(id)} data-cy="EditUser">
             <Image
               className="object-cover"
               src={editImg}

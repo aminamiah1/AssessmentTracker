@@ -41,7 +41,7 @@ function ViewAssessmentsModuleLeaders() {
           // Set the current user as a module leader to true
           setIsModuleLeader(true);
         } else if (roles.includes("module_leader") === false) {
-          signIn();
+          setIsModuleLeader(false);
         }
       };
 
@@ -88,6 +88,10 @@ function ViewAssessmentsModuleLeaders() {
 
   if (!session) {
     return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+  }
+
+  if (isModuleLeader === false) {
+    return <p>You are not authorised to view this page...</p>; // Alert the current user that they do not have the role privilege to access the current page
   }
 
   return (

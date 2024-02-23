@@ -89,7 +89,8 @@ function CreateAssessmentModuleLeaders() {
           //Set the assessment setter id to the current user
           setSetterId(parseInt(session.user.id as any, 10));
         } else {
-          signIn();
+          // Else display unauthorised message
+          setIsModuleLeader(false);
         }
       };
 
@@ -321,6 +322,10 @@ function CreateAssessmentModuleLeaders() {
 
   if (!session) {
     return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+  }
+
+  if (isModuleLeader === false) {
+    return <p>You are not authorised to view this page...</p>; // Alert the current user that they do not have the role privilege to access the current page
   }
 
   return (

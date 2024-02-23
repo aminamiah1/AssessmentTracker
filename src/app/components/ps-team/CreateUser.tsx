@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, FormEvent } from "react";
 import { toast } from "react-toastify";
 import Select from "react-select";

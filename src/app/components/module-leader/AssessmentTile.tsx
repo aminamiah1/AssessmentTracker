@@ -135,7 +135,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
           <div className="bg-white p-5 border border-black rounded-lg">
             <p className="text-black mb-4">Delete Assessment?</p>
             <p className="text-black mb-4">
-              Are you sure you want to delete the assessment{" "}
+              Are you sure you want to delete the assessment:{" "}
               {assessment.assessment_name}?
             </p>
             <div className="flex justify-between mt-4">

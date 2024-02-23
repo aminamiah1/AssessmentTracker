@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useTable } from "react-table";
-import Image from "next/image"; // Importing Image component from Next.js
+import Image from "next/image";
 import axios from "axios";
-import Table from "react-bootstrap/Table";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import EditUser from "./EditUser";
 import searchImg from "./assets/search.png";
 import editImg from "./assets/editIcon.png";
 import trashCan from "./assets/trashCan.png";
-import { Form, FormControl, FormLabel, Button, Modal } from "react-bootstrap";
 
 interface User {
   id: number;
@@ -25,25 +21,23 @@ const UsersTable: React.FC = () => {
   const [showEditUserModal, setShowEditUserModal] = useState(false);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
   const [search, setSearch] = React.useState("");
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]); // New state for filtered view
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [refetch, setRefetch] = useState(0);
-  // State variable for managing the visibility of the delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      // Fetch users only when component mounts or search is cleared
       if (!search) {
         const response = await axios.get("/api/ps-team/get-users");
         const sortedUsers = response.data.sort((a: any, b: any) => a.id - b.id);
         setUsers(sortedUsers);
-        setFilteredUsers(sortedUsers); // Initialize filtered view with all users
+        setFilteredUsers(sortedUsers);
       }
     };
 
     fetchUsers();
-  }, [search, refetch]); // Run effect when search changes
+  }, [search, refetch]);
 
   const handleSearch = (event: any) => {
     setSearch(event.target.value);
@@ -51,7 +45,6 @@ const UsersTable: React.FC = () => {
       users.filter((user) => {
         const searchTerm = event.target.value.toLowerCase();
         return (
-          //Can search by role or name to find users in the table
           user.name.toLowerCase().includes(searchTerm) ||
           user.roles.some((role: string) =>
             role.toLowerCase().includes(searchTerm),
@@ -62,7 +55,7 @@ const UsersTable: React.FC = () => {
   };
 
   const handleEdit = async (user: any) => {
-    setSearch(""); // Reset search to show all users
+    setSearch("");
 
     var id = user.id;
     fetch(`/api/ps-team/get-user?id=${id}`, {
@@ -73,29 +66,24 @@ const UsersTable: React.FC = () => {
     })
       .then((response) => {
         if (response.ok) {
-          // Parse the JSON response and pass user details
           return response.json();
         } else {
-          // Handle errors with toast message to inform user
           toast.error("Error getting user");
           throw new Error("Error getting user");
         }
       })
       .then((data) => {
-        // Set userToEdit state with received data
         setUserToEdit(data);
-        // Show the edit user modal
         setShowEditUserModal(true);
       })
       .catch((error) => {
-        // Handle network errors with toast to inform user
         toast.error("Network error please try again");
       });
   };
 
   const handleDelete = async (user: any) => {
     try {
-      setSearch(" "); // Reset search to show all users
+      setSearch(" ");
 
       var id = user.id;
 
@@ -108,25 +96,20 @@ const UsersTable: React.FC = () => {
       })
         .then((response) => {
           if (response.ok) {
-            // Handle successful deletion and update users array to re-set table
-            setSearch(""); //Reset search
+            setSearch("");
             setUsers(users.filter((u) => u.id !== id));
           } else {
-            // Handle errors with toast message to inform user
             toast.error("'Error deleting user");
           }
         })
         .catch((error) => {
-          // Handle network errors with toast to inform user
           toast.error("Network error please try again");
         });
 
-      // Success message with toast to add
       toast.success("Delete user successful!");
       setShowDeleteModal(false);
-      setRefetch(refetch + 1); //Refetch all user details
+      setRefetch(refetch + 1);
     } catch (error) {
-      // Display an error message to the user with toast message
       toast.error("Error deleting user");
     }
   };
@@ -165,7 +148,7 @@ const UsersTable: React.FC = () => {
             } else {
               return (
                 role.replace("_", " ").charAt(0).toUpperCase() + role.slice(1)
-              ); // Capitalize first letter for other roles
+              );
             }
           });
           return capitalizedRoles.join(" ● ");
@@ -178,14 +161,13 @@ const UsersTable: React.FC = () => {
             onClick={() => {
               setUserToDelete(id);
               setShowDeleteModal(true);
-            }} // Show modal after successful fetch
-            style={{ display: "flex", justifyContent: "center" }}
+            }}
           >
             <Image
-              className="object-cover"
               src={trashCan}
               alt="trash can delete"
-              style={{ height: "3rem", width: "3rem" }}
+              width={48}
+              height={48}
             />
           </button>
         ),
@@ -194,12 +176,7 @@ const UsersTable: React.FC = () => {
         Header: "Edit",
         accessor: (id: any) => (
           <button onClick={() => handleEdit(id)} data-cy="EditUser">
-            <Image
-              className="object-cover"
-              src={editImg}
-              alt="edit user icon"
-              style={{ height: "3rem", width: "3rem" }}
-            />
+            <Image src={editImg} alt="edit user icon" width={48} height={48} />
           </button>
         ),
       },
@@ -216,31 +193,23 @@ const UsersTable: React.FC = () => {
 
   return (
     <>
-      <Form className="d-flex align-items-center mb-3">
+      <div className="flex items-center mb-3">
         <Image
           alt="search"
-          className="object-cover"
           src={searchImg}
-          style={{
-            width: "2rem",
-            paddingBottom: "1rem",
-            marginLeft: "1rem",
-            marginRight: "1rem",
-          }}
+          width={32}
+          height={32}
+          className="mr-2"
         />
-        <FormControl
+        <input
           id="search"
           type="text"
           value={search}
           onChange={handleSearch}
           placeholder="Enter name or user role..."
-          style={{
-            marginBottom: "2rem",
-            padding: "1rem",
-            boxShadow: "5px 5px black, 15px 15px 15px 15px #2b355400",
-          }}
+          className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
         />
-      </Form>
+      </div>
       <EditUser
         show={showEditUserModal}
         onClose={() => setShowEditUserModal(false)}
@@ -249,31 +218,17 @@ const UsersTable: React.FC = () => {
         setRefetch={setRefetch}
         refetch={refetch}
       />
-      <Table
-        bordered
-        hover
-        responsive
-        variant="light"
+      <table
+        className="table-auto w-full bg-gray-100 border border-black shadow-md text-black shadow-md border-b-4 border-black mb-3 text-lg"
         {...getTableProps()}
-        style={{
-          fontSize: "larger",
-          backgroundColor: "white",
-          border: "20px black",
-          boxShadow: "5px 5px black, 15px 15px 15px 15px #2b355400",
-        }}
       >
         <thead>
           {headerGroups.map((headerGroup, headerGroupIndex) => (
-            <tr
-              // @ts-ignore
-              key={`header-group-${headerGroupIndex}`}
-              {...headerGroup.getHeaderGroupProps()}
-            >
+            <tr key={`header-group-${headerGroupIndex}`}>
               {headerGroup.headers.map((column, columnIndex) => (
                 <th
-                  // @ts-ignore
                   key={`header-${headerGroupIndex}-${columnIndex}`}
-                  {...column.getHeaderProps()}
+                  className="border border-black"
                 >
                   {column.render("Header")}
                 </th>
@@ -286,12 +241,15 @@ const UsersTable: React.FC = () => {
             prepareRow(row);
             return (
               // @ts-ignore
-              <tr key={`row-${rowIndex}`} {...row.getRowProps()}>
+              <tr
+                key={`row-${rowIndex}`}
+                {...row.getRowProps()}
+                className="border border-black"
+              >
                 {row.cells.map((cell, cellIndex) => (
                   <td
-                    // @ts-ignore
                     key={`cell-${rowIndex}-${cellIndex}`}
-                    {...cell.getCellProps()}
+                    className="border border-black pl-2"
                   >
                     {cell.render("Cell")}
                   </td>
@@ -300,40 +258,36 @@ const UsersTable: React.FC = () => {
             );
           })}
         </tbody>
-      </Table>
+      </table>
 
-      {/* Modal for confirming user deletion */}
-      <Modal
-        show={showDeleteModal && userToDelete !== null}
-        onHide={() => setShowDeleteModal(false)}
+      <div
+        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
+          showDeleteModal ? "block" : "hidden"
+        }`}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {userToDelete ? (
-              <p>Delete user: {userToDelete.name}?</p>
-            ) : (
-              <p>Delete user</p>
-            )}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {userToDelete ? (
-            <p>Are you sure you want to delete user: {userToDelete.name}?</p>
-          ) : (
-            <p>Are you sure you want to delete the selected user?</p>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          {/* Button to cancel deletion */}
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Cancel
-          </Button>
-          {/* Button to confirm deletion */}
-          <Button variant="danger" onClick={() => handleDelete(userToDelete)}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        {userToDelete && (
+          <div className="bg-white p-5 border rounded-lg">
+            <p>Delete user: {userToDelete.name}?</p>
+            <p className="text-black">
+              Are you sure you want to delete user: {userToDelete.name}?
+            </p>
+            <div className="flex justify-between mt-4">
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => handleDelete(userToDelete)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 };

@@ -11,41 +11,25 @@ datasource db {
   url      = env("DATABASE_URL_OLD")
 }
 
-model Users {
-  id              Int          @id @default(autoincrement())
-  email           String       @unique
-  name            String
-  password        String
-  roles           Role[]
-  image           String?
-  set_assessments Assessment[]
-  assessments     Assessment[] @relation("AssessmentsToUsers")
-  modules         Module[]     @relation("ModulesToUsers")
-
-  @@map("users")
+model Assessment {
+  id                 Int                  @id @default(autoincrement())
+  assessment_name    String
+  assessment_type    String
+  hand_out_week      DateTime
+  hand_in_week       DateTime
+  module_id          Int
+  setter_id          Int?
+  Module             Module               @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  AssessmentsToUsers AssessmentsToUsers[]
+  Part               Part[]
 }
 
 model Module {
-  id             Int          @id @default(autoincrement())
+  id             Int              @id @default(autoincrement())
   module_name    String
-  module_code    String       @unique
-  assessments    Assessment[]
-  module_leaders Users[]      @relation("ModulesToUsers")
-}
-
-model Assessment {
-  id              Int        @id @default(autoincrement())
-  assessment_name String
-  assessment_type String
-  hand_out_week   DateTime
-  hand_in_week    DateTime
-  module_id       Int
-  setter_id       Int?
-  module          Module     @relation(fields: [module_id], references: [id], onDelete: Cascade)
-  setter          Users?     @relation(fields: [setter_id], references: [id], onDelete: Cascade)
-  Response        Response[]
-  part            Part[]     @relation("AssessmentToPart")
-  assignees       Users[]    @relation("AssessmentsToUsers")
+  module_code    String           @unique
+  Assessment     Assessment[]
+  ModulesToUsers ModulesToUsers[]
 }
 
 model Part {
@@ -53,7 +37,7 @@ model Part {
   part_title  String
   part_number Int
   Question    Question[]
-  Assessment  Assessment[] @relation("AssessmentToPart")
+  Assessment  Assessment[]
 }
 
 model Question {
@@ -65,13 +49,48 @@ model Question {
 }
 
 model Response {
-  id            Int        @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   value         String
   data_type     Data_type
   assessment_id Int
   question_id   Int
-  Assessment    Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
-  Question      Question   @relation(fields: [question_id], references: [id])
+  Question      Question  @relation(fields: [question_id], references: [id])
+}
+
+model AssessmentsToUsers {
+  A          Int
+  B          Int
+  Assessment Assessment @relation(fields: [A], references: [id], onDelete: Cascade)
+
+  @@unique([A, B], map: "_AssessmentsToUsers_AB_unique")
+  @@index([B], map: "_AssessmentsToUsers_B_index")
+  @@map("_AssessmentsToUsers")
+}
+
+model ModulesToUsers {
+  A      Int
+  B      Int
+  Module Module @relation(fields: [A], references: [id], onDelete: Cascade)
+
+  @@unique([A, B], map: "_ModulesToUsers_AB_unique")
+  @@index([B], map: "_ModulesToUsers_B_index")
+  @@map("_ModulesToUsers")
+}
+
+model users {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  name     String
+  password String
+  roles    Role[]
+  image    String?
+}
+
+enum Data_type {
+  boolean
+  string
+  integer
+  date_time
 }
 
 enum Role {
@@ -81,11 +100,4 @@ enum Role {
   panel_member
   external_examiner
   system_admin
-}
-
-enum Data_type {
-  boolean
-  string
-  integer
-  date_time
 }

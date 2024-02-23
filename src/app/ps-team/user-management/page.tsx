@@ -27,7 +27,7 @@ function ManageUsersPSTeam() {
 
       checkRoles();
     } else if (status === "unauthenticated") {
-      // If not a authenticated user then make them sign-in
+      // If not a authenticated user then make them sign-in through the sign-in page
       signIn();
     }
   }, [session, status]);

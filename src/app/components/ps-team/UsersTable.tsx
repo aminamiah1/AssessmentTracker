@@ -267,7 +267,7 @@ const UsersTable: React.FC = () => {
         }`}
       >
         {userToDelete && (
-          <div className="bg-white p-5 border rounded-lg">
+          <div className="bg-white p-5 border border-black rounded-lg">
             <p>Delete user: {userToDelete.name}?</p>
             <p className="text-black">
               Are you sure you want to delete user: {userToDelete.name}?

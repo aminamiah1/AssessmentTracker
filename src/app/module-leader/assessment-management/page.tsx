@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
 import Link from "next/link";
 import { ToastContainer } from "react-toastify";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -52,9 +51,9 @@ function ManageAssessmentsModuleLeaders() {
       <div className="flex justify-center items-center pt-40">
         <div className="mb-8">
           <Link href="/module-leader/assessment-management/create-assessment">
-            <button className="bg-gray-800 text-white h-80 w-80 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none mr-5">
+            <button className="bg-gray-800 text-white h-32 md:h-80 w-32 md:w-80 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
               <div>
-                <i className="bi bi-newspaper text-9xl"></i>
+                <i className="bi bi-newspaper text-5xl md:text-9xl"></i>
               </div>
               <div>Create Assessment</div>
             </button>
@@ -62,9 +61,9 @@ function ManageAssessmentsModuleLeaders() {
         </div>
         <div className="mb-8">
           <Link href="/module-leader/assessment-management/view-assessments">
-            <button className="bg-gray-800 text-white h-80 w-80 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
+            <button className="bg-gray-800 text-white h-32 md:h-80 w-32 md:w-80 ml-2 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
               <div>
-                <i className="bi bi-envelope-paper text-9xl"></i>
+                <i className="bi bi-envelope-paper text-5xl md:text-9xl"></i>
               </div>
               <div>View Assessments Created</div>
             </button>

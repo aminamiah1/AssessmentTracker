@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import AssessmentTile from "../../../components/module-leader/AssessmentTile";
 import arrowReturn from "../../../components/module-leader/assets/arrowReturn.png";
+import searchImg from "../../../components/module-leader/assets/search.png";
 import Image from "next/image";
 import Link from "next/link";
 import AuthContext from "@/app/utils/authContext";
@@ -93,9 +93,9 @@ function ViewAssessmentsModuleLeaders() {
   }
 
   return (
-    <Container fluid className="p-4 bg-white h-screen text-black">
+    <div className="p-4 bg-white h-screen text-black">
       <ToastContainer />
-      <Col style={{ marginBottom: "2rem", marginTop: "2rem" }}>
+      <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Link href={"/module-leader/assessment-management"}>
             <Image
@@ -106,35 +106,40 @@ function ViewAssessmentsModuleLeaders() {
           </Link>
           <h1 className="text-3xl">Your Assessments Overview</h1>
         </div>
-      </Col>
-      <Row>
-        <Form.Group
-          as={Col}
-          controlId="searchBar"
-          style={{ marginBottom: "1rem" }}
-        >
-          <Form.Control
+      </div>
+      <div>
+        <div className="flex items-center mb-3">
+          <Image
+            alt="search"
+            src={searchImg}
+            width={32}
+            height={32}
+            className="mr-2"
+          />
+          <input
+            id="search"
             type="text"
-            placeholder="Search by assessment name or module name"
             value={searchTerm}
             onChange={handleSearch}
+            placeholder="Enter module or assessment name..."
+            className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
           />
-        </Form.Group>
-      </Row>
-      <Row>
+        </div>
+      </div>
+      <div>
         {filteredAssessments.length > 0 ? (
-          <Row>
+          <div>
             {filteredAssessments.map((assessment) => (
               <AssessmentTile key={assessment.id} assessment={assessment} />
             ))}
-          </Row>
+          </div>
         ) : (
           <div className="text-center">
             No assessments found matching the search criteria...
           </div>
         )}
-      </Row>
-    </Container>
+      </div>
+    </div>
   );
 }
 

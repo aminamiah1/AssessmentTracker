@@ -1,6 +1,5 @@
 // Import necessary modules and components from React and React Bootstrap
 import React, { useState } from "react";
-import { Card, Col, Row, Modal, Button } from "react-bootstrap";
 import { format } from "date-fns"; // Importing date formatting function from date-fns library
 import Image from "next/image"; // Importing Image component from Next.js
 import trashCan from "./assets/trashCan.png"; // Importing trash can icon
@@ -52,7 +51,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
 
   return (
     // Assessment tile layout using Bootstrap grid system
-    <div className="flex-grow-1 col-12 md:col-6 mb-4">
+    <div className="flex-grow-1 col-12 md:col-6 mb-4 border border-gray-500">
       <ToastContainer />
       <div className="bg-white shadow-md">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
@@ -127,23 +126,35 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
         </div>
       </div>
 
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Delete Assessment?</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete the assessment{" "}
-          {assessment.assessment_name}?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <div
+        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
+          showDeleteModal ? "block" : "hidden"
+        }`}
+      >
+        {assessment && (
+          <div className="bg-white p-5 border border-black rounded-lg">
+            <p className="text-black mb-4">Delete Assessment?</p>
+            <p className="text-black mb-4">
+              Are you sure you want to delete the assessment{" "}
+              {assessment.assessment_name}?
+            </p>
+            <div className="flex justify-between mt-4">
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

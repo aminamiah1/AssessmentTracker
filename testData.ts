@@ -1,6 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+import prisma from "@/app/db";
 
 const example_date = new Date(2024, 1, 26);
 
@@ -11,15 +9,15 @@ async function createResponse() {
       value: "true",
       data_type: "boolean",
       assessment_id: 1,
-      question_id: 2
+      question_id: 2,
     },
   });
 }
 
 createResponse()
   .catch((error) => {
-    console.error('Error creating reponse:', error);
+    console.error("Error creating reponse:", error);
   })
   .finally(() => {
     prisma.$disconnect();
-});
+  });

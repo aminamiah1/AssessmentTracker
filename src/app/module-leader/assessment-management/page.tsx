@@ -31,7 +31,7 @@ function ManageAssessmentsModuleLeaders() {
   }, [status]);
 
   if (status === "loading") {
-    return <p>Loading...</p>; // Show a loading message while checking session status
+    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
   }
 
   if (!session) {
@@ -39,7 +39,11 @@ function ManageAssessmentsModuleLeaders() {
   }
 
   if (isModuleLeader === false) {
-    return <p>You are not authorised to view this page...</p>; // Alert the current user that they do not have the role privilege to access the current page
+    return (
+      <p className="text-white bg-black">
+        You are not authorised to view this page...
+      </p>
+    ); // Alert the current user that they do not have the role privilege to access the current page
   }
 
   return (

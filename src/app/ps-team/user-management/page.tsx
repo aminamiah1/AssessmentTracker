@@ -32,12 +32,16 @@ function ManageUsersPSTeam() {
   }, [session, status]);
 
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return <p className="text-white bg-black">Loading...</p>;
     // Show a loading message while checking session status
   }
 
   if (!isPSTeam) {
-    return <p>You are not authorized to view this</p>;
+    return (
+      <p className="text-white bg-black">
+        You are not authorized to view this page...
+      </p>
+    );
   }
 
   const handleCloseCreateUserForm = () => {

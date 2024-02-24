@@ -1,17 +1,29 @@
 // describe("Add Assessment Form", () => {
 //   // Visit the add assessment form
 //   beforeEach(() => {
-//     cy.intercept("GET", "http://localhost:3000/api/auth/session", {
-//       statusCode: 200,
-//       body: {
-//         user: {
-//           name: "John",
-//           email: "admin@example.com",
-//           roles: ["module_leader", "ps_team"],
+//     cy.intercept("GET", "/api/auth/session", {
+//         statusCode: 200,
+//         body: {
+//           user: { name: "John", email: "admin@example.com", roles: ["ps_team", "module_leader"]},
+//           expires: "date-string",
 //         },
-//         expires: "date-string",
-//       },
-//     });
+//       });
+//       cy.visit("/module-leader/assessment-management");
+//       cy.clearCookies();
+//       cy.clearLocalStorage();
+//       cy.intercept("GET", "**/api/auth/session", (req) => {
+//         req.reply({
+//           body: {
+//             user: {
+//               id: 6,
+//               name: "Admin User",
+//               email: "admin@example.com",
+//               roles: ["ps_team", "module_leader"],
+//             },
+//             expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+//           },
+//         });
+//       }).as("getSession");
 //     cy.visit(
 //       "http://localhost:3000/module-leader/assessment-management/create-assessment",
 //     );

@@ -245,6 +245,7 @@ const EditUser: React.FC<EditUserProps> = ({
                   <button
                     type="submit"
                     className="bg-gray-700 hover:bg-azure-700 text-white font-bold py-2 px-4 rounded"
+                    data-cy="EditUser"
                     style={{
                       marginTop: "1rem",
                       height: "5rem",

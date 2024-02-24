@@ -46,7 +46,7 @@ function ManageUsersPSTeam() {
 
   // Render the user management interface if authenticated
   return (
-    <div className="p-4 bg-white h-screen">
+    <div className="p-4 bg-white h-screen mt-4 overflow-y-auto">
       <ToastContainer />
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-black">User Management</h1>
@@ -60,7 +60,7 @@ function ManageUsersPSTeam() {
         ) : (
           <button
             onClick={() => setShowCreateUserForm(true)}
-            className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold"
+            className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20"
           >
             Create New User
           </button>

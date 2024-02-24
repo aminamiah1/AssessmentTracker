@@ -93,53 +93,55 @@ function ViewAssessmentsModuleLeaders() {
   }
 
   return (
-    <div className="p-4 bg-white h-screen text-black">
-      <ToastContainer />
-      <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Link href={"/module-leader/assessment-management"}>
+    <main className="bg-white">
+      <div className="p-4 bg-white h-screen text-black">
+        <ToastContainer />
+        <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Link href={"/module-leader/assessment-management"}>
+              <Image
+                src={arrowReturn}
+                alt="return arrow"
+                style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
+              />
+            </Link>
+            <h1 className="text-3xl">Your Assessments Overview</h1>
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center mb-3">
             <Image
-              src={arrowReturn}
-              alt="return arrow"
-              style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
+              alt="search"
+              src={searchImg}
+              width={32}
+              height={32}
+              className="mr-2"
             />
-          </Link>
-          <h1 className="text-3xl">Your Assessments Overview</h1>
+            <input
+              id="search"
+              type="text"
+              value={searchTerm}
+              onChange={handleSearch}
+              placeholder="Enter module or assessment name..."
+              className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
+            />
+          </div>
+        </div>
+        <div>
+          {filteredAssessments.length > 0 ? (
+            <div className="pb-20 mb-20">
+              {filteredAssessments.map((assessment) => (
+                <AssessmentTile key={assessment.id} assessment={assessment} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center">
+              No assessments found matching the search criteria...
+            </div>
+          )}
         </div>
       </div>
-      <div>
-        <div className="flex items-center mb-3">
-          <Image
-            alt="search"
-            src={searchImg}
-            width={32}
-            height={32}
-            className="mr-2"
-          />
-          <input
-            id="search"
-            type="text"
-            value={searchTerm}
-            onChange={handleSearch}
-            placeholder="Enter module or assessment name..."
-            className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
-          />
-        </div>
-      </div>
-      <div>
-        {filteredAssessments.length > 0 ? (
-          <div>
-            {filteredAssessments.map((assessment) => (
-              <AssessmentTile key={assessment.id} assessment={assessment} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center">
-            No assessments found matching the search criteria...
-          </div>
-        )}
-      </div>
-    </div>
+    </main>
   );
 }
 

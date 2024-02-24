@@ -30,7 +30,9 @@ const UsersTable: React.FC = () => {
     const fetchUsers = async () => {
       if (!search) {
         const response = await axios.get("/api/ps-team/get-users");
-        const sortedUsers = response.data.sort((a: any, b: any) => a.id - b.id);
+        const sortedUsers = response.data.sort(
+          (a: User, b: User) => a.id - b.id,
+        );
         setUsers(sortedUsers);
         setFilteredUsers(sortedUsers);
       }
@@ -193,7 +195,7 @@ const UsersTable: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-center mb-3">
+      <div className="flex items-center mb-3  overflow-y-auto">
         <Image
           alt="search"
           src={searchImg}

@@ -44,7 +44,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
       [event.target.name]:
         event.target.name === "selectedRoles"
           ? // @ts-ignore
-            event.target.value.map((role: { value: any }) => role.value)
+            event.target.value.map((role: { value: string }) => role.value)
           : event.target.value,
     });
   };

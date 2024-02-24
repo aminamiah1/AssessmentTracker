@@ -3,9 +3,8 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import AssessmentTile from "../../../components/module-leader/AssessmentTile";
-import arrowReturn from "../../../components/module-leader/assets/arrowReturn.png";
-import searchImg from "../../../components/module-leader/assets/search.png";
-import Image from "next/image";
+import { FiArrowLeft } from "react-icons/fi"; // Return arrow icon
+import { FiSearch } from "react-icons/fi"; // Search icon
 import Link from "next/link";
 import AuthContext from "@/app/utils/authContext";
 import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
@@ -99,9 +98,9 @@ function ViewAssessmentsModuleLeaders() {
         <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <Link href={"/module-leader/assessment-management"}>
-              <Image
-                src={arrowReturn}
-                alt="return arrow"
+              <FiArrowLeft
+                className="cursor-pointer ml-4"
+                size={30}
                 style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
               />
             </Link>
@@ -110,12 +109,10 @@ function ViewAssessmentsModuleLeaders() {
         </div>
         <div>
           <div className="flex items-center mb-3">
-            <Image
-              alt="search"
-              src={searchImg}
-              width={32}
-              height={32}
-              className="mr-2"
+            <FiSearch
+              className="mr-2 mb-2"
+              size={30}
+              style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
             />
             <input
               id="search"

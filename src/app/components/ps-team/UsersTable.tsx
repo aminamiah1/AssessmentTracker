@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useTable } from "react-table";
-import Image from "next/image";
 import axios from "axios";
 import { toast } from "react-toastify";
 import EditUser from "./EditUser";
-import searchImg from "./assets/search.png";
-import editImg from "./assets/editIcon.png";
-import trashCan from "./assets/trashCan.png";
+import { FiSearch } from "react-icons/fi"; // Search icon
+import { FaTrash } from "react-icons/fa"; // Trash can icon
+import { FaEdit } from "react-icons/fa"; // Edit icon
 
 interface User {
   id: number;
@@ -165,12 +164,7 @@ const UsersTable: React.FC = () => {
               setShowDeleteModal(true);
             }}
           >
-            <Image
-              src={trashCan}
-              alt="trash can delete"
-              width={48}
-              height={48}
-            />
+            <FaTrash className="cursor-pointer" size={30} />
           </button>
         ),
       },
@@ -178,7 +172,7 @@ const UsersTable: React.FC = () => {
         Header: "Edit",
         accessor: (id: any) => (
           <button onClick={() => handleEdit(id)} data-cy="EditUser">
-            <Image src={editImg} alt="edit user icon" width={48} height={48} />
+            <FaEdit className="cursor-pointer" size={30} />
           </button>
         ),
       },
@@ -195,13 +189,11 @@ const UsersTable: React.FC = () => {
 
   return (
     <>
-      <div className="flex items-center mb-3  overflow-y-auto">
-        <Image
-          alt="search"
-          src={searchImg}
-          width={32}
-          height={32}
-          className="mr-2"
+      <div className="flex items-center mb-3 overflow-y-auto">
+        <FiSearch
+          className="mr-2 mb-2 text-black"
+          size={30}
+          style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
         />
         <input
           id="search"

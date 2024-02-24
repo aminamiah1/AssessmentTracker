@@ -5,8 +5,7 @@ import { useSession, signIn } from "next-auth/react"; // Import useSession and s
 import { ToastContainer } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import arrowReturn from "../../../components/module-leader/assets/arrowReturn.png";
-import Image from "next/image";
+import { FiArrowLeft } from "react-icons/fi"; // Return arrow icon
 import Link from "next/link";
 import Select from "react-select";
 import axios from "axios";
@@ -323,12 +322,10 @@ function CreateAssessmentModuleLeaders() {
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center mb-4">
             <Link href={"/module-leader/assessment-management"}>
-              <Image
-                src={arrowReturn}
-                className="arrowReturn"
-                alt="return arrow"
-                width={32}
-                height={32}
+              <FiArrowLeft
+                className="cursor-pointer"
+                size={30}
+                style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
               />
             </Link>
             <h1 className="text-3xl ml-2">

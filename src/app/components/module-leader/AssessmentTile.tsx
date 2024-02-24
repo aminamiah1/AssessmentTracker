@@ -1,14 +1,13 @@
-// Import necessary modules and components from React and React Bootstrap
+// Import necessary modules and components from React
 import React, { useState } from "react";
 import { format } from "date-fns"; // Importing date formatting function from date-fns library
-import Image from "next/image"; // Importing Image component from Next.js
-import trashCan from "./assets/trashCan.png"; // Importing trash can icon
-import profilePic from "./assets/profilePic.png"; // Importing profile picture icon
-import editIcon from "./assets/editIcon.png"; // Importing edit icon
 import { toast } from "react-toastify"; // Importing toast notification library
 import { ToastContainer } from "react-toastify"; // Importing toast container component
 import "react-toastify/dist/ReactToastify.css"; // Importing toast notification styles
 import Link from "next/link"; // Importing Link component from Next.js
+import { FaTrash } from "react-icons/fa"; // Trash can icon
+import { FaEdit } from "react-icons/fa"; // Edit icon
+import { FaUserCircle } from "react-icons/fa"; // Profile picture icon
 
 // Functional component for rendering an assessment tile
 const AssessmentTile = ({ assessment }: { assessment: any }) => {
@@ -65,13 +64,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
                   <a className="text-blue-500 hover:text-blue-700">
                     {assessment.assessment_name}
                   </a>
-                  <Image
-                    className="object-cover editAssessment ml-4"
-                    src={editIcon}
-                    alt="edit icon"
-                    width={32}
-                    height={32}
-                  />
+                  <FaEdit className="cursor-pointer ml-4" size={30} />
                 </Link>
               </div>
               <p className="mt-4">
@@ -94,13 +87,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
                       key={assignee.id}
                       className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
                     >
-                      <Image
-                        src={profilePic}
-                        alt="Profile Pic"
-                        width={32}
-                        height={32}
-                        className="mr-2"
-                      />
+                      <FaUserCircle className="mr-2 text-black" size={30} />
                       <span className="text-sm">{assignee.name}</span>
                     </div>
                   ))}
@@ -115,13 +102,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
         </div>
         <div className="p-4 md:p-6 flex justify-between">
           <button onClick={() => setShowDeleteModal(true)}>
-            <Image
-              src={trashCan}
-              alt="trash can delete"
-              width={32}
-              height={32}
-              className="cursor-pointer"
-            />
+            <FaTrash className="cursor-pointer" size={30} />
           </button>
         </div>
       </div>

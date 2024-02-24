@@ -9,8 +9,26 @@ import { FaTrash } from "react-icons/fa"; // Trash can icon
 import { FaEdit } from "react-icons/fa"; // Edit icon
 import { FaUserCircle } from "react-icons/fa"; // Profile picture icon
 
+// Interface for the assessment model
+interface Assessment {
+  id: number;
+  assessment_name: string;
+  assessment_type: string;
+  hand_out_week: Date;
+  hand_in_week: Date;
+  module_name: string;
+  module: [];
+  setter_id: number;
+  assignees: [];
+}
+
+// Interface for the assignees
+interface Assignee {
+  id: number;
+  name: string;
+}
 // Functional component for rendering an assessment tile
-const AssessmentTile = ({ assessment }: { assessment: any }) => {
+const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
   // State variable for managing the visibility of the delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -82,7 +100,7 @@ const AssessmentTile = ({ assessment }: { assessment: any }) => {
               <h6 className="mb-2">Assignees</h6>
               {assessment.assignees.length > 0 ? (
                 <div>
-                  {assessment.assignees.map((assignee: any) => (
+                  {assessment.assignees.map((assignee: Assignee) => (
                     <div
                       key={assignee.id}
                       className="flex items-center bg-gray-200 rounded-md p-2 mb-4"

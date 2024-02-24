@@ -26,6 +26,21 @@ interface Assessment {
   assignees: [];
 }
 
+// Interface for the module model
+interface Module {
+  id: number;
+  module_name: string;
+}
+
+// Interface for the user model
+interface User {
+  id: number;
+  email: string;
+  name: string;
+  password: string;
+  roles: [];
+}
+
 function CreateAssessmentModuleLeaders() {
   const [setterId, setSetterId] = useState(0);
 
@@ -72,7 +87,7 @@ function CreateAssessmentModuleLeaders() {
         if (roles.includes("module_leader")) {
           setIsModuleLeader(true);
           //Set the assessment setter id to the current user
-          setSetterId(parseInt(session.user.id as any, 10));
+          setSetterId(parseInt(session.user.id as string, 10));
         } else {
           // Else display unauthorised message
           setIsModuleLeader(false);
@@ -94,7 +109,7 @@ function CreateAssessmentModuleLeaders() {
       );
       if (response.data.length > 0) {
         const processedModules = response.data[0].modules.map(
-          (module: any) => ({
+          (module: Module) => ({
             value: module.id,
             label: module.module_name,
           }),
@@ -107,7 +122,7 @@ function CreateAssessmentModuleLeaders() {
       // Fetch all users to assign
       // Getting response as module leader 1 while waiting for login feature
       const response = await axios.get(`/api/module-leader/get-users`);
-      const processedUsers = response.data.map((user: any) => ({
+      const processedUsers = response.data.map((user: User) => ({
         value: user.id,
         label: user.name + " ● Roles: " + user.roles,
       }));
@@ -115,7 +130,7 @@ function CreateAssessmentModuleLeaders() {
     };
 
     // Fetch the assessment to be edited data
-    const fetchAssessmentData = async (params: any) => {
+    const fetchAssessmentData = async (params: string) => {
       // Fetch the assessment with the id provided in the search param
       fetch(`/api/module-leader/get-assessment?id=${params}`, {
         method: "GET",
@@ -191,7 +206,7 @@ function CreateAssessmentModuleLeaders() {
       if (assignees) {
         // Find the default assignees for the assessment and select them in the drop-down selector
         // @ts-ignore
-        const defaultAssignees = assignees.map((user: any) => ({
+        const defaultAssignees = assignees.map((user: User) => ({
           value: user.id,
           label: user.name + " ● Roles: " + user.roles,
         }));
@@ -314,7 +329,7 @@ function CreateAssessmentModuleLeaders() {
   }
 
   return (
-    <div className="p-4 bg-white h-screen text-black">
+    <div className="p-4 bg-white h-screen text-black mt-4">
       <ToastContainer />
       {loading ? (
         <div>Loading form...</div>

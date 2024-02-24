@@ -55,7 +55,7 @@ const UsersTable: React.FC = () => {
     );
   };
 
-  const handleEdit = async (user: any) => {
+  const handleEdit = async (user: User) => {
     setSearch("");
 
     var id = user.id;
@@ -82,7 +82,7 @@ const UsersTable: React.FC = () => {
       });
   };
 
-  const handleDelete = async (user: any) => {
+  const handleDelete = async (user: User) => {
     try {
       setSearch(" ");
 
@@ -116,7 +116,7 @@ const UsersTable: React.FC = () => {
   };
 
   const handleUpdateUsers = () => {
-    const filteredUsers = users.sort((a: any, b: any) => a.id - b.id);
+    const filteredUsers = users.sort((a: User, b: User) => a.id - b.id);
     setUsers(filteredUsers);
   };
 
@@ -157,7 +157,7 @@ const UsersTable: React.FC = () => {
       },
       {
         Header: "Delete",
-        accessor: (id: any) => (
+        accessor: (id: User) => (
           <button
             onClick={() => {
               setUserToDelete(id);
@@ -170,7 +170,7 @@ const UsersTable: React.FC = () => {
       },
       {
         Header: "Edit",
-        accessor: (id: any) => (
+        accessor: (id: User) => (
           <button onClick={() => handleEdit(id)} data-cy="EditUser">
             <FaEdit className="cursor-pointer" size={30} />
           </button>

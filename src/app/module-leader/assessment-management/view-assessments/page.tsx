@@ -16,6 +16,8 @@ interface Assessment {
   hand_out_week: Date;
   hand_in_week: Date;
   module_id: number;
+  module: [];
+  setter_id: number;
   module_name: string;
   assignees: [];
 }
@@ -34,7 +36,7 @@ function ViewAssessmentsModuleLeaders() {
         const roles = session.user.roles;
         if (roles.includes("module_leader")) {
           // Set the assessment setter id to the current user
-          setSetterId(parseInt(session.user.id as any, 10));
+          setSetterId(parseInt(session.user.id as string, 10));
           // Set the current user as a module leader to true
           setIsModuleLeader(true);
         } else if (roles.includes("module_leader") === false) {
@@ -56,7 +58,7 @@ function ViewAssessmentsModuleLeaders() {
         `/api/module-leader/get-assessments/?id=${setterId}`,
       );
       const sortedAssessments = response.data.sort(
-        (a: any, b: any) => a.id - b.id,
+        (a: Assessment, b: Assessment) => a.id - b.id,
       );
       setAssessments(sortedAssessments);
     };

@@ -14,7 +14,7 @@ interface ResponseProps {
 export function Response({ questionId, responseType }: ResponseProps) {
   switch (responseType) {
     case "text":
-      return <textarea />;
+      return <textarea data-cy="response" />;
     case "boolean":
       return (
         <div style={{ color: "white" }}>

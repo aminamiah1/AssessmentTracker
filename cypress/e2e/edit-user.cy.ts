@@ -52,6 +52,8 @@ describe("Edit User", () => {
       },
     }).as("addUser");
 
+    cy.reload();
+
     cy.get('[data-cy="EditUser"]').eq(0).click();
     cy.get('[data-cy="name"]').clear().type("New User Test");
     // Get unique email to stop user already exists error

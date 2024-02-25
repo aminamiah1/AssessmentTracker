@@ -364,6 +364,7 @@ function CreateAssessmentModuleLeaders() {
                 value={assessment.assessment_name}
                 onChange={handleTextChange}
                 name="assessment_name"
+                data-cy="name"
                 required
                 className="form-input w-full mb-4 border border-gray-300 p-4 border-b-4 border-black"
               />
@@ -393,6 +394,7 @@ function CreateAssessmentModuleLeaders() {
                 id="assessmentType"
                 placeholder="Enter assessment type..."
                 name="assessment_type"
+                data-cy="type"
                 value={assessment.assessment_type}
                 onChange={handleTextChange}
                 required

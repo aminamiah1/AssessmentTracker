@@ -1,15 +1,20 @@
 // describe("Edit User", () => {
 //   beforeEach(() => {
-//     cy.intercept("GET", "**/api/auth/session", {
-//       statusCode: 200,
-//       body: {
-//         user: {
-//           name: "Admin User",
-//           email: "admin@example.com",
-//           role: "ps_team",
+//     cy.clearCookies();
+//     cy.clearLocalStorage();
+//     cy.intercept("GET", "**/api/auth/session", (req) => {
+//       req.reply({
+//         statusCode: 200,
+//         body: {
+//           user: {
+//             id: 6,
+//             name: "Admin User",
+//             email: "admin@example.com",
+//             roles: ["ps_team", "module_leader"],
+//           },
+//           expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
 //         },
-//         expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // Expires in 2 hours
-//       },
+//       });
 //     }).as("getSession");
 
 //     cy.visit("/ps-team/user-management");
@@ -25,3 +30,5 @@
 //     cy.get('[data-cy="password"]').clear().type("examplepass");
 //   });
 // });
+
+// commented out due to team member updating the design

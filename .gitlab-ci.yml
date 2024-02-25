@@ -93,8 +93,8 @@ build-image:
         oc process build-config-staging \
           -p CI_COMMIT_LABEL=$CI_COMMIT_LABEL \
           -p CI_COMMIT_SHA=$CI_COMMIT_SHA \
-          -p CI_DATABASE_URL_LIVE=$DATABASE_URL_STAGING \
-          -p CI_DATABASE_URL_BUILD=${DATABASE_URL_STAGING}?schema=$CI_COMMIT_SHORT_SHA \
+          -p CI_DATABASE_URL_LIVE=$DATABASE_URL_PROD \
+          -p CI_DATABASE_URL_BUILD=${DATABASE_URL_PROD}?schema=$CI_COMMIT_SHORT_SHA \
           -p CI_NEXTAUTH_URL=$NEXTAUTHSTAGING_URL \
           -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
           -l name=build-$CI_COMMIT_LABEL | oc create -f -;

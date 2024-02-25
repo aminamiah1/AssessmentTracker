@@ -11,7 +11,11 @@ const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text", placeholder: "email" },
-        password: { label: "Hello", type: "password", placeholder: "password" },
+        password: {
+          label: "Password",
+          type: "password",
+          placeholder: "password",
+        },
       },
       async authorize(credentials) {
         if (credentials && credentials.email && credentials.password) {

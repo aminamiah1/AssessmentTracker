@@ -6,6 +6,12 @@ const prisma = new PrismaClient();
 
 export async function DELETE(request: NextRequest) {
   try {
+    const session = await getServerSession();
+
+    if (!session) {
+      return Response.json({ error: "Must be logged in" }, { status: 401 });
+    }
+
     // Extract user ID from request query parameters or body
     const { id } = await request.json();
 

@@ -6,6 +6,7 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import CreateUser from "../../components/ps-team/CreateUser";
 import { ToastContainer } from "react-toastify";
 import AuthContext from "@/app/utils/authContext";
+import UnauthorizedAccess from "@/app/components/authError";
 
 function ManageUsersPSTeam() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
@@ -32,28 +33,17 @@ function ManageUsersPSTeam() {
     }
   }, [session, status]);
 
-  if (status === "loading") {
-    return <p>Loading...</p>;
-    // Show a loading message while checking session status
-  }
-
-  if (!isPSTeam) {
-    return <p>You are not authorised to view this</p>;
-  }
-
   const handleCloseCreateUserForm = () => {
     setShowCreateUserForm(false);
   };
 
   // Render the user management interface if authenticated
-  return (
+  return isPSTeam ? (
     <Container fluid className="p-4">
       <ToastContainer />
       <Row>
-        <Col style={{ display: "flex", marginBottom: "2.5rem" }}>
-          <h1 className="text-3xl" style={{ fontSize: "xx-large" }}>
-            User Management
-          </h1>
+        <Col>
+          <h1 className="text-3xl">User Management</h1>
         </Col>
       </Row>
       <Row>
@@ -68,22 +58,15 @@ function ManageUsersPSTeam() {
             <CreateUser onClose={handleCloseCreateUserForm} />
           )}
           {!showCreateUserForm && (
-            <Button
-              onClick={() => setShowCreateUserForm(true)}
-              variant="dark"
-              style={{
-                marginTop: "1rem",
-                height: "5rem",
-                width: "20rem",
-                fontSize: "larger",
-              }}
-            >
+            <Button onClick={() => setShowCreateUserForm(true)}>
               Create New User
             </Button>
           )}
         </Col>
       </Row>
     </Container>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

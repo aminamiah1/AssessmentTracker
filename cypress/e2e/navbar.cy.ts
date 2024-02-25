@@ -7,7 +7,7 @@ describe("Navbar", () => {
         expires: "date-string",
       },
     });
-    cy.visit("/");
+    cy.visit("http://localhost:3000");
   });
 
   it("Navbar is visible at the top of the page", () => {

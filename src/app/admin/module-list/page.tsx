@@ -5,6 +5,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import SearchBar from "@/app/components/SearchBar/SearchBar";
 import Link from "next/link";
 import AuthContext from "@/app/utils/authContext";
+import UnauthorizedAccess from "@/app/components/authError";
 
 type ModuleData = {
   id: number;
@@ -44,21 +45,23 @@ function ModuleList() {
     }
   }, [session, status]);
 
-  if (status === "loading") {
-    return <p>Loading...</p>;
-    // Show a loading message while checking session status
-  }
-
-  if (!isModuleLeader) {
-    return <p>You are not authorised to view this</p>;
-  }
-
   const onSearch = (term: string) => {
     setSearchTerm(term);
   };
 
+  useEffect(() => {
+    async function fetchModules() {
+      const fetchedModules: ModuleData = await getModules(searchTerm);
+      setModules(fetchedModules);
+    }
+    if (session) {
+      // Fetch modules only if the session exists
+      fetchModules();
+    }
+  }, [searchTerm, session]);
+
   // Render the module list if authenticated
-  return (
+  return isModuleLeader ? (
     <>
       <div>
         <h1
@@ -108,6 +111,8 @@ function ModuleList() {
         </div>
       </div>
     </>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

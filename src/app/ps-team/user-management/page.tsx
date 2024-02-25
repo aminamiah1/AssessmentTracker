@@ -5,6 +5,7 @@ import UsersTable from "../../components/ps-team/UsersTable";
 import { ToastContainer } from "react-toastify";
 import CreateUser from "../../components/ps-team/CreateUser";
 import AuthContext from "@/app/utils/authContext";
+import UnauthorizedAccess from "@/app/components/authError";
 
 function ManageUsersPSTeam() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);

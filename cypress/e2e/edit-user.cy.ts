@@ -42,6 +42,16 @@ describe("Edit User", () => {
       .type("module_leader{enter}{enter}");
     cy.contains("button", "Create New User").click({ force: true });
 
+    cy.intercept("POST", "/api/ps-team/create-users", {
+      statusCode: 200,
+      body: {
+        name: "New User",
+        email: uniqueEmail,
+        roles: "module_leader",
+        password: "example",
+      },
+    }).as("addUser");
+
     cy.get('[data-cy="EditUser"]').eq(0).click();
     cy.get('[data-cy="name"]').clear().type("New User Test");
     // Get unique email to stop user already exists error

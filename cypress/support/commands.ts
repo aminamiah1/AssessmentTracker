@@ -35,3 +35,12 @@
 //     }
 //   }
 // }
+
+/**
+ * Accesses HTML Elements using data-cy tag instead of using
+ * className or id.
+ * @param {string} id - The test id given to a HTML Element, must be unique.
+ */
+Cypress.Commands.add("getByTestId", (id: string) => {
+  return cy.get(`[data-cy="${id}"]`);
+});

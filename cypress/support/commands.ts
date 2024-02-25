@@ -46,13 +46,6 @@ Cypress.Commands.add("getByTestId", (id: string) => {
 });
 
 /**
- * Command to find a existing user
- */
-Cypress.Commands.add("findExistingUser", (email: string) => {
-  cy.task("prismaFindUser", { email: email.toString() });
-});
-
-/**
  * Command to create a new user in the database if they do not exist for edit user test
  */
 Cypress.Commands.add(

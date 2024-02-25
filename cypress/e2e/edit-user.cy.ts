@@ -24,16 +24,12 @@ describe("Edit User", () => {
       });
     }).as("getSession");
 
-    cy.findExistingUser("newuser@example.com").then((existingUser) => {
-      if (existingUser != null) {
-        cy.createUserIfNotExists(
-          "newuser@example.com",
-          "New User",
-          "strongpassword",
-          ["ps_team", "module_leader"],
-        );
-      }
-    });
+    cy.createUserIfNotExists(
+      "newuser@example.com",
+      "New User",
+      "strongpassword",
+      ["ps_team", "module_leader"],
+    );
 
     cy.visit("/ps-team/user-management");
   });

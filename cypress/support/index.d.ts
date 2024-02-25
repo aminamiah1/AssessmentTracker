@@ -12,7 +12,4 @@ declare namespace Cypress {
       roles?: Role[],
     ): Chainable<Element>;
   }
-  interface Chainable {
-    findExistingUser(email: string): Chainable<Element>;
-  }
 }

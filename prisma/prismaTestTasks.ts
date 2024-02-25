@@ -14,7 +14,6 @@ export const prismaFindUser = async (email: string) => {
 };
 
 export const prismaCreateUser = async (userData: PrismaUser) => {
-  console.log("User Data:", userData);
   return await prisma.users.create({
     data: {
       name: userData.name.toString(),

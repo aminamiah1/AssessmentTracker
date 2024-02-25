@@ -46,17 +46,18 @@ Cypress.Commands.add("getByTestId", (id: string) => {
 });
 
 /**
+ * Command to find a existing user
+ */
+Cypress.Commands.add("findExistingUser", (email: string) => {
+  cy.task("prismaFindUser", { email: email.toString() });
+});
+
+/**
  * Command to create a new user in the database if they do not exist for edit user test
  */
 Cypress.Commands.add(
   "createUserIfNotExists",
   (email, name, password, roles = []) => {
-    const existingUser = cy.task("prismaFindUser", { email });
-    if (!existingUser) {
-      cy.task("prismaCreateUser", { email, name, password, roles });
-    } else {
-      // User already exists - Handle this gracefully
-      console.log("User with email ", email, " already exists.");
-    }
+    cy.task("prismaCreateUser", { email, name, password, roles });
   },
 );

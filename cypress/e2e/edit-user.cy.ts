@@ -1,5 +1,3 @@
-import { prismaFindUser, prismaCreateUser } from "../../prisma/prismaTestTasks";
-
 describe("Edit User", () => {
   beforeEach(() => {
     cy.intercept("GET", "/api/auth/session", {
@@ -26,18 +24,16 @@ describe("Edit User", () => {
       });
     }).as("getSession");
 
-    cy.task("prismaFindUser", { email: "newuser@example.com" }).then(
-      (existingUser) => {
-        if (!existingUser) {
-          cy.createUserIfNotExists(
-            "newuser@example.com",
-            "New User",
-            "strongpassword",
-            ["ps_team", "module_leader"],
-          );
-        }
-      },
-    );
+    cy.findExistingUser("newuser@example.com").then((existingUser) => {
+      if (existingUser != null) {
+        cy.createUserIfNotExists(
+          "newuser@example.com",
+          "New User",
+          "strongpassword",
+          ["ps_team", "module_leader"],
+        );
+      }
+    });
 
     cy.visit("/ps-team/user-management");
   });

@@ -1,13 +1,18 @@
 describe("Add User", () => {
   beforeEach(() => {
+    // Fake log in the user
     cy.intercept("GET", "/api/auth/session", {
       statusCode: 200,
       body: {
-        user: { name: "John", email: "admin@example.com", role: "ps_team" },
+        user: {
+          name: "John",
+          email: "admin@example.com",
+          roles: ["ps_team", "module_leader"],
+        },
         expires: "date-string",
       },
     });
-    cy.visit("/ps-team/user-management");
+    cy.visit("/module-leader/assessment-management");
     cy.clearCookies();
     cy.clearLocalStorage();
     cy.intercept("GET", "**/api/auth/session", (req) => {
@@ -23,11 +28,17 @@ describe("Add User", () => {
         },
       });
     }).as("getSession");
-    cy.visit("/ps-team/user-management");
   });
+
   // Add a new user
   it("allows a ps-team member to add a user", () => {
-    //Create a new user for pipeline test
+    // Spoof getting users by retrieving them from example JSON
+    cy.intercept("GET", "/api/ps-team/get-users", {
+      fixture: "users.json",
+    }).as("getUsers");
+
+    // Create a new user through form
+    cy.visit("/ps-team/user-management");
     cy.contains("button", "Create New User").click();
     cy.get('[data-cy="name"]').type("New User");
     const timestamp = Date.now();
@@ -41,6 +52,7 @@ describe("Add User", () => {
       .type("module_leader{enter}{enter}");
     cy.contains("button", "Create New User").click({ force: true });
 
+    // Spoof posting the create user request
     cy.intercept("POST", "/api/ps-team/create-users", {
       statusCode: 200,
       body: {

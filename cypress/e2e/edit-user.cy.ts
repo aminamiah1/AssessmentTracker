@@ -40,15 +40,7 @@ describe("Edit User", () => {
       .find("input")
       .focus()
       .type("module_leader{enter}{enter}");
-    cy.intercept("POST", "/api/ps-team/create-users", {
-      statusCode: 200,
-      body: {
-        name: "New User",
-        email: "newuser@example.com",
-        roles: "module_leader",
-        password: "example",
-      },
-    }).as("addUser");
+    cy.contains("button", "Create New User").click({ force: true });
 
     cy.get('[data-cy="EditUser"]').eq(0).click();
     cy.get('[data-cy="name"]').clear().type("New User Test");

@@ -35,7 +35,8 @@ describe("Edit User", () => {
     const uniqueEmail = `newuser+${timestamp}@example.com`;
     cy.get('[data-cy="email"]').clear().type(uniqueEmail);
     cy.get('[data-cy="password"]').type("examplepass");
-    cy.get("[id^=react-select-3-input]")
+    cy.get(".css-qbdosj-Input")
+      .find("input")
       .focus()
       .type("module_leader{enter}{enter}");
     cy.intercept("POST", "/api/ps-team/create-users", {

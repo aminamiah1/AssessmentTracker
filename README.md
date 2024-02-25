@@ -70,6 +70,8 @@ You can bypass this prompt by passing in the migration name as an argument:
 $ npx prisma migrate dev --name changed-field-type
 ```
 
+It's important to note that each PR with a schema change should only result in a **single** additional migration (with the exception of release branches obviously). This will prevent the migrations folder getting too crowded. [Here is a good guide](https://www.prisma.io/docs/orm/prisma-migrate/workflows/team-development) of `prisma migrate dev` in a team environment.
+
 ### Dangerous migrations
 
 Some migrations are [explained in the official Prisma docs](https://www.prisma.io/docs/orm/prisma-migrate/workflows/customizing-migrations) as having to be "customised" before being applied. "Dangerous" is a good label for these migrations, as they're migrations that may result in data loss - something we want to avoid in production!
@@ -161,7 +163,7 @@ See [staging](#staging) setup (Will fill this in at some point)
     - This Database is then downloaded to the GitLab runner and saved as an artifact (30 days by default)
   - The image's tag in the registry is updated to `:stable`, maintaining the initial commit-specific tag
 - The deployment command is sent to OpenShift when the preparation stage is finished
-  - This will pull the `:stable` tag from the container registry and spin up a container to expose on the [staging URL](https://assessment-tracker-prod-assessment-tracker.apps.openshift.cs.cf.ac.uk/)
+  - This will pull the `:stable` tag from the container registry and spin up a container to expose on the [production URL](https://assessment-tracker-prod-assessment-tracker.apps.openshift.cs.cf.ac.uk/)
 
 ## Important links
 

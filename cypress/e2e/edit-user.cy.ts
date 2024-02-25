@@ -25,6 +25,13 @@ describe("Edit User", () => {
     }).as("getSession");
 
     cy.createUserIfNotExists(
+      "newuser2@example.com",
+      "New User 2",
+      "strongpassword2",
+      ["ps_team", "module_leader"],
+    );
+
+    cy.createUserIfNotExists(
       "newuser@example.com",
       "New User",
       "strongpassword",

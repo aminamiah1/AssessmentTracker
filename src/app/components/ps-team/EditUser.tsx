@@ -153,6 +153,7 @@ const EditUser: React.FC<EditUserProps> = ({
                     type="button"
                     onClick={onClose}
                     className="bg-red-700 hover:bg-azure-700 text-white font-bold py-2 px-4 rounded"
+                    data-cy="ClosePopUp"
                   >
                     X
                   </button>

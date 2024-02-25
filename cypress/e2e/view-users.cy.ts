@@ -1,4 +1,4 @@
-describe("Add User", () => {
+describe("View users", () => {
   beforeEach(() => {
     // Fake log in as the user
     cy.intercept("GET", "/api/auth/session", {
@@ -12,7 +12,7 @@ describe("Add User", () => {
         expires: "date-string",
       },
     });
-    cy.visit("/module-leader/assessment-management");
+    cy.visit("/ps-team/user-management");
     cy.clearCookies();
     cy.clearLocalStorage();
     cy.intercept("GET", "**/api/auth/session", (req) => {
@@ -30,31 +30,15 @@ describe("Add User", () => {
     }).as("getSession");
   });
 
-  // Add a new user
-  it("allows a ps-team member to add a user", () => {
+  // Can view users
+  it("allows a ps-team member to view users", () => {
     // Spoof getting users by retrieving them from example JSON
     cy.intercept("GET", "/api/ps-team/get-users", {
       fixture: "users.json",
     }).as("getUsers");
 
-    // Create a new user through form
+    // Users are rendered in the table
     cy.visit("/ps-team/user-management");
-    cy.contains("button", "Create New User").click();
-    cy.get('[data-cy="name"]').type("New User");
-    const timestamp = Date.now();
-    const uniqueEmail = `newuser+${timestamp}@example.com`;
-    cy.get('[data-cy="email"]').clear().type(uniqueEmail);
-    cy.get('[data-cy="password"]').type("examplepass");
-    cy.contains("label", "Roles")
-      .next()
-      .find("input")
-      .focus()
-      .type("module_leader{enter}");
-    cy.contains("button", "X").click({ force: true });
-
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/ps-team/get-users", {
-      fixture: "users.json",
-    }).as("getUsers");
+    cy.contains("td", "Alice Johnson");
   });
 });

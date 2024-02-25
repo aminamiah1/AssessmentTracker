@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
 import { getServerSession } from "next-auth/next";
-
-const prisma = new PrismaClient();
+import prisma from "../../../db";
 
 //Force api route to dynamically render
 export const dynamic = "force-dynamic";
@@ -19,14 +16,16 @@ export async function GET(request: NextRequest) {
     // Extract user ID from request query parameters or body
     const url = new URL(request.url);
     const idString = url.searchParams.get("id");
-    const id = parseInt(idString as any, 10);
+    let id = 0;
 
     // Check if the assessment ID is missing from the request query
-    if (!id) {
+    if (!idString) {
       return new NextResponse(
         JSON.stringify({ message: "Missing assessment ID." }),
         { status: 400 },
       );
+    } else {
+      id = parseInt(idString, 10);
     }
 
     // Get assessment with the given ID

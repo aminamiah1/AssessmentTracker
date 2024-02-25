@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
-
-const prisma = new PrismaClient();
+import prisma from "../../../db";
 
 //Force api route to dynamically render
 export const dynamic = "force-dynamic";
@@ -18,13 +16,15 @@ export async function GET(request: NextRequest) {
     // Extract user ID from request query parameters or body
     const url = new URL(request.url);
     const idString = url.searchParams.get("id");
-    const id = parseInt(idString as any, 10);
+    let id = 0;
 
     // Check if the user ID is missing from the request query
-    if (!id) {
+    if (!idString) {
       return new NextResponse(JSON.stringify({ message: "Missing user ID." }), {
         status: 400,
       });
+    } else {
+      id = parseInt(idString as any, 10);
     }
 
     // Get user with the given ID

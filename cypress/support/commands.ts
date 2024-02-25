@@ -1,4 +1,7 @@
 /// <reference types="cypress" />
+
+import { mount } from "cypress/react18";
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -43,4 +46,11 @@
  */
 Cypress.Commands.add("getByTestId", (id: string) => {
   return cy.get(`[data-cy="${id}"]`);
+});
+
+/**
+ * Mounts a component using the Cypress React 18 adapter.
+ */
+Cypress.Commands.add("mount", (component, options) => {
+  return mount(component, options);
 });

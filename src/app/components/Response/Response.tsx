@@ -17,7 +17,7 @@ export function Response({ questionId, responseType }: ResponseProps) {
       return <textarea data-cy="response" />;
     case "boolean":
       return (
-        <div style={{ color: "white" }}>
+        <div data-cy="response" style={{ color: "white" }}>
           <input value="Yes" name={questionId.toString()} type="radio" />
           <label htmlFor="Yes">Yes</label>
           <br />
@@ -29,7 +29,7 @@ export function Response({ questionId, responseType }: ResponseProps) {
     default:
       const choices = ["Red", "Green", "Blue"];
       return (
-        <select style={{ color: "black" }}>
+        <select data-cy="response" style={{ color: "black" }}>
           {choices.map((choice, key) => (
             <option key={key}>{choice}</option>
           ))}

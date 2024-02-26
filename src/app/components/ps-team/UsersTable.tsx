@@ -28,7 +28,7 @@ const UsersTable: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       if (!search) {
-        const response = await axios.get("/api/ps-team/get-users");
+        const response = await axios.get("/api/ps-team/users/get");
         const sortedUsers = response.data.sort(
           (a: User, b: User) => a.id - b.id,
         );
@@ -59,7 +59,7 @@ const UsersTable: React.FC = () => {
     setSearch("");
 
     var id = user.id;
-    fetch(`/api/ps-team/get-user?id=${id}`, {
+    fetch(`/api/ps-team/user/get?id=${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -88,7 +88,7 @@ const UsersTable: React.FC = () => {
 
       var id = user.id;
 
-      fetch(`/api/ps-team/delete-users?id=${id}`, {
+      fetch(`/api/ps-team/user/delete?id=${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

@@ -53,9 +53,8 @@ function ViewAssessmentsModuleLeaders() {
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
-      // Getting response as module leader 1 while waiting for login feature
       const response = await axios.get(
-        `/api/module-leader/get-assessments/?id=${setterId}`,
+        `/api/module-leader/assessments/get/?id=${setterId}`,
       );
       const sortedAssessments = response.data.sort(
         (a: Assessment, b: Assessment) => a.id - b.id,

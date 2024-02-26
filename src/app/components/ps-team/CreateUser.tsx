@@ -60,7 +60,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
       newUser.roles.map((role) => role["value"]),
     );
 
-    const response = await fetch("/api/ps-team/create-users", {
+    const response = await fetch("/api/ps-team/user/post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

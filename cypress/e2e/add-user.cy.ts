@@ -33,7 +33,7 @@ describe("Add User", () => {
   // Add a new user
   it("allows a ps-team member to add a user", () => {
     // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/ps-team/get-users", {
+    cy.intercept("GET", "/api/ps-team/users/get", {
       fixture: "users.json",
     }).as("getUsers");
 
@@ -53,7 +53,7 @@ describe("Add User", () => {
     cy.contains("button", "X").click({ force: true });
 
     // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/ps-team/get-users", {
+    cy.intercept("GET", "/api/ps-team/users/get", {
       fixture: "users.json",
     }).as("getUsers");
   });

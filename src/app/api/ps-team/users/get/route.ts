@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import prisma from "../../../db";
+import prisma from "../../../../db";
 
 export async function GET(request: Request) {
   // Get all users

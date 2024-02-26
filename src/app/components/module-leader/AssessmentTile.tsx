@@ -39,7 +39,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
       var id = assessment.id;
 
       // Sending a DELETE request to the server to delete the assessment
-      fetch(`/api/module-leader/delete-assessment?id=${id}`, {
+      fetch(`/api/module-leader/assessment/delete?id=${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

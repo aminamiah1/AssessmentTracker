@@ -102,7 +102,7 @@ function CreateAssessmentModuleLeaders() {
       // Fetch modules by setter only when component mounts
       // Getting response as module leader 1 while waiting for login feature
       const response = await axios.get(
-        `/api/module-leader/get-modules/?id=${setterId}`,
+        `/api/module-leader/modules/get/?id=${setterId}`,
       );
       if (response.data.length > 0) {
         const processedModules = response.data[0].modules.map(
@@ -117,7 +117,7 @@ function CreateAssessmentModuleLeaders() {
 
     const fetchAssignees = async () => {
       // Fetch all users to assign
-      const response = await axios.get(`/api/module-leader/get-users`);
+      const response = await axios.get(`/api/module-leader/users/get`);
       const processedUsers = response.data.map((user: User) => ({
         value: user.id,
         label: user.name + " ● Roles: " + user.roles,
@@ -128,7 +128,7 @@ function CreateAssessmentModuleLeaders() {
     // Fetch the assessment to be edited data
     const fetchAssessmentData = async (params: string) => {
       // Fetch the assessment with the id provided in the search param
-      fetch(`/api/module-leader/get-assessment?id=${params}`, {
+      fetch(`/api/module-leader/assessment/get?id=${params}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -262,7 +262,7 @@ function CreateAssessmentModuleLeaders() {
 
     if (isEdit) {
       // Update the assessment using the api endpoint
-      const response = await fetch("/api/module-leader/edit-assessment", {
+      const response = await fetch("/api/module-leader/assessment/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -290,7 +290,7 @@ function CreateAssessmentModuleLeaders() {
       router.push("/module-leader/assessment-management/view-assessments");
     } else {
       // Create the assessment using the api endpoint
-      const response = await fetch("/api/module-leader/create-assessment", {
+      const response = await fetch("/api/module-leader/assessment/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -335,145 +335,143 @@ function CreateAssessmentModuleLeaders() {
   }
 
   return (
-    <Suspense fallback={<div>Loading data...</div>}>
-      <div className="p-4 bg-white h-screen text-black mt-4">
-        <ToastContainer />
-        {loading ? (
-          <div>Loading form...</div>
-        ) : (
-          <div className="max-w-3xl mx-auto">
-            <div className="flex items-center mb-4">
-              <Link href={"/module-leader/assessment-management"}>
-                <FiArrowLeft
-                  className="cursor-pointer"
-                  size={30}
-                  style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
-                />
-              </Link>
-              <h1 className="text-3xl ml-2">
-                {isEdit ? "Edit Assessment" : "Create Assessment"}
-              </h1>
+    <div className="p-4 bg-white h-screen text-black mt-4">
+      <ToastContainer />
+      {loading ? (
+        <div>Loading form...</div>
+      ) : (
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center mb-4">
+            <Link href={"/module-leader/assessment-management"}>
+              <FiArrowLeft
+                className="cursor-pointer"
+                size={30}
+                style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
+              />
+            </Link>
+            <h1 className="text-3xl ml-2">
+              {isEdit ? "Edit Assessment" : "Create Assessment"}
+            </h1>
+          </div>
+
+          <form onSubmit={handleSubmit} className="text-black">
+            <div className="mb-4">
+              <label htmlFor="assessmentName" className="font-bold">
+                Assessment Title
+              </label>
+              <input
+                type="text"
+                id="assessmentName"
+                placeholder="Enter assessment name"
+                value={assessment.assessment_name}
+                onChange={handleTextChange}
+                name="assessment_name"
+                data-cy="name"
+                required
+                className="form-input w-full mb-4 border border-gray-300 p-4 border-b-4 border-black"
+              />
             </div>
 
-            <form onSubmit={handleSubmit} className="text-black">
-              <div className="mb-4">
-                <label htmlFor="assessmentName" className="font-bold">
-                  Assessment Title
-                </label>
-                <input
-                  type="text"
-                  id="assessmentName"
-                  placeholder="Enter assessment name"
-                  value={assessment.assessment_name}
-                  onChange={handleTextChange}
-                  name="assessment_name"
-                  data-cy="name"
-                  required
-                  className="form-input w-full mb-4 border border-gray-300 p-4 border-b-4 border-black"
+            <div className="mb-4">
+              <label htmlFor="module" className="font-bold">
+                Module
+              </label>
+              <div className="w-full mb-6">
+                <Select
+                  onChange={(option) => handleSelectChange(option, "module")}
+                  options={modules}
+                  id="module"
+                  value={assessment.module}
+                  className="react-select-container"
                 />
               </div>
+            </div>
 
-              <div className="mb-4">
-                <label htmlFor="module" className="font-bold">
-                  Module
-                </label>
-                <div className="w-full mb-6">
-                  <Select
-                    onChange={(option) => handleSelectChange(option, "module")}
-                    options={modules}
-                    id="module"
-                    value={assessment.module}
-                    className="react-select-container"
-                  />
-                </div>
-              </div>
+            <div className="mb-4">
+              <label htmlFor="assessmentType" className="font-bold">
+                Assessment Type
+              </label>
+              <input
+                type="text"
+                id="assessmentType"
+                placeholder="Enter assessment type..."
+                name="assessment_type"
+                data-cy="type"
+                value={assessment.assessment_type}
+                onChange={handleTextChange}
+                required
+                className="form-input w-full mb-4 border border-gray-300 border-b-4 p-4 border-black"
+              />
+            </div>
 
-              <div className="mb-4">
-                <label htmlFor="assessmentType" className="font-bold">
-                  Assessment Type
-                </label>
-                <input
-                  type="text"
-                  id="assessmentType"
-                  placeholder="Enter assessment type..."
-                  name="assessment_type"
-                  data-cy="type"
-                  value={assessment.assessment_type}
-                  onChange={handleTextChange}
+            <div className="mb-4">
+              <label htmlFor="handOutWeek" className="font-bold">
+                Hand Out Week
+              </label>
+              <div className="w-full">
+                <DatePicker
+                  selected={assessment.hand_out_week}
+                  onChange={(date) => handleDateChange(date, "hand_out_week")}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Select date"
                   required
-                  className="form-input w-full mb-4 border border-gray-300 border-b-4 p-4 border-black"
+                  className="form-input mb-4 border border-gray-300 border-b-4 border-black p-4"
                 />
               </div>
+            </div>
 
+            <div className="mb-4">
+              <label htmlFor="handInWeek" className="font-bold">
+                Hand In Week
+              </label>
+              <div className="w-full">
+                <DatePicker
+                  selected={assessment.hand_in_week}
+                  onChange={(date) => handleDateChange(date, "hand_in_week")}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Select date"
+                  required
+                  className="form-input w-full mb-4 border border-gray-300 border-b-4 border-black p-4"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="assignees" className="font-bold">
+                Assignees
+              </label>
               <div className="mb-4">
-                <label htmlFor="handOutWeek" className="font-bold">
-                  Hand Out Week
-                </label>
-                <div className="w-full">
-                  <DatePicker
-                    selected={assessment.hand_out_week}
-                    onChange={(date) => handleDateChange(date, "hand_out_week")}
-                    dateFormat="yyyy-MM-dd"
-                    placeholderText="Select date"
-                    required
-                    className="form-input mb-4 border border-gray-300 border-b-4 border-black p-4"
-                  />
-                </div>
+                <Select
+                  onChange={(option) => handleSelectChange(option, "assignees")}
+                  options={users}
+                  id="assignees"
+                  value={assessment.assignees}
+                  isMulti
+                  className="react-select-container mb-6"
+                />
               </div>
+            </div>
 
-              <div className="mb-4">
-                <label htmlFor="handInWeek" className="font-bold">
-                  Hand In Week
-                </label>
-                <div className="w-full">
-                  <DatePicker
-                    selected={assessment.hand_in_week}
-                    onChange={(date) => handleDateChange(date, "hand_in_week")}
-                    dateFormat="yyyy-MM-dd"
-                    placeholderText="Select date"
-                    required
-                    className="form-input w-full mb-4 border border-gray-300 border-b-4 border-black p-4"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="assignees" className="font-bold">
-                  Assignees
-                </label>
-                <div className="mb-4">
-                  <Select
-                    onChange={(option) =>
-                      handleSelectChange(option, "assignees")
-                    }
-                    options={users}
-                    id="assignees"
-                    value={assessment.assignees}
-                    isMulti
-                    className="react-select-container mb-6"
-                  />
-                </div>
-              </div>
-
-              <div className="h-screen">
-                <button
-                  type="submit"
-                  className="bg-gray-700 hover:bg-azure-700 text-white font-bold rounded w-full py-7"
-                >
-                  {isEdit ? "Edit Assessment" : "Create Assessment"}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-      </div>
-    </Suspense>
+            <div className="h-screen">
+              <button
+                type="submit"
+                className="bg-gray-700 hover:bg-azure-700 text-white font-bold rounded w-full py-7"
+              >
+                {isEdit ? "Edit Assessment" : "Create Assessment"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
   );
 }
 
 const WrappedCreateAssessment = () => (
   <AuthContext>
-    <CreateAssessmentModuleLeaders />
+    <Suspense>
+      <CreateAssessmentModuleLeaders />
+    </Suspense>
   </AuthContext>
 );
 

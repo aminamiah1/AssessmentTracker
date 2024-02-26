@@ -36,12 +36,12 @@ describe("Add a assessment", () => {
     cy.visit("/module-leader/assessment-management/create-assessment");
 
     // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/get-users", {
+    cy.intercept("GET", "/api/module-leader/users/get", {
       fixture: "users.json",
     }).as("getAssignees");
 
     // Spoof getting modules by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/get-modules?id=6", {
+    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
       fixture: "modules.json",
     }).as("getModules");
 

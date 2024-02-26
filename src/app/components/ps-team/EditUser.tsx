@@ -90,7 +90,7 @@ const EditUser: React.FC<EditUserProps> = ({
       user.roles.map((role) => role["value"]),
     );
 
-    const response = await fetch("/api/ps-team/edit-users", {
+    const response = await fetch("/api/ps-team/user/update", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import prisma from "../../../../db";
+import prisma from "@/app/db";
 
 //Force api route to dynamically render
 export const dynamic = "force-dynamic";

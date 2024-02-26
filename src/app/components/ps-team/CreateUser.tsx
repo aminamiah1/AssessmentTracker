@@ -9,7 +9,7 @@ interface User {
   email: string;
   name: string;
   password: string;
-  roles: [];
+  roles: { value: string }[] | { value: string; label: string }[];
 }
 
 interface CreateUserProps {
@@ -43,9 +43,8 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
       ...newUser,
       [event.target.name]:
         event.target.name === "selectedRoles"
-          ? // @ts-ignore
-            event.target.value.map((role: { value: string }) => role.value)
-          : event.target.value,
+          ? event.target.value
+          : (event.target.value as unknown as string[]),
     });
   };
 
@@ -202,16 +201,18 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
                     <Select
                       data-cy="roles"
                       id="roles"
-                      // @ts-ignore
                       options={rolesOptionsForSelect.map((role) => ({
                         ...role,
                         key: role.value,
                       }))}
                       value={newUser.roles}
-                      onChange={(selectedRoles) =>
-                        // @ts-ignore
-                        setNewUser({ ...newUser, roles: selectedRoles })
-                      }
+                      onChange={(selectedRoles) => {
+                        const newRoles = selectedRoles.map((option) => ({
+                          value: option.value,
+                          label: option.value,
+                        }));
+                        setNewUser({ ...newUser, roles: newRoles });
+                      }}
                       isMulti
                       className="react-select-container text-black"
                       menuPortalTarget={document.body}

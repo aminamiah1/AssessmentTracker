@@ -183,6 +183,7 @@ const UsersTable: React.FC = () => {
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
+      // The columns defined in the table is not a commonly defined type hence the ts ignore comment
       // @ts-ignore
       columns,
       data: filteredUsers,
@@ -237,7 +238,7 @@ const UsersTable: React.FC = () => {
             return (
               // @ts-ignore
               <tr
-                // @ts-ignore
+                // @ts-ignore placed here as key required but typescript states key is already defined
                 key={`row-${rowIndex}`}
                 {...row.getRowProps()}
                 className="border border-black"

@@ -21,17 +21,15 @@ interface Assessment {
   assessment_type: string;
   hand_out_week: Date;
   hand_in_week: Date;
-  module: [];
+  module: { value: string }[] | { value: string; label: string }[]; // Allow the react select format to also be used for the module
   setter_id: number;
-  assignees: [];
+  assignees: { value: number }[] | { value: number; label: string }[]; // Allow the react select format to also be used for the assignees
 }
-
 // Interface for the module model
 interface Module {
   id: number;
   module_name: string;
 }
-
 // Interface for the user model
 interface User {
   id: number;
@@ -50,7 +48,7 @@ function CreateAssessmentModuleLeaders() {
 
   const [loading, setLoading] = useState(true); // Initialize loading state to true
 
-  const [modules, setModules] = useState(); // Variable to hold all modules in the system
+  const [modules, setModules] = useState([]); // Variable to hold all modules in the system
 
   const [moduleId, setModuleId] = useState(null); // Variable to hold existing assessment module ID
 
@@ -58,14 +56,13 @@ function CreateAssessmentModuleLeaders() {
 
   const router = useRouter(); // Create next router object
 
-  const [assignees, setAssignees] = useState(); // Variable to hold all assignees of an existing assessment
+  const [assignees, setAssignees] = useState([]); // Variable to hold all assignees of an existing assessment
 
   const searchParams = useSearchParams(); // Create search params object
 
   const { data: session, status } = useSession(); // Use useSession to get session and status
 
-  // @ts-ignore
-  const params = searchParams.get("id"); // Get the id of the assessment to edit from the search params object
+  const params = searchParams?.get("id"); // Get the id of the assessment to edit from the search params object
 
   // Default assessment object used on create form mode as default
   const [assessment, setAssessment] = useState<Assessment>({
@@ -158,6 +155,8 @@ function CreateAssessmentModuleLeaders() {
             hand_in_week,
             setterId,
           } = data;
+
+          // Only set the fields with the types that do not need to be adapted to work with the react select boxes
           setAssessment((prevState) => ({
             ...prevState,
             id,
@@ -167,6 +166,8 @@ function CreateAssessmentModuleLeaders() {
             hand_in_week,
             setterId,
           }));
+
+          // Set the data to be manipulated in the effect hook to work with react select boxes
           setModuleId(data.module_id);
           setAssignees(data.assignees);
         })
@@ -194,8 +195,9 @@ function CreateAssessmentModuleLeaders() {
     // This effect runs when the modules and assignees state is updated on editing assessment
     if (modules && moduleId && isModuleLeader === true && setterId != 0) {
       // Find the default module with moduleId and set it as the default value
-      // @ts-ignore
-      const defaultModule = modules.find((module) => module.value === moduleId);
+      const defaultModule = modules.find(
+        (module: any) => module.value === moduleId,
+      );
       if (defaultModule) {
         setAssessment((prevState) => ({
           ...prevState,
@@ -205,7 +207,6 @@ function CreateAssessmentModuleLeaders() {
 
       if (assignees) {
         // Find the default assignees for the assessment and select them in the drop-down selector
-        // @ts-ignore
         const defaultAssignees = assignees.map((user: User) => ({
           value: user.id,
           label: user.name + " ● Roles: " + user.roles,
@@ -251,10 +252,13 @@ function CreateAssessmentModuleLeaders() {
       return; // Then prevent form submission
     }
 
-    // Get the selected assignees from the drop-down multi-selector
+    // Get the selected assignees from the drop-down multi-selector and get only the value property, the database is expecting
     const selectedAssigneesValues = new Set(
       assessment.assignees.map((assignee) => assignee["value"]),
     );
+
+    // Convert selected module value to format database is expecting i.e. the value from the selector box
+    const selectedModuleValue = (assessment.module as any).value;
 
     if (isEdit) {
       // Update the assessment using the api endpoint
@@ -267,8 +271,7 @@ function CreateAssessmentModuleLeaders() {
           assessment_type: assessment.assessment_type,
           hand_out_week: assessment.hand_out_week,
           hand_in_week: assessment.hand_in_week,
-          // @ts-ignore
-          module_id: assessment.module.value,
+          module_id: selectedModuleValue,
           setter_id: setterId,
           assigneesList: Array.from(selectedAssigneesValues),
         }),
@@ -295,8 +298,7 @@ function CreateAssessmentModuleLeaders() {
           assessment_type: assessment.assessment_type,
           hand_out_week: assessment.hand_out_week,
           hand_in_week: assessment.hand_in_week,
-          // @ts-ignore
-          module_id: assessment.module.value,
+          module_id: selectedModuleValue,
           setter_id: setterId,
           assigneesList: Array.from(selectedAssigneesValues),
         }),

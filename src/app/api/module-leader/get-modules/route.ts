@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth/next";
 import prisma from "../../../db";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
@@ -12,7 +13,16 @@ export async function GET(request: Request) {
     // Validate and extract userId from query parameters
     const url = new URL(request.url);
     const idString = url.searchParams.get("id");
-    const userId = parseInt(idString as any, 10);
+    let userId = 0;
+
+    // Check if the user ID is missing from the request query
+    if (!idString) {
+      return new NextResponse(JSON.stringify({ message: "Missing user ID." }), {
+        status: 400,
+      });
+    } else {
+      userId = parseInt(idString, 10);
+    }
 
     if (!userId) {
       throw new Error("Missing userId query parameter");

@@ -45,14 +45,20 @@ export async function GET(request: Request) {
     });
 
     // Map module names to assessments
-    const assessmentsWithModules = assessments.map((assessment: any) => ({
-      ...assessment,
-      module_name: moduleNames.find(
-        (module: any) => module.id === assessment.module_id,
-      )?.module_name,
-    }));
+    try {
+      const assessmentsWithModules = assessments.map((assessment: any) => ({
+        ...assessment,
+        module_name: moduleNames.find(
+          (module: any) => module.id === assessment.module_id,
+        )!.module_name,
+      }));
 
-    return Response.json(assessmentsWithModules);
+      // Return the assessments with the modules as json if successful
+      return Response.json(assessmentsWithModules);
+    } catch (error) {
+      // Else handle the error gracefully
+      console.error("Error fetching modules: ", error);
+    }
   } catch (error) {
     console.error(error);
     return Response.json(

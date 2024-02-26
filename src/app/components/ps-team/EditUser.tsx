@@ -9,7 +9,7 @@ interface User {
   email: string;
   name: string;
   password: string;
-  roles: [];
+  roles: { value: string }[] | { value: string; label: string }[];
 }
 
 interface EditUserProps {
@@ -26,7 +26,6 @@ const rolesOptionsSet = new Set(Object.values(Role));
 const rolesOptionsForSelect = Array.from(rolesOptionsSet).map((role) => ({
   value: role,
   label: role,
-  key: role,
 }));
 
 const EditUser: React.FC<EditUserProps> = ({
@@ -52,14 +51,11 @@ const EditUser: React.FC<EditUserProps> = ({
   useEffect(() => {
     if (userToEdit) {
       const transformedRoles = userToEdit.roles.map((role) => ({
-        value: role,
-        label: role,
-        key: role,
+        value: role.toString(),
+        label: role.toString(),
       }));
-
       setUser({
         ...userToEdit,
-        // @ts-ignore
         roles: transformedRoles,
       });
     } else {
@@ -77,9 +73,8 @@ const EditUser: React.FC<EditUserProps> = ({
       ...user,
       [event.target.name]:
         event.target.name === "selectedRoles"
-          ? // @ts-ignore
-            event.target.value.map((role) => role.value)
-          : event.target.value,
+          ? event.target.value
+          : (event.target.value as unknown as string[]),
     });
   };
 
@@ -91,8 +86,9 @@ const EditUser: React.FC<EditUserProps> = ({
       return;
     }
 
-    // @ts-ignore
-    const selectedRolesValues = new Set(user.roles.map((role) => role.value));
+    const selectedRolesValues = new Set(
+      user.roles.map((role) => role["value"]),
+    );
 
     const response = await fetch("/api/ps-team/edit-users", {
       method: "POST",
@@ -221,16 +217,18 @@ const EditUser: React.FC<EditUserProps> = ({
                       Roles
                     </label>
                     <Select
-                      // @ts-ignore
                       options={rolesOptionsForSelect.map((role) => ({
                         ...role,
                         key: role.value,
                       }))}
                       value={user.roles}
-                      onChange={(selectedRoles) =>
-                        // @ts-ignore
-                        setUser({ ...user, roles: selectedRoles })
-                      }
+                      onChange={(selectedRoles) => {
+                        const newRoles = selectedRoles.map((option) => ({
+                          value: option.value,
+                          label: option.value,
+                        }));
+                        setUser({ ...user, roles: newRoles });
+                      }}
                       isMulti
                       className="react-select-container text-black"
                       menuPortalTarget={document.body}

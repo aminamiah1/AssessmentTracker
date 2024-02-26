@@ -1,13 +1,13 @@
 // Import necessary modules and components from React
 import React, { useState } from "react";
-import { format } from "date-fns"; // Importing date formatting function from date-fns library
-import { toast } from "react-toastify"; // Importing toast notification library
-import { ToastContainer } from "react-toastify"; // Importing toast container component
-import "react-toastify/dist/ReactToastify.css"; // Importing toast notification styles
-import Link from "next/link"; // Importing Link component from Next.js
-import { FaTrash } from "react-icons/fa"; // Trash can icon
-import { FaEdit } from "react-icons/fa"; // Edit icon
-import { FaUserCircle } from "react-icons/fa"; // Profile picture icon
+import { format } from "date-fns";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
+import { FaTrash } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 
 // Interface for the assessment model
 interface Assessment {

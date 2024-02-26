@@ -117,7 +117,6 @@ function CreateAssessmentModuleLeaders() {
 
     const fetchAssignees = async () => {
       // Fetch all users to assign
-      // Getting response as module leader 1 while waiting for login feature
       const response = await axios.get(`/api/module-leader/get-users`);
       const processedUsers = response.data.map((user: User) => ({
         value: user.id,
@@ -198,6 +197,7 @@ function CreateAssessmentModuleLeaders() {
       const defaultModule = modules.find(
         (module: any) => module.value === moduleId,
       );
+
       if (defaultModule) {
         setAssessment((prevState) => ({
           ...prevState,

@@ -1,6 +1,6 @@
 import { Response } from "./Response";
 
-describe("Response", () => {
+describe("<Response />", () => {
   it("mounts", () => {
     cy.mount(<Response questionId={0} responseType="text" />);
   });

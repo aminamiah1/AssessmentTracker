@@ -61,19 +61,21 @@ model Part {
 model Question {
   id             Int        @id @default(autoincrement())
   question_title String
+  response_type  Data_type
   part_id        Int
+  choices        String[]
   Part           Part       @relation(fields: [part_id], references: [id])
   Response       Response[]
 }
 
 model Response {
-  id            Int        @id @default(autoincrement())
-  value         String
-  data_type     Data_type
-  assessment_id Int
-  question_id   Int
-  Assessment    Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
-  Question      Question   @relation(fields: [question_id], references: [id])
+  id             Int        @id @default(autoincrement())
+  date_completed DateTime   @default(now())
+  value          String
+  assessment_id  Int
+  question_id    Int
+  Assessment     Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
+  Question       Question   @relation(fields: [question_id], references: [id])
 }
 
 enum Role {
@@ -88,8 +90,6 @@ enum Role {
 enum Data_type {
   boolean
   string
-  integer
-  date_time
 }
 
 enum ModuleStatus {

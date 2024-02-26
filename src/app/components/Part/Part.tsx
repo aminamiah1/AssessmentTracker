@@ -1,6 +1,5 @@
 import { IQuestion } from "@/app/types/form";
 import { Question } from "../Question/Question";
-import { Response } from "../Response/Response";
 
 interface PartProps {
   name: string;
@@ -28,14 +27,9 @@ export function Part({ name }: PartProps) {
   return (
     <>
       <h1 style={{ fontSize: 36 }}>{name}</h1>
-      <ol type="a">
+      <ol>
         {questions.map((question, key) => (
-          <Question key={key} prompt={question.prompt}>
-            <Response
-              questionId={question.id}
-              responseType={question.responseType}
-            />
-          </Question>
+          <Question key={key} question={question} />
         ))}
       </ol>
     </>

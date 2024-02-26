@@ -248,7 +248,8 @@ create-staging-db-backup:
   stage: prepare-deploy
   image: alpine:3.19
   needs:
-    - test
+    - test-e2e
+    - test-component
   before_script:
     - apk add skopeo
     - skopeo login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD --tls-verify=false -v $REGISTRY_HOST

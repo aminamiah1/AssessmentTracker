@@ -182,7 +182,8 @@ test:
   <<: *use-openshift
   stage: prepare-deploy
   needs:
-    - test
+    - test-e2e
+    - test-component
   artifacts:
     paths:
       - postgres-data

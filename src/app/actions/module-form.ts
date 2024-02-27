@@ -1,10 +1,8 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/app/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-const prisma = new PrismaClient();
 
 export async function editModuleName(formData: FormData) {
   const moduleName = formData.get("module-name") as string;

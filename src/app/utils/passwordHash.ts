@@ -1,7 +1,6 @@
+import prisma from "@/app/db";
+import { Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { PrismaClient, Role } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 // Function to hash a password
 async function hashPassword(password: string): Promise<string> {

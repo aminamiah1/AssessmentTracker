@@ -1,8 +1,5 @@
+import prisma from "@/app/db";
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import { getServerSession } from "next-auth";
-
-const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {

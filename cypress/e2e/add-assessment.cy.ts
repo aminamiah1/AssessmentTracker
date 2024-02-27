@@ -1,6 +1,6 @@
-describe("Add User", () => {
+describe("Add a assessment", () => {
+  // Module leader logging in
   beforeEach(() => {
-    // Fake log in as the user
     cy.intercept("GET", "/api/auth/session", {
       statusCode: 200,
       body: {
@@ -30,31 +30,36 @@ describe("Add User", () => {
     }).as("getSession");
   });
 
-  // Add a new user
-  it("allows a ps-team member to add a user", () => {
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/ps-team/users/get", {
-      fixture: "users.json",
-    }).as("getUsers");
+  // Pass if they can add a assessment's details
+  it("allows a module leader to add a assessment", () => {
+    // By visting the create assessments page and typing out the details
+    cy.visit("/module-leader/assessment-management/create-assessment");
 
-    // Create a new user through form
-    cy.visit("/ps-team/user-management");
-    cy.contains("button", "Create New User").click();
-    cy.get('[data-cy="name"]').type("New User");
-    const timestamp = Date.now();
-    const uniqueEmail = `newuser+${timestamp}@example.com`;
-    cy.get('[data-cy="email"]').clear().type(uniqueEmail);
-    cy.get('[data-cy="password"]').type("examplepass");
-    cy.contains("label", "Roles")
+    // Spoof getting users by retrieving them from example JSON
+    cy.intercept("GET", "/api/module-leader/users/get", {
+      fixture: "users.json",
+    }).as("getAssignees");
+
+    // Spoof getting modules by retrieving them from example JSON
+    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
+      fixture: "modules.json",
+    }).as("getModules");
+
+    // Enter test assessment form data
+    cy.get('[data-cy="name"]').type("New Assessment");
+
+    cy.contains("label", "Module")
       .next()
       .find("input")
       .focus()
-      .type("module_leader{enter}");
-    cy.contains("button", "X").click({ force: true });
+      .type("Computing basics 1{enter}");
 
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/ps-team/users/get", {
-      fixture: "users.json",
-    }).as("getUsers");
+    cy.get('[data-cy="type"]').type("Test");
+
+    cy.contains("label", "Assignees")
+      .next()
+      .find("input")
+      .focus()
+      .type("Carol White{enter}");
   });
 });

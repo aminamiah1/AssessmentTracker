@@ -331,3 +331,9 @@ To get all users and retrieve only their names and roles, the module leaders can
 # User management dashboard
 
 Located at localhost:3000/ps-team/user-management, the ps team can add, edit, delete or view all users in a nicely-presented crud operation table with pop-up forms for editing and adding new users.
+
+## Module leaders
+
+# Assessment management dashboard
+
+On the module-leader assessment management dashboard (localhost:3000/module-leader/assessment-management), module leader members can view individual assessments in responsive stacked cards. They may create new assessments using a dedicated form, with both actions accessible via clearly labeled dashboard buttons. Additionally, the 'View All Assessments' page enables editing and deleting of assessments through buttons integrated into each card.

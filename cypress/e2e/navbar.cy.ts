@@ -1,11 +1,19 @@
 describe("Navbar", () => {
   beforeEach(() => {
-    cy.intercept("GET", "/api/auth/session", {
-      statusCode: 200,
-      body: {
-        user: { name: "John", email: "admin@example.com", role: "ps_team" },
-        expires: "date-string",
-      },
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.intercept("GET", "**/api/auth/session", (req) => {
+      req.reply({
+        body: {
+          user: {
+            id: 6,
+            name: "Admin User",
+            email: "admin@example.com",
+            roles: ["ps_team", "module_leader"],
+          },
+          expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+        },
+      });
     });
     cy.visit("/");
   });

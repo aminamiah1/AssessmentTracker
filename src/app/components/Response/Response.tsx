@@ -22,7 +22,7 @@ export function Response({
   if (choices.length > 0) {
     return (
       <select data-cy="response">
-        <option value="">Select an option</option>
+        <option>Select an option</option>
         {choices.map((choice, key) => (
           <option key={key}>{choice}</option>
         ))}

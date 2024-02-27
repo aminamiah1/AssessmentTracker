@@ -24,6 +24,13 @@ describe("<Response />", () => {
       <Response questionId={0} responseType="string" choices={choices} />,
     );
     cy.getByTestId("response").get("select").should("exist");
-    cy.getByTestId("response").get("option").should("have.length", 4);
+    cy.getByTestId("response")
+      .get("option")
+      // This should initially be the number of options + 1 for the default
+      .should("have.length", 4 + 1);
+    cy.getByTestId("response")
+      .get("option")
+      .first()
+      .should("contain.text", "Select an option");
   });
 });

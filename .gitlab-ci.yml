@@ -182,7 +182,7 @@ test-e2e:
   script:
     - *set-up-app-environment
     - npm start &
-    - npm run test:e2e:ci
+    - npm run test:e2e
 
 ##########################
 # DEPLOYMENT PREPARATION #

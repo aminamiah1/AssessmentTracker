@@ -14,7 +14,7 @@ function UserPage() {
   }, [status]);
 
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return <p className="text-white bg-black">Loading...</p>;
   }
 
   if (!session) {
@@ -23,7 +23,7 @@ function UserPage() {
   }
 
   // Render the personalized greeting page if the session exists
-  return <p>Hi {session.user.name}!</p>;
+  return <p className="text-white bg-black">Hi {session.user.name}!</p>;
 }
 
 const WrappedUserPage = () => (

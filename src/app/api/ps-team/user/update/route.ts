@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/db";
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession();
+
+    if (!session) {
+      return Response.json({ error: "Must be logged in" }, { status: 401 });
+    }
+
     const { id, name, email, password, roles } = await request.json();
 
     // Validate mandatory fields

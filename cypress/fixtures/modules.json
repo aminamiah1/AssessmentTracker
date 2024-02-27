@@ -1,0 +1,22 @@
+[
+  {
+    "id": 0,
+    "modules": [
+      {
+        "id": "1",
+        "module_name": "Computing basics 1",
+        "module_code": "CM64243"
+      },
+      {
+        "id": "2",
+        "module_name": "Computing basics 2",
+        "module_code": "CM64244"
+      },
+      {
+        "id": "3",
+        "module_name": "Computing basics 3",
+        "module_code": "CM64245"
+      }
+    ]
+  }
+]

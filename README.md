@@ -276,23 +276,53 @@ Create a new .env file in the cloned root repository and place the string DATABA
 
 # Get All Users(GET)
 
-To get all users the ps team can use the api located at localhost:3000/api/ps-team/get-users to retrieve all users
+To get all users the ps team can use the api located at (url)/api/ps-team/users/get to retrieve all users
 
 # Get User(GET)
 
-To get a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/get-user?id=0(example) and pass details in the request query
+To get a specific user by id, the ps team can use the api located at (url)/api/ps-team/user/get?id=(number) and pass details in the request query
 
 # Edit User(POST)
 
-To edit a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/edit-users and pass details in the request body
+To edit a specific user by id, the ps team can use the api located at (url)/api/ps-team/user/update and pass details in the request body
 
 # Delete User(DELETE)
 
-To delete a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/delete-user and pass details in the request body
+To delete a specific user by id, the ps team can use the api located at (url)/api/ps-team/user/delete?id=(number) and pass details in the request body
 
 # Create User(POST)
 
-To create a user, the ps team can use the api located at localhost:3000/api/ps-team/get-user and pass details in the request body
+To create a user, the ps team can use the api located at (url)api/ps-team/user/post and pass details in the request body.
+
+## Module leaders
+
+# Assessment(DELETE)
+
+To delete an individual assessment, the module leaders can use the api located at (url)/api/module-leader/assessment/delete?id=(number)
+
+# Assessment(GET)
+
+To get an individual assessment, the module leaders can use the api located at (url)/api/module-leader/assessment/get?id=(number)
+
+# Assessment(POST)
+
+To post an assessment on form submission, the module leaders can use the api located at (url)/api/module-leader/assessment/post
+
+# Assessment(UPDATE)
+
+To update an assessment on form submission, the module leaders can use the api located at (url)/api/module-leader/assessment/update, passing updated assessment details in body.
+
+# Assessments(GET)
+
+To get their assessments by their id, the module leaders can use the api located at (url)/api/module-leader/assessments/get?=(id)
+
+# Modules(GET)
+
+To get their modules by their id, the module leaders can use the api located at (url)/api/module-leader/modules/get?=(id) used to populate the module selection box in assessment creation form.
+
+# Users(GET)
+
+To get all users and retrieve only their names and roles, the module leaders can use the api located (url)/module-leader/users/get, used in assessment creation form to populate the assignees selection box.
 
 ## Page Documentation
 

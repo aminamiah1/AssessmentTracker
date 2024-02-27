@@ -1,16 +1,20 @@
-import { IQuestion } from "@/app/types/form";
 import { Response } from "../Response/Response";
+import { Question } from "@prisma/client";
 
 interface QuestionProps extends React.HTMLAttributes<HTMLElement> {
-  question: IQuestion;
+  question: Question;
 }
 
 export function Question({ question }: QuestionProps) {
-  const { id, prompt, responseType } = question;
+  const { choices, id, question_title, response_type } = question;
   return (
     <li className="question">
-      <p>{prompt}</p>
-      <Response questionId={id} responseType={responseType} />
+      <p>{question_title}</p>
+      <Response
+        questionId={id}
+        choices={choices}
+        responseType={response_type}
+      />
     </li>
   );
 }

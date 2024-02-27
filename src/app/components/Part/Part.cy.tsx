@@ -1,14 +1,18 @@
 import { Part } from "./Part";
-
-const PART_NAME = "Part 1";
+import part from "./parts.json";
 
 describe("<Part />", () => {
   it("mounts", () => {
-    cy.mount(<Part name={PART_NAME} />);
+    cy.mount(<Part part={part} />);
   });
 
   it("displays the part name", () => {
-    cy.mount(<Part name={PART_NAME} />);
-    cy.contains(PART_NAME).should("be.visible");
+    cy.mount(<Part part={part} />);
+    cy.get("h1").first().contains("Test").should("be.visible");
+  });
+
+  it("displays the correct number of questions", () => {
+    cy.mount(<Part part={part} />);
+    cy.get(".question").should("have.length", part.Question.length);
   });
 });

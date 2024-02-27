@@ -7,6 +7,8 @@ import CreateUser from "../../components/ps-team/CreateUser";
 import AuthContext from "@/app/utils/authContext";
 import UnauthorizedAccess from "@/app/components/authError";
 
+export const dynamic = "force-dynamic";
+
 function ManageUsersPSTeam() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
   const [isPSTeam, setIsPSTeam] = useState(false);

@@ -168,6 +168,15 @@ See [staging](#staging) setup (Will fill this in at some point)
 - [Husky in CI](https://typicode.github.io/husky/how-to.html#ci-server-and-docker)
   - To prevent husky from installing in a CI or Docker environment
 
+## Environments
+
+There are 2 environments needed, 1 for development and 1 for testing. This will require 2 files, `.env` and `.env.test`.  
+Within the `.env.test` file, you will next to add the extension `?schema=name_of_schema` to the end of the DATABASE_URL.
+
+In order to run these environments and tests, you will also need to install a few packages globally:
+
+`npm i -g dotenv ts-node`
+
 # Cypress
 
 To start using the Cypress GUI, run:
@@ -179,7 +188,6 @@ To start using the Cypress GUI, run:
 Others may be added as more tests are added.
 
 `npm run test:e2e`
-`npm run coverage:e2e`
 
 If you plan to add any different paths for whatever reason inside the cypress folder, be sure to update the .gitlab-ci.yml and npm run test:all script in package.json as well with the updated tests so that we know all tests are running.
 

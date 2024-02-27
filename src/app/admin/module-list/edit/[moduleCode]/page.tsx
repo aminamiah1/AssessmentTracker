@@ -1,6 +1,10 @@
 import { RiSave3Fill } from "react-icons/ri";
 
-import { editModuleName, editModuleCode } from "@/app/actions/module-form";
+import {
+  getModuleName,
+  editModuleName,
+  editModuleCode,
+} from "@/app/actions/module-form";
 
 export default async function EditModule({
   params,
@@ -33,6 +37,9 @@ export default async function EditModule({
                 type="text"
                 name="module-name"
                 id="module-name"
+                placeholder={
+                  (await getModuleName(params.moduleCode)) || "New Module Name"
+                }
               />
               <button
                 data-cy="edit-module-name-submit"
@@ -62,6 +69,7 @@ export default async function EditModule({
                 type="text"
                 name="module-code"
                 id="module-code"
+                placeholder={params.moduleCode}
               />
               <button
                 data-cy="edit-module-code-submit"

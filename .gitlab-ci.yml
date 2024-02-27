@@ -53,6 +53,7 @@ variables:
   - npm ci
   - npx prisma generate
   - npx prisma db push
+  - npm i -g dotenv-cli ts-node
 
 ################
 # BUILD STAGES #
@@ -167,7 +168,7 @@ test:
     - apt-get update && apt-get install -y postgresql-client
   script:
     - *set-up-app-environment
-    - npm start &
+    - npm run start:test &
     - npm run test:e2e
 
 ##########################

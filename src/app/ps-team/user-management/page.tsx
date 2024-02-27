@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
 import UsersTable from "../../components/ps-team/UsersTable";
-import { Container, Row, Col, Button } from "react-bootstrap";
-import CreateUser from "../../components/ps-team/CreateUser";
 import { ToastContainer } from "react-toastify";
+import CreateUser from "../../components/ps-team/CreateUser";
 import AuthContext from "@/app/utils/authContext";
 import UnauthorizedAccess from "@/app/components/authError";
 
@@ -28,45 +27,51 @@ function ManageUsersPSTeam() {
 
       checkRoles();
     } else if (status === "unauthenticated") {
-      // If not a authenticated user then make them sign-in
+      // If not an authenticated user then make them sign-in
       signIn();
     }
   }, [session, status]);
+
+  if (status === "loading") {
+    return <p className="text-white bg-black">Loading...</p>;
+    // Show a loading message while checking session status
+  }
+
+  if (!isPSTeam) {
+    return (
+      <p className="text-white bg-black">
+        You are not authorized to view this page...
+      </p>
+    );
+  }
 
   const handleCloseCreateUserForm = () => {
     setShowCreateUserForm(false);
   };
 
   // Render the user management interface if authenticated
-  return isPSTeam ? (
-    <Container fluid className="p-4">
+  return (
+    <div className="p-4 bg-white h-screen mt-4 overflow-y-auto">
       <ToastContainer />
-      <Row>
-        <Col>
-          <h1 className="text-3xl">User Management</h1>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <UsersTable />
-        </Col>
-      </Row>
-      <Row className="text-center">
-        <Col>
-          {/* Conditionally render CreateUser based on showCreateUserForm state */}
-          {showCreateUserForm && (
-            <CreateUser onClose={handleCloseCreateUserForm} />
-          )}
-          {!showCreateUserForm && (
-            <Button onClick={() => setShowCreateUserForm(true)}>
-              Create New User
-            </Button>
-          )}
-        </Col>
-      </Row>
-    </Container>
-  ) : (
-    <UnauthorizedAccess />
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-black">User Management</h1>
+      </div>
+      <div>
+        <UsersTable />
+      </div>
+      <div className="text-center">
+        {showCreateUserForm ? (
+          <CreateUser onClose={handleCloseCreateUserForm} />
+        ) : (
+          <button
+            onClick={() => setShowCreateUserForm(true)}
+            className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20"
+          >
+            Create New User
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 

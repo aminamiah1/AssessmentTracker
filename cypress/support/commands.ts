@@ -44,3 +44,13 @@
 Cypress.Commands.add("getByTestId", (id: string) => {
   return cy.get(`[data-cy="${id}"]`);
 });
+
+/**
+ * Command to create a new user in the database if they do not exist for edit user test
+ */
+Cypress.Commands.add(
+  "createUserIfNotExists",
+  (email, name, password, roles = []) => {
+    cy.task("prismaCreateUser", { email, name, password, roles });
+  },
+);

@@ -14,7 +14,7 @@ function Home() {
   }, [status]);
 
   if (status === "loading") {
-    return <p>Loading...</p>; // Show a loading message while checking session status
+    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
   }
 
   if (!session) {

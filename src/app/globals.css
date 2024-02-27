@@ -21,6 +21,10 @@ body {
   background: rgb(var(--background-end-rgb));
 }
 
+ol {
+  list-style: decimal;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

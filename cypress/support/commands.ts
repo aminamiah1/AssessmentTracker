@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -54,3 +55,10 @@ Cypress.Commands.add(
     cy.task("prismaCreateUser", { email, name, password, roles });
   },
 );
+
+Cypress.Commands.add("login", () => {
+  cy.visit("/api/auth/signin");
+  cy.get("#input-email-for-credentials-provider").type("testemail@test.net");
+  cy.get("#input-password-for-credentials-provider").type("securepassword");
+  cy.get("button").click();
+});

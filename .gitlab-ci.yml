@@ -168,7 +168,7 @@ test:
     - apt-get update && apt-get install -y postgresql-client
   script:
     - *set-up-app-environment
-    - npm run start:test &
+    - npm run start &
     - npm run test:e2e
 
 ##########################

@@ -1,33 +1,10 @@
 describe("Create Module Form", () => {
   beforeEach(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-    cy.intercept("GET", "**/api/auth/session", (req) => {
-      req.reply({
-        body: {
-          user: {
-            id: 6,
-            name: "Admin User",
-            email: "admin@example.com",
-            roles: ["ps_team", "module_leader"],
-          },
-          expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-        },
-      });
-    }).as("getSession");
-    cy.visit("/admin/module-list/create");
-    cy.intercept("GET", "/api/module-leader/get-module-leaders", {
-      fixture: "example.json",
-    }).as("getModuleLeaders");
-    cy.intercept("POST", "/api/module-list/create-modules", {
-      statusCode: 200,
-      body: {
-        message: "Module successfully created.",
-      },
-    }).as("createModule");
+    cy.login();
   });
 
   it("validates module code format", () => {
+    cy.visit("/admin/module-list/create");
     cy.get('input[name="moduleCode"]').type("WrongFormat");
     cy.get("form").submit();
     cy.get("div.text-red-600").should(
@@ -37,6 +14,18 @@ describe("Create Module Form", () => {
   });
 
   it("successfully creates a module", () => {
+    cy.intercept("GET", "/api/module-leader/get-module-leaders", {
+      fixture: "example.json",
+    }).as("getModuleLeaders");
+
+    cy.intercept("POST", "/api/module-list/create-modules", {
+      statusCode: 200,
+      body: {
+        message: "Module successfully created.",
+      },
+    }).as("createModule");
+
+    cy.visit("/admin/module-list/create");
     cy.wait("@getModuleLeaders");
     cy.get('input[name="moduleName"]').type("Introduction to Testing");
     cy.get('input[name="moduleCode"]').type("IT1234");

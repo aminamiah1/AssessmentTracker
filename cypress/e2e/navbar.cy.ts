@@ -1,6 +1,7 @@
 describe("Navbar", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000");
+    cy.login();
+    cy.visit("/");
   });
 
   it("Navbar is visible at the top of the page", () => {

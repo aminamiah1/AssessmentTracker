@@ -1,29 +1,12 @@
 /// <reference types='cypress' />
 describe("Admin module list page", () => {
-  const mockData = [
-    {
-      id: 1,
-      module_name: "Example Module 1",
-      module_code: "CM6124",
-    },
-    {
-      id: 2,
-      module_name: "Example Module 2",
-      module_code: "CM6123",
-    },
-    {
-      id: 3,
-      module_name: "Example Module 3",
-      module_code: "CM6126",
-    },
-    {
-      id: 4,
-      module_name: "Example Module 4",
-      module_code: "CM6127",
-    },
-  ];
+  before(() => {
+    cy.log("Seeding the database...");
+    cy.exec("npm run db:seed", { timeout: 200000 });
+  });
 
   beforeEach(() => {
+    cy.login();
     cy.visit("/admin/module-list");
   });
 
@@ -45,38 +28,31 @@ describe("Admin module list page", () => {
   });
 
   it("should display the correct data from the database", () => {
-    cy.intercept("GET", "/api/module-list", (req) => {
-      req.reply(mockData);
-    });
-
     cy.get(".module-card")
       .first()
-      .should("contain", "Example Module 1")
-      .and("contain", "CM6124");
+      .should("contain", "Example Module")
+      .and("contain", "CM6127");
   });
 
   it("should show all module manage buttons", () => {
-    cy.intercept("GET", "/api/module-list", (req) => {
-      req.reply(mockData);
-    });
-
     cy.get(".module-card > div > button").each((button) => {
       cy.wrap(button).should("exist");
       cy.wrap(button).click();
       cy.wrap(button).should("have.focus");
     });
 
-    cy.get(".module-card > div > button").should("have.length", 8);
+    cy.get(".module-card > div > a").each((button) => {
+      cy.wrap(button).should("exist");
+      cy.wrap(button).click();
+      cy.url().should("include", "/admin/module-list/edit/");
+    });
     // These buttons will eventually lead to different pages
   });
 
   it("should show correct modules when search term is entered", () => {
-    cy.intercept("GET", "/api/module-list/CM6124", (req) => {
-      req.reply([mockData[0]]);
-    });
-    cy.getByTestId("search-bar").type("CM6124{enter}");
+    cy.getByTestId("search-bar").type("CM6127{enter}");
     cy.get(".module-card")
-      .should("contain", "Example Module 1")
+      .should("contain", "Example Module")
       .and("have.length", 1);
     // will need to change once testing db is setup
   });

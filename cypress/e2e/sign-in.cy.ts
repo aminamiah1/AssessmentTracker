@@ -1,10 +1,10 @@
 describe("Authentication", () => {
-  it("should log in successfully with correct credentials", () => {
-    cy.visit("/api/auth/signin");
+  it("should log in successfully with correct credentials and greet the user", () => {
+    cy.login();
+    cy.url().should("include", "/admin/homepage");
 
-    cy.get('input[name="email"]').type("SC@cardiff.ac.uk");
-    cy.get('input[name="password"]').type("example");
-    cy.get('button[type="submit"]').click();
+    const expectedUserName = "Test User";
+    cy.get("body").should("contain", `Hi ${expectedUserName}!`);
   });
 
   it("should display an error with incorrect credentials", () => {

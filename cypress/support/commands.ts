@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -43,4 +44,21 @@
  */
 Cypress.Commands.add("getByTestId", (id: string) => {
   return cy.get(`[data-cy="${id}"]`);
+});
+
+/**
+ * Command to create a new user in the database if they do not exist for edit user test
+ */
+Cypress.Commands.add(
+  "createUserIfNotExists",
+  (email, name, password, roles = []) => {
+    cy.task("prismaCreateUser", { email, name, password, roles });
+  },
+);
+
+Cypress.Commands.add("login", () => {
+  cy.visit("/api/auth/signin");
+  cy.get("#input-email-for-credentials-provider").type("testemail@test.net");
+  cy.get("#input-password-for-credentials-provider").type("securepassword");
+  cy.get("button").click();
 });

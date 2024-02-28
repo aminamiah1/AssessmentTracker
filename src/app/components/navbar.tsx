@@ -148,7 +148,7 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
             </li>
             <li>
               <Link
-                href="#"
+                href="/api/auth/signout"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <svg
@@ -173,7 +173,7 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
         </div>
       </aside>
       <div>
-        <main className="fixed right-0 top-[7vh] sm:w-[calc(100vw-16rem)] w-full">
+        <main className="fixed right-0 top-[7vh] sm:w-[calc(100vw-16rem)] w-full overflow-y-auto bg-white">
           {children}
         </main>
       </div>

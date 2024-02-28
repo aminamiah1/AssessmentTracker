@@ -69,7 +69,7 @@ function CreateAssessmentModuleLeaders() {
   const [assessment, setAssessment] = useState<Assessment>({
     id: 0,
     assessment_name: "",
-    assessment_type: [],
+    assessment_type: "",
     hand_out_week: new Date(2024, 1, 26),
     hand_in_week: new Date(2024, 1, 26),
     module: [],
@@ -224,6 +224,21 @@ function CreateAssessmentModuleLeaders() {
         setAssessment((prevState) => ({
           ...prevState,
           assignees: defaultAssignees,
+        }));
+      }
+
+      // Populate select box with to be edited assessment type if found
+      if (
+        assessment.assessment_type != "" ||
+        assessment.assessment_type != null
+      ) {
+        const defaultAssessmentType = typesOptionsForSelect.find(
+          (type: any) => type.value === assessment.assessment_type,
+        );
+
+        setAssessment((prevState) => ({
+          ...prevState,
+          assessment_type: defaultAssessmentType,
         }));
       }
     }

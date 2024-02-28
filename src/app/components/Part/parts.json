@@ -1,13 +1,13 @@
 {
   "part_title": "Test",
   "part_number": 1,
+  "role": "ps_team",
   "id": -1,
   "Question": [
     {
       "id": 1,
       "question_title": "What is your name?",
       "response_type": "string",
-      "role": "ps_team",
       "choices": [],
       "part_id": -1
     },
@@ -15,7 +15,6 @@
       "id": 2,
       "question_title": "Do you use email?",
       "response_type": "boolean",
-      "role": "ps_team",
       "choices": [],
       "part_id": -1
     },
@@ -23,7 +22,6 @@
       "id": 3,
       "question_title": "What's your favourite color?",
       "response_type": "string",
-      "role": "ps_team",
       "choices": ["Red", "Blue", "Green", "Yellow"],
       "part_id": -1
     }

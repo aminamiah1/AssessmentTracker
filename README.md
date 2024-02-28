@@ -284,23 +284,53 @@ Create a new .env file in the cloned root repository and place the string DATABA
 
 # Get All Users(GET)
 
-To get all users the ps team can use the api located at localhost:3000/api/ps-team/get-users to retrieve all users
+To get all users the ps team can use the api located at (url)/api/ps-team/users/get to retrieve all users. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. Users objects if successful returns their name, email and roles.
 
 # Get User(GET)
 
-To get a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/get-user?id=0(example) and pass details in the request query
+To get a specific user by id, the ps team can use the api located at (url)/api/ps-team/user/get?id=(number) and pass details in the request query. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. Users object if successful returns their name, email and roles.
 
 # Edit User(POST)
 
-To edit a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/edit-users and pass details in the request body
+To edit a specific user by id, the ps team can use the api located at (url)/api/ps-team/user/update and pass details in the request body. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful updates their name, email and roles with sent fields.
 
 # Delete User(DELETE)
 
-To delete a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/delete-user and pass details in the request body
+To delete a specific user by id, the ps team can use the api located at (url)/api/ps-team/user/delete?id=(number) and pass details in the request body. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful deletes a user from the system.
 
 # Create User(POST)
 
-To create a user, the ps team can use the api located at localhost:3000/api/ps-team/get-user and pass details in the request body
+To create a user, the ps team can use the api located at (url)api/ps-team/user/post and pass details in the request body. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful creates a new user entry in the User table.
+
+## Module leaders
+
+# Assessment(DELETE)
+
+To delete an individual assessment, the module leaders can use the api located at (url)/api/module-leader/assessment/delete?id=(number). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful deletes an assessment and all releated properties.
+
+# Assessment(GET)
+
+To get an individual assessment, the module leaders can use the api located at (url)/api/module-leader/assessment/get?id=(number). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful returns an assessment and all it's releated properties e.g. assignees and module name tied to.
+
+# Assessment(POST)
+
+To post an assessment on form submission, the module leaders can use the api located at (url)/api/module-leader/assessment/post. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful creates a new assessment entry in the Assessment table.
+
+# Assessment(UPDATE)
+
+To update an assessment on form submission, the module leaders can use the api located at (url)/api/module-leader/assessment/update, passing updated assessment details in body. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful updates an assessment using the form fields submitted.
+
+# Assessments(GET)
+
+To get their assessments by their id, the module leaders can use the api located at (url)/api/module-leader/assessments/get?=(id). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves the assessment releated with that ID and all the releated fields.
+
+# Modules(GET)
+
+To get their modules by their id, the module leaders can use the api located at (url)/api/module-leader/modules/get?=(id) used to populate the module selection box in assessment creation form. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful gets all modules tied to the module leader.
+
+# Users(GET)
+
+To get all users and retrieve only their names and roles, the module leaders can use the api located (url)/module-leader/users/get, used in assessment creation form to populate the assignees selection box. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful gets all users in the system to populate assignees box.
 
 ## Page Documentation
 

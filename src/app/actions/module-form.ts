@@ -1,10 +1,25 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/app/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-const prisma = new PrismaClient();
+export async function getModuleName(moduleCode: string) {
+  if (!moduleCode) return;
+
+  const moduleName = await prisma.module.findFirst({
+    where: {
+      module_code: moduleCode,
+    },
+    select: {
+      module_name: true,
+    },
+  });
+
+  if (!moduleName) throw new Error("Could not find module with that code.");
+
+  return moduleName.module_name;
+}
 
 export async function editModuleName(formData: FormData) {
   const moduleName = formData.get("module-name") as string;

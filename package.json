@@ -2,11 +2,18 @@
   "name": "assessmenttracking",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:test": "dotenv -e .env.test -- next start -p 3001",
     "lint": "next lint",
+    "db:seed": "dotenv -e .env.test -- npx prisma db seed",
+    "dev:seed": "npx prisma db seed",
+    "dev:test": "dotenv -e .env.test -- next dev -p 3001",
     "cy:open": "cypress open",
     "test:e2e": "cypress run --spec \"cypress/e2e/*.cy.ts\"",
     "coverage:e2e": "npx nyc@latest npm run test:e2e",
@@ -58,6 +65,7 @@
     "autoprefixer": "^10.0.1",
     "babel-plugin-istanbul": "^6.1.1",
     "cypress": "^13.6.4",
+    "dotenv": "^16.4.5",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
     "eslint-config-prettier": "^9.1.0",
@@ -68,6 +76,7 @@
     "prisma": "^5.10.1",
     "prisma-erd-generator": "^1.11.2",
     "tailwindcss": "^3.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5",
     "webpack": "^5.90.1"
   },

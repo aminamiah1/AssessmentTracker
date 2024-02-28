@@ -28,3 +28,6 @@ ALTER TABLE "Response" DROP COLUMN "data_type";
 -- AlterTable
 ALTER TABLE "Question" ADD COLUMN     "choices" TEXT[];
 
+
+-- AlterTable
+ALTER TABLE "Part" ADD COLUMN     "role" "Role" NOT NULL;

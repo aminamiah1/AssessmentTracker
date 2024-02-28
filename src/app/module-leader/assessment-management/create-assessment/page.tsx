@@ -13,12 +13,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
 import AuthContext from "@/app/utils/authContext";
+import { Assessment_type } from "@prisma/client";
 
 // Interface for the assessment model
 interface Assessment {
   id: number;
   assessment_name: string;
-  assessment_type: string;
+  assessment_type: Assessment_type; // Assessment type is taken from the prisma enum
   hand_out_week: Date;
   hand_in_week: Date;
   module: { value: string }[] | { value: string; label: string }[]; // Allow the react select format to also be used for the module
@@ -68,13 +69,22 @@ function CreateAssessmentModuleLeaders() {
   const [assessment, setAssessment] = useState<Assessment>({
     id: 0,
     assessment_name: "",
-    assessment_type: "",
+    assessment_type: [],
     hand_out_week: new Date(2024, 1, 26),
     hand_in_week: new Date(2024, 1, 26),
     module: [],
     setter_id: setterId,
     assignees: [],
   });
+
+  const typesOptionsSet = new Set(Object.values(Assessment_type));
+
+  const typesOptionsForSelect = Array.from(typesOptionsSet).map(
+    (type: any) => ({
+      value: type,
+      label: type.replace("_", " "),
+    }),
+  );
 
   useEffect(() => {
     if (session != null) {
@@ -260,6 +270,10 @@ function CreateAssessmentModuleLeaders() {
     // Convert selected module value to format database is expecting i.e. the value from the selector box
     const selectedModuleValue = (assessment.module as any).value;
 
+    // Convert selected assessment type value to format database is expecting i.e. the value from the selector box
+    const selectedAssessmentTypeValue = (assessment.assessment_type as any)
+      .value;
+
     if (isEdit) {
       // Update the assessment using the api endpoint
       const response = await fetch("/api/module-leader/assessment/update", {
@@ -268,7 +282,7 @@ function CreateAssessmentModuleLeaders() {
         body: JSON.stringify({
           id: assessment.id,
           assessment_name: assessment.assessment_name,
-          assessment_type: assessment.assessment_type,
+          assessment_type: selectedAssessmentTypeValue,
           hand_out_week: assessment.hand_out_week,
           hand_in_week: assessment.hand_in_week,
           module_id: selectedModuleValue,
@@ -295,7 +309,7 @@ function CreateAssessmentModuleLeaders() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           assessment_name: assessment.assessment_name,
-          assessment_type: assessment.assessment_type,
+          assessment_type: selectedAssessmentTypeValue,
           hand_out_week: assessment.hand_out_week,
           hand_in_week: assessment.hand_in_week,
           module_id: selectedModuleValue,
@@ -391,17 +405,23 @@ function CreateAssessmentModuleLeaders() {
               <label htmlFor="assessmentType" className="font-bold">
                 Assessment Type
               </label>
-              <input
-                type="text"
-                id="assessmentType"
-                placeholder="Enter assessment type..."
-                name="assessment_type"
-                data-cy="type"
-                value={assessment.assessment_type}
-                onChange={handleTextChange}
-                required
-                className="form-input w-full mb-4 border border-gray-300 border-b-4 p-4 border-black"
-              />
+              <div className="mb-4">
+                <Select
+                  onChange={(option) =>
+                    handleSelectChange(option, "assessment_type")
+                  }
+                  options={typesOptionsForSelect.map((type) => ({
+                    ...type,
+                    key: type.value,
+                  }))}
+                  id="assessment_type"
+                  name="assessment_type"
+                  required
+                  data-cy="type"
+                  value={assessment.assessment_type}
+                  className="react-select-container mb-6"
+                />
+              </div>
             </div>
 
             <div className="mb-4">

@@ -7,6 +7,8 @@ import Link from "next/link";
 import AuthContext from "@/app/utils/authContext";
 import UnauthorizedAccess from "@/app/components/authError";
 
+export const dynamic = "force-dynamic";
+
 type ModuleData = {
   id: number;
   module_name: string;
@@ -14,6 +16,7 @@ type ModuleData = {
 }[];
 
 async function getModules(searchTerm: string) {
+  // Get modules from api endpoint
   const data = await fetch(`/api/module-list/${searchTerm}`, {
     next: { revalidate: 3600 },
   });
@@ -31,7 +34,7 @@ function ModuleList() {
       const checkRoles = () => {
         const roles = session.user.roles;
         console.log(session.user.roles);
-        if (roles.includes("module_leader")) {
+        if (roles.includes("ps_team")) {
           setIsModuleLeader(true);
         } else {
           setIsModuleLeader(false);
@@ -86,28 +89,29 @@ function ModuleList() {
         </div>
         {/* Grid array of modules, 2 columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full p-4">
-          {modules.map((module) => (
-            <div
-              key={module.id}
-              className="module-card flex justify-between items-center text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border dark:border-gray-700 shadow-md dark:shadow-gray-500 rounded p-4"
-            >
-              <div className="mr-4">
-                <h3 className="text-xl">{module.module_name}</h3>
-                <p>Module Code: {module.module_code}</p>
+          {modules.length > 0 &&
+            modules.map((module) => (
+              <div
+                key={module.id}
+                className="module-card flex justify-between items-center text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border dark:border-gray-700 shadow-md dark:shadow-gray-500 rounded p-4"
+              >
+                <div className="mr-4">
+                  <h3 className="text-xl">{module.module_name}</h3>
+                  <p>Module Code: {module.module_code}</p>
+                </div>
+                <div className="flex gap-4">
+                  <Link
+                    href={`/admin/module-list/edit/${module.module_code}`}
+                    className="edit-button px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <MdEdit />
+                  </Link>
+                  <button className="delete-button px-3 py-2 text-2xl border rounded transition-all bg-red-600 dark:bg-red-800 text-gray-100 hover:bg-red-700">
+                    <MdDelete />
+                  </button>
+                </div>
               </div>
-              <div className="flex gap-4">
-                <Link
-                  href={`/admin/module-list/edit/${module.module_code}`}
-                  className="edit-button px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <MdEdit />
-                </Link>
-                <button className="delete-button px-3 py-2 text-2xl border rounded transition-all bg-red-600 dark:bg-red-800 text-gray-100 hover:bg-red-700">
-                  <MdDelete />
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </>

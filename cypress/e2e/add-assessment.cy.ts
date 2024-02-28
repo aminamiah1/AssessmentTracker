@@ -1,4 +1,8 @@
 describe("Add a assessment", () => {
+  before(() => {
+    cy.log("Seeding the database...");
+    cy.exec("npm run db:seed", { timeout: 200000 });
+  });
   // Module leader logging in
   beforeEach(() => {
     cy.intercept("GET", "/api/auth/session", {

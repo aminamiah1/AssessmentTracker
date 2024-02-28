@@ -1,12 +1,6 @@
 describe("Navbar", () => {
   beforeEach(() => {
-    cy.intercept("GET", "/api/auth/session", {
-      statusCode: 200,
-      body: {
-        user: { name: "John", email: "admin@example.com", role: "ps_team" },
-        expires: "date-string",
-      },
-    });
+    cy.login();
     cy.visit("/");
   });
 

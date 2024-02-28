@@ -1,5 +1,8 @@
-import { getServerSession } from "next-auth";
 import prisma from "@/app/db";
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   // Get all users
@@ -11,7 +14,7 @@ export async function GET(request: Request) {
     }
 
     const users = await prisma.users.findMany();
-    return Response.json(users);
+    return NextResponse.json(users);
   } finally {
     await prisma.$disconnect(); // Ensure connection closure
   }

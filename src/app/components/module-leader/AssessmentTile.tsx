@@ -87,7 +87,8 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
               </div>
               <p className="mt-4">
                 <span className="text-sm text-gray-700">
-                  {assessment.module_name} ● {assessment.assessment_type}
+                  {assessment.module_name} ●{" "}
+                  {assessment.assessment_type.replaceAll("_", " ")}
                 </span>
                 <br />
                 <span className="text-sm text-gray-700">

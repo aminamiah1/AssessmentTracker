@@ -82,7 +82,7 @@ function CreateAssessmentModuleLeaders() {
   const typesOptionsForSelect = Array.from(typesOptionsSet).map(
     (type: any) => ({
       value: type,
-      label: type.replace("_", " "),
+      label: type.replaceAll("_", " "),
     }),
   );
 

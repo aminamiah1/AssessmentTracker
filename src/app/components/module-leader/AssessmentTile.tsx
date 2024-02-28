@@ -67,7 +67,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
   };
 
   return (
-    // Assessment tile layout using Bootstrap grid system
+    // Assessment tile layout using grid system
     <div className="flex-grow-1 col-12 md:col-6 mb-4 border border-gray-500">
       <ToastContainer />
       <div className="bg-white shadow-md">

@@ -19,7 +19,7 @@ import { Assessment_type } from "@prisma/client";
 interface Assessment {
   id: number;
   assessment_name: string;
-  assessment_type: Assessment_type; // Assessment type is taken from the prisma enum
+  assessment_type: { value: string } | { value: string; label: string }; // Assessment type is taken from the prisma enum
   hand_out_week: Date;
   hand_in_week: Date;
   module: { value: string }[] | { value: string; label: string }[]; // Allow the react select format to also be used for the module
@@ -69,7 +69,7 @@ function CreateAssessmentModuleLeaders() {
   const [assessment, setAssessment] = useState<Assessment>({
     id: 0,
     assessment_name: "",
-    assessment_type: "",
+    assessment_type: { value: "" },
     hand_out_week: new Date(2024, 1, 26),
     hand_in_week: new Date(2024, 1, 26),
     module: [],
@@ -228,18 +228,17 @@ function CreateAssessmentModuleLeaders() {
       }
 
       // Populate select box with to be edited assessment type if found
-      if (
-        assessment.assessment_type != "" ||
-        assessment.assessment_type != null
-      ) {
+      if (assessment.assessment_type.value != "") {
         const defaultAssessmentType = typesOptionsForSelect.find(
           (type: any) => type.value === assessment.assessment_type,
         );
 
-        setAssessment((prevState) => ({
-          ...prevState,
-          assessment_type: defaultAssessmentType,
-        }));
+        if (defaultAssessmentType) {
+          setAssessment((prevState) => ({
+            ...prevState,
+            assessment_type: defaultAssessmentType,
+          }));
+        }
       }
     }
   }, [modules, users, assignees, moduleId, isModuleLeader]); // Runs if editing the assessment and is a module leader

@@ -1,205 +1,267 @@
 import React, { useState, FormEvent, useEffect } from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { toast } from 'react-toastify';
-import { Form, Button, Modal, Toast } from 'react-bootstrap';
-import { Role } from '@prisma/client';
-import Select from 'react-select';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import { Role } from "@prisma/client";
+import Select from "react-select";
+import "react-toastify/dist/ReactToastify.css";
 
-// Define the structure of a user
 interface User {
-    id: number;
-    email: string;
-    name: string;
-    password: string;
-    roles: [];
+  id: number;
+  email: string;
+  name: string;
+  password: string;
+  roles: { value: string }[] | { value: string; label: string }[];
 }
 
-// Props
 interface EditUserProps {
-    onClose: () => void; // Prop to close modal form
-    userToEdit: User | null; // Added property to receive user data for editing
-    show: boolean; // Prop to control modal visibility
-    updateUsers: () => void; // Prop to update table after succesful edit of user
+  onClose: () => void;
+  userToEdit: User | null;
+  show: boolean;
+  updateUsers: () => void;
+  setRefetch: (refetch: number) => void;
+  refetch: number;
 }
 
-// Create a set of available role options
 const rolesOptionsSet = new Set(Object.values(Role));
 
-// Convert the set of role options into an array of objects compatible with react-select
 const rolesOptionsForSelect = Array.from(rolesOptionsSet).map((role) => ({
   value: role,
   label: role,
-  key: role
 }));
 
-// Define the EditUser component
-const EditUser: React.FC<EditUserProps> = ({ onClose, userToEdit, show, updateUsers}) => {
+const EditUser: React.FC<EditUserProps> = ({
+  onClose,
+  userToEdit,
+  show,
+  updateUsers,
+  setRefetch,
+  refetch,
+}) => {
+  const [user, setUser] = useState<User>(
+    userToEdit
+      ? userToEdit
+      : {
+          id: 0,
+          email: "",
+          name: "",
+          password: "",
+          roles: [],
+        },
+  );
 
-    // Set the existing user's details or get blank user details
-    const [user, setUser] = useState<User>(userToEdit ? userToEdit : {
-        id: 0,
-        email: '',
-        name: '',
-        password: '',
-        roles: []
+  useEffect(() => {
+    if (userToEdit) {
+      const transformedRoles = userToEdit.roles.map((role) => ({
+        value: role.toString(),
+        label: role.toString(),
+      }));
+      setUser({
+        ...userToEdit,
+        roles: transformedRoles,
+      });
+    } else {
+      setUser({
+        ...user,
+        roles: [],
+      });
+    }
+  }, [user, userToEdit]);
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setUser({
+      ...user,
+      [event.target.name]:
+        event.target.name === "selectedRoles"
+          ? event.target.value
+          : (event.target.value as unknown as string[]),
+    });
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (user.roles.length === 0) {
+      toast.error("Please select at least one role for the user.");
+      return;
+    }
+
+    const selectedRolesValues = new Set(
+      user.roles.map((role) => role["value"]),
+    );
+
+    const response = await fetch("/api/ps-team/user/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        roles: Array.from(selectedRolesValues),
+      }),
     });
 
-    // Update user details depending on user selected in table
-    useEffect(() => {
+    if (!response.ok) {
+      const errorData = await response.text();
+      toast.error(
+        "You entered incorrect details or database server failed, please try again",
+      );
+      throw new Error(errorData || "Failed to edit user");
+    }
 
-      // If user to edit exists
-      if (userToEdit) {
+    setUser({
+      id: 0,
+      email: "",
+      name: "",
+      password: "",
+      roles: [],
+    });
 
-        // Transform existing roles to the expected format
-        const transformedRoles = userToEdit.roles.map((role) => ({
-          value: role, 
-          label: role,
-          key: role
-        }));
-    
-        // Set the user state with transformed roles
-        setUser({
-          ...userToEdit,
-          // @ts-ignore
-          roles: transformedRoles,
-        }); 
-
-      } else {
-        // If no user data, set an empty array for roles
-        setUser({
-          ...user,
-          roles: [],
-        });
-      }
-    }, [userToEdit]);
-
-    // Handle change in input fields
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setUser({
-          ...user,
-          [event.target.name]: event.target.name === 'selectedRoles'
-            // @ts-ignore
-            ? event.target.value.map((role) => role.value) // Extract role values
-            : event.target.value,
-        });
-    };
-    
-    // Handle form submission
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        // Check if roles are empty
-        if (user.roles.length === 0) {
-          toast.error('Please select at least one role for the user.');
-          return; // Prevent form submission
-        }
-
-        // @ts-ignore
-        // Get the selected user's roles
-        const selectedRolesValues = new Set(user.roles.map((role) => role.value));
-
-        // Use the API endpoint for updating users and send the user details
-        const response = await fetch("/api/ps-team/edit-users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: user.id, 
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            roles: Array.from(selectedRolesValues),
-          }),
-        });
-
-        // Alert the user if the api response failed
-        if (!response.ok) {
-            const errorData = await response.text();
-            toast.error('You entered incorrect details or database server failed, please try again');
-            throw new Error(errorData || "Failed to edit user");
-        }
-
-         // Update the users array to empty as user submitted
-         setUser({
-          id: 0,
-          email: '',
-          name: '',
-          password: '',
-          roles: [],
-        });
-
-        // Close the modal after successful user edit
-        toast.success('User edited successfully!');
-        onClose();
-
-        // Refresh the users table to reflect new details
-        updateUsers(); 
-    };
-  
-    return (
-      <>
-          <Modal show={show} onHide={onClose} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit User</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form onSubmit={handleSubmit}>
-              <Form.Group controlId="formEmail">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  data-cy="email"
-                  value={user.email}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-              <Form.Group controlId="formName">
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  data-cy="name"
-                  value={user.name}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-              <Form.Group controlId="formPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  data-cy="password"
-                  type="password"
-                  name="password"
-                  value={user.password}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-              <Form.Group controlId="formRoles">
-                <Form.Label>Roles</Form.Label>
-                <Select
-                  // @ts-ignore
-                  options={rolesOptionsForSelect.map((role) => ({
-                    ...role,
-                    key: role.value
-                  }))}
-                  value={user.roles}
-                  // @ts-ignore
-                  onChange={(selectedRoles) => setUser({ ...user, roles: selectedRoles })}
-                  isMulti
-                  className="react-select-container" 
-                />
-              </Form.Group>
-              <Button data-cy="EditUser" variant="success" type="submit" style={{marginTop: "1rem"}}>
-                Edit User
-              </Button>
-            </Form>
-          </Modal.Body>
-        </Modal>
-      </>
-    );
+    toast.success("User edited successfully!");
+    onClose();
+    updateUsers();
+    setRefetch(refetch + 1);
   };
-  
+
+  return (
+    <>
+      {show && (
+        <div className="fixed z-10 inset-0 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen">
+            <div
+              className="fixed inset-0 transition-opacity"
+              aria-hidden="true"
+            >
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <div
+              className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-headline"
+            >
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold text-black">Edit User</h2>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="bg-red-700 hover:bg-azure-700 text-white font-bold py-2 px-4 rounded"
+                    data-cy="ClosePopUp"
+                  >
+                    X
+                  </button>
+                </div>
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-bold mb-2 text-black"
+                    >
+                      Email address
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      data-cy="email"
+                      value={user.email}
+                      onChange={handleChange}
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-bold mb-2 text-black"
+                    >
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      data-cy="name"
+                      value={user.name}
+                      onChange={handleChange}
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-bold mb-2 text-black"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      data-cy="password"
+                      value={user.password}
+                      onChange={handleChange}
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label
+                      htmlFor="roles"
+                      className="block text-sm font-bold mb-2 text-black"
+                    >
+                      Roles
+                    </label>
+                    <Select
+                      options={rolesOptionsForSelect.map((role) => ({
+                        ...role,
+                        key: role.value,
+                      }))}
+                      value={user.roles}
+                      onChange={(selectedRoles) => {
+                        const newRoles = selectedRoles.map((option) => ({
+                          value: option.value,
+                          label: option.value,
+                        }));
+                        setUser({ ...user, roles: newRoles });
+                      }}
+                      isMulti
+                      className="react-select-container text-black"
+                      menuPortalTarget={document.body}
+                      styles={{
+                        menuPortal: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                          color: "black",
+                        }),
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="bg-gray-700 hover:bg-azure-700 text-white font-bold py-2 px-4 rounded"
+                    data-cy="EditUser"
+                    style={{
+                      marginTop: "1rem",
+                      height: "5rem",
+                      width: "29rem",
+                      fontSize: "larger",
+                    }}
+                  >
+                    Edit User
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 export default EditUser;

@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  seed     = "prisma/seed.ts"
 }
 
 generator erd {
@@ -17,9 +18,12 @@ model Users {
   name            String
   password        String
   roles           Role[]
+  image           String?
   set_assessments Assessment[]
   assessments     Assessment[] @relation("AssessmentsToUsers")
   modules         Module[]     @relation("ModulesToUsers")
+
+  @@map("users")
 }
 
 model Module {
@@ -38,8 +42,8 @@ model Assessment {
   hand_in_week    DateTime
   module_id       Int
   setter_id       Int?
-  module          Module     @relation(fields: [module_id], references: [id])
-  setter          Users?     @relation(fields: [setter_id], references: [id])
+  module          Module     @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  setter          Users?     @relation(fields: [setter_id], references: [id], onDelete: Cascade)
   Response        Response[]
   part            Part[]     @relation("AssessmentToPart")
   assignees       Users[]    @relation("AssessmentsToUsers")
@@ -67,7 +71,7 @@ model Response {
   data_type     Data_type
   assessment_id Int
   question_id   Int
-  Assessment    Assessment @relation(fields: [assessment_id], references: [id])
+  Assessment    Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
   Question      Question   @relation(fields: [question_id], references: [id])
 }
 

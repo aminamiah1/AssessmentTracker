@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
-import { PrismaClient, Role } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { Role } from "@prisma/client";
+import prisma from "@/app/db";
 
 // Function to hash a password
 async function hashPassword(password: string): Promise<string> {
@@ -15,15 +14,17 @@ async function createUser(
   email: string,
   name: string,
   password: string,
-  roles: Role,
+  roles?: Role[],
 ): Promise<void> {
   const hashedPassword = await hashPassword(password);
+  if (!roles) roles = [];
 
   const user = await prisma.users.create({
     data: {
       email,
       name,
       password: hashedPassword,
+      roles: [...roles],
     },
   });
   console.log("User created:", user);

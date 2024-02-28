@@ -1,0 +1,5 @@
+# We don't want testing files to be included in the final build
+cypress/
+cypress.config.ts
+
+node_modules/

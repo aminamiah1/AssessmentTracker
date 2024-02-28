@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useTable } from "react-table";
 import axios from "axios";
-import Table from "react-bootstrap/Table";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import EditUser from "./EditUser";
-import { Form, FormControl, FormLabel, Button } from "react-bootstrap";
+import { FiSearch } from "react-icons/fi"; // Search icon
+import { FaTrash } from "react-icons/fa"; // Trash can icon
+import { FaEdit } from "react-icons/fa"; // Edit icon
 
 interface User {
   id: number;
@@ -21,21 +20,25 @@ const UsersTable: React.FC = () => {
   const [showEditUserModal, setShowEditUserModal] = useState(false);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
   const [search, setSearch] = React.useState("");
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]); // New state for filtered view
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [refetch, setRefetch] = useState(0);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      // Fetch users only when component mounts or search is cleared
       if (!search) {
-        const response = await axios.get("/api/ps-team/get-users");
-        const sortedUsers = response.data.sort((a: any, b: any) => a.id - b.id);
+        const response = await axios.get("/api/ps-team/users/get");
+        const sortedUsers = response.data.sort(
+          (a: User, b: User) => a.id - b.id,
+        );
         setUsers(sortedUsers);
-        setFilteredUsers(sortedUsers); // Initialize filtered view with all users
+        setFilteredUsers(sortedUsers);
       }
     };
 
     fetchUsers();
-  }, [search, users]); // Run effect when search or user array changes
+  }, [search, refetch]);
 
   const handleSearch = (event: any) => {
     setSearch(event.target.value);
@@ -43,7 +46,6 @@ const UsersTable: React.FC = () => {
       users.filter((user) => {
         const searchTerm = event.target.value.toLowerCase();
         return (
-          //Can search by role or name to find users in the table
           user.name.toLowerCase().includes(searchTerm) ||
           user.roles.some((role: string) =>
             role.toLowerCase().includes(searchTerm),
@@ -53,11 +55,11 @@ const UsersTable: React.FC = () => {
     );
   };
 
-  const handleEdit = async (user: any) => {
-    setSearch(""); // Reset search to show all users
+  const handleEdit = async (user: User) => {
+    setSearch("");
 
     var id = user.id;
-    fetch(`/api/ps-team/get-user?id=${id}`, {
+    fetch(`/api/ps-team/user/get?id=${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -65,33 +67,28 @@ const UsersTable: React.FC = () => {
     })
       .then((response) => {
         if (response.ok) {
-          // Parse the JSON response and pass user details
           return response.json();
         } else {
-          // Handle errors with toast message to inform user
           toast.error("Error getting user");
           throw new Error("Error getting user");
         }
       })
       .then((data) => {
-        // Set userToEdit state with received data
         setUserToEdit(data);
-        // Show the edit user modal
         setShowEditUserModal(true);
       })
       .catch((error) => {
-        // Handle network errors with toast to inform user
         toast.error("Network error please try again");
       });
   };
 
-  const handleDelete = async (user: any) => {
+  const handleDelete = async (user: User) => {
     try {
-      setSearch(""); // Reset search to show all users
+      setSearch(" ");
 
       var id = user.id;
 
-      fetch(`/api/ps-team/delete-users?id=${id}`, {
+      fetch(`/api/ps-team/user/delete?id=${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -100,63 +97,84 @@ const UsersTable: React.FC = () => {
       })
         .then((response) => {
           if (response.ok) {
-            // Handle successful deletion and update users array to re-set table
+            setSearch("");
             setUsers(users.filter((u) => u.id !== id));
           } else {
-            // Handle errors with toast message to inform user
             toast.error("'Error deleting user");
           }
         })
         .catch((error) => {
-          // Handle network errors with toast to inform user
           toast.error("Network error please try again");
         });
 
-      // Success message with toast to add
       toast.success("Delete user successful!");
+      setShowDeleteModal(false);
+      setRefetch(refetch + 1);
     } catch (error) {
-      // Display an error message to the user with toast message
       toast.error("Error deleting user");
     }
   };
 
   const handleUpdateUsers = () => {
-    const filteredUsers = users.sort((a: any, b: any) => a.id - b.id);
+    const filteredUsers = users.sort((a: User, b: User) => a.id - b.id);
     setUsers(filteredUsers);
   };
 
   const columns = React.useMemo(
     () => [
       {
-        Header: "ID",
-        accessor: "id",
+        Header: "Name",
+        accessor: "name",
       },
       {
         Header: "Email",
         accessor: "email",
       },
       {
-        Header: "Name",
-        accessor: "name",
-      },
-      {
         Header: "Roles",
-        accessor: (user: User) => user.roles.join(", "),
+        accessor: (user: User) => {
+          const capitalizedRoles = user.roles.map((role: string) => {
+            if (role.toLowerCase() === "module_leader") {
+              return "Module Leader";
+            } else if (role.toLowerCase() === "ps_team") {
+              return "PS Team";
+            } else if (role.toLowerCase() === "internal_moderator") {
+              return "Internal Moderator";
+            } else if (role.toLowerCase() === "external_examiner") {
+              return "External Examiner";
+            } else if (role.toLowerCase() === "panel_member") {
+              return "Panel Member";
+            } else if (role.toLowerCase() === "system_admin") {
+              return "System Admin";
+            } else {
+              return (
+                role.replace("_", " ").charAt(0).toUpperCase() + role.slice(1)
+              );
+            }
+          });
+          return capitalizedRoles.join(" ● ");
+        },
       },
       {
         Header: "Delete",
-        accessor: (id: any) => (
-          <Button variant="danger" onClick={() => handleDelete(id)}>
-            Delete
-          </Button>
+        accessor: (id: User) => (
+          <button
+            onClick={() => {
+              setUserToDelete(id);
+              setShowDeleteModal(true);
+            }}
+            data-cy="DeleteUser"
+          >
+            <FaTrash className="cursor-pointer" size={30} />
+          </button>
         ),
       },
       {
         Header: "Edit",
-        accessor: (id: any) => (
-          <Button variant="success" onClick={() => handleEdit(id)}>
-            Edit
-          </Button>
+        accessor: (id: User) => (
+          <button onClick={() => handleEdit(id)} data-cy="EditUser">
+            <FaEdit className="cursor-pointer" size={30} />
+          </button>
         ),
       },
     ],
@@ -165,6 +183,7 @@ const UsersTable: React.FC = () => {
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
+      // The columns defined in the table is not a commonly defined type hence the ts ignore comment
       // @ts-ignore
       columns,
       data: filteredUsers,
@@ -172,34 +191,40 @@ const UsersTable: React.FC = () => {
 
   return (
     <>
-      <Form className="d-flex align-items-center mb-3">
-        <FormControl
+      <div className="flex items-center mb-3 overflow-y-auto">
+        <FiSearch
+          className="mr-2 mb-2 text-black"
+          size={30}
+          style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
+        />
+        <input
           id="search"
           type="text"
           value={search}
           onChange={handleSearch}
           placeholder="Enter name or user role..."
+          className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
         />
-      </Form>
+      </div>
       <EditUser
         show={showEditUserModal}
         onClose={() => setShowEditUserModal(false)}
         userToEdit={userToEdit}
         updateUsers={handleUpdateUsers}
+        setRefetch={setRefetch}
+        refetch={refetch}
       />
-      <Table bordered hover responsive variant="light" {...getTableProps()}>
+      <table
+        className="table-auto w-full bg-gray-100 border border-black shadow-md text-black shadow-md border-b-4 border-black mb-3 text-lg"
+        {...getTableProps()}
+      >
         <thead>
           {headerGroups.map((headerGroup, headerGroupIndex) => (
-            <tr
-              // @ts-ignore
-              key={`header-group-${headerGroupIndex}`}
-              {...headerGroup.getHeaderGroupProps()}
-            >
+            <tr key={`header-group-${headerGroupIndex}`}>
               {headerGroup.headers.map((column, columnIndex) => (
                 <th
-                  // @ts-ignore
                   key={`header-${headerGroupIndex}-${columnIndex}`}
-                  {...column.getHeaderProps()}
+                  className="border border-black"
                 >
                   {column.render("Header")}
                 </th>
@@ -212,12 +237,16 @@ const UsersTable: React.FC = () => {
             prepareRow(row);
             return (
               // @ts-ignore
-              <tr key={`row-${rowIndex}`} {...row.getRowProps()}>
+              <tr
+                // @ts-ignore placed here as key required but typescript states key is already defined
+                key={`row-${rowIndex}`}
+                {...row.getRowProps()}
+                className="border border-black"
+              >
                 {row.cells.map((cell, cellIndex) => (
                   <td
-                    // @ts-ignore
                     key={`cell-${rowIndex}-${cellIndex}`}
-                    {...cell.getCellProps()}
+                    className="border border-black pl-2"
                   >
                     {cell.render("Cell")}
                   </td>
@@ -226,7 +255,37 @@ const UsersTable: React.FC = () => {
             );
           })}
         </tbody>
-      </Table>
+      </table>
+
+      <div
+        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
+          showDeleteModal ? "block" : "hidden"
+        }`}
+      >
+        {userToDelete && (
+          <div className="bg-white p-5 border border-black rounded-lg">
+            <p>Delete user: {userToDelete.name}?</p>
+            <p className="text-black">
+              Are you sure you want to delete user: {userToDelete.name}?
+            </p>
+            <div className="flex justify-between mt-4">
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                data-cy="DeleteUserConfirm"
+                onClick={() => handleDelete(userToDelete)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 };

@@ -19,45 +19,50 @@ export function Response({
   questionId,
   responseType,
 }: ResponseProps) {
+  const inputName = questionId.toString();
+
   if (choices.length > 0) {
     return (
-      <select data-cy="response" className="dark:bg-slate-500">
-        <option>Select an option</option>
-        {choices.map((choice, key) => (
-          <option key={key}>{choice}</option>
-        ))}
-      </select>
+      <>
+        {/* Empty label required for the textarea to appear in the server action's FormData */}
+        <label htmlFor={inputName}></label>
+        <select
+          data-cy="response"
+          className="dark:bg-slate-500"
+          name={inputName}
+        >
+          <option>Select an option</option>
+          {choices.map((choice, key) => (
+            <option key={key}>{choice}</option>
+          ))}
+        </select>
+      </>
     );
   }
 
   switch (responseType) {
     case "string":
       return (
-        <textarea
-          data-cy="response"
-          className="w-full min-h-32 dark:bg-slate-500"
-        />
+        <>
+          {/* Empty label required for the textarea to appear in the server action's FormData */}
+          <label htmlFor={inputName}></label>
+          <textarea
+            data-cy="response"
+            className="w-full min-h-32 dark:bg-slate-500"
+            name={inputName}
+          />
+        </>
       );
     case "boolean":
       return (
         <div data-cy="response" className="flex justify-around">
           <div className="flex gap-2">
-            <input
-              className="w-5"
-              value="Yes"
-              name={questionId.toString()}
-              type="radio"
-            />
+            <input className="w-5" value="Yes" name={inputName} type="radio" />
             <label htmlFor="Yes">Yes</label>
           </div>
           <br />
           <div className="flex gap-2">
-            <input
-              className="w-5"
-              value="No"
-              name={questionId.toString()}
-              type="radio"
-            />
+            <input className="w-5" value="No" name={inputName} type="radio" />
             <label htmlFor="No">No</label>
           </div>
         </div>

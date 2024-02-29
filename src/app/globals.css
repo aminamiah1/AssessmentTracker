@@ -21,10 +21,8 @@ body {
   background: rgb(var(--background-end-rgb));
 }
 
-/* See <Response /> component */
-select[data-cy="response"],
-textarea[data-cy="response"] {
-  color: rgb(var(--background-end-rgb));
+input[type="radio"] {
+  cursor: pointer;
 }
 
 ol {

@@ -1,5 +1,7 @@
 import { Part } from "./Part";
-import part from "./parts.json";
+import importedPart from "./parts.json";
+
+const part: PartWithQuestions = importedPart as PartWithQuestions;
 
 describe("<Part />", () => {
   it("mounts", () => {

@@ -1,3 +1,4 @@
+import { markPartAsSubmitted } from "@/app/utils/form";
 import { Question } from "../Question/Question";
 
 interface PartProps {
@@ -10,7 +11,9 @@ export function Part({ part }: PartProps) {
   async function handleSubmit(form: FormData) {
     "use server";
 
-    form.forEach((value, questionId) => console.log(questionId, value));
+    const formEntries = new Map(form.entries());
+
+    markPartAsSubmitted(1, part.id, formEntries);
   }
 
   return (

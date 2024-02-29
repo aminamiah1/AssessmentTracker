@@ -1,6 +1,40 @@
 import { PrismaClient } from "@prisma/client";
 
-export default async function (prisma: PrismaClient) {
+const prisma = new PrismaClient();
+
+export default async function () {
+  Promise.all([seedParts(), seedModules()])
+    .catch(async (e) => {
+      console.error(e);
+      await prisma.$disconnect();
+      process.exit(1);
+    })
+    .then(async () => {
+      await prisma.$disconnect();
+    });
+}
+
+async function seedModules() {
+  await prisma.module.create({
+    data: {
+      module_code: "CM3101",
+      module_name: "Software Engineering",
+      assessments: {
+        create: [
+          {
+            id: 1,
+            assessment_name: "Assignment 1",
+            assessment_type: "Coursework",
+            hand_in_week: new Date(),
+            hand_out_week: new Date(),
+          },
+        ],
+      },
+    },
+  });
+}
+
+async function seedParts() {
   /**
    * SECTION 1:
    * - First 3 parts are section 1: "Internal peer moderation"
@@ -60,7 +94,7 @@ export default async function (prisma: PrismaClient) {
           },
           {
             question_title:
-              "(If appropriate for the type of assessment) The requirements for each grade classification are clear",
+              "If appropriate for the type of assessment, the requirements for each grade classification are clear",
             response_type: "boolean",
           },
           {

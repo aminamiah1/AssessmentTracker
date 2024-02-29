@@ -1,12 +1,22 @@
 import { Response } from "../Response/Response";
-import { Question } from "@prisma/client";
 
 interface QuestionProps extends React.HTMLAttributes<HTMLElement> {
-  question: Question;
+  question: QuestionWithResponse;
 }
 
 export function Question({ question }: QuestionProps) {
-  const { choices, id, question_title, response_type } = question;
+  const {
+    choices,
+    id,
+    question_title,
+    response_type,
+    Response: response,
+  } = question;
+
+  // We don't NEED the value to exist - this is only
+  // to catch the pre-existing response IF it exists
+  const prevResponse = response?.length ? response[0].value : "";
+
   return (
     <div
       className={`question p-10 rounded text-center

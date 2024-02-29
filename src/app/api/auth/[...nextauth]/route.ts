@@ -1,7 +1,7 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
 import prisma from "@/app/db";
-import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 const authOptions: NextAuthOptions = {
   providers: [

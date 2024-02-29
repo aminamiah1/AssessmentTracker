@@ -16,7 +16,6 @@ type ModuleData = {
 }[];
 
 async function getModules(searchTerm: string) {
-  // Get modules from api endpoint
   const data = await fetch(`/api/module-list/${searchTerm}`, {
     next: { revalidate: 3600 },
   });

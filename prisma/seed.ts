@@ -1,9 +1,13 @@
-import bcrypt from "bcryptjs";
 import { PrismaClient, Role } from "@prisma/client";
+import bcrypt from "bcryptjs";
+import seedLiveData from "./seeds/live";
+import seedTestData from "./seeds/test";
 
 const prisma = new PrismaClient();
 
-export async function main() {
+const { NODE_ENV } = process.env;
+
+async function main() {
   await prisma.module.deleteMany();
   await prisma.users.deleteMany();
 
@@ -27,13 +31,12 @@ export async function main() {
       roles: [Role.ps_team],
     },
   });
+
+  if (NODE_ENV === "test" || NODE_ENV === "development") {
+    await seedTestData(new PrismaClient());
+  } else if (NODE_ENV === "production") {
+    await seedLiveData();
+  }
 }
 
-main()
-  .catch(async (e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().then(() => console.log("Seeding complete"));

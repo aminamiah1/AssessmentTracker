@@ -16,7 +16,8 @@
     "dev:test": "dotenv -e .env.test -- next dev -p 3001",
     "cy:open": "cypress open",
     "test:e2e": "cypress run --spec \"cypress/e2e/*.cy.ts\"",
-    "coverage:e2e": "npx nyc@latest npm run test:e2e",
+    "test:component": "cypress run --component --spec \"src/app/components/**/*.cy.tsx\"",
+    "coverage:e2e": "npx nyc@15.1.0 npm run test:e2e",
     "prepare": "husky"
   },
   "dependencies": {
@@ -49,6 +50,7 @@
     "react-select": "^5.8.0",
     "react-table": "^7.8.0",
     "react-toastify": "^10.0.4",
+    "swr": "^2.2.5",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "ts-node": "^10.9.2"

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTable } from "react-table";
+import Image from "next/image"; // Importing Image component from Next.js
 import axios from "axios";
 import { toast } from "react-toastify";
 import EditUser from "./EditUser";

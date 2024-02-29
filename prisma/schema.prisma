@@ -32,6 +32,7 @@ model Module {
   module_code    String       @unique
   assessments    Assessment[]
   module_leaders Users[]      @relation("ModulesToUsers")
+  status         ModuleStatus @default(active)
 }
 
 model Assessment {
@@ -89,4 +90,10 @@ enum Data_type {
   string
   integer
   date_time
+}
+
+enum ModuleStatus {
+  active
+  inactive
+  expired
 }

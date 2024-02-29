@@ -1,0 +1,35 @@
+[
+  {
+    "assessment_name": "Group Coding Project",
+    "assessment_type": "Practical_Based_Assessment",
+    "assignees": [{ "name": "Test User" }],
+    "hand_in_week": "2024-02-26T00:00:00.000Z",
+    "hand_out_week": "2024-02-26T00:00:00.000Z",
+    "id": 1,
+    "module_id": 1,
+    "module_name": "Example Module",
+    "setter": { "name": "Test User" }
+  },
+  {
+    "assessment_name": "Group Coding Project 2",
+    "assessment_type": "Written_Assessment",
+    "assignees": [{ "name": "Test User" }],
+    "hand_in_week": "2024-02-26T00:00:00.000Z",
+    "hand_out_week": "2024-02-26T00:00:00.000Z",
+    "id": 2,
+    "module_id": 1,
+    "module_name": "Example Module",
+    "setter": { "name": "Test User" }
+  },
+  {
+    "assessment_name": "My new assessment",
+    "assessment_type": "Portfolio",
+    "assignees": [{ "name": "Test User" }],
+    "hand_in_week": "2024-02-26T00:00:00.000Z",
+    "hand_out_week": "2024-02-26T00:00:00.000Z",
+    "id": 3,
+    "module_id": 1,
+    "module_name": "Example Module",
+    "setter": { "name": "Test User" }
+  }
+]

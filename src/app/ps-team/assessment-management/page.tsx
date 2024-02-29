@@ -23,12 +23,10 @@ interface Assessment {
   module_name: string;
   assignees: [];
 }
-// Interface for the module model
 interface Module {
   id: number;
   module_name: string;
 }
-// Interface for the user model
 interface User {
   id: number;
   email: string;
@@ -36,17 +34,18 @@ interface User {
   password: string;
   roles: [];
 }
-
 function ViewAssessmentsPSTeam() {
   const [assessments, setAssessments] = useState<Assessment[]>([]); // Variable to hold an array of assessment object types
   const [searchTerm, setSearchTerm] = useState(""); // Set the search term to blank for default
   const [isPSTeam, setIsPSTeam] = useState(false); // Confirm if the user is a ps team role type
   const { data: session, status } = useSession(); // Use useSession to get session and status
-  const [modules, setModules] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [modules, setModules] = useState<{ value: string; label: string }[]>(
+    [],
+  );
+  const [users, setUsers] = useState<{ value: string; label: string }[]>([]);
   const typesOptionsSet = new Set(Object.values(Assessment_type));
   const typesOptionsForSelect = Array.from(typesOptionsSet).map(
-    (type: any) => ({
+    (type: string) => ({
       value: type,
       label: type.replaceAll("_", " "),
     }),
@@ -128,6 +127,24 @@ function ViewAssessmentsPSTeam() {
     setSearchTerm(event.target.value);
   };
 
+  // Handle select drop-down changes for the filtering
+  // Using any here as the selected option can come in multiple formats
+  const handleSelectChange = (selectedOption: any) => {
+    console.log(assessments);
+    if (selectedOption.value != "") {
+      setSearchTerm(
+        selectedOption ? selectedOption.value.replaceAll("_", " ") : "",
+      );
+      setSelectedOption(selectedOption);
+    }
+  };
+
+  // Handle resetting the search term and selected filter option on button click
+  const handleReset = () => {
+    setSearchTerm(""); // Reset search term
+    setSelectedOption({ value: "", label: "" }); // Reset selected option
+  };
+
   // Filter assessments when user searches by assessment name or module name or users assessment is tied to.
   const filteredAssessments = assessments.filter(
     (assessment) =>
@@ -138,7 +155,7 @@ function ViewAssessmentsPSTeam() {
       assessment.assessment_type
         .toLowerCase()
         .includes(searchTerm.toLowerCase().replaceAll(" ", "_")) ||
-      (assessment.assignees as any).includes(searchTerm) ||
+      (assessment.assignees as String[]).includes(searchTerm) ||
       assessment.setter.name.includes(searchTerm),
   );
 
@@ -157,14 +174,6 @@ function ViewAssessmentsPSTeam() {
       </p>
     ); // Alert the current user that they do not have the role privilege to access the current page
   }
-
-  // Handle select drop-down changes for the filtering
-  const handleSelectChange = (selectedOption: any) => {
-    setSearchTerm(
-      selectedOption ? selectedOption.value.replaceAll("_", " ") : "",
-    );
-    setSelectedOption(selectedOption);
-  };
 
   return (
     <main className="bg-white">
@@ -206,7 +215,7 @@ function ViewAssessmentsPSTeam() {
                     onChange={(option) => handleSelectChange(option)}
                     options={modules}
                     value={
-                      (modules as any).includes(selectedOption)
+                      modules.includes(selectedOption)
                         ? selectedOption
                         : { value: "", label: "" }
                     } // Control the displayed value
@@ -267,7 +276,7 @@ function ViewAssessmentsPSTeam() {
                     options={users}
                     id="setter"
                     value={
-                      (users as any).includes(selectedOption)
+                      users.includes(selectedOption)
                         ? selectedOption
                         : { value: "", label: "" }
                     } // Control the displayed value
@@ -280,6 +289,19 @@ function ViewAssessmentsPSTeam() {
                       }),
                     }}
                   />
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2">
+              <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
+                <div className="w-full">
+                  <button
+                    className="bg-gray-200 text-black h-10 mt-5 rounded"
+                    style={{ width: "100%", minWidth: "20rem" }}
+                    onClick={handleReset}
+                  >
+                    Reset Filter
+                  </button>
                 </div>
               </div>
             </div>

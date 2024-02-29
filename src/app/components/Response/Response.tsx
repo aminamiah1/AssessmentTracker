@@ -1,6 +1,12 @@
 import { $Enums } from "@prisma/client";
+import { BooleanChoice } from "./BooleanChoice";
+import { MultiChoice } from "./MultiChoice";
+import { TextArea } from "./TextArea";
 
 interface ResponseProps {
+  /** Default value (i.e. if the user has made changes and comes back to the page) */
+  previousResponse: string;
+
   /** Used to reference the question for DB storage */
   questionId: number;
 
@@ -16,6 +22,7 @@ interface ResponseProps {
 
 export function Response({
   choices = [],
+  previousResponse: defaultValue,
   questionId,
   responseType,
 }: ResponseProps) {
@@ -23,49 +30,20 @@ export function Response({
 
   if (choices.length > 0) {
     return (
-      <>
-        {/* Empty label required for the textarea to appear in the server action's FormData */}
-        <label htmlFor={inputName}></label>
-        <select
-          data-cy="response"
-          className="dark:bg-slate-500"
-          name={inputName}
-        >
-          <option>Select an option</option>
-          {choices.map((choice, key) => (
-            <option key={key}>{choice}</option>
-          ))}
-        </select>
-      </>
+      <MultiChoice
+        choices={choices}
+        defaultValue={defaultValue}
+        inputName={inputName}
+      />
     );
   }
 
   switch (responseType) {
     case "string":
-      return (
-        <>
-          {/* Empty label required for the textarea to appear in the server action's FormData */}
-          <label htmlFor={inputName}></label>
-          <textarea
-            data-cy="response"
-            className="w-full min-h-32 dark:bg-slate-500"
-            name={inputName}
-          />
-        </>
-      );
+      return <TextArea defaultValue={defaultValue} inputName={inputName} />;
     case "boolean":
       return (
-        <div data-cy="response" className="flex justify-around">
-          <div className="flex gap-2">
-            <input className="w-5" value="Yes" name={inputName} type="radio" />
-            <label htmlFor="Yes">Yes</label>
-          </div>
-          <br />
-          <div className="flex gap-2">
-            <input className="w-5" value="No" name={inputName} type="radio" />
-            <label htmlFor="No">No</label>
-          </div>
-        </div>
+        <BooleanChoice defaultValue={defaultValue} inputName={inputName} />
       );
   }
 }

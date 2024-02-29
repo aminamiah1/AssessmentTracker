@@ -10,17 +10,22 @@ describe("Admin module list page", () => {
     cy.visit("/admin/module-list");
   });
 
-  //     cy.visit("/admin/module-list");
+  it("should display the page title", () => {
+    cy.getByTestId("page-title")
+      .should("be.visible")
+      .and("contain", "Module List");
+  });
 
-  //     // Wait for the mock session to ensure the user is "logged in"
-  //     cy.wait("@getSession");
-  //   });
+  it("should display the search bar", () => {
+    cy.getByTestId("search-bar").should("be.visible");
+  });
 
-  //   it("should display the page title", () => {
-  //     cy.getByTestId("page-title")
-  //       .should("be.visible")
-  //       .and("contain", "Module List");
-  //   });
+  it("should show the create module button", () => {
+    cy.getByTestId("create-module-btn")
+      .should("be.visible")
+      .and("contain", "Create Module");
+    // Will eventually lead to create module page
+  });
 
   it("should display the correct data from the database", () => {
     cy.get(".module-card")

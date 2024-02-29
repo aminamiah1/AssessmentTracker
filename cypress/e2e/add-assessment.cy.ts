@@ -55,14 +55,21 @@ describe("Add a assessment", () => {
     cy.contains("label", "Module")
       .next()
       .find("input")
+      .eq(0)
       .focus()
       .type("Computing basics 1{enter}");
 
-    cy.get('[data-cy="type"]').type("Test");
+    cy.contains("label", "Assessment Type")
+      .next()
+      .find("input")
+      .eq(0)
+      .focus()
+      .type("Portfolio{enter}");
 
     cy.contains("label", "Assignees")
       .next()
       .find("input")
+      .eq(0)
       .focus()
       .type("Carol White{enter}");
   });

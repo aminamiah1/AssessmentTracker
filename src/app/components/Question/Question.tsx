@@ -25,6 +25,7 @@ export function Question({ question }: QuestionProps) {
       <li>
         <p className="pb-6">{question_title}</p>
         <Response
+          previousResponse={prevResponse}
           questionId={id}
           choices={choices}
           responseType={response_type}

@@ -8,13 +8,18 @@ interface QuestionProps extends React.HTMLAttributes<HTMLElement> {
 export function Question({ question }: QuestionProps) {
   const { choices, id, question_title, response_type } = question;
   return (
-    <li className="question">
-      <p>{question_title}</p>
-      <Response
-        questionId={id}
-        choices={choices}
-        responseType={response_type}
-      />
-    </li>
+    <div
+      className={`question p-10 rounded text-center
+    dark:bg-slate-800 `}
+    >
+      <li>
+        <p className="pb-6">{question_title}</p>
+        <Response
+          questionId={id}
+          choices={choices}
+          responseType={response_type}
+        />
+      </li>
+    </div>
   );
 }

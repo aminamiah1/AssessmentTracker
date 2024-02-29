@@ -173,9 +173,7 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
         </div>
       </aside>
       <div>
-        <main className="fixed right-0 top-[7vh] sm:w-[calc(100vw-16rem)] w-full">
-          {children}
-        </main>
+        <main className="top-[7vh] w-full">{children}</main>
       </div>
     </>
   );

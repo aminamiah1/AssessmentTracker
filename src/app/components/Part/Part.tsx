@@ -9,8 +9,8 @@ export function Part({ part }: PartProps) {
 
   return (
     <>
-      <h1 style={{ fontSize: 36 }}>{part.part_title}</h1>
-      <ol>
+      <h1 className="pt-10 pb-2 text-3xl">{part.part_title}</h1>
+      <ol className="flex max-w-prose gap-16 flex-col">
         {questions.map((question, key) => (
           <Question key={key} question={question} />
         ))}

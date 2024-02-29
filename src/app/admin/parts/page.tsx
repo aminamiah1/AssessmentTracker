@@ -5,7 +5,7 @@ export default async function Page() {
   const parts = await getPartsWithQuestions();
 
   return (
-    <div className="max-w-5xl mt-5 ml-8 w-full items-center justify-between font-mono text-sm">
+    <div className="flex flex-col items-center">
       {parts.map((part) => (
         <Part key={part.id} part={part} />
       ))}

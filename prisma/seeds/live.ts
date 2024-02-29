@@ -38,7 +38,7 @@ export default async function (prisma: PrismaClient) {
   });
   await prisma.part.create({
     data: {
-      part_title: "Assessment availability",
+      part_title: "Internal moderator comments",
       role: "internal_moderator",
       part_number: 2,
       Question: {
@@ -98,7 +98,7 @@ export default async function (prisma: PrismaClient) {
           },
           {
             question_title:
-              "Does the assessment differ sufficiently from last yeaer's to require scrutiny by the moderation panel?",
+              "Does the assessment differ sufficiently from last year's to require scrutiny by the moderation panel?",
             response_type: "boolean",
           },
           {
@@ -118,7 +118,7 @@ export default async function (prisma: PrismaClient) {
       Question: {
         create: [
           {
-            question_title: "Response too moderator's comments in part 2",
+            question_title: "Response to moderator's comments in part 2",
             response_type: "string",
           },
           {
@@ -214,7 +214,7 @@ export default async function (prisma: PrismaClient) {
    */
   await prisma.part.create({
     data: {
-      part_title: "External moderation",
+      part_title: "External examiner feedback",
       role: "external_examiner",
       part_number: 6,
       Question: {
@@ -291,7 +291,7 @@ export default async function (prisma: PrismaClient) {
    */
   await prisma.part.create({
     data: {
-      part_title: "Post-marking moderation",
+      part_title: "Sample availability",
       role: "module_leader",
       part_number: 9,
       Question: {

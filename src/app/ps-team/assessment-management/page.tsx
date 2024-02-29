@@ -69,7 +69,7 @@ function ViewAssessmentsPSTeam() {
       const checkRoles = () => {
         const roles = session.user.roles;
         if (roles.includes("ps_team")) {
-          // Set the current user as a ps team to true
+          // Set the current user as a ps team member to true
           setIsPSTeam(true);
         } else if (roles.includes("ps_team") === false) {
           setIsPSTeam(false);
@@ -93,11 +93,9 @@ function ViewAssessmentsPSTeam() {
     };
 
     const fetchModules = async () => {
-      // Fetch modules by setter only when component mounts
-      // Getting response as module leader 1 while waiting for login feature
+      // Fetch modules only when component mounts
       const response = await axios.get(`/api/ps-team/modules/get`);
       if (response.data.length > 0) {
-        console.log(response.data);
         const processedModules = response.data.map((module: Module) => ({
           value: module.module_name,
           label: module.module_name,
@@ -107,7 +105,7 @@ function ViewAssessmentsPSTeam() {
     };
 
     const fetchUsers = async () => {
-      // Fetch all users to assign
+      // Fetch all users for filtering
       const response = await axios.get(`/api/module-leader/users/get`);
       const processedUsers = response.data.map((user: User) => ({
         value: user.name,
@@ -130,7 +128,6 @@ function ViewAssessmentsPSTeam() {
   // Handle select drop-down changes for the filtering
   // Using any here as the selected option can come in multiple formats
   const handleSelectChange = (selectedOption: any) => {
-    console.log(assessments);
     if (selectedOption.value != "") {
       setSearchTerm(
         selectedOption ? selectedOption.value.replaceAll("_", " ") : "",
@@ -155,7 +152,9 @@ function ViewAssessmentsPSTeam() {
       assessment.assessment_type
         .toLowerCase()
         .includes(searchTerm.toLowerCase().replaceAll(" ", "_")) ||
-      (assessment.assignees as String[]).includes(searchTerm) ||
+      (assessment.assignees as { name: string }[]).find(
+        (user) => user.name === searchTerm,
+      ) ||
       assessment.setter.name.includes(searchTerm),
   );
 

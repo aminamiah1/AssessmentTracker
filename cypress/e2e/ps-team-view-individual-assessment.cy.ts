@@ -32,5 +32,10 @@ describe("See details of individual assessments on ps team assessment viewing da
     cy.contains("label", "Assessment Title")
       .next()
       .should("have.value", "My new assessment");
+
+    // Spoof getting assessments by retrieving them from example JSON
+    cy.intercept("GET", "/api/ps-team/assessment/get/id?=3", {
+      fixture: "assessment.json",
+    }).as("getAssessment");
   });
 });

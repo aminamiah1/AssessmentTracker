@@ -1,38 +1,25 @@
 describe("Filter assessments on ps team assessment viewing dashboard", () => {
+  before(() => {
+    cy.log("Seeding the database...");
+    cy.exec("npm run db:seed", { timeout: 200000 });
+  });
+
   beforeEach(() => {
     cy.login();
+    cy.visit("/ps-team/assessment-management");
   });
 
   // Can filter and expect to see only one assessment
   it("allows a ps-team member to filter assessments", () => {
-    cy.visit("/ps-team/assessment-management");
-
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/users/get", {
-      fixture: "users.json",
-    }).as("getAssignees");
-
-    // Spoof getting modules by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
-      fixture: "modules.json",
-    }).as("getModules");
-
-    // Spoof getting assessments by retrieving them from example JSON
-    cy.intercept("GET", "/api/ps-team/assessments/get", {
-      fixture: "assessments.json",
-    }).as("getAssessments");
-
     cy.contains("label", "Type")
       .next()
       .find("input")
       .focus()
       .type("Portfolio{enter}");
 
-    cy.contains("p", "My new assessment").click();
-
-    // Spoof getting the assessment details on the individual details page
-    cy.intercept("GET", "/api/ps-team/assessment/get/id?=3", {
-      fixture: "assessment.json",
-    }).as("getAssessment");
+    cy.contains("p", "My new assessment").should(
+      "contain.text",
+      "My new assessment",
+    );
   });
 });

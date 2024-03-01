@@ -1,7 +1,11 @@
 import bcrypt from "bcryptjs";
-import { PrismaClient, Role } from "@prisma/client";
+import { PrismaClient, Role, Assessment_type } from "@prisma/client";
+import { extname } from "path";
 
 const prisma = new PrismaClient();
+
+//Example date to use for assessment hand out and hand in
+const example_date = new Date(2024, 1, 26);
 
 export async function main() {
   await prisma.module.deleteMany();
@@ -24,7 +28,18 @@ export async function main() {
           module_code: "CM6127",
         },
       },
-      roles: [Role.ps_team],
+      roles: [Role.ps_team, Role.module_leader],
+    },
+  });
+
+  await prisma.assessment.create({
+    data: {
+      assessment_name: "My new assessment",
+      assessment_type: Assessment_type.Portfolio,
+      hand_out_week: example_date,
+      hand_in_week: example_date,
+      module_id: 1,
+      setter_id: 1,
     },
   });
 }

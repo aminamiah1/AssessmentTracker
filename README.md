@@ -302,6 +302,18 @@ To delete a specific user by id, the ps team can use the api located at (url)/ap
 
 To create a user, the ps team can use the api located at (url)api/ps-team/user/post and pass details in the request body. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful creates a new user entry in the User table.
 
+# Get Assessment(GET)
+
+To get an individual assessment's details by id, the ps team can use the api located at (url)api/ps-team/assessment/get?id=(number). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves all the assessment's details.
+
+# Get All Assessments(GET)
+
+To get all assessments, the ps team can use the api located at (url)/api/ps-team/assessments/get. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves the assessments and all their releated fields.
+
+# Get All Modules(GET)
+
+To get all modules in the system, the ps team can use the api located at (url)/api/ps-team/modules/get. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves all the modules and their releated fields.
+
 ## Module leaders
 
 # Assessment(DELETE)
@@ -338,10 +350,14 @@ To get all users and retrieve only their names and roles, the module leaders can
 
 # User management dashboard
 
-Located at localhost:3000/ps-team/user-management, the ps team can add, edit, delete or view all users in a nicely-presented crud operation table with pop-up forms for editing and adding new users.
+Located at (base url)/ps-team/user-management, the ps team can add, edit, delete or view all users in a nicely-presented crud operation table with pop-up forms for editing and adding new users.
+
+# Assessment management dashboard
+
+On the dedicated assessment management page (base url)/ps-team/assessment-management, the PS Team can easily find assessments using filters for users, types, and modules. They can also search by assessment or module name and view individual assessment details on separate pages.
 
 ## Module leaders
 
 # Assessment management dashboard
 
-On the module-leader assessment management dashboard (localhost:3000/module-leader/assessment-management), module leader members can view individual assessments in responsive stacked cards. They may create new assessments using a dedicated form, with both actions accessible via clearly labeled dashboard buttons. Additionally, the 'View All Assessments' page enables editing and deleting of assessments through buttons integrated into each card.
+On the module-leader assessment management dashboard ((base url)/module-leader/assessment-management), module leader members can view individual assessments in responsive stacked cards. They may create new assessments using a dedicated form, with both actions accessible via clearly labeled dashboard buttons. Additionally, the 'View All Assessments' page enables editing and deleting of assessments through buttons integrated into each card.

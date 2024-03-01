@@ -25,9 +25,9 @@ describe("See details of individual assessments on ps team assessment viewing da
     cy.contains("p", "My new assessment").click();
 
     // Spoof getting assessments by retrieving them from example JSON
-    cy.intercept("GET", "/api/ps-team/assessments/get", {
-      fixture: "assessments.json",
-    }).as("getAssessments");
+    cy.intercept("GET", "/api/ps-team/assessment/get/id?=3", {
+      fixture: "assessment.json",
+    }).as("getAssessment");
 
     cy.contains("label", "Assessment Title")
       .next()

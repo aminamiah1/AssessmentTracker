@@ -29,6 +29,8 @@ describe("See details of individual assessments on ps team assessment viewing da
       fixture: "assessments.json",
     }).as("getAssessments");
 
-    cy.getByTestId("name").should("have.value", "My new assessment");
+    cy.contains("label", "Assessment Title")
+      .next()
+      .should("have.value", "My new assessment");
   });
 });

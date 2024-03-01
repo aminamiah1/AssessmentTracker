@@ -25,7 +25,5 @@ export async function GET(request: Request) {
       { error: "Failed to retrieve assessments" },
       { status: 500 },
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import AuthContext from "@/app/utils/authContext";
+import UnauthorizedAccess from "@/app/components/authError";
 
 // Interface for the assessment model
 interface Assessment {
@@ -162,11 +163,7 @@ function ViewAssessmentPSTeam() {
   }
 
   if (isPSTeam === false) {
-    return (
-      <p className="text-white bg-black">
-        You are not authorised to view this page...
-      </p>
-    ); // Alert the current user that they do not have the role privilege to access the current page
+    return <UnauthorizedAccess />; // Alert the current user that they do not have the role privilege to access the current page
   }
 
   return (

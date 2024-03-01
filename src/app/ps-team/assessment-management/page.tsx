@@ -9,6 +9,7 @@ import { FiFilter } from "react-icons/fi";
 import { FiSearch } from "react-icons/fi"; // Search icon
 import Select from "react-select";
 import { Assessment_type } from "@prisma/client";
+import UnauthorizedAccess from "@/app/components/authError";
 
 interface Assessment {
   id: number;
@@ -167,11 +168,7 @@ function ViewAssessmentsPSTeam() {
   }
 
   if (isPSTeam === false) {
-    return (
-      <p className="text-white bg-black">
-        You are not authorised to view this page...
-      </p>
-    ); // Alert the current user that they do not have the role privilege to access the current page
+    return <UnauthorizedAccess />; // Alert the current user that they do not have the role privilege to access the current page
   }
 
   return (

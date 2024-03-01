@@ -1,7 +1,7 @@
 import prisma from "@/app/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
+import { hashPassword } from "@/app/utils/hashPassword";
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,9 +30,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash the password with 12 rounds
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    // Hash the password
+    const hashedPassword = await hashPassword(password);
 
     const newUser = await prisma.users.create({
       data: { name, email, password: hashedPassword, roles: roles },
@@ -45,8 +44,5 @@ export async function POST(request: NextRequest) {
       JSON.stringify({ message: "Internal Server Error" }),
       { status: 500 },
     );
-  } finally {
-    // Close Prisma client connection
-    await prisma.$disconnect();
   }
 }

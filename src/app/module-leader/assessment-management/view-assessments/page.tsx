@@ -8,6 +8,7 @@ import { FiSearch } from "react-icons/fi"; // Search icon
 import Link from "next/link";
 import AuthContext from "@/app/utils/authContext";
 import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
+import UnauthorizedAccess from "@/app/components/authError";
 
 interface Assessment {
   id: number;
@@ -89,11 +90,7 @@ function ViewAssessmentsModuleLeaders() {
   }
 
   if (isModuleLeader === false) {
-    return (
-      <p className="text-white bg-black">
-        You are not authorised to view this page...
-      </p>
-    ); // Alert the current user that they do not have the role privilege to access the current page
+    return <UnauthorizedAccess />; // Alert the current user that they do not have the role privilege to access the current page
   }
 
   return (

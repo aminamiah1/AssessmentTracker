@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
 import AuthContext from "@/app/utils/authContext";
 import { Assessment_type } from "@prisma/client";
+import UnauthorizedAccess from "@/app/components/authError";
 
 // Interface for the assessment model
 interface Assessment {
@@ -241,7 +242,7 @@ function CreateAssessmentModuleLeaders() {
         }
       }
     }
-  }, [modules, users, assignees, moduleId, isModuleLeader]); // Runs if editing the assessment and is a module leader
+  }, [modules, moduleId, isModuleLeader]); // Runs if editing the assessment and is a module leader
 
   // Handle text changes for the form
   const handleTextChange = (event: any) => {
@@ -355,11 +356,7 @@ function CreateAssessmentModuleLeaders() {
   }
 
   if (isModuleLeader === false) {
-    return (
-      <p className="text-white bg-black">
-        You are not authorised to view this page...
-      </p>
-    ); // Alert the current user that they do not have the role privilege to access the current page
+    return <UnauthorizedAccess />; // Alert the current user that they do not have the role privilege to access the current page
   }
 
   return (

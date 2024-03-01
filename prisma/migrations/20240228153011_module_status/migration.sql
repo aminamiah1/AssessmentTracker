@@ -15,4 +15,4 @@ ALTER TABLE "Module" ADD COLUMN "status" "ModuleStatus";
 UPDATE "Module" SET "status" = 'active';
 
 -- AlterTable
-ALTER TABLE "Module" ALTER COLUMN "status" SET DEFAULT 'active' NOT NULL;
+ALTER TABLE "Module" ALTER COLUMN "status" SET DEFAULT 'active';

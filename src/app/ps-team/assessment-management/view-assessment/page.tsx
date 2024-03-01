@@ -58,7 +58,7 @@ function ViewAssessmentPSTeam() {
 
   useEffect(() => {
     if (session != null) {
-      //Check here from session.user.roles array if one of the entires is module_leader to set is module leader to true
+      //Check here from session.user.roles array if one of the entires is ps_team to set is ps team to true
       const checkRoles = () => {
         const roles = session.user.roles;
         if (roles.includes("ps_team")) {
@@ -140,7 +140,8 @@ function ViewAssessmentPSTeam() {
       // Find the default assignees for the assessment and select them in the drop-down selector
       const defaultAssignees = assignees.map((user: User) => ({
         value: user.id,
-        label: user.name + " ● Roles: " + user.roles,
+        label:
+          user.name + " ● Roles: " + user.roles.map((role) => " ● " + role),
       }));
 
       setAssessment((prevState) => ({
@@ -231,7 +232,7 @@ function ViewAssessmentPSTeam() {
                 <input
                   type="text"
                   id="assessmentType"
-                  value={assessment.assessment_type}
+                  value={assessment.assessment_type.replaceAll("_", " ")}
                   name="assessment_type"
                   data-cy="assessment_type"
                   required

@@ -106,7 +106,7 @@ function ViewAssessmentsPSTeam() {
 
     const fetchUsers = async () => {
       // Fetch all users for filtering
-      const response = await axios.get(`/api/module-leader/users/get`);
+      const response = await axios.get(`/api/ps-team/users/get`);
       const processedUsers = response.data.map((user: User) => ({
         value: user.name,
         label: user.name + " ● Roles: " + user.roles,

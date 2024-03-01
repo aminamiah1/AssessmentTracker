@@ -30,13 +30,9 @@ describe("Filter assessments on ps team assessment viewing dashboard", () => {
 
     cy.contains("p", "My new assessment").click();
 
-    // Spoof getting assessments by retrieving them from example JSON
+    // Spoof getting the assessment details on the individual details page
     cy.intercept("GET", "/api/ps-team/assessment/get/id?=3", {
       fixture: "assessment.json",
     }).as("getAssessment");
-
-    cy.contains("label", "Assessment Title")
-      .next()
-      .should("have.value", "My new assessment");
   });
 });

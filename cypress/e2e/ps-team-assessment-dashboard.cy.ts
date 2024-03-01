@@ -28,6 +28,15 @@ describe("Filter assessments on ps team assessment viewing dashboard", () => {
       .focus()
       .type("Portfolio{enter}");
 
-    cy.contains("p", "My new assessment");
+    cy.contains("p", "My new assessment").click();
+
+    // Spoof getting assessments by retrieving them from example JSON
+    cy.intercept("GET", "/api/ps-team/assessment/get/id?=3", {
+      fixture: "assessment.json",
+    }).as("getAssessment");
+
+    cy.contains("label", "Assessment Title")
+      .next()
+      .should("have.value", "My new assessment");
   });
 });

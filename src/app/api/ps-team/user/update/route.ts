@@ -1,6 +1,7 @@
 import prisma from "@/app/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 export const dynamic = "force-dynamic";
 
@@ -34,10 +35,14 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Hash the password with 12 rounds
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     // Update user data
     const updatedUser = await prisma.users.update({
       where: { id },
-      data: { name, email, password, roles }, // Update desired fields
+      data: { name, email, password: hashedPassword, roles }, // Update desired fields
     });
 
     // Return updated user data

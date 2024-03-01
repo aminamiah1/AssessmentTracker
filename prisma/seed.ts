@@ -13,6 +13,7 @@ export async function main() {
 
   await prisma.module.create({
     data: {
+      id: 1,
       module_code: "CM6127",
       module_name: "Example Module",
     },
@@ -20,6 +21,7 @@ export async function main() {
 
   await prisma.users.create({
     data: {
+      id: 1,
       email: "testemail@test.net",
       name: "Test User",
       password: await bcrypt.hash("securepassword", await bcrypt.genSalt(10)),

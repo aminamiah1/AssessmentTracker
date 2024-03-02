@@ -10,7 +10,7 @@ export async function GET(request: Request) {
       return Response.json({ error: "Must be logged in" }, { status: 401 });
     }
 
-    // Fetch assessments with error handling
+    // Fetch modules with error handling
     const modules = await prisma.module.findMany({
       select: {
         id: true,

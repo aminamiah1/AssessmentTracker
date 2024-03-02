@@ -31,15 +31,10 @@ export async function GET(request: NextRequest) {
     // Get assessment with the given ID
     const assessment = await prisma.assessment.findUnique({
       where: { id },
-      select: {
-        id: true,
-        assessment_name: true,
-        assessment_type: true,
-        hand_out_week: true,
-        hand_in_week: true,
-        module_id: true,
+      include: {
+        module: { select: { module_name: true } },
         assignees: { select: { id: true, name: true, roles: true } },
-      }, // Select desired assignee field
+      },
     });
 
     // Check if assessment was found and return details

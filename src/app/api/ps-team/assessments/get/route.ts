@@ -11,15 +11,9 @@ export async function GET(request: Request) {
 
     // Fetch assessments with error handling
     const assessments = await prisma.assessment.findMany({
-      select: {
-        id: true,
-        assessment_name: true,
-        assessment_type: true,
-        hand_out_week: true,
-        hand_in_week: true,
-        module_id: true,
+      include: {
         assignees: { select: { name: true } },
-        setter: { select: { name: true } }, // Select desired setter name field
+        setter: { select: { name: true } },
       },
     });
 

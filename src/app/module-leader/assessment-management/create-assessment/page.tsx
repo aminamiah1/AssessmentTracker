@@ -15,31 +15,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import AuthContext from "@/app/utils/authContext";
 import { Assessment_type } from "@prisma/client";
 import UnauthorizedAccess from "@/app/components/authError";
-
-// Interface for the assessment model
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: { value: string } | { value: string; label: string }; // Assessment type is taken from the prisma enum
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module: { value: string }[] | { value: string; label: string }[]; // Allow the react select format to also be used for the module
-  setter_id: number;
-  assignees: { value: number }[] | { value: number; label: string }[]; // Allow the react select format to also be used for the assignees
-}
-// Interface for the module model
-interface Module {
-  id: number;
-  module_name: string;
-}
-// Interface for the user model
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  password: string;
-  roles: [];
-}
+// Import interfaces from interfaces.ts
+import { AssessmentForm, Module, User } from "@/app/types/interfaces";
 
 function CreateAssessmentModuleLeaders() {
   const [setterId, setSetterId] = useState(0);
@@ -67,7 +44,7 @@ function CreateAssessmentModuleLeaders() {
   const params = searchParams?.get("id"); // Get the id of the assessment to edit from the search params object
 
   // Default assessment object used on create form mode as default
-  const [assessment, setAssessment] = useState<Assessment>({
+  const [assessment, setAssessment] = useState<AssessmentForm>({
     id: 0,
     assessment_name: "",
     assessment_type: { value: "" },
@@ -295,11 +272,8 @@ function CreateAssessmentModuleLeaders() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: assessment.id,
-          assessment_name: assessment.assessment_name,
+          ...assessment,
           assessment_type: selectedAssessmentTypeValue,
-          hand_out_week: assessment.hand_out_week,
-          hand_in_week: assessment.hand_in_week,
           module_id: selectedModuleValue,
           setter_id: setterId,
           assigneesList: Array.from(selectedAssigneesValues),

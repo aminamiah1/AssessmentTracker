@@ -62,3 +62,34 @@ Cypress.Commands.add("login", () => {
   cy.get("#input-password-for-credentials-provider").type("securepassword");
   cy.get("button").click();
 });
+
+// Mock login used in older tests to enable testing without database
+Cypress.Commands.add("mockLogin", () => {
+  cy.intercept("GET", "/api/auth/session", {
+    statusCode: 200,
+    body: {
+      user: {
+        name: "John",
+        email: "admin@example.com",
+        roles: ["ps_team", "module_leader"],
+      },
+      expires: "date-string",
+    },
+  });
+  cy.visit("/module-leader/assessment-management");
+  cy.clearCookies();
+  cy.clearLocalStorage();
+  cy.intercept("GET", "**/api/auth/session", (req) => {
+    req.reply({
+      body: {
+        user: {
+          id: 6,
+          name: "Admin User",
+          email: "admin@example.com",
+          roles: ["ps_team", "module_leader"],
+        },
+        expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+      },
+    });
+  }).as("getSession");
+});

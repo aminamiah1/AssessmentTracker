@@ -13,25 +13,8 @@ import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import AuthContext from "@/app/utils/authContext";
 import UnauthorizedAccess from "@/app/components/authError";
-
-// Interface for the assessment model
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: string; // Assessment type is taken from the prisma enum
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module: { module_name: string }; // Allow the react select format to also be used for the module
-  assignees: { value: number }[] | { value: number; label: string }[]; // Allow the react select format to also be used for the assignees
-}
-
-// Interface for the user model
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  roles: [];
-}
+// Import interfaces from interfaces.ts
+import { AssessmentDetails, User } from "@/app/types/interfaces";
 
 function ViewAssessmentPSTeam() {
   const [isPSTeam, setIsPSTeam] = useState(false); // Confirm if the user is a ps team role type
@@ -47,7 +30,7 @@ function ViewAssessmentPSTeam() {
   const params = searchParams?.get("id"); // Get the id of the assessment from the search params object
 
   // Default assessment object used on create form mode as default
-  const [assessment, setAssessment] = useState<Assessment>({
+  const [assessment, setAssessment] = useState<AssessmentDetails>({
     id: 0,
     assessment_name: "",
     assessment_type: "",

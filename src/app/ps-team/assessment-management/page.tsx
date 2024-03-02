@@ -10,33 +10,11 @@ import { FiSearch } from "react-icons/fi"; // Search icon
 import Select from "react-select";
 import { Assessment_type } from "@prisma/client";
 import UnauthorizedAccess from "@/app/components/authError";
+// Import interfaces from interfaces.ts
+import { AssessmentTiles, Module, User } from "@/app/types/interfaces";
 
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: string;
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module_id: number;
-  module: [];
-  setter_id: number;
-  setter: { name: string };
-  module_name: string;
-  assignees: [];
-}
-interface Module {
-  id: number;
-  module_name: string;
-}
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  password: string;
-  roles: [];
-}
 function ViewAssessmentsPSTeam() {
-  const [assessments, setAssessments] = useState<Assessment[]>([]); // Variable to hold an array of assessment object types
+  const [assessments, setAssessments] = useState<AssessmentTiles[]>([]); // Variable to hold an array of assessment object types
   const [searchTerm, setSearchTerm] = useState(""); // Set the search term to blank for default
   const [isPSTeam, setIsPSTeam] = useState(false); // Confirm if the user is a ps team role type
   const { data: session, status } = useSession(); // Use useSession to get session and status
@@ -88,7 +66,7 @@ function ViewAssessmentsPSTeam() {
       // Fetch assessments only when component mounts
       const response = await axios.get(`/api/ps-team/assessments/get`);
       const sortedAssessments = response.data.sort(
-        (a: Assessment, b: Assessment) => a.id - b.id,
+        (a: AssessmentTiles, b: AssessmentTiles) => a.id - b.id,
       );
       setAssessments(sortedAssessments);
     };

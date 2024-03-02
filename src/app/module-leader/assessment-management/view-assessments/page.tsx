@@ -9,22 +9,11 @@ import Link from "next/link";
 import AuthContext from "@/app/utils/authContext";
 import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
 import UnauthorizedAccess from "@/app/components/authError";
-
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: string;
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module_id: number;
-  module: [];
-  setter_id: number;
-  module_name: string;
-  assignees: [];
-}
+// Import interfaces from interfaces.ts
+import { AssessmentLoad } from "@/app/types/interfaces";
 
 function ViewAssessmentsModuleLeaders() {
-  const [assessments, setAssessments] = useState<Assessment[]>([]); // Variable to hold an array of assessment object types
+  const [assessments, setAssessments] = useState<AssessmentLoad[]>([]); // Variable to hold an array of assessment object types
   const [setterId, setSetterId] = useState(0);
   const [searchTerm, setSearchTerm] = useState(""); // Set the search term to blank for default
   const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
@@ -58,7 +47,7 @@ function ViewAssessmentsModuleLeaders() {
         `/api/module-leader/assessments/get/?id=${setterId}`,
       );
       const sortedAssessments = response.data.sort(
-        (a: Assessment, b: Assessment) => a.id - b.id,
+        (a: AssessmentLoad, b: AssessmentLoad) => a.id - b.id,
       );
       setAssessments(sortedAssessments);
     };

@@ -253,7 +253,6 @@ function ViewAssessmentPSTeam() {
                 />
               </div>
             </div>
-
             <div className="mb-4">
               <label htmlFor="assignees" className="font-bold">
                 Assignees

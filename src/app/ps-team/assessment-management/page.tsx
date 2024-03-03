@@ -138,7 +138,7 @@ function ViewAssessmentsPSTeam() {
       (assessment.assignees as { name: string }[]).find(
         (user) => user.name === searchTerm,
       ) ||
-      assessment.setter.name.includes(searchTerm),
+      assessment.setter?.name.includes(searchTerm),
   );
 
   //On submit function to send the csv to the helper function for csv data creation

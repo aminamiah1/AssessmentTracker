@@ -48,6 +48,8 @@ model Assessment {
   Response        Response[]
   part            Part[]     @relation("AssessmentToPart")
   assignees       Users[]    @relation("AssessmentsToUsers")
+
+  @@unique([assessment_name, module_id]) // Declare the composite unique key
 }
 
 model Part {

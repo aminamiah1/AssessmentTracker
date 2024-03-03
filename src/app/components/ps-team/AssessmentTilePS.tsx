@@ -45,11 +45,13 @@ const AssessmentTilePS = ({ assessment }: { assessment: Assessment }) => {
                     {assessment.assessment_name}
                   </p>
                 </Link>
-                <div>
-                  <span className="text-sm ml-2">
-                    ● Setter: {assessment.setter.name}
-                  </span>
-                </div>
+                {assessment.setter && (
+                  <div>
+                    <span className="text-sm ml-2">
+                      ● Setter: {assessment.setter.name}
+                    </span>
+                  </div>
+                )}
               </div>
               <p className="mt-4">
                 <span className="text-sm text-gray-700">

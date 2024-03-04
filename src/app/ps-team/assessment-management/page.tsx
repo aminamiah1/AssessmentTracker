@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import AssessmentTilePS from "../../components/ps-team/AssessmentTilePS";
 import AuthContext from "@/app/utils/authContext";
@@ -315,6 +316,8 @@ function ViewAssessmentsPSTeam() {
                   <AssessmentTilePS
                     key={assessment.id}
                     assessment={assessment}
+                    refetch={refetch}
+                    setRefetch={setRefetch}
                   />
                 ))}
               </div>

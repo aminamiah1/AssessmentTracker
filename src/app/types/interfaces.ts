@@ -55,7 +55,7 @@ export interface AssessmentTiles {
   module_id: number;
   module: [];
   setter_id: number;
-  setter: { name: string };
+  setter: { id: number; name: string; roles: [] };
   module_name: string;
   assignees: [];
 }

@@ -13,6 +13,8 @@ import UnauthorizedAccess from "@/app/components/authError";
 // Import interfaces from interfaces.ts
 import { AssessmentTiles, Module, User } from "@/app/types/interfaces";
 import uploadCSV from "@/app/utils/uploadCSV";
+import Image from "next/image";
+import ExampleCSV from "./assets/ExampleCSV.png";
 
 function ViewAssessmentsPSTeam() {
   const [assessments, setAssessments] = useState<AssessmentTiles[]>([]); // Variable to hold an array of assessment object types
@@ -38,6 +40,7 @@ function ViewAssessmentsPSTeam() {
   let [isPopUpOpen, setIsPopUpOpen] = useState(false); // State to control pop-up
   const [selectedFileName, setSelectedFileName] = useState(""); // State to hold the selected csv file name
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the uploaded csv file
+  let [refetch, setRefetch] = useState(0); // State to re-fetch assessments after successful csv upload
 
   //Make sure to set the selected option to blank if search term is not a option in any of the select boxes
   useEffect(() => {
@@ -102,7 +105,7 @@ function ViewAssessmentsPSTeam() {
       fetchModules();
       fetchUsers();
     }
-  }, [isPSTeam]);
+  }, [isPSTeam, refetch]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -142,8 +145,8 @@ function ViewAssessmentsPSTeam() {
   );
 
   //On submit function to send the csv to the helper function for csv data creation
-  const handleUploadCSV = (file: File) => {
-    uploadCSV({ file });
+  const handleUploadCSV = async (file: File) => {
+    await uploadCSV({ file });
   };
 
   if (status === "loading") {
@@ -353,14 +356,45 @@ function ViewAssessmentsPSTeam() {
                 Selected File: {selectedFileName}
               </p>
             )}
+            <div className="text-black mb-4">
+              <h2 className="mt-4 mb-4">Expected CSV Format</h2>
+              <Image
+                src={ExampleCSV}
+                alt="example csv image"
+                className="mb-4"
+              />
+              <a
+                href="/ImportAssessments.csv"
+                download="/ImportAssessments.csv"
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
+              >
+                Download Example CSV
+              </a>
+            </div>
             <button
               className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
-              onClick={() => {
+              onClick={async () => {
                 if (selectedFile) {
                   // Ensure a file is selected
-                  uploadCSV({ file: selectedFile });
+                  try {
+                    await handleUploadCSV(selectedFile).catch((error) => {
+                      toast.error(
+                        "Uploading csv failed, check format matches picture and try again.",
+                      );
+                    });
+                  } catch (e) {
+                    toast.error(
+                      "Uploading csv failed, check format matches picture and try again.",
+                    );
+                  } finally {
+                    toast.success(
+                      "Assessments and modules loaded into the database successfully!",
+                    );
+                    setIsPopUpOpen(false);
+                    setRefetch(refetch + 1);
+                  }
                 } else {
-                  toast.error("No csv file uploaded");
+                  toast.error("No csv file uploaded.");
                 }
               }}
             >
@@ -370,7 +404,6 @@ function ViewAssessmentsPSTeam() {
               className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
               onClick={() => {
                 setIsPopUpOpen(false); // Close the pop-up
-                setSelectedFileName(""); // Reset the selected file name
               }}
             >
               Cancel

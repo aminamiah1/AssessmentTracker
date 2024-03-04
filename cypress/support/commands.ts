@@ -1,5 +1,8 @@
 /// <reference types="cypress" />
 
+import { mount } from "cypress/react18";
+import { SessionProvider } from "next-auth/react";
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -61,4 +64,8 @@ Cypress.Commands.add("login", () => {
   cy.get("#input-email-for-credentials-provider").type("testemail@test.net");
   cy.get("#input-password-for-credentials-provider").type("securepassword");
   cy.get("button").click();
+});
+
+Cypress.Commands.add("mount", (component, options) => {
+  return mount(component, options);
 });

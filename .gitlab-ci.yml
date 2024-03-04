@@ -85,8 +85,12 @@ build-image:
           -p CI_DATABASE_URL_LIVE=$DATABASE_URL_PROD \
           -p CI_DATABASE_URL_BUILD=${DATABASE_URL_PROD}?schema=$CI_COMMIT_SHORT_SHA \
           -p CI_NEXTAUTH_URL=$NEXTAUTHPROD_URL \
+          -p CI_DATABASE_URL_LIVE=$DATABASE_URL_PROD \
+          -p CI_DATABASE_URL_BUILD=${DATABASE_URL_PROD}?schema=$CI_COMMIT_SHORT_SHA \
+          -p CI_NEXTAUTH_URL=$NEXTAUTHPROD_URL \
           -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
           -l name=build-$CI_COMMIT_SHORT_SHA | oc create -f -;
+        oc start-build $PROD_CONFIG_NAME --follow --wait;
         oc start-build $PROD_CONFIG_NAME --follow --wait;
 
       elif [[ "$CI_COMMIT_REF_NAME" == "release"* ]]; then
@@ -94,6 +98,9 @@ build-image:
         oc process build-config-staging \
           -p CI_COMMIT_LABEL=$CI_COMMIT_LABEL \
           -p CI_COMMIT_SHA=$CI_COMMIT_SHA \
+          -p CI_DATABASE_URL_LIVE=$DATABASE_URL_STAGING \
+          -p CI_DATABASE_URL_BUILD=${DATABASE_URL_STAGING}?schema=$CI_COMMIT_SHORT_SHA \
+          -p CI_NEXTAUTH_URL=$NEXTAUTHSTAGING_URL \
           -p CI_DATABASE_URL_LIVE=$DATABASE_URL_STAGING \
           -p CI_DATABASE_URL_BUILD=${DATABASE_URL_STAGING}?schema=$CI_COMMIT_SHORT_SHA \
           -p CI_NEXTAUTH_URL=$NEXTAUTHSTAGING_URL \
@@ -149,7 +156,21 @@ clean-up-builds:
 ###############
 # TEST STAGES #
 ###############
-test:
+test-component:
+  stage: test
+  image: cypress/base:20.11.0
+  artifacts:
+    paths:
+      - cypress/screenshots
+    when: on_failure
+    expire_in: "90 days"
+  dependencies:
+    - build-test-bundle
+  script:
+    - npm ci
+    - npm run test:component
+
+test-e2e:
   stage: test
   image: cypress/base:20.11.0
   services: *use-postgres
@@ -168,8 +189,8 @@ test:
     - apt-get update && apt-get install -y postgresql-client
   script:
     - *set-up-app-environment
-    - npm run start &
-    - npm run test:e2e
+    - npm start &
+    - npm run test:e2e:ci
 
 ##########################
 # DEPLOYMENT PREPARATION #
@@ -182,7 +203,8 @@ test:
   <<: *use-openshift
   stage: prepare-deploy
   needs:
-    - test
+    - test-e2e
+    - test-component
   artifacts:
     paths:
       - postgres-data
@@ -234,7 +256,8 @@ create-staging-db-backup:
   stage: prepare-deploy
   image: alpine:3.19
   needs:
-    - test
+    - test-e2e
+    - test-component
   before_script:
     - apk add skopeo
     - skopeo login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD --tls-verify=false -v $REGISTRY_HOST

@@ -54,9 +54,6 @@ function ManageUsersPSTeam() {
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-black">User Management</h1>
       </div>
-      <div>
-        <UsersTable />
-      </div>
       <div className="text-center">
         {showCreateUserForm ? (
           <CreateUser onClose={handleCloseCreateUserForm} />
@@ -68,6 +65,9 @@ function ManageUsersPSTeam() {
             Create New User
           </button>
         )}
+      </div>
+      <div>
+        <UsersTable />
       </div>
     </div>
   );

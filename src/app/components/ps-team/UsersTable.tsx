@@ -172,7 +172,7 @@ const UsersTable: React.FC = () => {
       {
         Header: "Edit",
         accessor: (id: User) => (
-          <button onClick={() => handleEdit(id)} data-cy="EditUser">
+          <button onClick={() => handleEdit(id)} data-cy="EditUserTable">
             <FaEdit className="cursor-pointer" size={30} />
           </button>
         ),

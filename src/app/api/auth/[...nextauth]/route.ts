@@ -64,6 +64,9 @@ const authOptions: NextAuthOptions = {
       return baseUrl + "/admin/homepage";
     },
   },
+  pages: {
+    signIn: "/admin/sign-in",
+  },
 };
 
 const handler = NextAuth(authOptions);

@@ -1,7 +1,7 @@
 describe("Navbar", () => {
   beforeEach(() => {
     cy.login();
-    cy.visit("/");
+    cy.visit("/admin/module-list");
   });
 
   it("Navbar is visible at the top of the page", () => {

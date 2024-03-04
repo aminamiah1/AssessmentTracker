@@ -12,9 +12,9 @@ describe("Authentication", () => {
     // Fill in the login form with incorrect credentials
     cy.get('input[name="email"]').type("wrong@example.com");
     cy.get('input[name="password"]').type("wrongPassword");
-    cy.get("button").contains("Sign in with Credentials").click();
+    cy.get('button[type="submit"]').should("exist").click();
     cy.get("div")
-      .contains("Sign in failed. Check the details you provided are correct.")
+      .contains("Check the details you provided are correct.")
       .should("be.visible");
   });
 });

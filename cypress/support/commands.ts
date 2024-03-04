@@ -1,5 +1,8 @@
 /// <reference types="cypress" />
 
+import { mount } from "cypress/react18";
+import { SessionProvider } from "next-auth/react";
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -92,4 +95,8 @@ Cypress.Commands.add("mockLogin", () => {
       },
     });
   }).as("getSession");
+});
+
+Cypress.Commands.add("mount", (component, options) => {
+  return mount(component, options);
 });

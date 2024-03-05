@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { mount } from "cypress/react18";
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -56,9 +58,19 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add("login", () => {
+Cypress.Commands.add("login", (username: string = "leader@test.net") => {
   cy.visit("/api/auth/signin");
-  cy.get("#input-email-for-credentials-provider").type("testemail@test.net");
-  cy.get("#input-password-for-credentials-provider").type("securepassword");
-  cy.get("button").click();
+  cy.get('input[name="csrfToken"]').invoke("val").as("csrfToken");
+
+  cy.get("@csrfToken").then((csrfToken) => {
+    cy.request("POST", "/api/auth/callback/credentials", {
+      csrfToken,
+      email: username,
+      password: "securepassword",
+    });
+  });
+});
+
+Cypress.Commands.add("mount", (component, options) => {
+  return mount(component, options);
 });

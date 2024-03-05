@@ -15,7 +15,7 @@ import UnauthorizedAccess from "@/app/components/authError";
 import { AssessmentTiles, Module, User } from "@/app/types/interfaces";
 import uploadCSV from "@/app/utils/uploadCSV";
 import Image from "next/image";
-import ExampleCSV from "./assets/ExampleCSV.png";
+import ExampleCSV from "@/../public/images/ExampleCSV.png";
 
 function ViewAssessmentsPSTeam() {
   const [assessments, setAssessments] = useState<AssessmentTiles[]>([]); // Variable to hold an array of assessment object types

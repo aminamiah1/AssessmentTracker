@@ -31,7 +31,11 @@ function ManageAssessmentsModuleLeaders() {
   }, [status]);
 
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   if (!session) {
@@ -47,13 +51,13 @@ function ManageAssessmentsModuleLeaders() {
   }
 
   return (
-    <div className="p-4 bg-white h-screen">
+    <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
-      <div className="text-center mb-8 mt-8">
+      <div className="text-center mb-10 mt-10">
         <h1 className="text-3xl">Your Assessments</h1>
       </div>
-      <div className="flex justify-center items-center pt-40">
-        <div className="mb-8">
+      <div className="flex justify-center items-center pt-38">
+        <div className="mb-0">
           <Link href="/module-leader/assessment-management/create-assessment">
             <button className="bg-gray-800 text-white h-32 md:h-80 w-32 md:w-80 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
               <div>
@@ -63,7 +67,7 @@ function ManageAssessmentsModuleLeaders() {
             </button>
           </Link>
         </div>
-        <div className="mb-8">
+        <div className="mb-0">
           <Link href="/module-leader/assessment-management/view-assessments">
             <button className="bg-gray-800 text-white h-32 md:h-80 w-32 md:w-80 ml-2 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
               <div>

@@ -195,7 +195,7 @@ const UsersTable: React.FC = () => {
         <FiSearch
           className="mr-2 mb-2 text-black"
           size={30}
-          style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
+          style={{ marginRight: "1rem", height: "2rem", width: "fit" }}
         />
         <input
           id="search"

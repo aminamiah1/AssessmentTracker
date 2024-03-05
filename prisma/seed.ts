@@ -24,7 +24,7 @@ export async function main() {
           module_code: "CM6127",
         },
       },
-      roles: [Role.ps_team],
+      roles: [Role.ps_team, Role.module_leader],
     },
   });
 }

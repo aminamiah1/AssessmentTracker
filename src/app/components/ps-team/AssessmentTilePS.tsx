@@ -30,7 +30,7 @@ interface AssessmentEdit {
   hand_in_week: Date;
   module_name: string;
   module: [];
-  setter_id: { value: number } | { value: number; label: string };
+  setter_id: { value: number; label: string };
   setter: { id: number; name: string; roles: [] };
   assignees: { value: number }[] | { value: number; label: string }[];
 }
@@ -229,10 +229,10 @@ const AssessmentTilePS = ({
         }`}
       >
         <div className="bg-white p-5 border border-black rounded-lg">
-          <p className="mb-4">Assign assignees/setter to assessment</p>
+          <p className="mb-8">Assign assignees/setter to assessment</p>
           <div>
             <form className="text-black" onSubmit={handleSubmit}>
-              <div className="mb-4">
+              <div>
                 <label htmlFor="assessmentName" className="font-bold">
                   Assessment Setter
                 </label>
@@ -247,15 +247,19 @@ const AssessmentTilePS = ({
                 <input
                   tabIndex={-1}
                   autoComplete="off"
-                  type="number"
-                  className="text-black"
-                  value={assessmentToEdit.setter_id.value}
-                  min="1"
-                  id="setter-input"
-                  style={{ opacity: 0 }}
+                  type="text"
+                  value={assessmentToEdit.setter_id.label.toString()}
+                  required
+                  id="setter-input-validation"
+                  style={{
+                    opacity: 0,
+                    height: "0.1rem",
+                    margin: 0,
+                    padding: 0,
+                  }}
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-8">
                 <label htmlFor="assignees" className="font-bold">
                   Assignees
                 </label>
@@ -279,16 +283,16 @@ const AssessmentTilePS = ({
               >
                 Submit
               </button>
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
+                onClick={() => {
+                  setIsPopUpOpen(false); // Close the pop-up
+                }}
+              >
+                Cancel
+              </button>
             </form>
           </div>
-          <button
-            className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
-            onClick={() => {
-              setIsPopUpOpen(false); // Close the pop-up
-            }}
-          >
-            Cancel
-          </button>
         </div>
       </div>
     </>

@@ -59,3 +59,8 @@ export interface AssessmentTiles {
   module_name: string;
   assignees: [];
 }
+// Interface for the assignees
+export interface Assignee {
+  id: number;
+  name: string;
+}

@@ -5,29 +5,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { FaUserCircle } from "react-icons/fa";
-
-// Interface for the assessment model
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: string;
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module_name: string;
-  module: [];
-  setter_id: number;
-  setter: { name: string };
-  assignees: [];
-}
-
-// Interface for the assignees
-interface Assignee {
-  id: number;
-  name: string;
-}
+// Import interfaces from interfaces.ts
+import { AssessmentTiles, Assignee } from "@/app/types/interfaces";
 
 // Functional component for rendering an assessment tile for the ps team
-const AssessmentTilePS = ({ assessment }: { assessment: Assessment }) => {
+const AssessmentTilePS = ({ assessment }: { assessment: AssessmentTiles }) => {
   return (
     // Assessment tile for ps team layout using grid system
     <div className="flex-grow-1 col-12 md:col-6 mb-4 border border-gray-500">

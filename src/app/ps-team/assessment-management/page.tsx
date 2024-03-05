@@ -181,6 +181,7 @@ function ViewAssessmentsPSTeam() {
                 className="bg-gray-200 text-black h-10 mt-5 rounded"
                 style={{ width: "10rem" }}
                 onClick={() => setIsPopUpOpen(true)}
+                data-cy="importCSVButton"
               >
                 Import CSV
               </button>
@@ -344,6 +345,7 @@ function ViewAssessmentsPSTeam() {
             <input
               type="file"
               accept=".csv"
+              data-cy="fileChooser"
               onChange={(e) => {
                 const files = e.target?.files;
                 if (files) {
@@ -404,6 +406,7 @@ function ViewAssessmentsPSTeam() {
               Upload CSV
             </button>
             <button
+              data-cy="uploadCSV"
               className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
               onClick={() => {
                 setIsPopUpOpen(false); // Close the pop-up

@@ -71,7 +71,11 @@ function ViewAssessmentsModuleLeaders() {
   );
 
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   if (!session) {
@@ -84,7 +88,7 @@ function ViewAssessmentsModuleLeaders() {
 
   return (
     <main className="bg-white">
-      <div className="p-4 bg-white h-screen text-black">
+      <div className="bg-white dark:bg-darkmode h-screen max-h-full">
         <ToastContainer />
         <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
           <div style={{ display: "flex", alignItems: "center" }}>

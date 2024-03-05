@@ -90,7 +90,7 @@ describe("Add a assessment", () => {
     cy.contains("label", "Assessment Title").should("have.value", ""); // Should still be on the same page as not submitted
 
     cy.get('[data-cy="name"]').then(($input: any) => {
-      expect($input[0].validationMessage).to.eq("Please fill in this field.");
+      expect($input[0].validationMessage).to.eq("Please fill out this field.");
     });
   });
 });

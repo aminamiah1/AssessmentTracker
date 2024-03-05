@@ -21,7 +21,7 @@ export function Part({ part }: PartProps) {
       <h1 className="pt-10 pb-2 text-3xl">{part.part_title}</h1>
       <ol className="flex max-w-prose gap-16 flex-col">
         {questions.map((question, key) => (
-          <Question key={key} question={question} />
+          <Question key={key} question={question as QuestionWithResponse} />
         ))}
       </ol>
       <button

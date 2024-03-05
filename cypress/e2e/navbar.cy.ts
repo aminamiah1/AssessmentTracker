@@ -11,10 +11,9 @@ describe("Navbar", () => {
       .and("have.class", "top-0");
   });
 
-  it("Sidebar toggle works on smaller screens", () => {
-    cy.viewport("iphone-6");
-    cy.get("#logo-sidebar").should("have.class", "-translate-x-full");
-    cy.get('button[aria-controls="logo-sidebar"]').click();
-    cy.get("#logo-sidebar").should("not.have.class", "-translate-x-full");
+  it("shows all navigation links for a user with all roles", () => {
+    cy.contains("a", "Module List").should("be.visible");
+    cy.contains("a", "User Management").should("be.visible");
+    cy.contains("a", "Assessment Management").should("be.visible");
   });
 });

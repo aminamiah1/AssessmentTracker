@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Navbar from "./components/navbar";
+import AuthContext from "./utils/authContext";
 
 export const metadata: Metadata = {
   title: "Assessment Tracker",

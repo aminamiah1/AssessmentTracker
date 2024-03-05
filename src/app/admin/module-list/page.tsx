@@ -63,10 +63,18 @@ function ModuleList() {
     }
   }, [searchTerm, session]);
 
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
   // Render the module list if authenticated
   return isModuleLeader ? (
     <>
-      <div>
+      <div className="bg-white dark:bg-darkmode h-screen max-h-full">
         <h1
           className="text-4xl px-4 py-5 text-gray-900 dark:text-gray-100"
           data-cy="page-title"

@@ -5,6 +5,7 @@ describe("Add a assessment", () => {
   });
   // Module leader logging in
   beforeEach(() => {
+    cy.viewport(1280, 1000);
     cy.intercept("GET", "/api/auth/session", {
       statusCode: 200,
       body: {

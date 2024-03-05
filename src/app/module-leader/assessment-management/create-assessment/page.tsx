@@ -319,7 +319,11 @@ function CreateAssessmentModuleLeaders() {
   };
 
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   if (!session) {
@@ -335,7 +339,7 @@ function CreateAssessmentModuleLeaders() {
   }
 
   return (
-    <div className="p-4 bg-white h-screen text-black mt-4">
+    <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
       {loading ? (
         <div>Loading form...</div>
@@ -349,7 +353,7 @@ function CreateAssessmentModuleLeaders() {
                 style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
               />
             </Link>
-            <h1 className="text-3xl ml-2">
+            <h1 className="text-3xl ml-2 pt-16 text-center">
               {isEdit ? "Edit Assessment" : "Create Assessment"}
             </h1>
           </div>

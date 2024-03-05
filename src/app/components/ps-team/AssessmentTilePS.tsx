@@ -200,7 +200,9 @@ const AssessmentTilePS = ({
                         className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
                       >
                         <FaUserCircle className="mr-2 text-black" size={30} />
-                        <span className="text-sm">{assignee.name}</span>
+                        <span className="text-sm" data-cy="assigneeText">
+                          {assignee.name}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -210,6 +212,7 @@ const AssessmentTilePS = ({
                 <div>
                   <button
                     className="bg-gray-200 text-black h-10 mt-5 rounded p-2"
+                    data-cy="assignUsers"
                     onClick={() => {
                       setIsPopUpOpen(true); // Open the pop-up
                     }}

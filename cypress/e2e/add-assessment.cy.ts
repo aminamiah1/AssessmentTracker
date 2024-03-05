@@ -3,9 +3,10 @@ describe("Add a assessment", () => {
     cy.log("Seeding the database...");
     cy.exec("npm run db:seed", { timeout: 200000 });
   });
+
   // Module leader logging in
   beforeEach(() => {
-    cy.mockLogin();
+    cy.login();
   });
 
   // Pass if they can add a assessment's details
@@ -87,5 +88,9 @@ describe("Add a assessment", () => {
     cy.contains("button", "Create Assessment").click();
 
     cy.contains("label", "Assessment Title").should("have.value", ""); // Should still be on the same page as not submitted
+
+    cy.get('[data-cy="name"]').then(($input: any) => {
+      expect($input[0].validationMessage).to.eq("Please fill in this field.");
+    });
   });
 });

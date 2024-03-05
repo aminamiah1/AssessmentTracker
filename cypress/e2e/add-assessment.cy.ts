@@ -31,21 +31,18 @@ describe("Add a assessment", () => {
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Computing basics 1{enter}");
 
     cy.contains("label", "Assessment Type")
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Portfolio{enter}");
 
     cy.contains("label", "Assignees")
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Carol White{enter}");
   });
 
@@ -68,21 +65,18 @@ describe("Add a assessment", () => {
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Computing basics 1{enter}");
 
     cy.contains("label", "Assessment Type")
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Portfolio{enter}");
 
     cy.contains("label", "Assignees")
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Carol White{enter}");
 
     cy.contains("button", "Create Assessment").click();

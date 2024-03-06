@@ -42,16 +42,12 @@ function ManageUsersPSTeam() {
     );
   }
 
-  if (!isPSTeam) {
-    return <UnauthorizedAccess />;
-  }
-
   const handleCloseCreateUserForm = () => {
     setShowCreateUserForm(false);
   };
 
   // Render the user management interface if authenticated
-  return (
+  return isPSTeam ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
       <div className="mb-10 mt-20">
@@ -75,6 +71,8 @@ function ManageUsersPSTeam() {
         <UsersTable />
       </div>
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

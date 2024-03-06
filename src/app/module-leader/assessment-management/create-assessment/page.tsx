@@ -329,15 +329,7 @@ function CreateAssessmentModuleLeaders() {
     );
   }
 
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
-
-  if (isModuleLeader === false) {
-    return <UnauthorizedAccess />; // Alert the current user that they do not have the role privilege to access the current page
-  }
-
-  return (
+  return isModuleLeader ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
       {loading ? (
@@ -473,6 +465,8 @@ function CreateAssessmentModuleLeaders() {
         </div>
       )}
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

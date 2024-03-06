@@ -13,7 +13,7 @@ describe("Edit User Form", () => {
   //Edit a user
   it("allows a ps-team member to  edit a user", () => {
     // Can edit a user
-    cy.get('button[data-cy="EditUserTable"]').eq(0).click();
+    cy.getByTestId("EditUserTable").eq(0).click();
     cy.getByTestId("name").type("New User Test");
     cy.getByTestId("email").type("newusertest@example.com");
     cy.getByTestId("password").type("examplepass");

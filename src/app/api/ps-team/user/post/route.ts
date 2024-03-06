@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     const { name, email, password, roles } = await request.json();

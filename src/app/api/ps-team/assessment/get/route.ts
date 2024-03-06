@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     // Extract assessment ID from request query parameters or body
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     // Check if assessment was found and return details
     if (assessment) {
-      return Response.json(assessment);
+      return NextResponse.json(assessment);
     } else {
       console.error("Error retrieving assessment");
       return new NextResponse(

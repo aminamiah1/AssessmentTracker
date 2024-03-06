@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "./components/navbar";
-import AuthContext from "./utils/authContext";
+import WrappedNavbar from "./components/navbar";
 
 export const metadata: Metadata = {
   title: "Assessment Tracker",
@@ -14,7 +13,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children} </body>
+      <body>
+        <WrappedNavbar>{children}</WrappedNavbar>
+      </body>
     </html>
   );
 }

@@ -61,7 +61,7 @@ const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      return baseUrl + "/admin/homepage";
+      return baseUrl;
     },
   },
   pages: {

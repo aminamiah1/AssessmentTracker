@@ -5,13 +5,13 @@ import { format } from "date-fns";
 import Link from "next/link";
 import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
-import { User } from "@/app/types/interfaces";
 import axios from "axios";
 // Import interfaces from interfaces.ts
 import {
   AssessmentTiles,
   Assignee,
   AssessmentEdit,
+  User,
 } from "@/app/types/interfaces";
 
 // Functional component for rendering an assessment tile for the ps team
@@ -44,11 +44,13 @@ const AssessmentTilePS = ({
   useEffect(() => {
     const fetchUsers = async () => {
       // Fetch all users to assign
-      const response = await axios.get(`/api/module-leader/users/get`);
+      const response = await axios.get(`/api/ps-team/users/get`);
+
       const processedUsers = response.data.map((user: User) => ({
         value: user.id,
         label: user.name + " ● Roles: " + user.roles,
       }));
+
       setUsers(processedUsers);
     };
 
@@ -65,12 +67,10 @@ const AssessmentTilePS = ({
     if (isPopUpOpen) {
       if (assessment.setter && assessment.assignees) {
         // Find the default assignees for the assessment and select them in the drop-down selector
-        const defaultAssignees = assessment.assignees.map(
-          (assignee: Assignee) => ({
-            value: assignee.id,
-            label: assignee.name + " ● Roles: " + assignee.roles,
-          }),
-        );
+        const defaultAssignees = assessment.assignees.map((assignee: User) => ({
+          value: assignee.id,
+          label: assignee.name + " ● Roles: " + assignee.roles,
+        }));
 
         // Find the default setter for the assessment and select them in the drop-down selector
         const defaultSetter = {
@@ -260,15 +260,15 @@ const AssessmentTilePS = ({
               >
                 Submit
               </button>
-              <button
-                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
-                onClick={() => {
-                  setIsPopUpOpen(false); // Close the pop-up
-                }}
-              >
-                Cancel
-              </button>
             </form>
+            <button
+              className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
+              onClick={() => {
+                setIsPopUpOpen(false); // Close the pop-up
+              }}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>

@@ -25,7 +25,7 @@ describe("Add a assessment", () => {
     }).as("getModules");
 
     // Enter test assessment form data
-    cy.get('[data-cy="name"]').type("New Assessment");
+    cy.getByTestId("name").type("New Assessment");
 
     cy.contains("label", "Module")
       .next()
@@ -83,7 +83,7 @@ describe("Add a assessment", () => {
 
     cy.contains("label", "Assessment Title").should("have.value", ""); // Should still be on the same page as not submitted
 
-    cy.get('[data-cy="name"]').then(($input: any) => {
+    cy.getByTestId("name").then(($input: any) => {
       expect($input[0].validationMessage).to.eq("Please fill out this field.");
     });
   });

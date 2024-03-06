@@ -30,4 +30,8 @@ declare global {
   interface QuestionWithResponse extends Question {
     Response: Response[];
   }
+
+  interface ResponseWithQuestion extends Response {
+    Question: Question;
+  }
 }

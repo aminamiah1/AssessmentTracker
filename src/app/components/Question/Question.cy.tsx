@@ -7,6 +7,7 @@ let question: IQuestion = {
   choices: ["Red", "Blue", "Green", "Yellow"],
   id: 1,
   question_title: "What's your favourite color?",
+  Response: [],
 };
 
 describe("<Question />", () => {

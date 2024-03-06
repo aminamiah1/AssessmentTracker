@@ -10,12 +10,16 @@ describe("<Response />", () => {
   });
 
   it("displays a textarea for a 'text' response type", () => {
-    cy.mount(<Response questionId={0} responseType="string" />);
+    cy.mount(
+      <Response questionId={0} responseType="string" previousResponse="" />,
+    );
     cy.getByTestId("response").get("textarea").should("exist");
   });
 
   it("displays a radio button for a 'boolean' response type", () => {
-    cy.mount(<Response questionId={0} responseType="boolean" />);
+    cy.mount(
+      <Response questionId={0} responseType="boolean" previousResponse="" />,
+    );
     cy.getByTestId("response")
       .get("input[type=radio]")
       .should("have.length", 2);
@@ -23,7 +27,12 @@ describe("<Response />", () => {
 
   it("displays a select for a 'multi-choice' response type", () => {
     cy.mount(
-      <Response questionId={0} responseType="string" choices={choices} />,
+      <Response
+        questionId={0}
+        responseType="string"
+        choices={choices}
+        previousResponse=""
+      />,
     );
     cy.getByTestId("response").get("select").should("exist");
     cy.getByTestId("response")

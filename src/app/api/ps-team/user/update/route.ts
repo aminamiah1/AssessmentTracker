@@ -1,6 +1,7 @@
 import prisma from "@/app/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { hashPassword } from "@/app/utils/hashPassword";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,7 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     const { id, name, email, password, roles } = await request.json();
@@ -34,10 +35,13 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Hash the password
+    const hashedPassword = await hashPassword(password);
+
     // Update user data
     const updatedUser = await prisma.users.update({
       where: { id },
-      data: { name, email, password, roles }, // Update desired fields
+      data: { name, email, password: hashedPassword, roles }, // Update desired fields
     });
 
     // Return updated user data
@@ -48,8 +52,5 @@ export async function POST(request: NextRequest) {
       JSON.stringify({ message: "Internal Server Error" }),
       { status: 500 },
     );
-  } finally {
-    // Close Prisma client connection
-    await prisma.$disconnect();
   }
 }

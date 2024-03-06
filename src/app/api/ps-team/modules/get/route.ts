@@ -3,7 +3,6 @@ import prisma from "@/app/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  // Get all users
   try {
     const session = await getServerSession();
 
@@ -11,15 +10,20 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
-    const users = await prisma.users.findMany({
+    // Fetch modules with error handling
+    const modules = await prisma.module.findMany({
       select: {
         id: true,
-        name: true,
-        roles: true,
+        module_name: true,
       },
     });
-    return NextResponse.json(users);
-  } finally {
-    await prisma.$disconnect(); // Ensure connection closure
+
+    return NextResponse.json(modules);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Failed to retrieve assessments" },
+      { status: 500 },
+    );
   }
 }

@@ -3,37 +3,10 @@ describe("Add a assessment", () => {
     cy.log("Seeding the database...");
     cy.exec("npm run db:seed", { timeout: 200000 });
   });
+
   // Module leader logging in
   beforeEach(() => {
-    cy.viewport(1280, 1000);
-    cy.wait(5000);
-    cy.intercept("GET", "/api/auth/session", {
-      statusCode: 200,
-      body: {
-        user: {
-          name: "John",
-          email: "admin@example.com",
-          roles: ["ps_team", "module_leader"],
-        },
-        expires: "date-string",
-      },
-    });
-    cy.visit("/module-leader/assessment-management");
-    cy.clearCookies();
-    cy.clearLocalStorage();
-    cy.intercept("GET", "**/api/auth/session", (req) => {
-      req.reply({
-        body: {
-          user: {
-            id: 6,
-            name: "Admin User",
-            email: "admin@example.com",
-            roles: ["ps_team", "module_leader"],
-          },
-          expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-        },
-      });
-    }).as("getSession");
+    cy.login();
   });
 
   // Pass if they can add a assessment's details
@@ -52,20 +25,66 @@ describe("Add a assessment", () => {
     }).as("getModules");
 
     // Enter test assessment form data
-    cy.get('[data-cy="name"]').type("New Assessment");
+    cy.getByTestId("name").type("New Assessment");
 
     cy.contains("label", "Module")
       .next()
       .find("input")
-      .focus()
+      .eq(0)
       .type("Computing basics 1{enter}");
 
-    cy.get('[data-cy="type"]').type("Test");
+    cy.contains("label", "Assessment Type")
+      .next()
+      .find("input")
+      .eq(0)
+      .type("Portfolio{enter}");
 
     cy.contains("label", "Assignees")
       .next()
       .find("input")
-      .focus()
+      .eq(0)
       .type("Carol White{enter}");
+  });
+
+  // Pass if they cannot submit a blank assessment name
+  it("does not allow a module leader to submit an assessment with a blank name", () => {
+    // By visting the create assessments page and typing out the details
+    cy.visit("/module-leader/assessment-management/create-assessment");
+
+    // Spoof getting users by retrieving them from example JSON
+    cy.intercept("GET", "/api/module-leader/users/get", {
+      fixture: "users.json",
+    }).as("getAssignees");
+
+    // Spoof getting modules by retrieving them from example JSON
+    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
+      fixture: "modules.json",
+    }).as("getModules");
+
+    cy.contains("label", "Module")
+      .next()
+      .find("input")
+      .eq(0)
+      .type("Computing basics 1{enter}");
+
+    cy.contains("label", "Assessment Type")
+      .next()
+      .find("input")
+      .eq(0)
+      .type("Portfolio{enter}");
+
+    cy.contains("label", "Assignees")
+      .next()
+      .find("input")
+      .eq(0)
+      .type("Carol White{enter}");
+
+    cy.contains("button", "Create Assessment").click();
+
+    cy.contains("label", "Assessment Title").should("have.value", ""); // Should still be on the same page as not submitted
+
+    cy.getByTestId("name").then(($input: any) => {
+      expect($input[0].validationMessage).to.eq("Please fill out this field.");
+    });
   });
 });

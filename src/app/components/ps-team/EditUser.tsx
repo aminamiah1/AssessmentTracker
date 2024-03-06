@@ -64,7 +64,7 @@ const EditUser: React.FC<EditUserProps> = ({
         roles: [],
       });
     }
-  }, [user, userToEdit]);
+  }, [userToEdit]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import AuthContext from "@/app/utils/authContext";
 import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
+import UnauthorizedAccess from "@/app/components/authError";
 
 function ManageAssessmentsModuleLeaders() {
   const { data: session, status } = useSession(); // Use useSession to get session and status
@@ -38,19 +39,7 @@ function ManageAssessmentsModuleLeaders() {
     );
   }
 
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
-
-  if (isModuleLeader === false) {
-    return (
-      <p className="text-white bg-black">
-        You are not authorised to view this page...
-      </p>
-    ); // Alert the current user that they do not have the role privilege to access the current page
-  }
-
-  return (
+  return isModuleLeader ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
       <div className="text-center mb-10 mt-10">
@@ -79,6 +68,8 @@ function ManageAssessmentsModuleLeaders() {
         </div>
       </div>
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

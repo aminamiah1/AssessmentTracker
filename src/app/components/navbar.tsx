@@ -20,10 +20,19 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
   const { data: session, status } = useSession();
   const [isPSTeam, setIsPSTeam] = useState(false);
   const [isModuleLeader, setIsModuleLeader] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      window.location.pathname === "/admin/sign-in"
+    ) {
+      setShowNavbar(false);
+      return;
+    }
+
     if (session) {
-      const roles = session.user.roles;
+      const roles = session.user.roles || [];
       setIsPSTeam(roles.includes("ps_team"));
       setIsModuleLeader(roles.includes("module_leader"));
     } else if (status === "unauthenticated") {
@@ -33,13 +42,17 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  if (!showNavbar) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-300 dark:bg-gray-800 dark:border-gray-700 shadow-md">
         <div className="px-3 py-5 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
-              <Link href="./page" className="flex ms-2 md:me-24">
+              <Link href="/" className="flex ms-2 md:me-24">
                 <Image
                   src="/images/logo.png"
                   className="h-8 me-3"

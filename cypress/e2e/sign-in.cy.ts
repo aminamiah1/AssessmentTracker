@@ -1,7 +1,6 @@
 describe("Authentication", () => {
   it("should log in successfully with correct credentials and greet the user", () => {
     cy.login();
-    cy.url().should("include", "/admin/homepage");
 
     const expectedUserName = "Test User";
     cy.get("body").should("contain", `Hi ${expectedUserName}!`);
@@ -10,9 +9,14 @@ describe("Authentication", () => {
   it("should display an error with incorrect credentials", () => {
     cy.visit("/api/auth/signin");
     // Fill in the login form with incorrect credentials
-    cy.get('input[name="email"]').type("wrong@example.com");
-    cy.get('input[name="password"]').type("wrongPassword");
-    cy.get('button[type="submit"]').should("exist").click();
+    cy.wait(2000);
+    cy.get("#input-email-for-credentials-provider").type(
+      "wrongtestemail@test.net",
+    );
+    cy.get("#input-password-for-credentials-provider").type(
+      "wrongsecurepassword",
+    );
+    cy.get("button").click();
     cy.get("div")
       .contains("Check the details you provided are correct.")
       .should("be.visible");

@@ -61,6 +61,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add("login", () => {
   cy.visit("/api/auth/signin");
+  cy.wait(2000);
   cy.get("#input-email-for-credentials-provider").type("testemail@test.net");
   cy.get("#input-password-for-credentials-provider").type("securepassword");
   cy.get("button").click();

@@ -4,7 +4,9 @@ const choices = ["Red", "Blue", "Green", "Yellow"];
 
 describe("<Response />", () => {
   it("mounts", () => {
-    cy.mount(<Response questionId={0} responseType="string" />);
+    cy.mount(
+      <Response questionId={0} responseType="string" previousResponse="" />,
+    );
   });
 
   it("displays a textarea for a 'text' response type", () => {

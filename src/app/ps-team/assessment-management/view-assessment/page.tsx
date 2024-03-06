@@ -141,15 +141,7 @@ function ViewAssessmentPSTeam() {
     return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
   }
 
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
-
-  if (isPSTeam === false) {
-    return <UnauthorizedAccess />; // Alert the current user that they do not have the role privilege to access the current page
-  }
-
-  return (
+  return isPSTeam ? (
     <div className="p-4 bg-white h-screen text-black mt-4">
       <ToastContainer />
       {loading ? (
@@ -253,6 +245,7 @@ function ViewAssessmentPSTeam() {
                 />
               </div>
             </div>
+
             <div className="mb-4">
               <label htmlFor="assignees" className="font-bold">
                 Assignees
@@ -271,6 +264,8 @@ function ViewAssessmentPSTeam() {
         </div>
       )}
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

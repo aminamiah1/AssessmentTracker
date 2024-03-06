@@ -16,7 +16,9 @@
     "dev:test": "dotenv -e .env.test -- next dev -p 3001",
     "cy:open": "cypress open",
     "test:e2e": "cypress run --spec \"cypress/e2e/*.cy.ts\"",
-    "coverage:e2e": "npx nyc@latest npm run test:e2e",
+    "test:e2e:ci": "cypress run --headless --spec \"cypress/e2e/*.cy.ts\"",
+    "test:component": "cypress run --component --spec \"src/app/components/**/*.cy.tsx\"",
+    "coverage:e2e": "npx nyc@15.1.0 npm run test:e2e",
     "prepare": "husky"
   },
   "dependencies": {
@@ -29,7 +31,7 @@
     "babel-plugin-istanbul": "^6.1.1",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
-    "bootstrap": "^5.3.2",
+    "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -49,9 +51,11 @@
     "react-dom": "^18",
     "react-icons": "^5.0.1",
     "react-responsive-cards-table": "^0.3.0",
+    "react-router-dom": "^6.22.1",
     "react-select": "^5.8.0",
     "react-table": "^7.8.0",
     "react-toastify": "^10.0.4",
+    "sonner": "^1.4.1",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7"
   },

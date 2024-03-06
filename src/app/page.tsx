@@ -1,37 +1,53 @@
 "use client";
-import { useSession, signIn } from "next-auth/react";
+import AuthContext from "@/app/utils/authContext";
+import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
-import AuthContext from "./utils/authContext";
 
-function Home() {
-  const { data: session, status } = useSession(); // Use useSession to get session and status
+function UserPage() {
+  const { data: session, status } = useSession();
 
   useEffect(() => {
-    // Redirect to sign-in if not authenticated
+    // If not signed in, redirect to the sign-in page automatically
     if (status === "unauthenticated") {
       signIn();
     }
   }, [status]);
 
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
+    return <p className="text-black">Loading...</p>;
   }
 
   if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+    // This will be briefly shown before the signIn() effect redirects the user
+    return <p>Redirecting to sign-in...</p>;
   }
 
+  // Render the personalized greeting page if the session exists
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex"></div>
-    </main>
+    <div
+      style={{
+        paddingTop: "100px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        boxSizing: "border-box",
+      }}
+    >
+      <p
+        className="text-black"
+        style={{ fontSize: "24px", fontWeight: "bold" }}
+      >
+        Hi {session.user.name}!
+      </p>
+    </div>
   );
 }
 
-const WrappedHome = () => (
+const WrappedUserPage = () => (
   <AuthContext>
-    <Home />
+    <UserPage />
   </AuthContext>
 );
 
-export default WrappedHome;
+export default WrappedUserPage;

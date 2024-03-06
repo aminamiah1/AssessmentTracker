@@ -35,12 +35,11 @@ function ManageUsersPSTeam() {
   }, [session, status]);
 
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>;
-    // Show a loading message while checking session status
-  }
-
-  if (!isPSTeam) {
-    return <UnauthorizedAccess />;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   const handleCloseCreateUserForm = () => {
@@ -48,14 +47,13 @@ function ManageUsersPSTeam() {
   };
 
   // Render the user management interface if authenticated
-  return (
-    <div className="p-4 bg-white h-screen mt-4 overflow-y-auto">
+  return isPSTeam ? (
+    <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold text-black">User Management</h1>
-      </div>
-      <div>
-        <UsersTable />
+      <div className="mb-10 mt-20">
+        <h1 className="text-3xl font-bold text-black text-center">
+          User Management
+        </h1>
       </div>
       <div className="text-center">
         {showCreateUserForm ? (
@@ -69,7 +67,12 @@ function ManageUsersPSTeam() {
           </button>
         )}
       </div>
+      <div>
+        <UsersTable />
+      </div>
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

@@ -43,13 +43,17 @@ function ViewAssessmentsModuleLeaders() {
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
-      const response = await axios.get(
-        `/api/module-leader/assessments/get/?id=${setterId}`,
-      );
-      const sortedAssessments = response.data.sort(
-        (a: AssessmentLoad, b: AssessmentLoad) => a.id - b.id,
-      );
-      setAssessments(sortedAssessments);
+      try {
+        const response = await axios.get(
+          `/api/module-leader/assessments/get/?id=${setterId}`,
+        );
+        const sortedAssessments = response.data.sort(
+          (a: AssessmentLoad, b: AssessmentLoad) => a.id - b.id,
+        );
+        setAssessments(sortedAssessments);
+      } catch (e) {
+        setAssessments([]);
+      }
     };
 
     if (isModuleLeader === true && setterId != 0) {
@@ -71,20 +75,16 @@ function ViewAssessmentsModuleLeaders() {
   );
 
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
-
-  if (isModuleLeader === false) {
-    return <UnauthorizedAccess />; // Alert the current user that they do not have the role privilege to access the current page
-  }
-
-  return (
+  return isModuleLeader ? (
     <main className="bg-white">
-      <div className="p-4 bg-white h-screen text-black">
+      <div className="bg-white dark:bg-darkmode h-screen max-h-full">
         <ToastContainer />
         <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -130,6 +130,8 @@ function ViewAssessmentsModuleLeaders() {
         </div>
       </div>
     </main>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

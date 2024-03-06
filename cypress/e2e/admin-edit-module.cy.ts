@@ -6,6 +6,7 @@ describe("Admin edit module page", () => {
   });
 
   beforeEach(() => {
+    Cypress.Cookies.debug(true, { verbose: true });
     cy.login();
     cy.visit("/admin/module-list");
   });
@@ -19,6 +20,7 @@ describe("Admin edit module page", () => {
     cy.visit("/admin/module-list/edit/CM6127");
     cy.getByTestId("edit-module-name-input").type("Updated Module Name");
     cy.getByTestId("edit-module-name-submit").click();
+    cy.visit("/admin/module-list");
     cy.url().should("not.include", "/edit/");
     cy.contains("Updated Module Name").should("exist");
   });
@@ -27,6 +29,7 @@ describe("Admin edit module page", () => {
     cy.visit("/admin/module-list/edit/CM6127");
     cy.getByTestId("edit-module-code-input").type("CM6128");
     cy.getByTestId("edit-module-code-submit").click();
+    cy.visit("/admin/module-list");
     cy.url().should("not.include", "/edit/");
     cy.contains("CM6128").should("exist");
   });

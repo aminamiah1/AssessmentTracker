@@ -2,6 +2,9 @@ import "cypress-file-upload";
 
 /// <reference types="cypress" />
 
+import { mount } from "cypress/react18";
+import { SessionProvider } from "next-auth/react";
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -60,38 +63,12 @@ Cypress.Commands.add(
 
 Cypress.Commands.add("login", () => {
   cy.visit("/api/auth/signin");
+  cy.wait(2000);
   cy.get("#input-email-for-credentials-provider").type("testemail@test.net");
   cy.get("#input-password-for-credentials-provider").type("securepassword");
   cy.get("button").click();
 });
 
-// Mock login used in older tests to enable testing without database
-Cypress.Commands.add("mockLogin", () => {
-  cy.intercept("GET", "/api/auth/session", {
-    statusCode: 200,
-    body: {
-      user: {
-        name: "John",
-        email: "admin@example.com",
-        roles: ["ps_team", "module_leader"],
-      },
-      expires: "date-string",
-    },
-  });
-  cy.visit("/module-leader/assessment-management");
-  cy.clearCookies();
-  cy.clearLocalStorage();
-  cy.intercept("GET", "**/api/auth/session", (req) => {
-    req.reply({
-      body: {
-        user: {
-          id: 6,
-          name: "Admin User",
-          email: "admin@example.com",
-          roles: ["ps_team", "module_leader"],
-        },
-        expires: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-      },
-    });
-  }).as("getSession");
+Cypress.Commands.add("mount", (component, options) => {
+  return mount(component, options);
 });

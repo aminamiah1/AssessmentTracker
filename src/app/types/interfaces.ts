@@ -52,10 +52,28 @@ export interface AssessmentTiles {
   assessment_type: string;
   hand_out_week: Date;
   hand_in_week: Date;
-  module_id: number;
+  module_name: string;
   module: [];
   setter_id: number;
   setter: { id: number; name: string; roles: [] };
-  module_name: string;
   assignees: [];
+}
+// Interface for the assignees
+export interface Assignee {
+  id: number;
+  name: string;
+  roles: [];
+}
+//Interface for assessment to edit
+export interface AssessmentEdit {
+  id: number;
+  assessment_name: string;
+  assessment_type: string;
+  hand_out_week: Date;
+  hand_in_week: Date;
+  module_name: string;
+  module: [];
+  setter_id: { value: number; label: string };
+  setter: { id: number; name: string; roles: [] };
+  assignees: { value: number }[] | { value: number; label: string }[];
 }

@@ -1,19 +1,20 @@
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     // Fetch assessments with error handling
     const assessments = await prisma.assessment.findMany({
       include: {
-        assignees: { select: { name: true, id: true, roles: true } },
-        setter: { select: { id: true, name: true, roles: true } },
+        assignees: { select: { name: true } },
+        setter: { select: { name: true } },
       },
     });
 
@@ -35,14 +36,14 @@ export async function GET(request: Request) {
       }));
 
       // Return the assessments with the modules as json if successful
-      return Response.json(assessmentsWithModules);
+      return NextResponse.json(assessmentsWithModules);
     } catch (error) {
       // Else handle the error gracefully
       console.error("Error fetching modules: ", error);
     }
   } catch (error) {
     console.error(error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Failed to retrieve assessments" },
       { status: 500 },
     );

@@ -7,40 +7,12 @@ import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
 import { User } from "@/app/types/interfaces";
 import axios from "axios";
-
-// Interface for the assessment model
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: string;
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module_name: string;
-  module: [];
-  setter_id: number;
-  setter: { id: number; name: string; roles: [] };
-  assignees: [];
-}
-
-interface AssessmentEdit {
-  id: number;
-  assessment_name: string;
-  assessment_type: string;
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module_name: string;
-  module: [];
-  setter_id: { value: number; label: string };
-  setter: { id: number; name: string; roles: [] };
-  assignees: { value: number }[] | { value: number; label: string }[];
-}
-
-// Interface for the assignees
-interface Assignee {
-  id: number;
-  name: string;
-  roles: [];
-}
+// Import interfaces from interfaces.ts
+import {
+  AssessmentTiles,
+  Assignee,
+  AssessmentEdit,
+} from "@/app/types/interfaces";
 
 // Functional component for rendering an assessment tile for the ps team
 const AssessmentTilePS = ({
@@ -48,7 +20,7 @@ const AssessmentTilePS = ({
   refetch,
   setRefetch,
 }: {
-  assessment: Assessment;
+  assessment: AssessmentTiles;
   refetch: any;
   setRefetch: any;
 }) => {
@@ -80,7 +52,11 @@ const AssessmentTilePS = ({
       setUsers(processedUsers);
     };
 
-    fetchUsers();
+    try {
+      fetchUsers();
+    } catch (e) {
+      setUsers([]);
+    }
 
     setLoading(false); // Set loading to false once data is fetched
   }, []); // Get all users in the system and apply to assignees
@@ -114,8 +90,6 @@ const AssessmentTilePS = ({
 
   // Handle select drop-down changes for the form
   const handleSelectChange = (selectedOption: any, fieldName: any) => {
-    console.log(fieldName);
-    console.log(assessmentToEdit);
     setAssessmentToEdit({ ...assessmentToEdit, [fieldName]: selectedOption });
   };
 

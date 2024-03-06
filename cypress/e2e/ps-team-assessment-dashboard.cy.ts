@@ -22,4 +22,18 @@ describe("Filter assessments on ps team assessment viewing dashboard", () => {
       "My new assessment",
     );
   });
+
+  it("handles no assessments gracefully", () => {
+    cy.intercept("GET", "/api/ps-team/assessments/get", {}).as(
+      "getNoAssessments",
+    );
+
+    const noAssessmentsMessage =
+      "No assessments found matching the search criteria...";
+
+    cy.contains("div", noAssessmentsMessage).should(
+      "have.text",
+      noAssessmentsMessage,
+    );
+  });
 });

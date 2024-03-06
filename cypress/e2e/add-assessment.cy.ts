@@ -3,9 +3,10 @@ describe("Add a assessment", () => {
     cy.log("Seeding the database...");
     cy.exec("npm run db:seed", { timeout: 200000 });
   });
+
   // Module leader logging in
   beforeEach(() => {
-    cy.mockLogin();
+    cy.login();
   });
 
   // Pass if they can add a assessment's details
@@ -24,27 +25,24 @@ describe("Add a assessment", () => {
     }).as("getModules");
 
     // Enter test assessment form data
-    cy.get('[data-cy="name"]').type("New Assessment");
+    cy.getByTestId("name").type("New Assessment");
 
     cy.contains("label", "Module")
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Computing basics 1{enter}");
 
     cy.contains("label", "Assessment Type")
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Portfolio{enter}");
 
     cy.contains("label", "Assignees")
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Carol White{enter}");
   });
 
@@ -67,25 +65,26 @@ describe("Add a assessment", () => {
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Computing basics 1{enter}");
 
     cy.contains("label", "Assessment Type")
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Portfolio{enter}");
 
     cy.contains("label", "Assignees")
       .next()
       .find("input")
       .eq(0)
-      .focus()
       .type("Carol White{enter}");
 
     cy.contains("button", "Create Assessment").click();
 
     cy.contains("label", "Assessment Title").should("have.value", ""); // Should still be on the same page as not submitted
+
+    cy.getByTestId("name").then(($input: any) => {
+      expect($input[0].validationMessage).to.eq("Please fill out this field.");
+    });
   });
 });

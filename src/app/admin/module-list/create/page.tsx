@@ -120,6 +120,14 @@ const CreateModule = () => {
     }
   };
 
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
   return isPSTeam ? (
     <div className="flex items-center justify-center min-h-screen bg-gray-200">
       <div className="max-w-lg w-full p-8 bg-white shadow-lg rounded-lg mx-4">

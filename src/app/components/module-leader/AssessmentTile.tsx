@@ -93,6 +93,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 <br />
                 <span className="text-sm text-gray-700">
                   Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")} ●
+                  {/* To add later after tracking stages implemented */}
                   Stage: {0} of 11
                 </span>
               </p>

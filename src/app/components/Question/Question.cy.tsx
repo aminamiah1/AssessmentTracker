@@ -1,7 +1,7 @@
 import { Question as IQuestion } from "@prisma/client";
 import { Question } from "./Question";
 
-let question: IQuestion = {
+let question: QuestionWithResponse = {
   part_id: -1,
   response_type: "string",
   choices: ["Red", "Blue", "Green", "Yellow"],

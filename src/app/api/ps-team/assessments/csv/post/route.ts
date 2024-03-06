@@ -17,13 +17,21 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Use example date for now until we discuss date format as a team
-    const example_date = new Date(2024, 1, 26);
+    const {
+      moduleCodes,
+      assessmentNames,
+      assessmentTypes,
+      calculatedHandOutDates,
+      calculatedHandInDates,
+    } = await request.json();
 
-    const { moduleCodes, assessmentNames, assessmentTypes } =
-      await request.json();
-
-    if (!moduleCodes || !assessmentNames || !assessmentTypes) {
+    if (
+      !moduleCodes ||
+      !assessmentNames ||
+      !assessmentTypes ||
+      !calculatedHandOutDates ||
+      !calculatedHandInDates
+    ) {
       return new NextResponse(
         JSON.stringify({
           message: "Please include all required csv fields to create modules",
@@ -63,15 +71,15 @@ export async function POST(request: NextRequest) {
           update: {
             assessment_name: assessmentNames[i],
             assessment_type: assessmentTypes[i].replaceAll(" ", "_"),
-            hand_in_week: example_date,
-            hand_out_week: example_date,
+            hand_in_week: calculatedHandInDates[i],
+            hand_out_week: calculatedHandOutDates[i],
             module: { connect: { id: moduleId } },
           }, // Update if exists
           create: {
             assessment_name: assessmentNames[i],
             assessment_type: assessmentTypes[i].replaceAll(" ", "_"),
-            hand_in_week: example_date,
-            hand_out_week: example_date,
+            hand_in_week: calculatedHandInDates[i],
+            hand_out_week: calculatedHandOutDates[i],
             module: { connect: { id: moduleId } },
           }, // Else create the assessment
         });

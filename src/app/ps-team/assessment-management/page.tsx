@@ -16,6 +16,8 @@ import { AssessmentTiles, Module, User } from "@/app/types/interfaces";
 import uploadCSV from "@/app/utils/uploadCSV";
 import Image from "next/image";
 import ExampleCSV from "@/../public/images/ExampleCSV.png";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function ViewAssessmentsPSTeam() {
   const [assessments, setAssessments] = useState<AssessmentTiles[]>([]); // Variable to hold an array of assessment object types
@@ -42,6 +44,7 @@ function ViewAssessmentsPSTeam() {
   const [selectedFileName, setSelectedFileName] = useState(""); // State to hold the selected csv file name
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the uploaded csv file
   let [refetch, setRefetch] = useState(0); // State to re-fetch assessments after successful csv upload
+  const [startDate, setStartDate] = useState<Date>(new Date()); // State to store the user inputted term start date
 
   //Make sure to set the selected option to blank if search term is not a option in any of the select boxes
   useEffect(() => {
@@ -146,8 +149,13 @@ function ViewAssessmentsPSTeam() {
   );
 
   //On submit function to send the csv to the helper function for csv data creation
-  const handleUploadCSV = async (file: File) => {
-    await uploadCSV({ file });
+  const handleUploadCSV = async (file: File, startDate: Date) => {
+    await uploadCSV({ file, startDate });
+  };
+
+  // Handle date changes for the form
+  const handleDateChange = (date: Date) => {
+    setStartDate(date);
   };
 
   if (status === "loading") {
@@ -376,17 +384,36 @@ function ViewAssessmentsPSTeam() {
                 Download Example CSV
               </a>
             </div>
+            {selectedFile && (
+              <div className="text-black">
+                <label htmlFor="termStartDate">
+                  University Term Start Date:
+                </label>
+                <div className="w-full">
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(startDate: Date) => handleDateChange(startDate)}
+                    dateFormat="yyyy-MM-dd"
+                    placeholderText="Select term start date"
+                    required
+                    className="form-input mb-4 border border-gray-300 border-b-4 border-black p-4"
+                  />
+                </div>
+              </div>
+            )}
             <button
               className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
               onClick={async () => {
                 if (selectedFile) {
                   // Ensure a file is selected
                   try {
-                    await handleUploadCSV(selectedFile).catch((error) => {
-                      toast.error(
-                        "Uploading csv failed, check format matches picture and try again.",
-                      );
-                    });
+                    await handleUploadCSV(selectedFile, startDate).catch(
+                      (error) => {
+                        toast.error(
+                          "Uploading csv failed, check format matches picture and try again.",
+                        );
+                      },
+                    );
                   } catch (e) {
                     toast.error(
                       "Uploading csv failed, check format matches picture and try again.",

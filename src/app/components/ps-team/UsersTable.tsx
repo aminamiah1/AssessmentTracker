@@ -28,12 +28,17 @@ const UsersTable: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       if (!search) {
-        const response = await axios.get("/api/ps-team/users/get");
-        const sortedUsers = response.data.sort(
-          (a: User, b: User) => a.id - b.id,
-        );
-        setUsers(sortedUsers);
-        setFilteredUsers(sortedUsers);
+        try {
+          const response = await axios.get("/api/ps-team/users/get");
+          const sortedUsers = response.data.sort(
+            (a: User, b: User) => a.id - b.id,
+          );
+          setUsers(sortedUsers);
+          setFilteredUsers(sortedUsers);
+        } catch (e) {
+          setUsers([]);
+          setFilteredUsers([]);
+        }
       }
     };
 

@@ -64,11 +64,15 @@ function ViewAssessmentsPSTeam() {
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
-      const response = await axios.get(`/api/ps-team/assessments/get`);
-      const sortedAssessments = response.data.sort(
-        (a: AssessmentTiles, b: AssessmentTiles) => a.id - b.id,
-      );
-      setAssessments(sortedAssessments);
+      try {
+        const response = await axios.get(`/api/ps-team/assessments/get`);
+        const sortedAssessments = response.data.sort(
+          (a: AssessmentTiles, b: AssessmentTiles) => a.id - b.id,
+        );
+        setAssessments(sortedAssessments);
+      } catch (e) {
+        setAssessments([]);
+      }
     };
 
     const fetchModules = async () => {

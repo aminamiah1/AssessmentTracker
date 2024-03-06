@@ -43,13 +43,17 @@ function ViewAssessmentsModuleLeaders() {
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
-      const response = await axios.get(
-        `/api/module-leader/assessments/get/?id=${setterId}`,
-      );
-      const sortedAssessments = response.data.sort(
-        (a: AssessmentLoad, b: AssessmentLoad) => a.id - b.id,
-      );
-      setAssessments(sortedAssessments);
+      try {
+        const response = await axios.get(
+          `/api/module-leader/assessments/get/?id=${setterId}`,
+        );
+        const sortedAssessments = response.data.sort(
+          (a: AssessmentLoad, b: AssessmentLoad) => a.id - b.id,
+        );
+        setAssessments(sortedAssessments);
+      } catch (e) {
+        setAssessments([]);
+      }
     };
 
     if (isModuleLeader === true && setterId != 0) {

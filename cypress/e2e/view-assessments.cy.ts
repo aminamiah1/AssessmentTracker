@@ -10,7 +10,7 @@ describe("View assessments", () => {
   });
 
   // Pass if they can view assessments
-  it("allows a module leader to add a assessment", () => {
+  it("allows a module leader to view assessments", () => {
     // By visting the view assessments page
     cy.visit("/module-leader/assessment-management/view-assessments");
   });

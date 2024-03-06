@@ -5,6 +5,7 @@ import UsersTable from "../../components/ps-team/UsersTable";
 import { ToastContainer } from "react-toastify";
 import CreateUser from "../../components/ps-team/CreateUser";
 import AuthContext from "@/app/utils/authContext";
+import UnauthorizedAccess from "@/app/components/authError";
 
 export const dynamic = "force-dynamic";
 
@@ -41,29 +42,18 @@ function ManageUsersPSTeam() {
     );
   }
 
-  if (!isPSTeam) {
-    return (
-      <p className="text-white bg-black">
-        You are not authorized to view this page...
-      </p>
-    );
-  }
-
   const handleCloseCreateUserForm = () => {
     setShowCreateUserForm(false);
   };
 
   // Render the user management interface if authenticated
-  return (
+  return isPSTeam ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
       <div className="mb-10 mt-20">
         <h1 className="text-3xl font-bold text-black text-center">
           User Management
         </h1>
-      </div>
-      <div>
-        <UsersTable />
       </div>
       <div className="text-center">
         {showCreateUserForm ? (
@@ -77,7 +67,12 @@ function ManageUsersPSTeam() {
           </button>
         )}
       </div>
+      <div>
+        <UsersTable />
+      </div>
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

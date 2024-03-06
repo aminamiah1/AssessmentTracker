@@ -28,12 +28,17 @@ const UsersTable: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       if (!search) {
-        const response = await axios.get("/api/ps-team/users/get");
-        const sortedUsers = response.data.sort(
-          (a: User, b: User) => a.id - b.id,
-        );
-        setUsers(sortedUsers);
-        setFilteredUsers(sortedUsers);
+        try {
+          const response = await axios.get("/api/ps-team/users/get");
+          const sortedUsers = response.data.sort(
+            (a: User, b: User) => a.id - b.id,
+          );
+          setUsers(sortedUsers);
+          setFilteredUsers(sortedUsers);
+        } catch (e) {
+          setUsers([]);
+          setFilteredUsers([]);
+        }
       }
     };
 
@@ -172,7 +177,7 @@ const UsersTable: React.FC = () => {
       {
         Header: "Edit",
         accessor: (id: User) => (
-          <button onClick={() => handleEdit(id)} data-cy="EditUser">
+          <button onClick={() => handleEdit(id)} data-cy="EditUserTable">
             <FaEdit className="cursor-pointer" size={30} />
           </button>
         ),

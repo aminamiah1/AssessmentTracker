@@ -1,4 +1,9 @@
 describe("Add User", () => {
+  before(() => {
+    cy.log("Seeding the database...");
+    cy.exec("npm run db:seed", { timeout: 200000 });
+  });
+
   beforeEach(() => {
     cy.login();
   });
@@ -13,13 +18,13 @@ describe("Add User", () => {
     // Create a new user through form
     cy.visit("/ps-team/user-management");
     cy.contains("button", "Create New User").click();
-    cy.get('[data-cy="name"]').type("New User");
+    cy.getByTestId("name").type("New User");
 
     const timestamp = Date.now();
     const uniqueEmail = `newuser+${timestamp}@example.com`;
 
-    cy.get('[data-cy="email"]').clear().type(uniqueEmail);
-    cy.get('[data-cy="password"]').type("examplepass");
+    cy.getByTestId("email").clear().type(uniqueEmail);
+    cy.getByTestId("password").type("examplepass");
 
     cy.contains("label", "Roles")
       .next()

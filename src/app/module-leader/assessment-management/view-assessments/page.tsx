@@ -8,22 +8,12 @@ import { FiSearch } from "react-icons/fi"; // Search icon
 import Link from "next/link";
 import AuthContext from "@/app/utils/authContext";
 import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
-
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: string;
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module_id: number;
-  module: [];
-  setter_id: number;
-  module_name: string;
-  assignees: [];
-}
+import UnauthorizedAccess from "@/app/components/authError";
+// Import interfaces from interfaces.ts
+import { AssessmentLoad } from "@/app/types/interfaces";
 
 function ViewAssessmentsModuleLeaders() {
-  const [assessments, setAssessments] = useState<Assessment[]>([]); // Variable to hold an array of assessment object types
+  const [assessments, setAssessments] = useState<AssessmentLoad[]>([]); // Variable to hold an array of assessment object types
   const [setterId, setSetterId] = useState(0);
   const [searchTerm, setSearchTerm] = useState(""); // Set the search term to blank for default
   const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
@@ -53,13 +43,17 @@ function ViewAssessmentsModuleLeaders() {
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
-      const response = await axios.get(
-        `/api/module-leader/assessments/get/?id=${setterId}`,
-      );
-      const sortedAssessments = response.data.sort(
-        (a: Assessment, b: Assessment) => a.id - b.id,
-      );
-      setAssessments(sortedAssessments);
+      try {
+        const response = await axios.get(
+          `/api/module-leader/assessments/get/?id=${setterId}`,
+        );
+        const sortedAssessments = response.data.sort(
+          (a: AssessmentLoad, b: AssessmentLoad) => a.id - b.id,
+        );
+        setAssessments(sortedAssessments);
+      } catch (e) {
+        setAssessments([]);
+      }
     };
 
     if (isModuleLeader === true && setterId != 0) {
@@ -88,19 +82,7 @@ function ViewAssessmentsModuleLeaders() {
     );
   }
 
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
-
-  if (isModuleLeader === false) {
-    return (
-      <p className="text-white bg-black">
-        You are not authorised to view this page...
-      </p>
-    ); // Alert the current user that they do not have the role privilege to access the current page
-  }
-
-  return (
+  return isModuleLeader ? (
     <main className="bg-white">
       <div className="bg-white dark:bg-darkmode h-screen max-h-full">
         <ToastContainer />
@@ -148,6 +130,8 @@ function ViewAssessmentsModuleLeaders() {
         </div>
       </div>
     </main>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

@@ -13,31 +13,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
 import AuthContext from "@/app/utils/authContext";
-
-// Interface for the assessment model
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: string;
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module: { value: string }[] | { value: string; label: string }[]; // Allow the react select format to also be used for the module
-  setter_id: number;
-  assignees: { value: number }[] | { value: number; label: string }[]; // Allow the react select format to also be used for the assignees
-}
-// Interface for the module model
-interface Module {
-  id: number;
-  module_name: string;
-}
-// Interface for the user model
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  password: string;
-  roles: [];
-}
+import { Assessment_type } from "@prisma/client";
+import UnauthorizedAccess from "@/app/components/authError";
+// Import interfaces from interfaces.ts
+import { AssessmentForm, Module, User } from "@/app/types/interfaces";
 
 function CreateAssessmentModuleLeaders() {
   const [setterId, setSetterId] = useState(0);
@@ -65,16 +44,25 @@ function CreateAssessmentModuleLeaders() {
   const params = searchParams?.get("id"); // Get the id of the assessment to edit from the search params object
 
   // Default assessment object used on create form mode as default
-  const [assessment, setAssessment] = useState<Assessment>({
+  const [assessment, setAssessment] = useState<AssessmentForm>({
     id: 0,
     assessment_name: "",
-    assessment_type: "",
+    assessment_type: { value: "" },
     hand_out_week: new Date(2024, 1, 26),
     hand_in_week: new Date(2024, 1, 26),
     module: [],
     setter_id: setterId,
     assignees: [],
   });
+
+  const typesOptionsSet = new Set(Object.values(Assessment_type));
+
+  const typesOptionsForSelect = Array.from(typesOptionsSet).map(
+    (type: any) => ({
+      value: type,
+      label: type.replaceAll("_", " "),
+    }),
+  );
 
   useEffect(() => {
     if (session != null) {
@@ -216,8 +204,22 @@ function CreateAssessmentModuleLeaders() {
           assignees: defaultAssignees,
         }));
       }
+
+      // Populate select box with to be edited assessment type if found
+      if (assessment.assessment_type.value != "") {
+        const defaultAssessmentType = typesOptionsForSelect.find(
+          (type: any) => type.value === assessment.assessment_type,
+        );
+
+        if (defaultAssessmentType) {
+          setAssessment((prevState) => ({
+            ...prevState,
+            assessment_type: defaultAssessmentType,
+          }));
+        }
+      }
     }
-  }, [modules, users, assignees, moduleId, isModuleLeader]); // Runs if editing the assessment and is a module leader
+  }, [modules, moduleId, isModuleLeader]); // Runs if editing the assessment and is a module leader
 
   // Handle text changes for the form
   const handleTextChange = (event: any) => {
@@ -260,17 +262,18 @@ function CreateAssessmentModuleLeaders() {
     // Convert selected module value to format database is expecting i.e. the value from the selector box
     const selectedModuleValue = (assessment.module as any).value;
 
+    // Convert selected assessment type value to format database is expecting i.e. the value from the selector box
+    const selectedAssessmentTypeValue = (assessment.assessment_type as any)
+      .value;
+
     if (isEdit) {
       // Update the assessment using the api endpoint
       const response = await fetch("/api/module-leader/assessment/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: assessment.id,
-          assessment_name: assessment.assessment_name,
-          assessment_type: assessment.assessment_type,
-          hand_out_week: assessment.hand_out_week,
-          hand_in_week: assessment.hand_in_week,
+          ...assessment,
+          assessment_type: selectedAssessmentTypeValue,
           module_id: selectedModuleValue,
           setter_id: setterId,
           assigneesList: Array.from(selectedAssigneesValues),
@@ -295,7 +298,7 @@ function CreateAssessmentModuleLeaders() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           assessment_name: assessment.assessment_name,
-          assessment_type: assessment.assessment_type,
+          assessment_type: selectedAssessmentTypeValue,
           hand_out_week: assessment.hand_out_week,
           hand_in_week: assessment.hand_in_week,
           module_id: selectedModuleValue,
@@ -326,19 +329,7 @@ function CreateAssessmentModuleLeaders() {
     );
   }
 
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
-
-  if (isModuleLeader === false) {
-    return (
-      <p className="text-white bg-black">
-        You are not authorised to view this page...
-      </p>
-    ); // Alert the current user that they do not have the role privilege to access the current page
-  }
-
-  return (
+  return isModuleLeader ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
       {loading ? (
@@ -395,17 +386,23 @@ function CreateAssessmentModuleLeaders() {
               <label htmlFor="assessmentType" className="font-bold">
                 Assessment Type
               </label>
-              <input
-                type="text"
-                id="assessmentType"
-                placeholder="Enter assessment type..."
-                name="assessment_type"
-                data-cy="type"
-                value={assessment.assessment_type}
-                onChange={handleTextChange}
-                required
-                className="form-input w-full mb-4 border border-gray-300 border-b-4 p-4 border-black"
-              />
+              <div className="mb-4">
+                <Select
+                  onChange={(option) =>
+                    handleSelectChange(option, "assessment_type")
+                  }
+                  options={typesOptionsForSelect.map((type) => ({
+                    ...type,
+                    key: type.value,
+                  }))}
+                  id="assessment_type"
+                  name="assessment_type"
+                  required
+                  data-cy="type"
+                  value={assessment.assessment_type}
+                  className="react-select-container mb-6"
+                />
+              </div>
             </div>
 
             <div className="mb-4">
@@ -468,6 +465,8 @@ function CreateAssessmentModuleLeaders() {
         </div>
       )}
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 

@@ -38,7 +38,7 @@ model Module {
 model Assessment {
   id              Int        @id @default(autoincrement())
   assessment_name String
-  assessment_type String
+  assessment_type Assessment_type
   hand_out_week   DateTime
   hand_in_week    DateTime
   module_id       Int
@@ -92,6 +92,13 @@ enum Data_type {
   date_time
 }
 
+enum Assessment_type{
+  Written_Assessment
+  Practical_Based_Assessment
+  Class_Test
+  Portfolio
+  Exam_Online 
+}
 enum ModuleStatus {
   active
   inactive

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
-    // Extract user ID from request query parameters or body
+    // Extract assessment ID from request query parameters or body
     const url = new URL(request.url);
     const idString = url.searchParams.get("id");
     let id = 0;
@@ -57,8 +57,5 @@ export async function GET(request: NextRequest) {
         status: 500,
       },
     );
-  } finally {
-    // Close Prisma client connection
-    await prisma.$disconnect();
   }
 }

@@ -1,13 +1,14 @@
 import prisma from "@/app/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { hashPassword } from "@/app/utils/hashPassword";
 
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     const { name, email, password, roles } = await request.json();
@@ -29,8 +30,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Hash the password
+    const hashedPassword = await hashPassword(password);
+
     const newUser = await prisma.users.create({
-      data: { name, email, password, roles: roles },
+      data: { name, email, password: hashedPassword, roles: roles },
     });
 
     return new NextResponse(JSON.stringify(newUser), { status: 200 });
@@ -40,8 +44,5 @@ export async function POST(request: NextRequest) {
       JSON.stringify({ message: "Internal Server Error" }),
       { status: 500 },
     );
-  } finally {
-    // Close Prisma client connection
-    await prisma.$disconnect();
   }
 }

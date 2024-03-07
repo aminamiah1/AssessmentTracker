@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
 
-interface ModuleIdsByCode {
-  [moduleCode: string]: number; // String keys, number values
-}
-
 // API route to deal with the posting of csv assessment creation data
 export async function POST(request: NextRequest) {
   try {

@@ -15,7 +15,6 @@ import UnauthorizedAccess from "@/app/components/authError";
 import { AssessmentTiles, Module, User } from "@/app/types/interfaces";
 import uploadCSV from "@/app/utils/uploadCSV";
 import Image from "next/image";
-import ExampleCSV from "@/../public/images/ExampleCSV.png";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -156,7 +155,14 @@ function ViewAssessmentsPSTeam() {
 
   //On submit function to send the csv to the helper function for csv data creation
   const handleUploadCSV = async (file: File, startDate: Date) => {
-    await uploadCSV({ file, startDate });
+    try {
+      await uploadCSV({ file, startDate });
+      toast.success(
+        "Assessments and modules loaded into the database successfully!",
+      );
+    } catch (e) {
+      toast.error("Error parsing csv, check format and try again.");
+    }
   };
 
   // Handle date changes for the form
@@ -343,7 +349,7 @@ function ViewAssessmentsPSTeam() {
         }`}
       >
         <div className="bg-white p-5 border border-black rounded-lg">
-          <p>Import CSV</p>
+          <p className="mb-4">Import CSV</p>
           <p className="text-black">
             Please choose a import bulk assessment csv to upload
           </p>
@@ -370,9 +376,11 @@ function ViewAssessmentsPSTeam() {
             <div className="text-black mb-4">
               <h2 className="mt-4 mb-4">Expected CSV Format</h2>
               <Image
-                src={ExampleCSV}
+                src="/images/ExampleCSV.png"
                 alt="example csv image"
                 className="mb-4"
+                width={1000}
+                height={1000}
               />
               <a
                 href="/ImportAssessments.csv"
@@ -417,9 +425,6 @@ function ViewAssessmentsPSTeam() {
                       "Uploading csv failed, check format matches picture and try again.",
                     );
                   } finally {
-                    toast.success(
-                      "Assessments and modules loaded into the database successfully!",
-                    );
                     setIsPopUpOpen(false);
                     setRefetch(refetch + 1);
                   }

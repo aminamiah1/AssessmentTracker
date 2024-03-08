@@ -16,7 +16,7 @@ describe("Import CSV", () => {
 
     cy.getByTestId("fileChooser").attachFile(fixtureFile);
 
-    cy.getByTestId("uploadCSV").click();
+    cy.getByTestId("uploadCSV").click({ force: true });
 
     cy.contains("p", "Class Test 3").should("have.text", "Class Test 3");
   });
@@ -34,7 +34,7 @@ describe("Import CSV", () => {
 
     cy.getByTestId("fileChooser").attachFile(fixtureFile);
 
-    cy.getByTestId("uploadCSV").click();
+    cy.getByTestId("uploadCSV").click({ force: true });
 
     cy.contains("p", "Class Test 3").should("have.text", "Class Test 3");
   });

@@ -26,7 +26,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Locate the user by ID
-    const existingUser = await prisma.users.findUnique({ where: { id } });
+    const existingUser = await prisma.users.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        roles: true,
+      },
+    });
 
     // Ensure user exists
     if (!existingUser) {

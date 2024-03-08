@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
 
-// API route to deal with the posting of csv assessment creation data
+// API route to handle the posting of CSV assessment creation data
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession();
@@ -45,17 +45,21 @@ export async function POST(request: NextRequest) {
     // Creating the assessments with error handling
     for (let i = 0; i < assessmentNames.length; i++) {
       try {
+        // Find the existing module for the current assessment
         const existingModule = existingModules.find(
           (module) => module.module_code === moduleCodes[i],
         );
 
+        // If module not found, log a warning and continue to next iteration
         if (!existingModule) {
           console.warn(`Module not found for code: ${moduleCodes[i]}`);
           continue;
         }
 
+        // Get module id from the found module
         const moduleId = existingModule.id;
 
+        // Upsert (update or create) the assessment in the database
         await prisma.assessment.upsert({
           where: {
             assessment_name_module_id: {

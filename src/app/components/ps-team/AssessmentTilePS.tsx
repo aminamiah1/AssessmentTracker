@@ -260,15 +260,15 @@ const AssessmentTilePS = ({
               >
                 Submit
               </button>
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
+                onClick={() => {
+                  setIsPopUpOpen(false); // Close the pop-up
+                }}
+              >
+                Cancel
+              </button>
             </form>
-            <button
-              className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
-              onClick={() => {
-                setIsPopUpOpen(false); // Close the pop-up
-              }}
-            >
-              Cancel
-            </button>
           </div>
         </div>
       </div>

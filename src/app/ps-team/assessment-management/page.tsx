@@ -44,6 +44,10 @@ function ViewAssessmentsPSTeam() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the uploaded csv file
   let [refetch, setRefetch] = useState(0); // State to re-fetch assessments after successful csv upload
   const [startDate, setStartDate] = useState<Date>(new Date()); // State to store the user inputted term start date
+  //Hard coded API strings for better readability
+  const ASSESSMENTS_API_URL = "/api/ps-team/assessments/get";
+  const MODULES_API_URL = "/api/ps-team/modules/get";
+  const USERS_API_URL = "/api/ps-team/users/get";
 
   //Make sure to set the selected option to blank if search term is not a option in any of the select boxes
   useEffect(() => {
@@ -74,7 +78,7 @@ function ViewAssessmentsPSTeam() {
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
-      const response = await axios.get(`/api/ps-team/assessments/get`);
+      const response = await axios.get(ASSESSMENTS_API_URL);
       const sortedAssessments = response.data.sort(
         (a: AssessmentTiles, b: AssessmentTiles) => a.id - b.id,
       );
@@ -83,7 +87,7 @@ function ViewAssessmentsPSTeam() {
 
     const fetchModules = async () => {
       // Fetch modules only when component mounts
-      const response = await axios.get(`/api/ps-team/modules/get`);
+      const response = await axios.get(MODULES_API_URL);
       if (response.data.length > 0) {
         const processedModules = response.data.map((module: Module) => ({
           value: module.module_name,
@@ -95,7 +99,7 @@ function ViewAssessmentsPSTeam() {
 
     const fetchUsers = async () => {
       // Fetch all users for filtering
-      const response = await axios.get(`/api/ps-team/users/get`);
+      const response = await axios.get(USERS_API_URL);
       const processedUsers = response.data.map((user: User) => ({
         value: user.name,
         label: user.name + " ● Roles: " + user.roles,
@@ -103,6 +107,7 @@ function ViewAssessmentsPSTeam() {
       setUsers(processedUsers);
     };
 
+    // If ps team, then the fetch functions with run if there are errors retrieving the data then the arrays will be loaded as blank
     if (isPSTeam === true) {
       try {
         fetchAssessments();
@@ -116,6 +121,7 @@ function ViewAssessmentsPSTeam() {
     }
   }, [isPSTeam, refetch]);
 
+  // Set the search term based on select box filter option selected
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -156,12 +162,30 @@ function ViewAssessmentsPSTeam() {
   //On submit function to send the csv to the helper function for csv data creation
   const handleUploadCSV = async (file: File, startDate: Date) => {
     try {
+      // Check file is selected first
+      if (!file || !startDate) {
+        toast.error(
+          "Please make sure to select a valid csv file and start date first.",
+        );
+        throw new Error("File and start date are required.");
+      }
+
+      // Check if the selected file has a ".csv" extension
+      if (!file.name.toLowerCase().endsWith(".csv")) {
+        toast.error("Please select a valid CSV file. Invalid file format.");
+        throw new Error("Invalid file format.");
+      }
+
+      // If the file and start date is selected and the file is a valid csv execute the utility function
       await uploadCSV({ file, startDate });
+
+      // Let the user know when the csv has been loaded into the database
       toast.success(
         "Assessments and modules loaded into the database successfully!",
       );
     } catch (e) {
-      toast.error("Error parsing csv, check format and try again.");
+      // Error has occured processing the csv, let the user know to check the format before trying again
+      toast.error("Error parsing csv, check format and try again");
     }
   };
 
@@ -171,7 +195,11 @@ function ViewAssessmentsPSTeam() {
   };
 
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   return isPSTeam ? (
@@ -415,6 +443,7 @@ function ViewAssessmentsPSTeam() {
                   try {
                     await handleUploadCSV(selectedFile, startDate).catch(
                       (error) => {
+                        // Let the user know if an error occured when uploading the csv
                         toast.error(
                           "Uploading csv failed, check format matches picture and try again.",
                         );
@@ -425,10 +454,12 @@ function ViewAssessmentsPSTeam() {
                       "Uploading csv failed, check format matches picture and try again.",
                     );
                   } finally {
+                    // Close the pop up and refetch the assessments on completion
                     setIsPopUpOpen(false);
                     setRefetch(refetch + 1);
                   }
                 } else {
+                  // Let the user know if no file uploaded
                   toast.error("No csv file uploaded.");
                 }
               }}

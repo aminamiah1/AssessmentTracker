@@ -15,7 +15,4 @@ declare namespace Cypress {
   interface Chainable {
     login(): Chainable<void>;
   }
-  interface Chainable {
-    mockLogin(): Chainable<void>;
-  }
 }

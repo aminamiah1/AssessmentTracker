@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
 
+// API route function to handle the updating of assessment data(assignees and setter only)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     const { id, setter_id, assigneesList } = await request.json();
@@ -22,16 +23,10 @@ export async function POST(request: NextRequest) {
 
     const assigneesIds = assigneesList.map((userId: any) => ({ id: userId }));
 
-    // Locate the assessment by ID
+    // Locate the existing assessment by ID
     const existingAssessment = await prisma.assessment.findUnique({
       where: { id },
-      select: {
-        id: true,
-        assessment_name: true,
-        assessment_type: true,
-        hand_out_week: true,
-        hand_in_week: true,
-        module_id: true,
+      include: {
         assignees: { select: { id: true } },
       }, // Select desired assignee field
     });

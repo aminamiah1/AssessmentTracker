@@ -38,4 +38,6 @@ describe("Import CSV", () => {
 
     cy.contains("p", "Class Test 3").should("have.text", "Class Test 3");
   });
+
+  // Do edge cases and invalid checks
 });

@@ -7,7 +7,7 @@ interface UploadCSVProps {
   startDate: Date; // The start date selected by the user
 }
 
-// Interface only used here to define a csv row of the import bulk assessments and modules csv file
+// Interface only used here to define a csv row of the import bulk assessments csv file
 interface CsvRow {
   Module_Code: string;
   Module_Name: string;
@@ -96,25 +96,39 @@ const calculateDates = async (
 ): Promise<Date[]> => {
   return Promise.all(
     weekCodes.map((weekCode) => {
+      // Create a new Date object representing the start of the academic term
       const termStart = new Date(termStartDate);
+      // Number of days after the start of autumn term when spring term begins
+      const springTermDaysAfterAutumn = 90;
+      // Initialize offset days to calculate the final date
       let offsetDays = 0;
 
       if (weekCode.startsWith("A")) {
         // Autumn logic
+        // Handle weeks in the autumn term
+        // Calculate offset based on the number of weeks since the start of autumn
         offsetDays = (parseInt(weekCode.slice(1)) - 1) * 7;
       } else if (weekCode.startsWith("SE")) {
         // Only hand out at the start of spring for this code
-        offsetDays = 90;
+        // Handle special case for the start of spring term
+        // Assign fixed offset days representing the start of spring
+        offsetDays = springTermDaysAfterAutumn;
       } else if (weekCode.startsWith("S")) {
-        // Spring logic (example: 3 months after autumn start)
-        offsetDays = 90 + (parseInt(weekCode.slice(1)) - 1) * 7;
+        // Spring logic (3 months after autumn start)
+        // Handle weeks in the spring term
+        // Calculate offset based on the number of weeks since the start of spring
+        offsetDays =
+          springTermDaysAfterAutumn + (parseInt(weekCode.slice(1)) - 1) * 7;
       } else {
         // Handle potential errors for invalid week codes
         throw new Error(`Invalid week code: ${weekCode}`);
       }
 
+      // Create a new Date object for the calculated date
       const calculatedDate = new Date(termStart);
+      // Set the date by adding the offset days to the start date
       calculatedDate.setDate(termStart.getDate() + offsetDays);
+      // Return the calculated date
       return calculatedDate;
     }),
   );

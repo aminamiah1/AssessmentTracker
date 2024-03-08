@@ -437,6 +437,7 @@ function ViewAssessmentsPSTeam() {
             )}
             <button
               className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
+              data-cy="uploadCSV"
               onClick={async () => {
                 if (selectedFile) {
                   // Ensure a file is selected
@@ -467,7 +468,6 @@ function ViewAssessmentsPSTeam() {
               Upload CSV
             </button>
             <button
-              data-cy="uploadCSV"
               className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
               onClick={() => {
                 setIsPopUpOpen(false); // Close the pop-up

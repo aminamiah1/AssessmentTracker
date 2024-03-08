@@ -28,15 +28,8 @@ const AssessmentTilePS = ({
   const [users, setUsers] = useState([]); // Variable to hold all assignees of an existing assessment
   // Default assessment object used on create form mode as default
   const [assessmentToEdit, setAssessmentToEdit] = useState<AssessmentEdit>({
-    id: assessment.id,
-    assessment_name: assessment.assessment_name,
-    assessment_type: assessment.assessment_type,
-    hand_out_week: assessment.hand_out_week,
-    hand_in_week: assessment.hand_in_week,
-    module_name: assessment.module_name,
+    ...assessment,
     setter_id: { value: 0, label: "" },
-    module: assessment.module,
-    setter: assessment.setter,
     assignees: [],
   });
   const [loading, setLoading] = useState(true); // Initialize loading state to true

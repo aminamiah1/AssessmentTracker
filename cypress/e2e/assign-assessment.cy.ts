@@ -10,7 +10,7 @@ describe("Assign users by pop-up form activated on assessment tile button", () =
   });
 
   // Does not allow blank selections to go through
-  it("assign users to assessment form validated", () => {
+  it("Does not allow blank setter and assignee selections to go through", () => {
     cy.getByTestId("assignUsers").eq(0).click();
 
     cy.contains("label", "Assignees").next().find("input").eq(0).clear();

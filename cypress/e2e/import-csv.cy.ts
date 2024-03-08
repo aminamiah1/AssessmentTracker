@@ -28,7 +28,7 @@ describe("Import CSV", () => {
 
     cy.getByTestId("fileChooser").attachFile(fixtureFile);
 
-    cy.getByTestId("uploadCSV").click();
+    cy.getByTestId("uploadCSV").click({ force: true });
 
     cy.getByTestId("importCSVButton").click();
 

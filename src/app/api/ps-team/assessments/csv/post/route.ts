@@ -62,10 +62,13 @@ export async function POST(request: NextRequest) {
         // Upsert (update or create) the assessment in the database
         await prisma.assessment.upsert({
           where: {
-            assessment_name_module_id: {
-              // Identification of assessment by unique name within a module
+            assessment_name_module_id_hand_out_week_hand_in_week: {
+              // Identification of assessment by unique name and module id and hand out and hand in date within a module to
+              // prevent duplication and instead update existing assessments with the same details
               assessment_name: assessmentNames[i],
               module_id: moduleId,
+              hand_out_week: calculatedHandOutDates[i],
+              hand_in_week: calculatedHandInDates[i],
             },
           },
           update: {

@@ -49,7 +49,8 @@ model Assessment {
   part            Part[]     @relation("AssessmentToPart")
   assignees       Users[]    @relation("AssessmentsToUsers")
 
-  @@unique([assessment_name, module_id]) // Declare the composite unique key
+  @@unique([assessment_name, module_id, hand_out_week, hand_in_week]) 
+  // Declare the composite unique key to stop duplicate assessment details being submitted through csv
 }
 
 model Part {

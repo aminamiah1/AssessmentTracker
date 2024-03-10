@@ -8,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FiArrowLeft } from "react-icons/fi"; // Return arrow icon
 import Link from "next/link";
 import Select from "react-select";
-import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -89,24 +88,24 @@ function CreateAssessmentModuleLeaders() {
     const fetchModules = async () => {
       // Fetch modules by setter only when component mounts
       // Getting response as module leader 1 while waiting for login feature
-      const response = await axios.get(
+      const response = await fetch(
         `/api/module-leader/modules/get/?id=${setterId}`,
       );
-      if (response.data.length > 0) {
-        const processedModules = response.data[0].modules.map(
-          (module: Module) => ({
-            value: module.id,
-            label: module.module_name,
-          }),
-        );
+      const data = await response.json();
+      if (data.length > 0) {
+        const processedModules = data[0].modules.map((module: Module) => ({
+          value: module.id,
+          label: module.module_name,
+        }));
         setModules(processedModules);
       }
     };
 
     const fetchAssignees = async () => {
       // Fetch all users to assign
-      const response = await axios.get(`/api/module-leader/users/get`);
-      const processedUsers = response.data.map((user: User) => ({
+      const response = await fetch(`/api/module-leader/users/get`);
+      const data = await response.json();
+      const processedUsers = data.map((user: User) => ({
         value: user.id,
         label: user.name + " ● Roles: " + user.roles,
       }));

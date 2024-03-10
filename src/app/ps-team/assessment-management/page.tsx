@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import AssessmentTilePS from "../../components/ps-team/AssessmentTilePS";
 import AuthContext from "@/app/utils/authContext";
 import { useSession, signIn } from "next-auth/react"; // Import useSession and signInn
@@ -78,8 +77,9 @@ function ViewAssessmentsPSTeam() {
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
-      const response = await axios.get(ASSESSMENTS_API_URL);
-      const sortedAssessments = response.data.sort(
+      const response = await fetch(ASSESSMENTS_API_URL);
+      const data = await response.json();
+      const sortedAssessments = data.sort(
         (a: AssessmentTiles, b: AssessmentTiles) => a.id - b.id,
       );
       setAssessments(sortedAssessments);
@@ -87,9 +87,10 @@ function ViewAssessmentsPSTeam() {
 
     const fetchModules = async () => {
       // Fetch modules only when component mounts
-      const response = await axios.get(MODULES_API_URL);
-      if (response.data.length > 0) {
-        const processedModules = response.data.map((module: Module) => ({
+      const response = await fetch(MODULES_API_URL);
+      const data = await response.json();
+      if (data.length > 0) {
+        const processedModules = data.map((module: Module) => ({
           value: module.module_name,
           label: module.module_name,
         }));
@@ -99,8 +100,9 @@ function ViewAssessmentsPSTeam() {
 
     const fetchUsers = async () => {
       // Fetch all users for filtering
-      const response = await axios.get(USERS_API_URL);
-      const processedUsers = response.data.map((user: User) => ({
+      const response = await fetch(USERS_API_URL);
+      const data = await response.json();
+      const processedUsers = data.map((user: User) => ({
         value: user.name,
         label: user.name + " ● Roles: " + user.roles,
       }));

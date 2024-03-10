@@ -1,4 +1,3 @@
-import axios from "axios";
 import Papa from "papaparse";
 import { Assessment_type } from "@prisma/client";
 
@@ -46,9 +45,12 @@ const uploadCSV = ({ file, startDate }: UploadCSVProps): Promise<void> => {
 
           try {
             // Pass module names and module codes to the backend here first to create the modules
-            await axios.post("/api/ps-team/modules/csv/post", {
-              moduleNames,
-              moduleCodes,
+            await fetch("/api/ps-team/modules/csv/post", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ moduleNames, moduleCodes }),
             });
             console.log("Module data sent to backend");
           } catch (error) {
@@ -62,12 +64,18 @@ const uploadCSV = ({ file, startDate }: UploadCSVProps): Promise<void> => {
 
           try {
             // Pass module codes, assessment names and assessment types and dates to the backend here second to create the assessments
-            await axios.post("/api/ps-team/assessments/csv/post", {
-              moduleCodes,
-              assessmentNames,
-              assessmentTypes,
-              calculatedHandOutDates, // Array of calculated Date objects
-              calculatedHandInDates, // Array of calculated Date objects
+            await fetch("/api/ps-team/assessments/csv/post", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                moduleCodes,
+                assessmentNames,
+                assessmentTypes,
+                calculatedHandOutDates,
+                calculatedHandInDates,
+              }),
             });
             console.log("Assessment data sent to backend");
             resolve(); // Resolve the promise once upload is successful

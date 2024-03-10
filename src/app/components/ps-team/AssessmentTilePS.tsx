@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
-import axios from "axios";
+
 // Import interfaces from interfaces.ts
 import {
   AssessmentTiles,
@@ -37,9 +37,11 @@ const AssessmentTilePS = ({
   useEffect(() => {
     const fetchUsers = async () => {
       // Fetch all users to assign
-      const response = await axios.get(`/api/ps-team/users/get`);
+      const response = await fetch(`/api/ps-team/users/get`);
 
-      const processedUsers = response.data.map((user: User) => ({
+      const data = await response.json();
+
+      const processedUsers = data.map((user: User) => ({
         value: user.id,
         label: user.name + " ● Roles: " + user.roles,
       }));

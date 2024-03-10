@@ -60,6 +60,36 @@ export async function POST(request: NextRequest) {
       }, // Update desired fields
     });
 
+    const moduleId = existingAssessment.module_id;
+
+    const setter = await prisma.users.findMany({
+      where: { id: setter_id },
+    });
+
+    // Assign setter to module with assessment if not already assigned
+    if (setter !== null) {
+      const module = await prisma.module.findUnique({
+        where: { id: moduleId },
+        include: {
+          module_leaders: { where: { id: setter_id }, select: { id: true } },
+        },
+      });
+
+      if (module) {
+        if (!module.module_leaders.some((leader) => leader.id === setter_id)) {
+          // User is not already a module leader, so connect them
+          const assignModule = await prisma.module.update({
+            where: { id: moduleId },
+            data: {
+              module_leaders: {
+                connect: setter.map((user) => ({ id: user.id })),
+              },
+            },
+          });
+        }
+      }
+    }
+
     // Return updated assessment data
     return new NextResponse(JSON.stringify(updatedAssessment), { status: 200 });
   } catch (error) {

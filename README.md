@@ -358,6 +358,12 @@ To get all users and retrieve only their names and roles, the module leaders can
 
 ## Page Documentation
 
+## All
+
+# User profile menu
+
+Activated by clicking profile picture icon, opens a pop-up showing current user details(name, email and roles).
+
 ## PS Team
 
 # User management dashboard

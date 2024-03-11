@@ -14,9 +14,8 @@ const UserMenu: React.FC<UserMenuProps> = ({ isOpen }) => {
 
   return session != null ? (
     <div
-      className="fixed top-0 right-0 flex justify-end items-start z-50 mt-20 mr-1 bg-white"
+      className="fixed top-0 right-0 flex justify-end items-start z-[700] mt-20 mr-1 bg-white"
       data-cy="profileMenu"
-      style={{ zIndex: "700" }}
     >
       <div className="bg-white border border-grey-100 rounded-lg pl-4 pr-4 dark:bg-gray-800">
         <div className="border-b border-black shadow-md mt-4 mb-4 dark:border-white">

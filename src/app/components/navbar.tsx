@@ -12,7 +12,7 @@ import {
   FaList,
   FaUsers,
 } from "react-icons/fa";
-import UserMenu from "@/app/components/navbarPopUps/UserMenu"; // Import the UserMenu component
+import UserMenu from "@/app/components/navbarPopUps/userMenu"; // Import the UserMenu component
 
 interface NavbarProps {}
 

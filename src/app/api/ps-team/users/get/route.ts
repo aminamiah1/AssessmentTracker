@@ -13,7 +13,15 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
-    const users = await prisma.users.findMany();
+    const users = await prisma.users.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        roles: true,
+      },
+    });
+
     return NextResponse.json(users);
   } catch (e) {
     return new NextResponse(

@@ -21,7 +21,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existingUser = await prisma.users.findUnique({ where: { email } });
+    const existingUser = await prisma.users.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        roles: true,
+      },
+    });
 
     if (existingUser) {
       return new NextResponse(

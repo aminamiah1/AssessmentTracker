@@ -17,16 +17,16 @@ const UserMenu: React.FC<UserMenuProps> = ({ isOpen }) => {
       className="fixed top-0 right-0 flex justify-end items-start z-50 mt-20 mr-1 bg-white"
       style={{ zIndex: "700" }}
     >
-      <div className="bg-white border border-grey-100 rounded-lg pl-4 pr-4">
-        <div className="border-b border-black shadow-md mt-4 mb-4">
+      <div className="bg-white border border-grey-100 rounded-lg pl-4 pr-4 dark:bg-gray-800">
+        <div className="border-b border-black shadow-md mt-4 mb-4 dark:border-white">
           <p className="mb-1 font-bold">Full Name</p>
           <p className="mb-4">{session.user.name}</p>
         </div>
-        <div className="border-b border-black shadow-md mt-4 mb-4">
+        <div className="border-b border-black shadow-md mt-4 mb-4 dark:border-white">
           <p className="mb-1 font-bold">Email</p>
           <p className="mb-4">{session.user.email}</p>
         </div>
-        <div className="border-b border-black shadow-md mt-4 mb-4">
+        <div className="border-b border-black shadow-md mt-4 mb-4 dark:border-white">
           <p className="mb-1 font-bold">Roles</p>
           {/* Map through roles and render each with space instead of underscore for readability */}
           {session.user.roles.map((role: string) => (

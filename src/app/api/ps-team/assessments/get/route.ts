@@ -13,8 +13,8 @@ export async function GET(request: Request) {
     // Fetch assessments with error handling
     const assessments = await prisma.assessment.findMany({
       include: {
-        assignees: { select: { name: true } },
-        setter: { select: { name: true } },
+        assignees: { select: { id: true, name: true, roles: true } },
+        setter: { select: { id: true, name: true, roles: true } },
       },
     });
 

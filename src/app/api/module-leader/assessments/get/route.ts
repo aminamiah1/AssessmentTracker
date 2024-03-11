@@ -23,8 +23,11 @@ export async function GET(request: Request) {
       throw new Error("Invalid userId format");
     }
 
-    // Fetch assessments with error handling
+    // Fetch assessments by setter with error handling
     const assessments = await prisma.assessment.findMany({
+      where: {
+        setter_id: userId,
+      },
       include: {
         assignees: { select: { name: true } },
       },

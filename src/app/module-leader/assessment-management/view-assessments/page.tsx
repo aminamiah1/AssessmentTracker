@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import axios from "axios";
 import AssessmentTile from "../../../components/module-leader/AssessmentTile";
 import { FiArrowLeft } from "react-icons/fi"; // Return arrow icon
 import { FiSearch } from "react-icons/fi"; // Search icon
@@ -44,10 +43,11 @@ function ViewAssessmentsModuleLeaders() {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
       try {
-        const response = await axios.get(
+        const response = await fetch(
           `/api/module-leader/assessments/get/?id=${setterId}`,
         );
-        const sortedAssessments = response.data.sort(
+        const data = await response.json();
+        const sortedAssessments = data.sort(
           (a: AssessmentLoad, b: AssessmentLoad) => a.id - b.id,
         );
         setAssessments(sortedAssessments);

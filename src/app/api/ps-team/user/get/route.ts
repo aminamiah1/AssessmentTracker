@@ -28,7 +28,15 @@ export async function GET(request: NextRequest) {
     }
 
     // Get user with the given ID
-    const user = await prisma.users.findUnique({ where: { id } });
+    const user = await prisma.users.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        roles: true,
+      },
+    });
 
     // Check if user was found and return details
     if (user) {

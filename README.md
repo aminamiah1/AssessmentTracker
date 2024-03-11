@@ -314,6 +314,18 @@ To get all assessments, the ps team can use the api located at (url)/api/ps-team
 
 To get all modules in the system, the ps team can use the api located at (url)/api/ps-team/modules/get. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves all the modules and their releated fields.
 
+# Update assessment(UPDATE)
+
+To update an assessment in the system but only the assignees and setter fields, the ps team can use the api located at (url)/api/ps-team/assessment/update. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful updates the setter and assignees of the sent assessment identified by the id.
+
+# Post csv module data into the database
+
+To post the parsed csv module data into the database, the upload csv function will use the api located at (url)/api/ps-team/assessments/modules/csv/post. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful updates or creates the sent parsed csv module data into the database. Runs before the assessment csv post in the upload csv function to ensure module data is in the database to be successfully attached to the assessments.
+
+# Post csv assessment data into the database
+
+To post the parsed csv assessment data into the database, the upload csv function will use the api located at (url)/api/ps-team/assessments/csv/post. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in.If successful updates or creates the sent parsed csv assessment data into the database.
+
 ## Module leaders
 
 # Assessment(DELETE)
@@ -354,7 +366,7 @@ Located at (base url)/ps-team/user-management, the ps team can add, edit, delete
 
 # Assessment management dashboard
 
-On the dedicated assessment management page (base url)/ps-team/assessment-management, the PS Team can easily find assessments using filters for users, types, and modules. They can also search by assessment or module name and view individual assessment details on separate pages.
+On the dedicated assessment management page (base url)/ps-team/assessment-management, the PS Team can easily find assessments using filters for users, types, and modules. They can also search by assessment or module name and view individual assessment details on separate pages. They can also import the bulk assessments csv through a guiding pop-up by the relevant button. They can also assign a setter and assignees for an assessment through a pop-up form by clicking the relevant button on the assessment tile.
 
 ## Module leaders
 

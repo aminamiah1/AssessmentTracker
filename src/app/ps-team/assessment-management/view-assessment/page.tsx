@@ -108,7 +108,7 @@ function ViewAssessmentPSTeam() {
         })
         .catch((error) => {
           // Handle network errors with toast to inform user
-          toast.error("Network error please try again");
+          toast.error("Network error or no data retrieved please try again.");
         });
     };
 
@@ -138,7 +138,11 @@ function ViewAssessmentPSTeam() {
   }, [assignees]); // Runs after assignees fetched
 
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   return isPSTeam ? (

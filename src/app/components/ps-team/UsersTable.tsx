@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useTable } from "react-table";
-import axios from "axios";
 import { toast } from "react-toastify";
 import EditUser from "./EditUser";
 import { FiSearch } from "react-icons/fi"; // Search icon
@@ -29,10 +28,9 @@ const UsersTable: React.FC = () => {
     const fetchUsers = async () => {
       if (!search) {
         try {
-          const response = await axios.get("/api/ps-team/users/get");
-          const sortedUsers = response.data.sort(
-            (a: User, b: User) => a.id - b.id,
-          );
+          const response = await fetch("/api/ps-team/users/get");
+          const data = await response.json();
+          const sortedUsers = data.sort((a: User, b: User) => a.id - b.id);
           setUsers(sortedUsers);
           setFilteredUsers(sortedUsers);
         } catch (e) {

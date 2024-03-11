@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ToastContainer } from "react-toastify";
-import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import AssessmentTilePS from "../../components/ps-team/AssessmentTilePS";
 import AuthContext from "@/app/utils/authContext";
 import { useSession, signIn } from "next-auth/react"; // Import useSession and signInn
@@ -12,6 +12,10 @@ import { Assessment_type } from "@prisma/client";
 import UnauthorizedAccess from "@/app/components/authError";
 // Import interfaces from interfaces.ts
 import { AssessmentTiles, Module, User } from "@/app/types/interfaces";
+import uploadCSV from "@/app/utils/uploadCSV";
+import Image from "next/image";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function ViewAssessmentsPSTeam() {
   const [assessments, setAssessments] = useState<AssessmentTiles[]>([]); // Variable to hold an array of assessment object types
@@ -34,6 +38,15 @@ function ViewAssessmentsPSTeam() {
     value: "",
     label: "",
   }); // Variable to hold the current selected option
+  let [isPopUpOpen, setIsPopUpOpen] = useState(false); // State to control pop-up
+  const [selectedFileName, setSelectedFileName] = useState(""); // State to hold the selected csv file name
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the uploaded csv file
+  let [refetch, setRefetch] = useState(0); // State to re-fetch assessments after successful csv upload
+  const [startDate, setStartDate] = useState<Date>(new Date()); // State to store the user inputted term start date
+  //Hard coded API strings for better readability
+  const ASSESSMENTS_API_URL = "/api/ps-team/assessments/get";
+  const MODULES_API_URL = "/api/ps-team/modules/get";
+  const USERS_API_URL = "/api/ps-team/users/get";
 
   //Make sure to set the selected option to blank if search term is not a option in any of the select boxes
   useEffect(() => {
@@ -64,22 +77,20 @@ function ViewAssessmentsPSTeam() {
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
-      try {
-        const response = await axios.get(`/api/ps-team/assessments/get`);
-        const sortedAssessments = response.data.sort(
-          (a: AssessmentTiles, b: AssessmentTiles) => a.id - b.id,
-        );
-        setAssessments(sortedAssessments);
-      } catch (e) {
-        setAssessments([]);
-      }
+      const response = await fetch(ASSESSMENTS_API_URL);
+      const data = await response.json();
+      const sortedAssessments = data.sort(
+        (a: AssessmentTiles, b: AssessmentTiles) => a.id - b.id,
+      );
+      setAssessments(sortedAssessments);
     };
 
     const fetchModules = async () => {
       // Fetch modules only when component mounts
-      const response = await axios.get(`/api/ps-team/modules/get`);
-      if (response.data.length > 0) {
-        const processedModules = response.data.map((module: Module) => ({
+      const response = await fetch(MODULES_API_URL);
+      const data = await response.json();
+      if (data.length > 0) {
+        const processedModules = data.map((module: Module) => ({
           value: module.module_name,
           label: module.module_name,
         }));
@@ -89,21 +100,30 @@ function ViewAssessmentsPSTeam() {
 
     const fetchUsers = async () => {
       // Fetch all users for filtering
-      const response = await axios.get(`/api/ps-team/users/get`);
-      const processedUsers = response.data.map((user: User) => ({
+      const response = await fetch(USERS_API_URL);
+      const data = await response.json();
+      const processedUsers = data.map((user: User) => ({
         value: user.name,
         label: user.name + " ● Roles: " + user.roles,
       }));
       setUsers(processedUsers);
     };
 
+    // If ps team, then the fetch functions with run if there are errors retrieving the data then the arrays will be loaded as blank
     if (isPSTeam === true) {
-      fetchAssessments();
-      fetchModules();
-      fetchUsers();
+      try {
+        fetchAssessments();
+        fetchModules();
+        fetchUsers();
+      } catch (e) {
+        setAssessments([]);
+        setModules([]);
+        setUsers([]);
+      }
     }
-  }, [isPSTeam]);
+  }, [isPSTeam, refetch]);
 
+  // Set the search term based on select box filter option selected
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -138,160 +158,329 @@ function ViewAssessmentsPSTeam() {
       (assessment.assignees as { name: string }[]).find(
         (user) => user.name === searchTerm,
       ) ||
-      assessment.setter.name.includes(searchTerm),
+      assessment.setter?.name.includes(searchTerm),
   );
 
+  //On submit function to send the csv to the helper function for csv data creation
+  const handleUploadCSV = async (file: File, startDate: Date) => {
+    try {
+      // Check file is selected first
+      if (!file || !startDate) {
+        toast.error(
+          "Please make sure to select a valid csv file and start date first.",
+        );
+        throw new Error("File and start date are required.");
+      }
+
+      // Check if the selected file has a ".csv" extension
+      if (!file.name.toLowerCase().endsWith(".csv")) {
+        toast.error("Please select a valid CSV file. Invalid file format.");
+        throw new Error("Invalid file format.");
+      }
+
+      // If the file and start date is selected and the file is a valid csv execute the utility function
+      await uploadCSV({ file, startDate });
+
+      // Let the user know when the csv has been loaded into the database
+      toast.success(
+        "Assessments and modules loaded into the database successfully!",
+      );
+    } catch (e) {
+      // Error has occured processing the csv, let the user know to check the format before trying again
+      toast.error("Error parsing csv, check format and try again");
+    }
+  };
+
+  // Handle date changes for the form
+  const handleDateChange = (date: Date) => {
+    setStartDate(date);
+  };
+
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   return isPSTeam ? (
-    <main className="bg-white">
-      <div className="p-4 bg-white h-screen text-black">
-        <ToastContainer />
-        <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <h1 className="text-3xl">All Assessments Overview</h1>
+    <>
+      <main className="bg-white">
+        <div className="p-4 bg-white h-screen text-black">
+          <ToastContainer />
+          <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginRight: "2rem",
+              }}
+            >
+              <h1 className="text-3xl">All Assessments Overview</h1>
+              <button
+                className="bg-gray-200 text-black h-10 mt-5 rounded"
+                style={{ width: "10rem" }}
+                onClick={() => setIsPopUpOpen(true)}
+                data-cy="importCSVButton"
+              >
+                Import CSV
+              </button>
+            </div>
           </div>
-        </div>
-        <div>
-          <div className="flex items-center mb-3">
-            <FiSearch
-              className="mr-2 mb-2"
-              size={30}
-              style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
-            />
-            <input
-              id="search"
-              type="text"
-              value={searchTerm}
-              onChange={handleSearch}
-              placeholder="Enter module or assessment name..."
-              className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
-            />
-          </div>
-          <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2">
-            <FiFilter className="mr-2" size={40} />
-            <div className="flex flex-wrap items-center mb-3 mr-2">
-              <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
-                <label
-                  htmlFor="module"
-                  className="font-bold block sm:inline-block mb-2 sm:mb-0 mr-2"
-                >
-                  Module
-                </label>
-                <div className="w-full">
-                  <Select
-                    onChange={(option) => handleSelectChange(option)}
-                    options={modules}
-                    value={
-                      modules.includes(selectedOption)
-                        ? selectedOption
-                        : { value: "", label: "" }
-                    } // Control the displayed value
-                    id="module"
-                    className="react-select-container w-full"
-                    styles={{
-                      control: (provided) => ({
-                        ...provided,
-                        width: "100%",
-                        minWidth: "20rem",
-                      }),
-                    }}
-                  />
-                </div>
-              </div>
+          <div>
+            <div className="flex items-center mb-3">
+              <FiSearch
+                className="mr-2 mb-2"
+                size={30}
+                style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
+              />
+              <input
+                id="search"
+                type="text"
+                value={searchTerm}
+                onChange={handleSearch}
+                placeholder="Enter module or assessment name..."
+                className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
+              />
             </div>
             <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2">
-              <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
-                <label
-                  htmlFor="type"
-                  className="font-bold block sm:inline-block mb-2 sm:mb-0 mr-2"
-                >
-                  Type
-                </label>
-                <div className="w-full">
-                  <Select
-                    onChange={(option) => handleSelectChange(option)}
-                    options={types}
-                    id="type"
-                    value={
-                      types.includes(selectedOption)
-                        ? selectedOption
-                        : { value: "", label: "" }
-                    } // Control the displayed value
-                    className="react-select-container w-full"
-                    styles={{
-                      control: (provided) => ({
-                        ...provided,
-                        width: "100%",
-                        minWidth: "20rem",
-                      }),
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2">
-              <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
-                <label
-                  htmlFor="setter"
-                  className="font-bold block sm:inline-block mb-2 sm:mb-0 mr-2"
-                >
-                  Setter Or Assignee
-                </label>
-                <div className="w-full">
-                  <Select
-                    onChange={(option) => handleSelectChange(option)}
-                    options={users}
-                    id="setter"
-                    value={
-                      users.includes(selectedOption)
-                        ? selectedOption
-                        : { value: "", label: "" }
-                    } // Control the displayed value
-                    className="react-select-container w-full"
-                    styles={{
-                      control: (provided) => ({
-                        ...provided,
-                        width: "100%",
-                        minWidth: "20rem",
-                      }),
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2">
-              <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
-                <div className="w-full">
-                  <button
-                    className="bg-gray-200 text-black h-10 mt-5 rounded"
-                    style={{ width: "100%", minWidth: "20rem" }}
-                    onClick={handleReset}
+              <FiFilter className="mr-2" size={40} />
+              <div className="flex flex-wrap items-center mb-3 mr-2">
+                <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
+                  <label
+                    htmlFor="module"
+                    className="font-bold block sm:inline-block mb-2 sm:mb-0 mr-2"
                   >
-                    Reset Filter
-                  </button>
+                    Module
+                  </label>
+                  <div className="w-full">
+                    <Select
+                      onChange={(option) => handleSelectChange(option)}
+                      options={modules}
+                      value={
+                        modules.includes(selectedOption)
+                          ? selectedOption
+                          : { value: "", label: "" }
+                      } // Control the displayed value
+                      id="module"
+                      className="react-select-container w-full"
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          width: "100%",
+                          minWidth: "20rem",
+                        }),
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2">
+                <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
+                  <label
+                    htmlFor="type"
+                    className="font-bold block sm:inline-block mb-2 sm:mb-0 mr-2"
+                  >
+                    Type
+                  </label>
+                  <div className="w-full">
+                    <Select
+                      onChange={(option) => handleSelectChange(option)}
+                      options={types}
+                      id="type"
+                      value={
+                        types.includes(selectedOption)
+                          ? selectedOption
+                          : { value: "", label: "" }
+                      } // Control the displayed value
+                      className="react-select-container w-full"
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          width: "100%",
+                          minWidth: "20rem",
+                        }),
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2">
+                <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
+                  <label
+                    htmlFor="setter"
+                    className="font-bold block sm:inline-block mb-2 sm:mb-0 mr-2"
+                  >
+                    Setter Or Assignee
+                  </label>
+                  <div className="w-full">
+                    <Select
+                      onChange={(option) => handleSelectChange(option)}
+                      options={users}
+                      id="setter"
+                      value={
+                        users.includes(selectedOption)
+                          ? selectedOption
+                          : { value: "", label: "" }
+                      } // Control the displayed value
+                      className="react-select-container w-full"
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          width: "100%",
+                          minWidth: "20rem",
+                        }),
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2">
+                <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
+                  <div className="w-full">
+                    <button
+                      className="bg-gray-200 text-black h-10 mt-5 rounded"
+                      style={{ width: "100%", minWidth: "20rem" }}
+                      onClick={handleReset}
+                    >
+                      Reset Filter
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <div>
+            {filteredAssessments.length > 0 ? (
+              <div className="pb-20 mb-20">
+                {filteredAssessments.map((assessment) => (
+                  <AssessmentTilePS
+                    key={assessment.id}
+                    assessment={assessment}
+                    refetch={refetch}
+                    setRefetch={setRefetch}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center">
+                No assessments found matching the search criteria...
+              </div>
+            )}
+          </div>
         </div>
-        <div>
-          {filteredAssessments.length > 0 ? (
-            <div className="pb-20 mb-20">
-              {filteredAssessments.map((assessment) => (
-                <AssessmentTilePS key={assessment.id} assessment={assessment} />
-              ))}
+      </main>
+
+      <div
+        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
+          isPopUpOpen ? "block" : "hidden"
+        }`}
+      >
+        <div className="bg-white p-5 border border-black rounded-lg">
+          <p className="mb-4">Import CSV</p>
+          <p className="text-black">
+            Please choose a import bulk assessment csv to upload
+          </p>
+          <div className="mt-4">
+            <input
+              type="file"
+              accept=".csv"
+              data-cy="fileChooser"
+              onChange={(e) => {
+                const files = e.target?.files;
+                if (files) {
+                  setSelectedFile(files[0]); // Store the file
+                  setSelectedFileName(files[0].name);
+                }
+              }}
+            />{" "}
+            {/* Accept only .csv files */}
+            {selectedFileName && (
+              <p className="text-black mt-4">
+                {" "}
+                Selected File: {selectedFileName}
+              </p>
+            )}
+            <div className="text-black mb-4">
+              <h2 className="mt-4 mb-4">Expected CSV Format</h2>
+              <Image
+                src="/images/ExampleCSV.png"
+                alt="example csv image"
+                className="mb-4"
+                width={1000}
+                height={1000}
+              />
+              <a
+                href="/ImportAssessments.csv"
+                download="/ImportAssessments.csv"
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
+              >
+                Download Example CSV
+              </a>
             </div>
-          ) : (
-            <div className="text-center">
-              No assessments found matching the search criteria...
-            </div>
-          )}
+            {selectedFile && (
+              <div className="text-black">
+                <label htmlFor="termStartDate">
+                  University Term Start Date:
+                </label>
+                <div className="w-full">
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(startDate: Date) => handleDateChange(startDate)}
+                    dateFormat="yyyy-MM-dd"
+                    placeholderText="Select term start date"
+                    required
+                    className="form-input mb-4 border border-gray-300 border-b-4 border-black p-4"
+                  />
+                </div>
+              </div>
+            )}
+            <button
+              className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
+              data-cy="uploadCSV"
+              onClick={async () => {
+                if (selectedFile) {
+                  // Ensure a file is selected
+                  try {
+                    await handleUploadCSV(selectedFile, startDate).catch(
+                      (error) => {
+                        // Let the user know if an error occured when uploading the csv
+                        toast.error(
+                          "Uploading csv failed, check format matches picture and try again.",
+                        );
+                      },
+                    );
+                  } catch (e) {
+                    toast.error(
+                      "Uploading csv failed, check format matches picture and try again.",
+                    );
+                  } finally {
+                    // Close the pop up and refetch the assessments on completion
+                    setIsPopUpOpen(false);
+                    setRefetch(refetch + 1);
+                  }
+                } else {
+                  // Let the user know if no file uploaded
+                  toast.error("No csv file uploaded.");
+                }
+              }}
+            >
+              Upload CSV
+            </button>
+            <button
+              className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2 mt-4"
+              onClick={() => {
+                setIsPopUpOpen(false); // Close the pop-up
+              }}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
-    </main>
+    </>
   ) : (
     <UnauthorizedAccess />
   );

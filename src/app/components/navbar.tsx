@@ -12,7 +12,7 @@ import {
   FaList,
   FaUsers,
 } from "react-icons/fa";
-import UserMenu from "./navbarPopUps/userMenu"; // Import the UserMenu component
+import UserMenu from "./navbarPopUps/UserMenu"; // Import the UserMenu component
 
 interface NavbarProps {}
 
@@ -94,6 +94,9 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                   {/* Render UserMenu component conditionally based on state controlled by clicking profile picture */}
                   <UserMenu isOpen={isUserMenuOpen} />
                 </div>
+                <p className="text-black ml-4 dark:text-white">
+                  {session ? session.user.name : ""}
+                </p>
                 <div
                   className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
                   id="dropdown-user"

@@ -12,6 +12,7 @@ import {
   FaList,
   FaUsers,
 } from "react-icons/fa";
+import UserMenu from "./navbarPopUps/userMenu"; // Import the UserMenu component
 
 interface NavbarProps {}
 
@@ -21,6 +22,8 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
   const [isPSTeam, setIsPSTeam] = useState(false);
   const [isModuleLeader, setIsModuleLeader] = useState(false);
   const [showNavbar, setShowNavbar] = useState(true);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false); // State to manage user menu open/close
+  const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen); // Toggle open/close state function
 
   useEffect(() => {
     if (
@@ -76,6 +79,7 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                     className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                     aria-expanded="false"
                     data-dropdown-toggle="dropdown-user"
+                    onClick={toggleUserMenu}
                   >
                     <span className="sr-only">Open user menu</span>
                     <Image
@@ -86,6 +90,8 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                       height={10}
                     />
                   </button>
+                  {/* Render UserMenu component conditionally based on state controlled by clicking profile picture */}
+                  <UserMenu isOpen={isUserMenuOpen} />
                 </div>
                 <div
                   className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"

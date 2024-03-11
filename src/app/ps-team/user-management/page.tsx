@@ -5,6 +5,7 @@ import UsersTable from "../../components/ps-team/UsersTable";
 import { ToastContainer } from "react-toastify";
 import CreateUser from "../../components/ps-team/CreateUser";
 import AuthContext from "@/app/utils/authContext";
+import Link from "next/link";
 import UnauthorizedAccess from "@/app/components/authError";
 
 export const dynamic = "force-dynamic";
@@ -59,12 +60,19 @@ function ManageUsersPSTeam() {
         {showCreateUserForm ? (
           <CreateUser onClose={handleCloseCreateUserForm} />
         ) : (
-          <button
-            onClick={() => setShowCreateUserForm(true)}
-            className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20"
-          >
-            Create New User
-          </button>
+          <div>
+            <button
+              onClick={() => setShowCreateUserForm(true)}
+              className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20 mr-4"
+            >
+              Create New User
+            </button>
+            <Link href="/ps-team/user-management/upload" passHref>
+              <button className="bg-blue-600 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20">
+                Import Users
+              </button>
+            </Link>
+          </div>
         )}
       </div>
       <div>

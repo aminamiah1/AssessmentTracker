@@ -333,15 +333,13 @@ function ViewAssessmentsPSTeam() {
                 <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
                   <div className="w-full flex">
                     <button
-                      className="bg-gray-200 text-black h-10 mt-5 rounded"
-                      style={{ width: "50%", minWidth: "10rem" }}
+                      className="bg-gray-200 text-black h-10 mt-5 rounded w-1/2 min-w-[10rem]"
                       onClick={handleReset}
                     >
                       Reset Filter
                     </button>
                     <button
-                      className="bg-gray-200 text-black h-10 mt-5 ml-2 rounded"
-                      style={{ width: "50%", minWidth: "10rem" }}
+                      className="bg-gray-200 text-black h-10 mt-5 ml-2 rounded w-1/2 min-w-[10rem]"
                       onClick={() => setIsPopUpOpen(true)}
                       data-cy="importCSVButton"
                     >

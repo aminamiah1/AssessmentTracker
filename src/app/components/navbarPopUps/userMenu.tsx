@@ -38,10 +38,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ isOpen }) => {
       </div>
     </div>
   ) : (
-    <div
-      className="fixed top-0 right-0 h-screen w-1/3 flex justify-end items-start z-50 mt-20 mr-1"
-      style={{ zIndex: "700" }}
-    >
+    <div className="fixed top-0 right-0 h-screen w-1/3 flex justify-end items-start z-50 mt-20 mr-1 z-[700]">
       <div className="bg-white border border-grey-100 rounded-lg pl-4 pr-4">
         <div className="border-b border-black shadow-md mt-4 mb-4">
           <p className="mb-1 font-bold">Not logged in!</p>

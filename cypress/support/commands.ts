@@ -4,6 +4,7 @@ import "cypress-file-upload";
 
 import { mount } from "cypress/react18";
 import { SessionProvider } from "next-auth/react";
+import "cypress-file-upload";
 
 // ***********************************************
 // This example commands.ts shows you how to

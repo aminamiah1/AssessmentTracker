@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import WrappedNavbar from "./components/Navbar";
+import WrappedNavbar from "@/app/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Assessment Tracker",

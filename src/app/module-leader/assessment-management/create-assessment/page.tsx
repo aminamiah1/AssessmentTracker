@@ -1,28 +1,23 @@
-// Import used libraries
 "use client";
-import React, { useState, useEffect, FormEvent, Suspense } from "react";
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
-import { ToastContainer } from "react-toastify";
+
+import UnauthorizedAccess from "@/app/components/authError";
+import { AssessmentForm, Module, User } from "@/app/types/interfaces";
+import { Assessment_type } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FiArrowLeft } from "react-icons/fi"; // Return arrow icon
-import Link from "next/link";
+import { FiArrowLeft } from "react-icons/fi";
 import Select from "react-select";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { toast } from "react-toastify";
-import { useSearchParams, useRouter } from "next/navigation";
-import AuthContext from "@/app/utils/authContext";
-import { Assessment_type } from "@prisma/client";
-import UnauthorizedAccess from "@/app/components/authError";
-// Import interfaces from interfaces.ts
-import { AssessmentForm, Module, User } from "@/app/types/interfaces";
 
 function CreateAssessmentModuleLeaders() {
   const [setterId, setSetterId] = useState(0);
 
   const [isEdit, setIsEdit] = useState(false); //Check if the form is in edit mode
-
-  const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
 
   const [loading, setLoading] = useState(true); // Initialize loading state to true
 
@@ -38,7 +33,7 @@ function CreateAssessmentModuleLeaders() {
 
   const searchParams = useSearchParams(); // Create search params object
 
-  const { data: session, status } = useSession(); // Use useSession to get session and status
+  const { data: session, status } = useSession({ required: true }); // Use useSession to get session and status
 
   const params = searchParams?.get("id"); // Get the id of the assessment to edit from the search params object
 
@@ -64,32 +59,11 @@ function CreateAssessmentModuleLeaders() {
   );
 
   useEffect(() => {
-    if (session != null) {
-      //Check here from session.user.roles array if one of the entires is module_leader to set is module leader to true
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        if (roles.includes("module_leader")) {
-          setIsModuleLeader(true);
-          //Set the assessment setter id to the current user
-          setSetterId(parseInt(session.user.id as string, 10));
-        } else {
-          // Else display unauthorised message
-          setIsModuleLeader(false);
-        }
-      };
-
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      signIn();
-    }
-  }, [status]);
-
-  useEffect(() => {
     const fetchModules = async () => {
       // Fetch modules by setter only when component mounts
       // Getting response as module leader 1 while waiting for login feature
       const response = await fetch(
-        `/api/module-leader/modules/get/?id=${setterId}`,
+        `/api/module-leader/modules/get?id=${setterId}`,
       );
       const data = await response.json();
       if (data.length > 0) {
@@ -175,7 +149,7 @@ function CreateAssessmentModuleLeaders() {
     }
 
     setLoading(false); // Set loading to false once data is fetched
-  }, [isModuleLeader]);
+  }, []);
 
   useEffect(() => {
     // This effect runs when the modules and assignees state is updated on editing assessment
@@ -218,7 +192,7 @@ function CreateAssessmentModuleLeaders() {
         }
       }
     }
-  }, [modules, moduleId, isModuleLeader]); // Runs if editing the assessment and is a module leader
+  }, [modules, moduleId]); // Runs if editing the assessment and is a module leader
 
   // Handle text changes for the form
   const handleTextChange = (event: any) => {
@@ -328,6 +302,7 @@ function CreateAssessmentModuleLeaders() {
     );
   }
 
+  const isModuleLeader = session.user.roles.includes("module_leader");
   return isModuleLeader ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
@@ -470,11 +445,9 @@ function CreateAssessmentModuleLeaders() {
 }
 
 const WrappedCreateAssessment = () => (
-  <AuthContext>
-    <Suspense>
-      <CreateAssessmentModuleLeaders />
-    </Suspense>
-  </AuthContext>
+  <Suspense>
+    <CreateAssessmentModuleLeaders />
+  </Suspense>
 );
 
 export default WrappedCreateAssessment;

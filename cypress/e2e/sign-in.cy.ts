@@ -1,15 +1,18 @@
 describe("Authentication", () => {
   it("should log in successfully with correct credentials and greet the user", () => {
-    cy.login();
+    cy.visit("/admin/sign-in");
+    cy.get('input[name="email"]').type("leader@test.net");
+    cy.get('input[name="password"]').type("securepassword");
+    cy.get("button").contains("Sign in").click();
+    cy.url().should("include", "/");
 
-    const expectedUserName = "Test User";
+    const expectedUserName = "Module Leader";
     cy.get("body").should("contain", `Hi ${expectedUserName}!`);
   });
 
   it("should display an error with incorrect credentials", () => {
-    cy.visit("/api/auth/signin");
+    cy.visit("/admin/sign-in");
     // Fill in the login form with incorrect credentials
-    cy.wait(2000);
     cy.get("#input-email-for-credentials-provider").type(
       "wrongtestemail@test.net",
     );

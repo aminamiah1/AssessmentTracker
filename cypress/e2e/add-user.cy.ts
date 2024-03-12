@@ -1,11 +1,6 @@
 describe("Add User", () => {
-  before(() => {
-    cy.log("Seeding the database...");
-    cy.exec("npm run db:seed", { timeout: 200000 });
-  });
-
   beforeEach(() => {
-    cy.login();
+    cy.login("ps@test.net");
   });
 
   // Add a new user

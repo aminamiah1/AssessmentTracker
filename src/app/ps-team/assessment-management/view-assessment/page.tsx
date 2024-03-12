@@ -17,15 +17,13 @@ import UnauthorizedAccess from "@/app/components/authError";
 import { AssessmentDetails, User } from "@/app/types/interfaces";
 
 function ViewAssessmentPSTeam() {
-  const [isPSTeam, setIsPSTeam] = useState(false); // Confirm if the user is a ps team role type
-
   const [loading, setLoading] = useState(true); // Initialize loading state to true
 
   const searchParams = useSearchParams(); // Create search params object
 
   const [assignees, setAssignees] = useState([]); // Variable to hold all assignees of an existing assessment
 
-  const { data: session, status } = useSession(); // Use useSession to get session and status
+  const { data: session, status } = useSession({ required: true }); // Use useSession to get session and status
 
   const params = searchParams?.get("id"); // Get the id of the assessment from the search params object
 
@@ -39,25 +37,6 @@ function ViewAssessmentPSTeam() {
     module: { module_name: "" },
     assignees: [],
   });
-
-  useEffect(() => {
-    if (session != null) {
-      //Check here from session.user.roles array if one of the entires is ps_team to set is ps team to true
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        if (roles.includes("ps_team")) {
-          setIsPSTeam(true);
-        } else {
-          // Else display unauthorised message
-          setIsPSTeam(false);
-        }
-      };
-
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      signIn();
-    }
-  }, [status]);
 
   useEffect(() => {
     // Fetch the assessment data
@@ -112,11 +91,13 @@ function ViewAssessmentPSTeam() {
         });
     };
 
+    const isAuthenticated = status === "authenticated" && isPSTeam;
+
     //Check if there are params
-    if (params && isPSTeam === true) {
+    if (params && isAuthenticated) {
       fetchAssessmentData(params);
     }
-  }, [isPSTeam]);
+  }, [status]);
 
   useEffect(() => {
     // This effect runs when the  assignees state is updated for assessment
@@ -144,6 +125,8 @@ function ViewAssessmentPSTeam() {
       </div>
     );
   }
+
+  const isPSTeam = session.user.roles.includes("ps_team");
 
   return isPSTeam ? (
     <div className="p-4 bg-white h-screen text-black mt-4">
@@ -274,11 +257,9 @@ function ViewAssessmentPSTeam() {
 }
 
 const WrappedPSTeamViewAssessment = () => (
-  <AuthContext>
-    <Suspense>
-      <ViewAssessmentPSTeam />
-    </Suspense>
-  </AuthContext>
+  <Suspense>
+    <ViewAssessmentPSTeam />
+  </Suspense>
 );
 
 export default WrappedPSTeamViewAssessment;

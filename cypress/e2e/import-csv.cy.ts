@@ -1,11 +1,6 @@
 describe("Import CSV", () => {
-  before(() => {
-    cy.log("Seeding the database...");
-    cy.exec("npm run db:seed", { timeout: 200000 });
-  });
-
   beforeEach(() => {
-    cy.login();
+    cy.login("ps@test.net");
     cy.visit("/ps-team/assessment-management");
   });
 

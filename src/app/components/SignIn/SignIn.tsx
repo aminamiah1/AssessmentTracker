@@ -1,35 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { getCsrfToken, useSession } from "next-auth/react";
+"use client";
+
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
+import { redirect, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import "../../globals.css";
-import IncorrectCredentials from "./IncorrectCredentials";
+import IncorrectCredentials, { SignInErrorTypes } from "./ErrorMessage";
 
 export default function SignInComponent() {
-  const [csrfToken, setCsrfToken] = useState("");
-  const [showIncorrectCredentials, setShowIncorrectCredentials] =
-    useState(false);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [redirectSeconds, setRedirectSeconds] = useState(3);
 
   useEffect(() => {
-    const fetchCsrfToken = async () => {
-      const token = await getCsrfToken();
-      setCsrfToken(token || "");
-    };
+    if (status === "authenticated") {
+      if (redirectSeconds === 0) {
+        redirect("/");
+      }
 
-    fetchCsrfToken();
-    const urlParams = new URLSearchParams(window.location.search);
-    const error = urlParams.get("error");
-    if (error === "CredentialsSignin") {
-      setShowIncorrectCredentials(true);
+      setTimeout(() => {
+        setRedirectSeconds(redirectSeconds - 1);
+      }, 1000);
     }
-  }, []);
+  }, [status, redirectSeconds]);
+
+  const params = useSearchParams();
+  const error = params.get("error");
 
   if (status === "authenticated") {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="p-6 max-w-sm w-full bg-white rounded-lg border border-gray-200 shadow-md">
           <h2 className="text-lg font-semibold text-center mb-4">
-            You are already signed in!
+            You are already signed in! <br />
+            Redirecting to the dashboard in {redirectSeconds}...
           </h2>
         </div>
       </div>
@@ -38,8 +45,8 @@ export default function SignInComponent() {
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900">
-      {showIncorrectCredentials && <IncorrectCredentials />}
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        {error && <IncorrectCredentials error={error as SignInErrorTypes} />}
         <a
           href="#"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
@@ -62,16 +69,10 @@ export default function SignInComponent() {
 
             <form
               id="admin-login-form"
-              method="post"
-              action="/api/auth/callback/credentials"
+              action={() => signIn("credentials", { email, password })}
               className="space-y-4 md:space-y-6"
             >
               <div>
-                <input
-                  name="csrfToken"
-                  type="hidden"
-                  defaultValue={csrfToken}
-                />
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white ">
                   Your email
                 </label>
@@ -79,6 +80,7 @@ export default function SignInComponent() {
                   type="email"
                   id="input-email-for-credentials-provider"
                   name="email"
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                 />
@@ -92,6 +94,7 @@ export default function SignInComponent() {
                   type="password"
                   id="input-password-for-credentials-provider"
                   name="password"
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                   required

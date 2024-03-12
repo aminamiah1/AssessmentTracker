@@ -1,10 +1,7 @@
 describe("Navbar", () => {
-  beforeEach(() => {
+  it("Navbar is visible at the top of the page", () => {
     cy.login();
     cy.visit("/admin/module-list");
-  });
-
-  it("Navbar is visible at the top of the page", () => {
     cy.get("nav")
       .should("be.visible")
       .and("have.class", "fixed")
@@ -12,6 +9,8 @@ describe("Navbar", () => {
   });
 
   it("shows all navigation links for a user with all roles", () => {
+    cy.login("sudo@test.net");
+    cy.visit("/admin/module-list");
     cy.contains("a", "Module List").should("be.visible");
     cy.contains("a", "User Management").should("be.visible");
     cy.contains("a", "Assessment Management").should("be.visible");

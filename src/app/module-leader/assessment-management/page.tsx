@@ -1,35 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
+
+import UnauthorizedAccess from "@/app/components/authError";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import { useSession } from "next-auth/react"; // Import useSession and signIn
 import Link from "next/link";
 import { ToastContainer } from "react-toastify";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import AuthContext from "@/app/utils/authContext";
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
-import UnauthorizedAccess from "@/app/components/authError";
 
-function ManageAssessmentsModuleLeaders() {
-  const { data: session, status } = useSession(); // Use useSession to get session and status
-  const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
-
-  useEffect(() => {
-    if (session != null) {
-      // Check here from session.user.roles array if one of the entires is module_leader to set is module leader to true
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        if (roles.includes("module_leader")) {
-          // Set the current user as a module leader to true
-          setIsModuleLeader(true);
-        } else if (roles.includes("module_leader") === false) {
-          setIsModuleLeader(false);
-        }
-      };
-
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      // If not a authenticated user then make them sign-in
-      signIn();
-    }
-  }, [status]);
+export default function ManageAssessmentsModuleLeaders() {
+  const { data: session, status } = useSession({ required: true }); // Use useSession to get session and status
 
   if (status === "loading") {
     return (
@@ -39,6 +17,7 @@ function ManageAssessmentsModuleLeaders() {
     );
   }
 
+  const isModuleLeader = session.user.roles.includes("module_leader");
   return isModuleLeader ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
@@ -72,11 +51,3 @@ function ManageAssessmentsModuleLeaders() {
     <UnauthorizedAccess />
   );
 }
-
-const WrappedAssessmentManagement = () => (
-  <AuthContext>
-    <ManageAssessmentsModuleLeaders />
-  </AuthContext>
-);
-
-export default WrappedAssessmentManagement;

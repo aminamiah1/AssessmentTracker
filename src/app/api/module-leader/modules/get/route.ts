@@ -7,7 +7,7 @@ export async function GET(request: Request) {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     // Validate and extract userId from query parameters
@@ -40,10 +40,10 @@ export async function GET(request: Request) {
       },
     });
 
-    return Response.json(modules);
+    return NextResponse.json(modules);
   } catch (error) {
     console.error(error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Failed to retrieve assessments" },
       { status: 500 },
     );

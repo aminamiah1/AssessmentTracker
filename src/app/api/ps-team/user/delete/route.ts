@@ -7,7 +7,7 @@ export async function DELETE(request: NextRequest) {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     // Extract user ID from request query parameters or body
@@ -45,8 +45,5 @@ export async function DELETE(request: NextRequest) {
         status: 500,
       },
     );
-  } finally {
-    // Close Prisma client connection
-    await prisma.$disconnect();
   }
 }

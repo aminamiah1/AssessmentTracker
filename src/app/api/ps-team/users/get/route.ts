@@ -10,12 +10,23 @@ export async function GET(request: Request) {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
-    const users = await prisma.users.findMany();
+    const users = await prisma.users.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        roles: true,
+      },
+    });
+
     return NextResponse.json(users);
-  } finally {
-    await prisma.$disconnect(); // Ensure connection closure
+  } catch (e) {
+    return new NextResponse(
+      JSON.stringify({ message: "Internal Server Error" }),
+      { status: 500 },
+    );
   }
 }

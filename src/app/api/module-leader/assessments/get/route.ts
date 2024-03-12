@@ -1,12 +1,13 @@
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     // Validate and extract userId from query parameters
@@ -22,17 +23,13 @@ export async function GET(request: Request) {
       throw new Error("Invalid userId format");
     }
 
-    // Fetch assessments with error handling
+    // Fetch assessments by setter with error handling
     const assessments = await prisma.assessment.findMany({
-      where: { setter_id: userId },
-      select: {
-        id: true,
-        assessment_name: true,
-        assessment_type: true,
-        hand_out_week: true,
-        hand_in_week: true,
-        module_id: true,
-        assignees: { select: { name: true } }, // Select desired assignee field
+      where: {
+        setter_id: userId,
+      },
+      include: {
+        assignees: { select: { name: true } },
       },
     });
 
@@ -54,14 +51,14 @@ export async function GET(request: Request) {
       }));
 
       // Return the assessments with the modules as json if successful
-      return Response.json(assessmentsWithModules);
+      return NextResponse.json(assessmentsWithModules);
     } catch (error) {
       // Else handle the error gracefully
       console.error("Error fetching modules: ", error);
     }
   } catch (error) {
     console.error(error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Failed to retrieve assessments" },
       { status: 500 },
     );

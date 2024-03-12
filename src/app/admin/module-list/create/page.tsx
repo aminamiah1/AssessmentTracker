@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState, FormEvent } from "react";
-import { signIn, useSession } from "next-auth/react";
-import AuthContext from "@/app/utils/authContext";
+
 import UnauthorizedAccess from "@/app/components/authError";
+import { signIn, useSession } from "next-auth/react";
+import { FormEvent, useEffect, useState } from "react";
 import Select from "react-select";
 
 interface ModuleLeader {
@@ -17,7 +17,7 @@ interface FormInputs {
   moduleLeaderName: string[];
 }
 
-const CreateModule = () => {
+export default function CreateModule() {
   const [moduleLeaders, setModuleLeaders] = useState<ModuleLeader[]>([]);
   const [formInputs, setFormInputs] = useState<FormInputs>({
     moduleName: "",
@@ -26,26 +26,7 @@ const CreateModule = () => {
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isPSTeam, setIsPSTeam] = useState(false);
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (session != null) {
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        console.log(session.user.roles);
-        if (roles.includes("ps_team")) {
-          setIsPSTeam(true);
-        } else {
-          setIsPSTeam(false);
-        }
-      };
-
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      signIn();
-    }
-  }, [session, status]);
+  const { data: session, status } = useSession({ required: true });
 
   useEffect(() => {
     const fetchModuleLeaders = async () => {
@@ -119,6 +100,16 @@ const CreateModule = () => {
       setSuccessMessage("");
     }
   };
+
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  const isPSTeam = session.user.roles.includes("ps_team");
 
   return isPSTeam ? (
     <div className="flex items-center justify-center min-h-screen bg-gray-200">
@@ -211,12 +202,4 @@ const CreateModule = () => {
   ) : (
     <UnauthorizedAccess />
   );
-};
-
-const WrappedCreateModule = () => (
-  <AuthContext>
-    <CreateModule />
-  </AuthContext>
-);
-
-export default WrappedCreateModule;
+}

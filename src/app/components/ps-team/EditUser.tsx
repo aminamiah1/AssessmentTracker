@@ -54,9 +54,11 @@ const EditUser: React.FC<EditUserProps> = ({
         value: role.toString(),
         label: role.toString(),
       }));
+      // Set password to blank when editing user
       setUser({
         ...userToEdit,
         roles: transformedRoles,
+        password: "",
       });
     } else {
       setUser({
@@ -64,7 +66,7 @@ const EditUser: React.FC<EditUserProps> = ({
         roles: [],
       });
     }
-  }, [user, userToEdit]);
+  }, [userToEdit]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

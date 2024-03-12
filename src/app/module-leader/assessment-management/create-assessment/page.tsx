@@ -1,50 +1,23 @@
-// Import used libraries
 "use client";
-import React, { useState, useEffect, FormEvent, Suspense } from "react";
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
-import { ToastContainer } from "react-toastify";
+
+import UnauthorizedAccess from "@/app/components/authError";
+import { AssessmentForm, Module, User } from "@/app/types/interfaces";
+import { Assessment_type } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FiArrowLeft } from "react-icons/fi"; // Return arrow icon
-import Link from "next/link";
+import { FiArrowLeft } from "react-icons/fi";
 import Select from "react-select";
-import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { toast } from "react-toastify";
-import { useSearchParams, useRouter } from "next/navigation";
-import AuthContext from "@/app/utils/authContext";
-
-// Interface for the assessment model
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: string;
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module: { value: string }[] | { value: string; label: string }[]; // Allow the react select format to also be used for the module
-  setter_id: number;
-  assignees: { value: number }[] | { value: number; label: string }[]; // Allow the react select format to also be used for the assignees
-}
-// Interface for the module model
-interface Module {
-  id: number;
-  module_name: string;
-}
-// Interface for the user model
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  password: string;
-  roles: [];
-}
 
 function CreateAssessmentModuleLeaders() {
   const [setterId, setSetterId] = useState(0);
 
   const [isEdit, setIsEdit] = useState(false); //Check if the form is in edit mode
-
-  const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
 
   const [loading, setLoading] = useState(true); // Initialize loading state to true
 
@@ -60,15 +33,15 @@ function CreateAssessmentModuleLeaders() {
 
   const searchParams = useSearchParams(); // Create search params object
 
-  const { data: session, status } = useSession(); // Use useSession to get session and status
+  const { data: session, status } = useSession({ required: true }); // Use useSession to get session and status
 
   const params = searchParams?.get("id"); // Get the id of the assessment to edit from the search params object
 
   // Default assessment object used on create form mode as default
-  const [assessment, setAssessment] = useState<Assessment>({
+  const [assessment, setAssessment] = useState<AssessmentForm>({
     id: 0,
     assessment_name: "",
-    assessment_type: "",
+    assessment_type: { value: "" },
     hand_out_week: new Date(2024, 1, 26),
     hand_in_week: new Date(2024, 1, 26),
     module: [],
@@ -76,49 +49,37 @@ function CreateAssessmentModuleLeaders() {
     assignees: [],
   });
 
-  useEffect(() => {
-    if (session != null) {
-      //Check here from session.user.roles array if one of the entires is module_leader to set is module leader to true
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        if (roles.includes("module_leader")) {
-          setIsModuleLeader(true);
-          //Set the assessment setter id to the current user
-          setSetterId(parseInt(session.user.id as string, 10));
-        } else {
-          // Else display unauthorised message
-          setIsModuleLeader(false);
-        }
-      };
+  const typesOptionsSet = new Set(Object.values(Assessment_type));
 
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      signIn();
-    }
-  }, [status]);
+  const typesOptionsForSelect = Array.from(typesOptionsSet).map(
+    (type: any) => ({
+      value: type,
+      label: type.replaceAll("_", " "),
+    }),
+  );
 
   useEffect(() => {
     const fetchModules = async () => {
       // Fetch modules by setter only when component mounts
       // Getting response as module leader 1 while waiting for login feature
-      const response = await axios.get(
-        `/api/module-leader/modules/get/?id=${setterId}`,
+      const response = await fetch(
+        `/api/module-leader/modules/get?id=${setterId}`,
       );
-      if (response.data.length > 0) {
-        const processedModules = response.data[0].modules.map(
-          (module: Module) => ({
-            value: module.id,
-            label: module.module_name,
-          }),
-        );
+      const data = await response.json();
+      if (data.length > 0) {
+        const processedModules = data[0].modules.map((module: Module) => ({
+          value: module.id,
+          label: module.module_name,
+        }));
         setModules(processedModules);
       }
     };
 
     const fetchAssignees = async () => {
       // Fetch all users to assign
-      const response = await axios.get(`/api/module-leader/users/get`);
-      const processedUsers = response.data.map((user: User) => ({
+      const response = await fetch(`/api/module-leader/users/get`);
+      const data = await response.json();
+      const processedUsers = data.map((user: User) => ({
         value: user.id,
         label: user.name + " ● Roles: " + user.roles,
       }));
@@ -188,7 +149,7 @@ function CreateAssessmentModuleLeaders() {
     }
 
     setLoading(false); // Set loading to false once data is fetched
-  }, [isModuleLeader]);
+  }, []);
 
   useEffect(() => {
     // This effect runs when the modules and assignees state is updated on editing assessment
@@ -216,8 +177,22 @@ function CreateAssessmentModuleLeaders() {
           assignees: defaultAssignees,
         }));
       }
+
+      // Populate select box with to be edited assessment type if found
+      if (assessment.assessment_type.value != "") {
+        const defaultAssessmentType = typesOptionsForSelect.find(
+          (type: any) => type.value === assessment.assessment_type,
+        );
+
+        if (defaultAssessmentType) {
+          setAssessment((prevState) => ({
+            ...prevState,
+            assessment_type: defaultAssessmentType,
+          }));
+        }
+      }
     }
-  }, [modules, users, assignees, moduleId, isModuleLeader]); // Runs if editing the assessment and is a module leader
+  }, [modules, moduleId]); // Runs if editing the assessment and is a module leader
 
   // Handle text changes for the form
   const handleTextChange = (event: any) => {
@@ -260,17 +235,18 @@ function CreateAssessmentModuleLeaders() {
     // Convert selected module value to format database is expecting i.e. the value from the selector box
     const selectedModuleValue = (assessment.module as any).value;
 
+    // Convert selected assessment type value to format database is expecting i.e. the value from the selector box
+    const selectedAssessmentTypeValue = (assessment.assessment_type as any)
+      .value;
+
     if (isEdit) {
       // Update the assessment using the api endpoint
       const response = await fetch("/api/module-leader/assessment/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: assessment.id,
-          assessment_name: assessment.assessment_name,
-          assessment_type: assessment.assessment_type,
-          hand_out_week: assessment.hand_out_week,
-          hand_in_week: assessment.hand_in_week,
+          ...assessment,
+          assessment_type: selectedAssessmentTypeValue,
           module_id: selectedModuleValue,
           setter_id: setterId,
           assigneesList: Array.from(selectedAssigneesValues),
@@ -295,7 +271,7 @@ function CreateAssessmentModuleLeaders() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           assessment_name: assessment.assessment_name,
-          assessment_type: assessment.assessment_type,
+          assessment_type: selectedAssessmentTypeValue,
           hand_out_week: assessment.hand_out_week,
           hand_in_week: assessment.hand_in_week,
           module_id: selectedModuleValue,
@@ -319,23 +295,16 @@ function CreateAssessmentModuleLeaders() {
   };
 
   if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
-  }
-
-  if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
-  }
-
-  if (isModuleLeader === false) {
     return (
-      <p className="text-white bg-black">
-        You are not authorised to view this page...
-      </p>
-    ); // Alert the current user that they do not have the role privilege to access the current page
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
-  return (
-    <div className="p-4 bg-white h-screen text-black mt-4">
+  const isModuleLeader = session.user.roles.includes("module_leader");
+  return isModuleLeader ? (
+    <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
       {loading ? (
         <div>Loading form...</div>
@@ -349,7 +318,7 @@ function CreateAssessmentModuleLeaders() {
                 style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
               />
             </Link>
-            <h1 className="text-3xl ml-2">
+            <h1 className="text-3xl ml-2 pt-16 text-center">
               {isEdit ? "Edit Assessment" : "Create Assessment"}
             </h1>
           </div>
@@ -391,17 +360,23 @@ function CreateAssessmentModuleLeaders() {
               <label htmlFor="assessmentType" className="font-bold">
                 Assessment Type
               </label>
-              <input
-                type="text"
-                id="assessmentType"
-                placeholder="Enter assessment type..."
-                name="assessment_type"
-                data-cy="type"
-                value={assessment.assessment_type}
-                onChange={handleTextChange}
-                required
-                className="form-input w-full mb-4 border border-gray-300 border-b-4 p-4 border-black"
-              />
+              <div className="mb-4">
+                <Select
+                  onChange={(option) =>
+                    handleSelectChange(option, "assessment_type")
+                  }
+                  options={typesOptionsForSelect.map((type) => ({
+                    ...type,
+                    key: type.value,
+                  }))}
+                  id="assessment_type"
+                  name="assessment_type"
+                  required
+                  data-cy="type"
+                  value={assessment.assessment_type}
+                  className="react-select-container mb-6"
+                />
+              </div>
             </div>
 
             <div className="mb-4">
@@ -464,15 +439,15 @@ function CreateAssessmentModuleLeaders() {
         </div>
       )}
     </div>
+  ) : (
+    <UnauthorizedAccess />
   );
 }
 
 const WrappedCreateAssessment = () => (
-  <AuthContext>
-    <Suspense>
-      <CreateAssessmentModuleLeaders />
-    </Suspense>
-  </AuthContext>
+  <Suspense>
+    <CreateAssessmentModuleLeaders />
+  </Suspense>
 );
 
 export default WrappedCreateAssessment;

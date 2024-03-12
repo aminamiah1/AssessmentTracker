@@ -13,6 +13,6 @@ declare namespace Cypress {
     ): Chainable<Element>;
   }
   interface Chainable {
-    login(): Chainable<void>;
+    login(username?: string): Chainable<void>;
   }
 }

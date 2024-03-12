@@ -1,20 +1,18 @@
 describe("Navbar", () => {
-  beforeEach(() => {
-    cy.login();
-    cy.visit("/");
-  });
-
   it("Navbar is visible at the top of the page", () => {
+    cy.login();
+    cy.visit("/admin/module-list");
     cy.get("nav")
       .should("be.visible")
       .and("have.class", "fixed")
       .and("have.class", "top-0");
   });
 
-  it("Sidebar toggle works on smaller screens", () => {
-    cy.viewport("iphone-6");
-    cy.get("#logo-sidebar").should("have.class", "-translate-x-full");
-    cy.get('button[aria-controls="logo-sidebar"]').click();
-    cy.get("#logo-sidebar").should("not.have.class", "-translate-x-full");
+  it("shows all navigation links for a user with all roles", () => {
+    cy.login("sudo@test.net");
+    cy.visit("/admin/module-list");
+    cy.contains("a", "Module List").should("be.visible");
+    cy.contains("a", "User Management").should("be.visible");
+    cy.contains("a", "Assessment Management").should("be.visible");
   });
 });

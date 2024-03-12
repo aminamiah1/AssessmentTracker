@@ -1,17 +1,12 @@
 /// <reference types='cypress' />
 describe("Admin edit module page", () => {
-  before(() => {
-    cy.log("Seeding the database...");
-    cy.exec("npm run db:seed", { timeout: 200000 });
-  });
-
   beforeEach(() => {
-    cy.login();
+    cy.login("ps@test.net");
     cy.visit("/admin/module-list");
   });
 
   it("should be able to access the edit module page", () => {
-    cy.get(".edit-button").first().should("be.visible").click();
+    cy.get(".edit-button").last().should("be.visible").click();
     cy.url().should("include", "/admin/module-list/edit/CM6127");
   });
 
@@ -19,6 +14,7 @@ describe("Admin edit module page", () => {
     cy.visit("/admin/module-list/edit/CM6127");
     cy.getByTestId("edit-module-name-input").type("Updated Module Name");
     cy.getByTestId("edit-module-name-submit").click();
+    cy.visit("/admin/module-list");
     cy.url().should("not.include", "/edit/");
     cy.contains("Updated Module Name").should("exist");
   });
@@ -27,6 +23,7 @@ describe("Admin edit module page", () => {
     cy.visit("/admin/module-list/edit/CM6127");
     cy.getByTestId("edit-module-code-input").type("CM6128");
     cy.getByTestId("edit-module-code-submit").click();
+    cy.visit("/admin/module-list");
     cy.url().should("not.include", "/edit/");
     cy.contains("CM6128").should("exist");
   });

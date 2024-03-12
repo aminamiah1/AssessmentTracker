@@ -1,7 +1,7 @@
 /// <reference types='cypress' />
 describe("Admin module list page", () => {
   beforeEach(() => {
-    cy.login();
+    cy.login("ps@test.net");
     cy.visit("/admin/module-list");
   });
 

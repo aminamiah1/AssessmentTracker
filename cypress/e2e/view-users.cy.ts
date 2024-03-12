@@ -1,6 +1,6 @@
 describe("View users", () => {
   beforeEach(() => {
-    cy.login();
+    cy.login("ps@test.net");
   });
 
   // Can view users

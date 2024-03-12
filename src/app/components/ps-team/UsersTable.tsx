@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { FaEdit, FaTrash } from "react-icons/fa"; // Trash can icon
+import { FiSearch } from "react-icons/fi"; // Search icon
 import { useTable } from "react-table";
-import axios from "axios";
 import { toast } from "react-toastify";
 import EditUser from "./EditUser";
-import { FiSearch } from "react-icons/fi"; // Search icon
-import { FaTrash } from "react-icons/fa"; // Trash can icon
-import { FaEdit } from "react-icons/fa"; // Edit icon
 
 interface User {
   id: number;
@@ -28,12 +26,16 @@ const UsersTable: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       if (!search) {
-        const response = await axios.get("/api/ps-team/users/get");
-        const sortedUsers = response.data.sort(
-          (a: User, b: User) => a.id - b.id,
-        );
-        setUsers(sortedUsers);
-        setFilteredUsers(sortedUsers);
+        try {
+          const response = await fetch("/api/ps-team/users/get");
+          const data = await response.json();
+          const sortedUsers = data.sort((a: User, b: User) => a.id - b.id);
+          setUsers(sortedUsers);
+          setFilteredUsers(sortedUsers);
+        } catch (e) {
+          setUsers([]);
+          setFilteredUsers([]);
+        }
       }
     };
 
@@ -172,7 +174,7 @@ const UsersTable: React.FC = () => {
       {
         Header: "Edit",
         accessor: (id: User) => (
-          <button onClick={() => handleEdit(id)} data-cy="EditUser">
+          <button onClick={() => handleEdit(id)} data-cy="EditUserTable">
             <FaEdit className="cursor-pointer" size={30} />
           </button>
         ),
@@ -195,7 +197,7 @@ const UsersTable: React.FC = () => {
         <FiSearch
           className="mr-2 mb-2 text-black"
           size={30}
-          style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
+          style={{ marginRight: "1rem", height: "2rem", width: "fit" }}
         />
         <input
           id="search"

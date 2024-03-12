@@ -1,37 +1,32 @@
-"use client";
-import { useSession, signIn } from "next-auth/react";
-import { useEffect } from "react";
-import AuthContext from "./utils/authContext";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/options";
+import { permanentRedirect } from "next/navigation";
 
-function Home() {
-  const { data: session, status } = useSession(); // Use useSession to get session and status
-
-  useEffect(() => {
-    // Redirect to sign-in if not authenticated
-    if (status === "unauthenticated") {
-      signIn();
-    }
-  }, [status]);
-
-  if (status === "loading") {
-    return <p className="text-white bg-black">Loading...</p>; // Show a loading message while checking session status
-  }
+export default async function UserPage() {
+  const session = await getServerSession(authOptions);
 
   if (!session) {
-    return <p>Redirecting to sign-in...</p>; // This will be briefly shown before the signIn() effect redirects the user
+    permanentRedirect("/admin/sign-in");
   }
 
+  // Render the personalized greeting page if the session exists
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex"></div>
-    </main>
+    <div
+      style={{
+        paddingTop: "100px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        boxSizing: "border-box",
+      }}
+    >
+      <p
+        className="text-black"
+        style={{ fontSize: "24px", fontWeight: "bold" }}
+      >
+        Hi {session.user.name}!
+      </p>
+    </div>
   );
 }
-
-const WrappedHome = () => (
-  <AuthContext>
-    <Home />
-  </AuthContext>
-);
-
-export default WrappedHome;

@@ -67,7 +67,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
   };
 
   return (
-    // Assessment tile layout using Bootstrap grid system
+    // Assessment tile layout using grid system
     <div className="flex-grow-1 col-12 md:col-6 mb-4 border border-gray-500">
       <ToastContainer />
       <div className="bg-white shadow-md">
@@ -87,11 +87,13 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
               </div>
               <p className="mt-4">
                 <span className="text-sm text-gray-700">
-                  {assessment.module_name} ● {assessment.assessment_type}
+                  {assessment.module_name} ●{" "}
+                  {assessment.assessment_type.replaceAll("_", " ")}
                 </span>
                 <br />
                 <span className="text-sm text-gray-700">
                   Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")} ●
+                  {/* To add later after tracking stages implemented */}
                   Stage: {0} of 11
                 </span>
               </p>

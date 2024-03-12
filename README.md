@@ -13,6 +13,7 @@
     - [Pipeline Summary](#production-pipeline-summary)
   - [Important links](#important-links)
 - [Cypress](#cypress)
+  - [Useful Commands](#useful-commands)
 - [Contributing](#contributing)
 
 # Local development
@@ -69,6 +70,8 @@ You can bypass this prompt by passing in the migration name as an argument:
 ```
 $ npx prisma migrate dev --name changed-field-type
 ```
+
+It's important to note that each PR with a schema change should only result in a **single** additional migration (with the exception of release branches obviously). This will prevent the migrations folder getting too crowded. [Here is a good guide](https://www.prisma.io/docs/orm/prisma-migrate/workflows/team-development) of `prisma migrate dev` in a team environment.
 
 ### Dangerous migrations
 
@@ -161,7 +164,7 @@ See [staging](#staging) setup (Will fill this in at some point)
     - This Database is then downloaded to the GitLab runner and saved as an artifact (30 days by default)
   - The image's tag in the registry is updated to `:stable`, maintaining the initial commit-specific tag
 - The deployment command is sent to OpenShift when the preparation stage is finished
-  - This will pull the `:stable` tag from the container registry and spin up a container to expose on the [staging URL](https://assessment-tracker-prod-assessment-tracker.apps.openshift.cs.cf.ac.uk/)
+  - This will pull the `:stable` tag from the container registry and spin up a container to expose on the [production URL](https://assessment-tracker-prod-assessment-tracker.apps.openshift.cs.cf.ac.uk/)
 
 ## Important links
 
@@ -182,6 +185,26 @@ In order to run these environments and tests, you will also need to install a fe
 To start using the Cypress GUI, run:
 
 `npm run cy:open`
+
+## Testing on auth pages
+
+You will want to run E2E tests on authorised pages. Some test data is populated for this purpose. The following users are available in the test environment:
+
+| Email               | Name               | Roles                                                                                            |
+| ------------------- | ------------------ | ------------------------------------------------------------------------------------------------ |
+| `leader@test.net`   | Module Leader      | `module_leader`                                                                                  |
+| `internal@test.net` | Internal Moderator | `internal_moderator`                                                                             |
+| `panel@test.net`    | Panel Member       | `panel_member`                                                                                   |
+| `external@test.net` | External Examiner  | `external_examiner`                                                                              |
+| `ps@test.net`       | PS Team User       | `ps_team`                                                                                        |
+| `sysadmin@test.net` | System Admin User  | `system_admin`                                                                                   |
+| `sudo@test.net`     | Super User         | `external_examiner` `internal_moderator` `module_leader` `panel_member` `ps_team` `system_admin` |
+
+To use these users in a test environment, you can use the `cy.login()` command. By default, this will sign you in as the `leader@test.net` user. You can pass the email of the user you wish to sign in as:
+
+```tsx
+cy.login("internal@test.net"); // Now you have access to the site as an internal moderator user
+```
 
 ## Useful Commands
 
@@ -280,38 +303,118 @@ Create a new .env file in the cloned root repository and place the string DATABA
 
 ## API Documentation
 
+```
+api
+└── assessments
+    └── [assessmentId]
+        ├── responses
+        │   └── [questionId] (PUT)
+        ├── submissions (POST)
+        └── todos (GET)
+```
+
+| Endpoint                                                 | Available Methods | Parameters | Status Codes            |
+| -------------------------------------------------------- | ----------------- | ---------- | ----------------------- |
+| `/api/assessments/[assessmentId]/responses/[questionId]` | `PUT`             | None       | `200` `400` `401` `500` |
+| `/api/assessments/[assessmentId]/submissions`            | `POST`            | None       | `200` `400` `401` `500` |
+| `/api/assessments/[assessmentId]/todos`                  | `GET`             | None       | `200` `400` `401` `500` |
+
 ## PS Team
 
 # Get All Users(GET)
 
-To get all users the ps team can use the api located at localhost:3000/api/ps-team/get-users to retrieve all users
+To get all users the ps team can use the api located at (url)/api/ps-team/users/get to retrieve all users. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. Users objects if successful returns their name, email and roles.
 
 # Get User(GET)
 
-To get a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/get-user?id=0(example) and pass details in the request query
+To get a specific user by id, the ps team can use the api located at (url)/api/ps-team/user/get?id=(number) and pass details in the request query. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. Users object if successful returns their name, email and roles.
 
 # Edit User(POST)
 
-To edit a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/edit-users and pass details in the request body
+To edit a specific user by id, the ps team can use the api located at (url)/api/ps-team/user/update and pass details in the request body. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful updates their name, email and roles with sent fields.
 
 # Delete User(DELETE)
 
-To delete a specific user by id, the ps team can use the api located at localhost:3000/api/ps-team/delete-user and pass details in the request body
+To delete a specific user by id, the ps team can use the api located at (url)/api/ps-team/user/delete?id=(number) and pass details in the request body. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful deletes a user from the system.
 
 # Create User(POST)
 
-To create a user, the ps team can use the api located at localhost:3000/api/ps-team/get-user and pass details in the request body
+To create a user, the ps team can use the api located at (url)api/ps-team/user/post and pass details in the request body. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful creates a new user entry in the User table.
+
+# Get Assessment(GET)
+
+To get an individual assessment's details by id, the ps team can use the api located at (url)api/ps-team/assessment/get?id=(number). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves all the assessment's details.
+
+# Get All Assessments(GET)
+
+To get all assessments, the ps team can use the api located at (url)/api/ps-team/assessments/get. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves the assessments and all their releated fields.
+
+# Get All Modules(GET)
+
+To get all modules in the system, the ps team can use the api located at (url)/api/ps-team/modules/get. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves all the modules and their releated fields.
+
+# Update assessment(UPDATE)
+
+To update an assessment in the system but only the assignees and setter fields, the ps team can use the api located at (url)/api/ps-team/assessment/update. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful updates the setter and assignees of the sent assessment identified by the id.
+
+# Post csv module data into the database
+
+To post the parsed csv module data into the database, the upload csv function will use the api located at (url)/api/ps-team/assessments/modules/csv/post. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful updates or creates the sent parsed csv module data into the database. Runs before the assessment csv post in the upload csv function to ensure module data is in the database to be successfully attached to the assessments.
+
+# Post csv assessment data into the database
+
+To post the parsed csv assessment data into the database, the upload csv function will use the api located at (url)/api/ps-team/assessments/csv/post. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in.If successful updates or creates the sent parsed csv assessment data into the database.
+
+## Module leaders
+
+# Create User(POST)
+
+To delete an individual assessment, the module leaders can use the api located at (url)/api/module-leader/assessment/delete?id=(number). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful deletes an assessment and all releated properties.
+
+# Assessment(GET)
+
+To get an individual assessment, the module leaders can use the api located at (url)/api/module-leader/assessment/get?id=(number). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful returns an assessment and all it's releated properties e.g. assignees and module name tied to.
+
+# Assessment(POST)
+
+To post an assessment on form submission, the module leaders can use the api located at (url)/api/module-leader/assessment/post. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful creates a new assessment entry in the Assessment table.
+
+# Assessment(UPDATE)
+
+To update an assessment on form submission, the module leaders can use the api located at (url)/api/module-leader/assessment/update, passing updated assessment details in body. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful updates an assessment using the form fields submitted.
+
+# Assessments(GET)
+
+To get their assessments by their id, the module leaders can use the api located at (url)/api/module-leader/assessments/get?=(id). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves the assessment releated with that ID and all the releated fields.
+
+# Modules(GET)
+
+To get their modules by their id, the module leaders can use the api located at (url)/api/module-leader/modules/get?=(id) used to populate the module selection box in assessment creation form. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful gets all modules tied to the module leader.
+
+# Users(GET)
+
+To get all users and retrieve only their names and roles, the module leaders can use the api located (url)/module-leader/users/get, used in assessment creation form to populate the assignees selection box. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful gets all users in the system to populate assignees box.
 
 ## Page Documentation
+
+## All
+
+# User profile menu
+
+Activated by clicking profile picture icon, opens a pop-up showing current user details(name, email and roles).
 
 ## PS Team
 
 # User management dashboard
 
-Located at localhost:3000/ps-team/user-management, the ps team can add, edit, delete or view all users in a nicely-presented crud operation table with pop-up forms for editing and adding new users.
+Located at (base url)/ps-team/user-management, the ps team can add, edit, delete or view all users in a nicely-presented crud operation table with pop-up forms for editing and adding new users.
+
+# Assessment management dashboard
+
+On the dedicated assessment management page (base url)/ps-team/assessment-management, the PS Team can easily find assessments using filters for users, types, and modules. They can also search by assessment or module name and view individual assessment details on separate pages. They can also import the bulk assessments csv through a guiding pop-up by the relevant button. They can also assign a setter and assignees for an assessment through a pop-up form by clicking the relevant button on the assessment tile.
 
 ## Module leaders
 
 # Assessment management dashboard
 
-On the module-leader assessment management dashboard (localhost:3000/module-leader/assessment-management), module leader members can view individual assessments in responsive stacked cards. They may create new assessments using a dedicated form, with both actions accessible via clearly labeled dashboard buttons. Additionally, the 'View All Assessments' page enables editing and deleting of assessments through buttons integrated into each card.
+On the module-leader assessment management dashboard ((base url)/module-leader/assessment-management), module leader members can view individual assessments in responsive stacked cards. They may create new assessments using a dedicated form, with both actions accessible via clearly labeled dashboard buttons. Additionally, the 'View All Assessments' page enables editing and deleting of assessments through buttons integrated into each card.

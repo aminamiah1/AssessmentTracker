@@ -2,7 +2,7 @@
 
 import prisma from "@/app/db";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { permanentRedirect, redirect } from "next/navigation";
 
 export async function getModuleName(moduleCode: string) {
   if (!moduleCode) return;
@@ -52,7 +52,7 @@ export async function editModuleName(formData: FormData) {
   }
 
   revalidatePath("/admin/module-list");
-  redirect("/admin/module-list");
+  permanentRedirect("/admin/module-list");
 }
 
 export async function editModuleCode(formData: FormData) {

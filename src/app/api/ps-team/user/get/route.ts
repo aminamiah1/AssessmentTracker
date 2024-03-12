@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const session = await getServerSession();
 
     if (!session) {
-      return Response.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
     }
 
     // Extract user ID from request query parameters or body
@@ -28,11 +28,19 @@ export async function GET(request: NextRequest) {
     }
 
     // Get user with the given ID
-    const user = await prisma.users.findUnique({ where: { id } });
+    const user = await prisma.users.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        roles: true,
+      },
+    });
 
     // Check if user was found and return details
     if (user) {
-      return Response.json(user);
+      return NextResponse.json(user);
     } else {
       console.error("Error retrieving user");
       return new NextResponse(
@@ -50,8 +58,5 @@ export async function GET(request: NextRequest) {
         status: 500,
       },
     );
-  } finally {
-    // Close Prisma client connection
-    await prisma.$disconnect();
   }
 }

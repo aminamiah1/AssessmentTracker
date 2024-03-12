@@ -1,6 +1,7 @@
 import prisma from "@/app/db";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { UserStatus } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,9 @@ export async function GET(request: Request) {
     }
 
     const users = await prisma.users.findMany({
+      where: {
+        status: UserStatus.active,
+      },
       select: {
         id: true,
         name: true,

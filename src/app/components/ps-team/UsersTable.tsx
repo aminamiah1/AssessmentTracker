@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa"; // Trash can icon
+import { FaEdit, FaToggleOff } from "react-icons/fa"; // Trash can icon
 import { FiSearch } from "react-icons/fi"; // Search icon
 import { useTable } from "react-table";
 import { toast } from "react-toastify";
@@ -20,8 +20,8 @@ const UsersTable: React.FC = () => {
   const [search, setSearch] = React.useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [refetch, setRefetch] = useState(0);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -84,14 +84,14 @@ const UsersTable: React.FC = () => {
       });
   };
 
-  const handleDelete = async (user: User) => {
+  const handleDeactivate = async (user: User) => {
     try {
       setSearch(" ");
 
       var id = user.id;
 
-      fetch(`/api/ps-team/user/delete?id=${id}`, {
-        method: "DELETE",
+      fetch(`/api/ps-team/user/deactivate?id=${id}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -102,15 +102,15 @@ const UsersTable: React.FC = () => {
             setSearch("");
             setUsers(users.filter((u) => u.id !== id));
           } else {
-            toast.error("'Error deleting user");
+            toast.error("'Error de-activating user");
           }
         })
         .catch((error) => {
           toast.error("Network error please try again");
         });
 
-      toast.success("Delete user successful!");
-      setShowDeleteModal(false);
+      toast.success("De-activating user successful!");
+      setShowDeactivateModal(false);
       setRefetch(refetch + 1);
     } catch (error) {
       toast.error("Error deleting user");
@@ -158,16 +158,16 @@ const UsersTable: React.FC = () => {
         },
       },
       {
-        Header: "Delete",
+        Header: "De-Activate",
         accessor: (id: User) => (
           <button
             onClick={() => {
-              setUserToDelete(id);
-              setShowDeleteModal(true);
+              setUserToDeactivate(id);
+              setShowDeactivateModal(true);
             }}
-            data-cy="DeleteUser"
+            data-cy="DeactivateUser"
           >
-            <FaTrash className="cursor-pointer" size={30} />
+            <FaToggleOff className="cursor-pointer" size={30} />
           </button>
         ),
       },
@@ -261,28 +261,28 @@ const UsersTable: React.FC = () => {
 
       <div
         className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
-          showDeleteModal ? "block" : "hidden"
+          showDeactivateModal ? "block" : "hidden"
         }`}
       >
-        {userToDelete && (
+        {userToDeactivate && (
           <div className="bg-white p-5 border border-black rounded-lg">
-            <p>Delete user: {userToDelete.name}?</p>
             <p className="text-black">
-              Are you sure you want to delete user: {userToDelete.name}?
+              Are you sure you want to de-activate user: {userToDeactivate.name}
+              ?
             </p>
             <div className="flex justify-between mt-4">
               <button
                 className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setShowDeleteModal(false)}
+                onClick={() => setShowDeactivateModal(false)}
               >
                 Cancel
               </button>
               <button
                 className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                data-cy="DeleteUserConfirm"
-                onClick={() => handleDelete(userToDelete)}
+                data-cy="DeactivateUserConfirm"
+                onClick={() => handleDeactivate(userToDeactivate)}
               >
-                Delete
+                De-activate
               </button>
             </div>
           </div>

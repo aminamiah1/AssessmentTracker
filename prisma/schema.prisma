@@ -22,7 +22,7 @@ model Users {
   set_assessments Assessment[]
   assessments     Assessment[] @relation("AssessmentsToUsers")
   modules         Module[]     @relation("ModulesToUsers")
-
+  status          UserStatus   @default(active)
   @@map("users")
 }
 
@@ -129,6 +129,12 @@ enum Assessment_type {
 }
 
 enum ModuleStatus {
+  active
+  inactive
+  expired
+}
+
+enum UserStatus {
   active
   inactive
   expired

@@ -1,8 +1,9 @@
 import prisma from "@/app/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
+import { UserStatus } from "@prisma/client";
 
-export async function DELETE(request: NextRequest) {
+export async function POST(NextRequest: NextRequest) {
   try {
     const session = await getServerSession();
 
@@ -11,7 +12,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Extract user ID from request query parameters or body
-    const { id } = await request.json();
+    const { id } = await NextRequest.json();
 
     // Validate user ID
     if (!id) {
@@ -20,25 +21,29 @@ export async function DELETE(request: NextRequest) {
       });
     }
 
-    // Delete user with the given ID
-    const deletedUser = await prisma.users.delete({ where: { id: id } });
-
-    // Check if user was found and deleted
-    if (!deletedUser) {
-      return new NextResponse(JSON.stringify({ message: "User is deleted!" }), {
-        status: 200,
+    // Deactivate user with the given ID
+    try {
+      await prisma.users.update({
+        where: {
+          id,
+        },
+        data: {
+          status: UserStatus.inactive,
+        },
       });
+    } catch (error) {
+      return { error: "Database Error: Failed to edit user Status." };
     }
 
     // Respond with success message or redirect
     return new NextResponse(
-      JSON.stringify({ message: "User deletion successful!" }),
+      JSON.stringify({ message: "User deactivation successful!" }),
       {
         status: 200,
       },
     );
   } catch (error) {
-    console.error("Error deleting user:", error);
+    console.error("Error deactivating user:", error);
     return new NextResponse(
       JSON.stringify({ message: "Error internal server error." }),
       {

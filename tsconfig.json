@@ -24,13 +24,6 @@
   "include": [
     "cypress.d.ts",
     "next-env.d.ts",
-
-    "**/*.ts",
-
-    "**/*.tsx",
-
-    ".next/types/**/*.ts",
-    "src/app/components/SignIn/IncorrectCredentials.tsx",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"

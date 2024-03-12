@@ -13,6 +13,7 @@
     - [Pipeline Summary](#production-pipeline-summary)
   - [Important links](#important-links)
 - [Cypress](#cypress)
+  - [Useful Commands](#useful-commands)
 - [Contributing](#contributing)
 
 # Local development
@@ -69,6 +70,8 @@ You can bypass this prompt by passing in the migration name as an argument:
 ```
 $ npx prisma migrate dev --name changed-field-type
 ```
+
+It's important to note that each PR with a schema change should only result in a **single** additional migration (with the exception of release branches obviously). This will prevent the migrations folder getting too crowded. [Here is a good guide](https://www.prisma.io/docs/orm/prisma-migrate/workflows/team-development) of `prisma migrate dev` in a team environment.
 
 ### Dangerous migrations
 
@@ -161,7 +164,7 @@ See [staging](#staging) setup (Will fill this in at some point)
     - This Database is then downloaded to the GitLab runner and saved as an artifact (30 days by default)
   - The image's tag in the registry is updated to `:stable`, maintaining the initial commit-specific tag
 - The deployment command is sent to OpenShift when the preparation stage is finished
-  - This will pull the `:stable` tag from the container registry and spin up a container to expose on the [staging URL](https://assessment-tracker-prod-assessment-tracker.apps.openshift.cs.cf.ac.uk/)
+  - This will pull the `:stable` tag from the container registry and spin up a container to expose on the [production URL](https://assessment-tracker-prod-assessment-tracker.apps.openshift.cs.cf.ac.uk/)
 
 ## Important links
 
@@ -182,6 +185,26 @@ In order to run these environments and tests, you will also need to install a fe
 To start using the Cypress GUI, run:
 
 `npm run cy:open`
+
+## Testing on auth pages
+
+You will want to run E2E tests on authorised pages. Some test data is populated for this purpose. The following users are available in the test environment:
+
+| Email               | Name               | Roles                                                                                            |
+| ------------------- | ------------------ | ------------------------------------------------------------------------------------------------ |
+| `leader@test.net`   | Module Leader      | `module_leader`                                                                                  |
+| `internal@test.net` | Internal Moderator | `internal_moderator`                                                                             |
+| `panel@test.net`    | Panel Member       | `panel_member`                                                                                   |
+| `external@test.net` | External Examiner  | `external_examiner`                                                                              |
+| `ps@test.net`       | PS Team User       | `ps_team`                                                                                        |
+| `sysadmin@test.net` | System Admin User  | `system_admin`                                                                                   |
+| `sudo@test.net`     | Super User         | `external_examiner` `internal_moderator` `module_leader` `panel_member` `ps_team` `system_admin` |
+
+To use these users in a test environment, you can use the `cy.login()` command. By default, this will sign you in as the `leader@test.net` user. You can pass the email of the user you wish to sign in as:
+
+```tsx
+cy.login("internal@test.net"); // Now you have access to the site as an internal moderator user
+```
 
 ## Useful Commands
 
@@ -280,6 +303,22 @@ Create a new .env file in the cloned root repository and place the string DATABA
 
 ## API Documentation
 
+```
+api
+└── assessments
+    └── [assessmentId]
+        ├── responses
+        │   └── [questionId] (PUT)
+        ├── submissions (POST)
+        └── todos (GET)
+```
+
+| Endpoint                                                 | Available Methods | Parameters | Status Codes            |
+| -------------------------------------------------------- | ----------------- | ---------- | ----------------------- |
+| `/api/assessments/[assessmentId]/responses/[questionId]` | `PUT`             | None       | `200` `400` `401` `500` |
+| `/api/assessments/[assessmentId]/submissions`            | `POST`            | None       | `200` `400` `401` `500` |
+| `/api/assessments/[assessmentId]/todos`                  | `GET`             | None       | `200` `400` `401` `500` |
+
 ## PS Team
 
 # Get All Users(GET)
@@ -328,7 +367,7 @@ To post the parsed csv assessment data into the database, the upload csv functio
 
 ## Module leaders
 
-# Assessment(DELETE)
+# Create User(POST)
 
 To delete an individual assessment, the module leaders can use the api located at (url)/api/module-leader/assessment/delete?id=(number). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful deletes an assessment and all releated properties.
 

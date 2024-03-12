@@ -1,11 +1,6 @@
 describe("Assign users by pop-up form activated on assessment tile button", () => {
-  before(() => {
-    cy.log("Seeding the database...");
-    cy.exec("npm run db:seed", { timeout: 200000 });
-  });
-
   beforeEach(() => {
-    cy.login();
+    cy.login("ps@test.net");
     cy.visit("/ps-team/assessment-management");
   });
 
@@ -44,6 +39,6 @@ describe("Assign users by pop-up form activated on assessment tile button", () =
 
     cy.contains("button", "Submit").click();
 
-    cy.getByTestId("assigneeText").eq(0).should("have.text", "Test User");
+    cy.getByTestId("assigneeText").eq(0).should("have.text", "Module Leader");
   });
 });

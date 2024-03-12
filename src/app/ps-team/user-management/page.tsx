@@ -1,38 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useSession, signIn } from "next-auth/react";
-import UsersTable from "../../components/ps-team/UsersTable";
+
+import UnauthorizedAccess from "@/app/components/authError";
+import UsersTable from "@/app/components/ps-team/UsersTable";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import CreateUser from "../../components/ps-team/CreateUser";
-import AuthContext from "@/app/utils/authContext";
-import UnauthorizedAccess from "@/app/components/authError";
 
 export const dynamic = "force-dynamic";
 
-function ManageUsersPSTeam() {
+export default function ManageUsersPSTeam() {
   const [showCreateUserForm, setShowCreateUserForm] = useState(false);
-  const [isPSTeam, setIsPSTeam] = useState(false);
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (session != null) {
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        console.log(session.user.roles);
-        if (roles.includes("ps_team")) {
-          setIsPSTeam(true);
-        } else {
-          setIsPSTeam(false);
-          // Set to false if not part of ps_team
-        }
-      };
-
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      // If not an authenticated user then make them sign-in
-      signIn();
-    }
-  }, [session, status]);
+  const { data: session, status } = useSession({ required: true });
 
   if (status === "loading") {
     return (
@@ -46,7 +26,7 @@ function ManageUsersPSTeam() {
     setShowCreateUserForm(false);
   };
 
-  // Render the user management interface if authenticated
+  const isPSTeam = session.user.roles.includes("ps_team");
   return isPSTeam ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
@@ -59,12 +39,19 @@ function ManageUsersPSTeam() {
         {showCreateUserForm ? (
           <CreateUser onClose={handleCloseCreateUserForm} />
         ) : (
-          <button
-            onClick={() => setShowCreateUserForm(true)}
-            className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20"
-          >
-            Create New User
-          </button>
+          <div>
+            <button
+              onClick={() => setShowCreateUserForm(true)}
+              className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20 mr-4"
+            >
+              Create New User
+            </button>
+            <Link href="/ps-team/user-management/upload" passHref>
+              <button className="bg-blue-600 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20">
+                Import Users
+              </button>
+            </Link>
+          </div>
         )}
       </div>
       <div>
@@ -75,11 +62,3 @@ function ManageUsersPSTeam() {
     <UnauthorizedAccess />
   );
 }
-
-const WrappedManageUsersPSTeam = () => (
-  <AuthContext>
-    <ManageUsersPSTeam />
-  </AuthContext>
-);
-
-export default WrappedManageUsersPSTeam;

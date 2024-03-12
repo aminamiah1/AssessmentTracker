@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useSession, signIn } from "next-auth/react";
-import { MdDelete, MdEdit } from "react-icons/md";
+
 import SearchBar from "@/app/components/SearchBar/SearchBar";
-import Link from "next/link";
-import AuthContext from "@/app/utils/authContext";
 import UnauthorizedAccess from "@/app/components/authError";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 export const dynamic = "force-dynamic";
 
@@ -16,37 +16,16 @@ type ModuleData = {
 }[];
 
 async function getModules(searchTerm: string) {
-  // Get modules from api endpoint
   const data = await fetch(`/api/module-list/${searchTerm}`, {
     next: { revalidate: 3600 },
   });
   return data.json();
 }
 
-function ModuleList() {
-  const { data: session, status } = useSession();
-  const [isModuleLeader, setIsModuleLeader] = useState(false);
+export default function ModuleList() {
+  const { data: session, status } = useSession({ required: true });
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [modules, setModules] = useState<ModuleData>([]);
-
-  useEffect(() => {
-    if (session != null) {
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        console.log(session.user.roles);
-        if (roles.includes("ps_team")) {
-          setIsModuleLeader(true);
-        } else {
-          setIsModuleLeader(false);
-        }
-      };
-
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      // If not a authenticated user then make them sign-in
-      signIn();
-    }
-  }, [session, status]);
 
   const onSearch = (term: string) => {
     setSearchTerm(term);
@@ -72,6 +51,7 @@ function ModuleList() {
   }
 
   // Render the module list if authenticated
+  const isModuleLeader = session.user.roles.includes("module_leader");
   return isModuleLeader ? (
     <>
       <div className="bg-white dark:bg-darkmode h-screen max-h-full">
@@ -127,11 +107,3 @@ function ModuleList() {
     <UnauthorizedAccess />
   );
 }
-
-const WrappedModuleList = () => (
-  <AuthContext>
-    <ModuleList />
-  </AuthContext>
-);
-
-export default WrappedModuleList;

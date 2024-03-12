@@ -1,12 +1,7 @@
 describe("Add a assessment", () => {
-  before(() => {
-    cy.log("Seeding the database...");
-    cy.exec("npm run db:seed", { timeout: 200000 });
-  });
-
   // Module leader logging in
   beforeEach(() => {
-    cy.login();
+    cy.login("leader@test.net");
   });
 
   // Pass if they can add a assessment's details
@@ -84,7 +79,9 @@ describe("Add a assessment", () => {
     cy.contains("label", "Assessment Title").should("have.value", ""); // Should still be on the same page as not submitted
 
     cy.getByTestId("name").then(($input: any) => {
-      expect($input[0].validationMessage).to.eq("Please fill out this field.");
+      // Had to change this to be browser-agnostic (not checking entire string,
+      // just that some of the string is what we expect it to be)
+      expect($input[0].validationMessage).to.include("Please fill");
     });
   });
 });

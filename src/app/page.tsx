@@ -1,25 +1,12 @@
-"use client";
-import AuthContext from "@/app/utils/authContext";
-import { signIn, useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/options";
+import { permanentRedirect } from "next/navigation";
 
-function UserPage() {
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    // If not signed in, redirect to the sign-in page automatically
-    if (status === "unauthenticated") {
-      signIn();
-    }
-  }, [status]);
-
-  if (status === "loading") {
-    return <p className="text-black">Loading...</p>;
-  }
+export default async function UserPage() {
+  const session = await getServerSession(authOptions);
 
   if (!session) {
-    // This will be briefly shown before the signIn() effect redirects the user
-    return <p>Redirecting to sign-in...</p>;
+    permanentRedirect("/admin/sign-in");
   }
 
   // Render the personalized greeting page if the session exists
@@ -43,11 +30,3 @@ function UserPage() {
     </div>
   );
 }
-
-const WrappedUserPage = () => (
-  <AuthContext>
-    <UserPage />
-  </AuthContext>
-);
-
-export default WrappedUserPage;

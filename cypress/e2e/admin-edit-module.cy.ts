@@ -1,18 +1,12 @@
 /// <reference types='cypress' />
 describe("Admin edit module page", () => {
-  before(() => {
-    cy.log("Seeding the database...");
-    cy.exec("npm run db:seed", { timeout: 200000 });
-  });
-
   beforeEach(() => {
-    Cypress.Cookies.debug(true, { verbose: true });
     cy.login();
     cy.visit("/admin/module-list");
   });
 
   it("should be able to access the edit module page", () => {
-    cy.get(".edit-button").first().should("be.visible").click();
+    cy.get(".edit-button").last().should("be.visible").click();
     cy.url().should("include", "/admin/module-list/edit/CM6127");
   });
 

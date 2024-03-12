@@ -1,0 +1,302 @@
+{
+  "tasksWithNoResponses": [
+    {
+      "assessment": {
+        "id": 1,
+        "assessment_name": "Cyber Security",
+        "assessment_type": "Coursework",
+        "hand_out_week": "2022-10-31T00:00:00.000Z",
+        "hand_in_week": "2022-11-28T00:00:00.000Z",
+        "module_id": 1,
+        "setter_id": 1,
+        "partSubmissions": []
+      },
+      "part": {
+        "id": 1,
+        "part_title": "Part 1",
+        "part_number": 1,
+        "role": "module_leader",
+        "next_part_id": 2,
+        "Question": [
+          {
+            "id": 1,
+            "question_title": "Question 1",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          },
+          {
+            "id": 2,
+            "question_title": "Question 2",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          }
+        ]
+      }
+    },
+    {
+      "assessment": {
+        "id": 2,
+        "assessment_name": "Database Systems",
+        "assessment_type": "Coursework",
+        "hand_out_week": "2022-10-31T00:00:00.000Z",
+        "hand_in_week": "2022-11-28T00:00:00.000Z",
+        "module_id": 2,
+        "setter_id": 2,
+        "partSubmissions": []
+      },
+      "part": {
+        "id": 2,
+        "part_title": "Part 2",
+        "part_number": 2,
+        "role": "internal",
+        "next_part_id": 3,
+        "Question": [
+          {
+            "id": 1,
+            "question_title": "Question 1",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          },
+          {
+            "id": 2,
+            "question_title": "Question 2",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          },
+          {
+            "id": 3,
+            "question_title": "Question 3",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          },
+          {
+            "id": 4,
+            "question_title": "Question 4",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          },
+          {
+            "id": 5,
+            "question_title": "Question 5",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          }
+        ]
+      }
+    }
+  ],
+  "tasksWithResponses": [
+    {
+      "assessment": {
+        "id": 1,
+        "assessment_name": "Cyber Security",
+        "assessment_type": "Coursework",
+        "hand_out_week": "2022-10-31T00:00:00.000Z",
+        "hand_in_week": "2022-11-28T00:00:00.000Z",
+        "module_id": 1,
+        "setter_id": 1,
+        "partSubmissions": []
+      },
+      "part": {
+        "id": 1,
+        "part_title": "Part 1",
+        "part_number": 1,
+        "role": "module_leader",
+        "next_part_id": 2,
+        "Question": [
+          {
+            "id": 1,
+            "question_title": "Question 1",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": [{}]
+          },
+          {
+            "id": 2,
+            "question_title": "Question 2",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          }
+        ]
+      }
+    },
+    {
+      "assessment": {
+        "id": 2,
+        "assessment_name": "Database Systems",
+        "assessment_type": "Coursework",
+        "hand_out_week": "2022-10-31T00:00:00.000Z",
+        "hand_in_week": "2022-11-28T00:00:00.000Z",
+        "module_id": 2,
+        "setter_id": 2,
+        "partSubmissions": []
+      },
+      "part": {
+        "id": 2,
+        "part_title": "Part 2",
+        "part_number": 2,
+        "role": "internal",
+        "next_part_id": 3,
+        "Question": [
+          {
+            "id": 1,
+            "question_title": "Question 1",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": [{}]
+          },
+          {
+            "id": 2,
+            "question_title": "Question 2",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          },
+          {
+            "id": 3,
+            "question_title": "Question 3",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          },
+          {
+            "id": 4,
+            "question_title": "Question 4",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          },
+          {
+            "id": 5,
+            "question_title": "Question 5",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": []
+          }
+        ]
+      }
+    }
+  ],
+  "tasksWithAllResponses": [
+    {
+      "assessment": {
+        "id": 1,
+        "assessment_name": "Cyber Security",
+        "assessment_type": "Coursework",
+        "hand_out_week": "2022-10-31T00:00:00.000Z",
+        "hand_in_week": "2022-11-28T00:00:00.000Z",
+        "module_id": 1,
+        "setter_id": 1,
+        "partSubmissions": []
+      },
+      "part": {
+        "id": 1,
+        "part_title": "Part 1",
+        "part_number": 1,
+        "role": "module_leader",
+        "next_part_id": 2,
+        "Question": [
+          {
+            "id": 1,
+            "question_title": "Question 1",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": [{}]
+          },
+          {
+            "id": 2,
+            "question_title": "Question 2",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": [{}]
+          }
+        ]
+      }
+    },
+    {
+      "assessment": {
+        "id": 2,
+        "assessment_name": "Database Systems",
+        "assessment_type": "Coursework",
+        "hand_out_week": "2022-10-31T00:00:00.000Z",
+        "hand_in_week": "2022-11-28T00:00:00.000Z",
+        "module_id": 2,
+        "setter_id": 2,
+        "partSubmissions": []
+      },
+      "part": {
+        "id": 2,
+        "part_title": "Part 2",
+        "part_number": 2,
+        "role": "internal",
+        "next_part_id": 3,
+        "Question": [
+          {
+            "id": 1,
+            "question_title": "Question 1",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": [{}]
+          },
+          {
+            "id": 2,
+            "question_title": "Question 2",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": [{}]
+          },
+          {
+            "id": 3,
+            "question_title": "Question 3",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": [{}]
+          },
+          {
+            "id": 4,
+            "question_title": "Question 4",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": [{}]
+          },
+          {
+            "id": 5,
+            "question_title": "Question 5",
+            "response_type": "string",
+            "part_id": 1,
+            "choices": [],
+            "Response": [{}]
+          }
+        ]
+      }
+    }
+  ]
+}

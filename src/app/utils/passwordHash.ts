@@ -1,6 +1,6 @@
-import bcrypt from "bcryptjs";
-import { Role } from "@prisma/client";
 import prisma from "@/app/db";
+import { Role } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 // Function to hash a password
 async function hashPassword(password: string): Promise<string> {

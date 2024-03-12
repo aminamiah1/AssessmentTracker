@@ -1,7 +1,10 @@
 # Use node as the base image
 FROM node:20.11.0-alpine3.18
 
+# This database is purely for the build process (as to not expose non-existent data)
+# and should point to a clean database, or a schema that is not in use by anything
 ENV DATABASE_URL ${DATABASE_URL_BUILD}
+
 ENV NEXTAUTH_URL ${NEXTAUTH_URL}
 ENV NEXTAUTH_SECRET ${NEXTAUTH_SECRET}
 

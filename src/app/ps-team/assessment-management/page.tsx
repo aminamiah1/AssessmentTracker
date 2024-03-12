@@ -1,27 +1,23 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import UnauthorizedAccess from "@/app/components/authError";
+import { AssessmentTiles, Module, User } from "@/app/types/interfaces";
+import uploadCSV from "@/app/utils/uploadCSV";
+import { Assessment_type } from "@prisma/client";
+import { useSession } from "next-auth/react"; // Import useSession and signInn
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { FiFilter, FiSearch } from "react-icons/fi";
+import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AssessmentTilePS from "../../components/ps-team/AssessmentTilePS";
-import AuthContext from "@/app/utils/authContext";
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signInn
-import { FiFilter } from "react-icons/fi";
-import { FiSearch } from "react-icons/fi"; // Search icon
-import Select from "react-select";
-import { Assessment_type } from "@prisma/client";
-import UnauthorizedAccess from "@/app/components/authError";
-// Import interfaces from interfaces.ts
-import { AssessmentTiles, Module, User } from "@/app/types/interfaces";
-import uploadCSV from "@/app/utils/uploadCSV";
-import Image from "next/image";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
-function ViewAssessmentsPSTeam() {
+export default function ViewAssessmentsPSTeam() {
   const [assessments, setAssessments] = useState<AssessmentTiles[]>([]); // Variable to hold an array of assessment object types
   const [searchTerm, setSearchTerm] = useState(""); // Set the search term to blank for default
-  const [isPSTeam, setIsPSTeam] = useState(false); // Confirm if the user is a ps team role type
-  const { data: session, status } = useSession(); // Use useSession to get session and status
+  const { data: session, status } = useSession({ required: true }); // Use useSession to get session and status
   const [modules, setModules] = useState<{ value: string; label: string }[]>(
     [],
   );
@@ -54,25 +50,6 @@ function ViewAssessmentsPSTeam() {
       setSelectedOption({ value: searchTerm, label: searchTerm });
     }
   }, [searchTerm]);
-
-  useEffect(() => {
-    if (session != null) {
-      // Check here from session.user.roles array if one of the entires is ps_team to set is ps team to true
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        if (roles.includes("ps_team")) {
-          // Set the current user as a ps team member to true
-          setIsPSTeam(true);
-        } else if (roles.includes("ps_team") === false) {
-          setIsPSTeam(false);
-        }
-      };
-
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      signIn();
-    }
-  }, [status]);
 
   useEffect(() => {
     const fetchAssessments = async () => {
@@ -109,8 +86,7 @@ function ViewAssessmentsPSTeam() {
       setUsers(processedUsers);
     };
 
-    // If ps team, then the fetch functions with run if there are errors retrieving the data then the arrays will be loaded as blank
-    if (isPSTeam === true) {
+    if (status === "authenticated" && isPSTeam) {
       try {
         fetchAssessments();
         fetchModules();
@@ -121,7 +97,7 @@ function ViewAssessmentsPSTeam() {
         setUsers([]);
       }
     }
-  }, [isPSTeam, refetch]);
+  }, [status, refetch]);
 
   // Set the search term based on select box filter option selected
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -203,6 +179,8 @@ function ViewAssessmentsPSTeam() {
       </div>
     );
   }
+
+  const isPSTeam = session.user.roles.includes("ps_team");
 
   return isPSTeam ? (
     <>
@@ -483,11 +461,3 @@ function ViewAssessmentsPSTeam() {
     <UnauthorizedAccess />
   );
 }
-
-const WrappedViewAssessments = () => (
-  <AuthContext>
-    <ViewAssessmentsPSTeam />
-  </AuthContext>
-);
-
-export default WrappedViewAssessments;

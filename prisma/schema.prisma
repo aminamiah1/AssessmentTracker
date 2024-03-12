@@ -36,47 +36,74 @@ model Module {
 }
 
 model Assessment {
-  id              Int        @id @default(autoincrement())
+  id              Int              @id @default(autoincrement())
   assessment_name String
   assessment_type Assessment_type
   hand_out_week   DateTime
   hand_in_week    DateTime
   module_id       Int
   setter_id       Int?
-  module          Module     @relation(fields: [module_id], references: [id], onDelete: Cascade)
-  setter          Users?     @relation(fields: [setter_id], references: [id], onDelete: Cascade)
+  module          Module           @relation(fields: [module_id], references: [id], onDelete: Cascade)
+  setter          Users?           @relation(fields: [setter_id], references: [id], onDelete: Cascade)
+  partSubmissions PartSubmission[]
   Response        Response[]
-  part            Part[]     @relation("AssessmentToPart")
-  assignees       Users[]    @relation("AssessmentsToUsers")
-
-  @@unique([assessment_name, module_id, hand_out_week, hand_in_week]) 
+  assignees       Users[]          @relation("AssessmentsToUsers")
   // Declare the composite unique key to stop duplicate assessment details being submitted through csv
+
+  @@unique([assessment_name, module_id, hand_out_week, hand_in_week])
+}
+
+// 'PartSubmission' is for keeping track of when parts have been submitted;
+// individual questions can be answered (i.e. Responses), but the part won't
+// be marked as submitted until they press the 'Submit' button - this will allow
+// the user to come back to the part and make changes before submitting
+model PartSubmission {
+  date_submitted DateTime   @default(now())
+  part_id        Int
+  assessment_id  Int
+  Part           Part       @relation(fields: [part_id], references: [id])
+  Assessment     Assessment @relation(fields: [assessment_id], references: [id])
+
+  @@id([part_id, assessment_id])
 }
 
 model Part {
-  id          Int          @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   part_title  String
   part_number Int
-  Question    Question[]
-  Assessment  Assessment[] @relation("AssessmentToPart")
+  role        Role
+
+  next_part_id  Int?
+  next_part     Part?  @relation("NextPart", fields: [next_part_id], references: [id])
+  previous_part Part[] @relation("NextPart")
+
+  Question       Question[]
+  PartSubmission PartSubmission[]
 }
 
 model Question {
   id             Int        @id @default(autoincrement())
   question_title String
+  response_type  Data_type
   part_id        Int
+  choices        String[]
   Part           Part       @relation(fields: [part_id], references: [id])
   Response       Response[]
 }
 
 model Response {
-  id            Int        @id @default(autoincrement())
-  value         String
-  data_type     Data_type
+  date_completed DateTime @default(now())
+  value          String
+
   assessment_id Int
-  question_id   Int
   Assessment    Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
-  Question      Question   @relation(fields: [question_id], references: [id])
+
+  question_id Int
+  Question    Question @relation(fields: [question_id], references: [id])
+
+  // Create a compound primary key - we don't want to allow the same question
+  // to be answered twice for a single assessment
+  @@id([assessment_id, question_id])
 }
 
 enum Role {
@@ -91,17 +118,16 @@ enum Role {
 enum Data_type {
   boolean
   string
-  integer
-  date_time
 }
 
-enum Assessment_type{
+enum Assessment_type {
   Written_Assessment
   Practical_Based_Assessment
   Class_Test
   Portfolio
-  Exam_Online 
+  Exam_Online
 }
+
 enum ModuleStatus {
   active
   inactive

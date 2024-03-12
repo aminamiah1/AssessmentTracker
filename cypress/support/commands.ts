@@ -2,8 +2,9 @@ import "cypress-file-upload";
 
 /// <reference types="cypress" />
 
+import "cypress-file-upload";
 import { mount } from "cypress/react18";
-import { SessionProvider } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 // ***********************************************
 // This example commands.ts shows you how to
@@ -61,12 +62,18 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add("login", () => {
-  cy.visit("/api/auth/signin");
-  cy.wait(2000);
-  cy.get("#input-email-for-credentials-provider").type("testemail@test.net");
-  cy.get("#input-password-for-credentials-provider").type("securepassword");
-  cy.get("button").click();
+/**
+ * Log in to the website as a user.  By default, you will sign in as a module leader.
+ * @param {string} email - The email of the user to sign in as.
+ */
+Cypress.Commands.add("login", (email: string = "leader@test.net") => {
+  cy.wrap(
+    signIn("credentials", {
+      email,
+      password: "securepassword",
+      redirect: false,
+    }),
+  );
 });
 
 Cypress.Commands.add("mount", (component, options) => {

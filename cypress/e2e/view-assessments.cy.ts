@@ -1,12 +1,7 @@
 describe("View assessments", () => {
-  before(() => {
-    cy.log("Seeding the database...");
-    cy.exec("npm run db:seed", { timeout: 200000 });
-  });
-
   // Module leader logging in
   beforeEach(() => {
-    cy.login();
+    cy.login("leader@test.net");
   });
 
   // Pass if they can view assessments

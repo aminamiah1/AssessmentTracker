@@ -1,6 +1,6 @@
 describe("Create Module Form", () => {
   beforeEach(() => {
-    cy.login();
+    cy.login("ps@test.net");
   });
 
   it("validates module code format", () => {

@@ -1,37 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import uploadCSV from "@/app/utils/uploadUsersCSV";
-import { signIn, useSession } from "next-auth/react";
-import Image from "next/image";
 import UnauthorizedAccess from "@/app/components/authError";
-import AuthContext from "@/app/utils/authContext";
+import uploadCSV from "@/app/utils/uploadUsersCSV";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import React, { useState } from "react";
 
-const UploadUsersPage = () => {
+export default function UploadUsersPage() {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
-  const [isPSTeam, setIsPSTeam] = useState(false);
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (session != null) {
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        console.log(session.user.roles);
-        if (roles.includes("ps_team")) {
-          setIsPSTeam(true);
-        } else {
-          setIsPSTeam(false);
-          // Set to false if not part of ps_team
-        }
-      };
-
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      // If not an authenticated user then make them sign-in
-      signIn();
-    }
-  }, [session, status]);
+  const { data: session, status } = useSession({ required: true });
 
   if (status === "loading") {
     return (
@@ -40,6 +18,8 @@ const UploadUsersPage = () => {
       </div>
     );
   }
+
+  const isPSTeam = session.user.roles.includes("ps_team");
 
   if (!isPSTeam) {
     return (
@@ -119,12 +99,4 @@ const UploadUsersPage = () => {
   ) : (
     <UnauthorizedAccess />
   );
-};
-
-const WrappedUploadUsersPage = () => (
-  <AuthContext>
-    <UploadUsersPage />
-  </AuthContext>
-);
-
-export default WrappedUploadUsersPage;
+}

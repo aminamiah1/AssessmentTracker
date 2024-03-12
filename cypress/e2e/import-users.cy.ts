@@ -1,6 +1,6 @@
 describe("UploadUsersPage Tests", () => {
   beforeEach(() => {
-    cy.login();
+    cy.login("ps@test.net");
     cy.visit("/ps-team/user-management/upload");
   });
 

@@ -1,10 +1,9 @@
 "use client";
-import React, { useState, FC, PropsWithChildren, useEffect } from "react";
-import Link from "next/link";
+
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { signIn, useSession } from "next-auth/react";
-import AuthContext from "../utils/authContext";
-import DarkModeToggle from "./darkModeToggle";
+import Link from "next/link";
+import React, { FC, PropsWithChildren, useState } from "react";
 import {
   FaArrowLeft,
   FaArrowRight,
@@ -12,39 +11,30 @@ import {
   FaList,
   FaUsers,
 } from "react-icons/fa";
+import DarkModeToggle from "./darkModeToggle";
 
 interface NavbarProps {}
 
-const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
   const { data: session, status } = useSession();
-  const [isPSTeam, setIsPSTeam] = useState(false);
-  const [isModuleLeader, setIsModuleLeader] = useState(false);
-  const [showNavbar, setShowNavbar] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      window.location.pathname === "/admin/sign-in"
-    ) {
-      setShowNavbar(false);
-      return;
-    }
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
-    if (session) {
-      const roles = session.user.roles || [];
-      setIsPSTeam(roles.includes("ps_team"));
-      setIsModuleLeader(roles.includes("module_leader"));
-    } else if (status === "unauthenticated") {
-      signIn();
-    }
-  }, [session, status]);
+  if (status === "unauthenticated" || !session) {
+    return <main>{children}</main>;
+  }
+
+  const isPSTeam = session!.user.roles.includes("ps_team");
+  const isModuleLeader = session!.user.roles.includes("module_leader");
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-
-  if (!showNavbar) {
-    return <>{children}</>;
-  }
 
   return (
     <>
@@ -219,9 +209,7 @@ const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
 };
 
 const WrappedNavbar: React.FC<PropsWithChildren<{}>> = ({ children }) => (
-  <AuthContext>
-    <Navbar>{children}</Navbar>
-  </AuthContext>
+  <Navbar>{children}</Navbar>
 );
 
 export default WrappedNavbar;

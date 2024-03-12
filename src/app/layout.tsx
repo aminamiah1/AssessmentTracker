@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
+import Navbar from "./components/navbar";
 import "./globals.css";
-import WrappedNavbar from "./components/navbar";
+import AuthContext from "./utils/authContext";
 
 export const metadata: Metadata = {
   title: "Assessment Tracker",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -14,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <WrappedNavbar>{children}</WrappedNavbar>
+        <AuthContext>
+          <Navbar>{children}</Navbar>
+        </AuthContext>
       </body>
     </html>
   );

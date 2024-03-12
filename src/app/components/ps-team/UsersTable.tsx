@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { FaEdit, FaTrash } from "react-icons/fa"; // Trash can icon
+import { FiSearch } from "react-icons/fi"; // Search icon
 import { useTable } from "react-table";
 import { toast } from "react-toastify";
 import EditUser from "./EditUser";
-import { FiSearch } from "react-icons/fi"; // Search icon
-import { FaTrash } from "react-icons/fa"; // Trash can icon
-import { FaEdit } from "react-icons/fa"; // Edit icon
 
 interface User {
   id: number;

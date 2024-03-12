@@ -5,6 +5,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       mount: typeof mount;
+      mountNoCache: typeof mount;
     }
   }
 }

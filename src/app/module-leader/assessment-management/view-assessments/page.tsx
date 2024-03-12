@@ -1,50 +1,26 @@
 "use client";
-import React, { useState, useEffect } from "react";
+
+import UnauthorizedAccess from "@/app/components/authError";
+import { AssessmentLoad } from "@/app/types/interfaces";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { FiArrowLeft, FiSearch } from "react-icons/fi"; // Return arrow icon
 import { ToastContainer } from "react-toastify";
 import AssessmentTile from "../../../components/module-leader/AssessmentTile";
-import { FiArrowLeft } from "react-icons/fi"; // Return arrow icon
-import { FiSearch } from "react-icons/fi"; // Search icon
-import Link from "next/link";
-import AuthContext from "@/app/utils/authContext";
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
-import UnauthorizedAccess from "@/app/components/authError";
-// Import interfaces from interfaces.ts
-import { AssessmentLoad } from "@/app/types/interfaces";
 
-function ViewAssessmentsModuleLeaders() {
+export default function ViewAssessmentsModuleLeaders() {
   const [assessments, setAssessments] = useState<AssessmentLoad[]>([]); // Variable to hold an array of assessment object types
   const [setterId, setSetterId] = useState(0);
   const [searchTerm, setSearchTerm] = useState(""); // Set the search term to blank for default
-  const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
-  const { data: session, status } = useSession(); // Use useSession to get session and status
-
-  useEffect(() => {
-    if (session != null) {
-      // Check here from session.user.roles array if one of the entires is module_leader to set is module leader to true
-      const checkRoles = () => {
-        const roles = session.user.roles;
-        if (roles.includes("module_leader")) {
-          // Set the assessment setter id to the current user
-          setSetterId(parseInt(session.user.id as string, 10));
-          // Set the current user as a module leader to true
-          setIsModuleLeader(true);
-        } else if (roles.includes("module_leader") === false) {
-          setIsModuleLeader(false);
-        }
-      };
-
-      checkRoles();
-    } else if (status === "unauthenticated") {
-      signIn();
-    }
-  }, [status]);
+  const { data: session, status } = useSession({ required: true }); // Use useSession to get session and status
 
   useEffect(() => {
     const fetchAssessments = async () => {
       // Fetch assessments only when component mounts
       try {
         const response = await fetch(
-          `/api/module-leader/assessments/get/?id=${setterId}`,
+          `/api/module-leader/assessments/get?id=${setterId}`,
         );
         const data = await response.json();
         const sortedAssessments = data.sort(
@@ -56,10 +32,16 @@ function ViewAssessmentsModuleLeaders() {
       }
     };
 
-    if (isModuleLeader === true && setterId != 0) {
+    if (isModuleLeader && setterId !== 0) {
       fetchAssessments();
     }
-  }, [isModuleLeader]);
+  }, [setterId]);
+
+  useEffect(() => {
+    if (status === "authenticated" && isModuleLeader) {
+      setSetterId(+session.user.id);
+    }
+  }, [status]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -81,6 +63,8 @@ function ViewAssessmentsModuleLeaders() {
       </div>
     );
   }
+
+  const isModuleLeader = session.user.roles.includes("module_leader");
 
   return isModuleLeader ? (
     <main className="bg-white">
@@ -134,11 +118,3 @@ function ViewAssessmentsModuleLeaders() {
     <UnauthorizedAccess />
   );
 }
-
-const WrappedViewAssessments = () => (
-  <AuthContext>
-    <ViewAssessmentsModuleLeaders />
-  </AuthContext>
-);
-
-export default WrappedViewAssessments;

@@ -1,11 +1,6 @@
 describe("User profile menu", () => {
-  before(() => {
-    cy.log("Seeding the database...");
-    cy.exec("npm run db:seed", { timeout: 200000 });
-  });
-
   beforeEach(() => {
-    cy.login();
+    cy.login("ps@test.net");
   });
 
   it("Profile menu is visible at the top of the page", () => {
@@ -19,9 +14,8 @@ describe("User profile menu", () => {
 
   it("Shows profile details for current user", () => {
     cy.getByTestId("profilePic").click();
-    cy.contains("p", "testemail@test.net").should("be.visible");
-    cy.contains("p", "Test User").should("be.visible");
-    cy.contains("p", "module leader").should("be.visible");
+    cy.contains("p", "ps@test.net").should("be.visible");
+    cy.contains("p", "PS Team User").should("be.visible");
     cy.contains("p", "ps team").should("be.visible");
   });
 

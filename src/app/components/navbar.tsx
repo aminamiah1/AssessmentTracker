@@ -11,12 +11,16 @@ import {
   FaList,
   FaUsers,
 } from "react-icons/fa";
+import UserMenu from "@/app/components/navbarPopUps/userMenu"; // Import the UserMenu component
 import DarkModeToggle from "./darkModeToggle";
 
 interface NavbarProps {}
 
 export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
   const { data: session, status } = useSession();
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false); // State to manage user menu open/close
+  const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen); // Toggle open/close state function
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   if (status === "loading") {
@@ -65,7 +69,9 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                     type="button"
                     className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                     aria-expanded="false"
+                    data-cy="profilePic"
                     data-dropdown-toggle="dropdown-user"
+                    onClick={toggleUserMenu}
                   >
                     <span className="sr-only">Open user menu</span>
                     <Image
@@ -76,7 +82,12 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                       height={10}
                     />
                   </button>
+                  {/* Render UserMenu component conditionally based on state controlled by clicking profile picture */}
+                  <UserMenu isOpen={isUserMenuOpen} />
                 </div>
+                <p className="text-black ml-4 dark:text-white">
+                  {session ? session.user.name : ""}
+                </p>
                 <div
                   className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
                   id="dropdown-user"

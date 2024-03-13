@@ -41,7 +41,7 @@ export function TextArea({
         aria-required
         required
         data-cy="response"
-        className="w-full min-h-32 dark:bg-slate-500"
+        className="w-full min-h-32 dark:bg-slate-500 outline outline-1"
         name={questionId}
         onBlur={handleBlur}
         onChange={handleChange}

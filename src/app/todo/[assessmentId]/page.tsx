@@ -17,11 +17,11 @@ export default async function Page({ params }: PageProps) {
   const { assessmentId } = params;
 
   return (
-    <>
-      <div className="text-center">
+    <div className="text-center w-full flex flex-col items-center dark:bg-slate-800">
+      <div>
         <h1 className={`text-3xl text-black dark:text-white`}></h1>
       </div>
       <PartTodoByFetch assessmentId={+assessmentId} />
-    </>
+    </div>
   );
 }

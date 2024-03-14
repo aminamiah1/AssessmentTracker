@@ -6,7 +6,7 @@ describe("Authentication", () => {
     cy.get("button").contains("Sign in").click();
     cy.url().should("include", "/");
 
-    const expectedUserName = "Module Leader";
+    const expectedUserName = "Liam Leader";
     cy.get("body").should("contain", `Hi ${expectedUserName}!`);
   });
 

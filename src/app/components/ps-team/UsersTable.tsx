@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaToggleOff } from "react-icons/fa"; // Trash can icon
+import { FaEdit, FaToggleOff, FaTrash } from "react-icons/fa"; // Trash can icon
 import { FiSearch } from "react-icons/fi"; // Search icon
 import { useTable } from "react-table";
 import { toast } from "react-toastify";

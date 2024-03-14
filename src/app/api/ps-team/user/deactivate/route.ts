@@ -32,7 +32,12 @@ export async function POST(NextRequest: NextRequest) {
         },
       });
     } catch (error) {
-      return { error: "Database Error: Failed to edit user Status." };
+      return new NextResponse(
+        JSON.stringify({ message: "Error updating user status." }),
+        {
+          status: 500,
+        },
+      );
     }
 
     // Respond with success message or redirect

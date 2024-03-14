@@ -32,10 +32,15 @@ export async function POST(NextRequest: NextRequest) {
         },
       });
     } catch (error) {
-      return { error: "Database Error: Failed to edit user Status." };
+      return new NextResponse(
+        JSON.stringify({ message: "User activation successful!" }),
+        {
+          status: 200,
+        },
+      );
     }
 
-    // Respond with success message or redirect
+    // Respond with success message
     return new NextResponse(
       JSON.stringify({ message: "User activation successful!" }),
       {
@@ -44,6 +49,7 @@ export async function POST(NextRequest: NextRequest) {
     );
   } catch (error) {
     console.error("Error activating user:", error);
+    // Respond with error message
     return new NextResponse(
       JSON.stringify({ message: "Error internal server error." }),
       {

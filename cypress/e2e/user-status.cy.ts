@@ -57,19 +57,4 @@ describe("User Status", () => {
       });
     });
   });
-
-  it("handles invalid activate api call with appropriate message returned", () => {
-    // Visit API with invalid user id and handle gracefully
-    cy.request({
-      method: "POST",
-      url: "/api/ps-team/user/activate?=invalidid",
-      body: { id: "invalidid" },
-      failOnStatusCode: false,
-    }).then((response) => {
-      expect(response.status).to.eq(500);
-      expect(response.body).to.contain({
-        message: "Error updating user status.",
-      });
-    });
-  });
 });

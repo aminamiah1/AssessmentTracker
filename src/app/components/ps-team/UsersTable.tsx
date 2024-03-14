@@ -25,7 +25,7 @@ const UsersTable: React.FC = () => {
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
   const [userToActivate, setUserToActivate] = useState<User | null>(null);
-  const [isInActiveFilter, setIsActiveFilter] = useState(false); // null means show all users
+  const [isInActiveFilter, setIsActiveFilter] = useState(false); // false means show all users
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -150,7 +150,7 @@ const UsersTable: React.FC = () => {
           toast.error("Network error please try again");
         });
 
-      toast.success("activating user successful!");
+      toast.success("Activating user successful!");
       setShowActivateModal(false);
       setRefetch(refetch + 1);
     } catch (error) {
@@ -210,7 +210,7 @@ const UsersTable: React.FC = () => {
                     setShowDeactivateModal(true);
                   }}
                   className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
-                  data-cy="DeactivateUser"
+                  data-cy="deactivateButton"
                 >
                   <FaToggleOff className="cursor-pointer" size={30} />
                 </button>
@@ -227,6 +227,7 @@ const UsersTable: React.FC = () => {
                     setUserToActivate(id);
                     setShowActivateModal(true);
                   }}
+                  data-cy="activateButton"
                   className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
                 >
                   <FaToggleOff className="cursor-pointer" size={30} />
@@ -278,6 +279,7 @@ const UsersTable: React.FC = () => {
               ? "bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded ml-2 flex"
               : ""
           }
+          data-cy="toggleStatusViewButton"
         >
           <FaToggleOff className="mr-2 mb-2 text-black" size={30} />
           {isInActiveFilter === null
@@ -358,7 +360,7 @@ const UsersTable: React.FC = () => {
               </button>
               <button
                 className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                data-cy="DeactivateUserConfirm"
+                data-cy="deactivateConfirmButton"
                 onClick={() => handleDeactivate(userToDeactivate)}
               >
                 De-activate
@@ -376,7 +378,7 @@ const UsersTable: React.FC = () => {
         {userToActivate && (
           <div className="bg-white p-5 border border-black rounded-lg">
             <p className="text-black">
-              Are you sure you want to Activate user: {userToActivate.name}?
+              Are you sure you want to activate user: {userToActivate.name}?
             </p>
             <div className="flex justify-between mt-4">
               <button
@@ -387,7 +389,7 @@ const UsersTable: React.FC = () => {
               </button>
               <button
                 className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                data-cy="DeactivateUserConfirm"
+                data-cy="activateConfirmButton"
                 onClick={() => handleActivate(userToActivate)}
               >
                 Activate

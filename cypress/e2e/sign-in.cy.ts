@@ -21,7 +21,9 @@ describe("Authentication", () => {
     );
     cy.get("button").click();
     cy.get("div")
-      .contains("Check the details you provided are correct.")
+      .contains(
+        "Check the details you provided are correct and not for an inactive account.",
+      )
       .should("be.visible");
   });
 });

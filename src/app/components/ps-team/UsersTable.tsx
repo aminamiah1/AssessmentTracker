@@ -11,6 +11,7 @@ interface User {
   name: string;
   password: string;
   roles: [];
+  status: string;
 }
 
 const UsersTable: React.FC = () => {
@@ -22,6 +23,7 @@ const UsersTable: React.FC = () => {
   const [refetch, setRefetch] = useState(0);
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
+  const [isInActiveFilter, setIsActiveFilter] = useState(false); // null means show all users
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -29,9 +31,13 @@ const UsersTable: React.FC = () => {
         try {
           const response = await fetch("/api/ps-team/users/get");
           const data = await response.json();
-          const sortedUsers = data.sort((a: User, b: User) => a.id - b.id);
-          setUsers(sortedUsers);
-          setFilteredUsers(sortedUsers);
+          const users = data.sort((a: User, b: User) => a.id - b.id);
+          // Filter users if inactive else show all users
+          const filteredUsers =
+            isInActiveFilter !== false
+              ? users.filter((user: User) => user.status === "inactive")
+              : users.filter((user: User) => user.status === "active");
+          setFilteredUsers(filteredUsers);
         } catch (e) {
           setUsers([]);
           setFilteredUsers([]);
@@ -40,7 +46,7 @@ const UsersTable: React.FC = () => {
     };
 
     fetchUsers();
-  }, [search, refetch]);
+  }, [isInActiveFilter, search, refetch]);
 
   const handleSearch = (event: any) => {
     setSearch(event.target.value);
@@ -207,6 +213,21 @@ const UsersTable: React.FC = () => {
           placeholder="Enter name or user role..."
           className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
         />
+        <button
+          onClick={() => setIsActiveFilter(!isInActiveFilter)}
+          className={
+            isInActiveFilter !== null
+              ? "bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded ml-2 flex"
+              : ""
+          }
+        >
+          <FaToggleOff className="mr-2 mb-2 text-black" size={30} />
+          {isInActiveFilter === null
+            ? "All Users"
+            : isInActiveFilter
+              ? "Currently Inactive Users Shown"
+              : "Currently Active Users Shown"}
+        </button>
       </div>
       <EditUser
         show={showEditUserModal}

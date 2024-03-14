@@ -15,14 +15,12 @@ export async function GET(request: Request) {
     }
 
     const users = await prisma.users.findMany({
-      where: {
-        status: UserStatus.active,
-      },
       select: {
         id: true,
         name: true,
         email: true,
         roles: true,
+        status: true,
       },
     });
 

@@ -21,8 +21,10 @@ const UsersTable: React.FC = () => {
   const [search, setSearch] = React.useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [refetch, setRefetch] = useState(0);
+  const [showActivateModal, setShowActivateModal] = useState(false);
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
+  const [userToActivate, setUserToActivate] = useState<User | null>(null);
   const [isInActiveFilter, setIsActiveFilter] = useState(false); // null means show all users
 
   useEffect(() => {
@@ -119,7 +121,40 @@ const UsersTable: React.FC = () => {
       setShowDeactivateModal(false);
       setRefetch(refetch + 1);
     } catch (error) {
-      toast.error("Error deleting user");
+      toast.error("Error de-activating user");
+    }
+  };
+
+  const handleActivate = async (user: User) => {
+    try {
+      setSearch(" ");
+
+      var id = user.id;
+
+      fetch(`/api/ps-team/user/activate?id=${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            setSearch("");
+            setUsers(users.filter((u) => u.id !== id));
+          } else {
+            toast.error("'Error activating user");
+          }
+        })
+        .catch((error) => {
+          toast.error("Network error please try again");
+        });
+
+      toast.success("activating user successful!");
+      setShowActivateModal(false);
+      setRefetch(refetch + 1);
+    } catch (error) {
+      toast.error("Error activating user");
     }
   };
 
@@ -163,20 +198,43 @@ const UsersTable: React.FC = () => {
           return capitalizedRoles.join(" ● ");
         },
       },
-      {
-        Header: "De-Activate",
-        accessor: (id: User) => (
-          <button
-            onClick={() => {
-              setUserToDeactivate(id);
-              setShowDeactivateModal(true);
-            }}
-            data-cy="DeactivateUser"
-          >
-            <FaToggleOff className="cursor-pointer" size={30} />
-          </button>
-        ),
-      },
+      ...(isInActiveFilter
+        ? [] // Check filter to determine whether to show de-activate column
+        : [
+            {
+              Header: "De-Activate",
+              accessor: (id: User) => (
+                <button
+                  onClick={() => {
+                    setUserToDeactivate(id);
+                    setShowDeactivateModal(true);
+                  }}
+                  className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                  data-cy="DeactivateUser"
+                >
+                  <FaToggleOff className="cursor-pointer" size={30} />
+                </button>
+              ),
+            },
+          ]),
+      ...(isInActiveFilter // Check filter to determine whether to show activate column
+        ? [
+            {
+              Header: "Re-Activate",
+              accessor: (id: User) => (
+                <button
+                  onClick={() => {
+                    setUserToActivate(id);
+                    setShowActivateModal(true);
+                  }}
+                  className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                >
+                  <FaToggleOff className="cursor-pointer" size={30} />
+                </button>
+              ),
+            },
+          ]
+        : []),
       {
         Header: "Edit",
         accessor: (id: User) => (
@@ -186,7 +244,7 @@ const UsersTable: React.FC = () => {
         ),
       },
     ],
-    [],
+    [isInActiveFilter],
   );
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -304,6 +362,35 @@ const UsersTable: React.FC = () => {
                 onClick={() => handleDeactivate(userToDeactivate)}
               >
                 De-activate
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div
+        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
+          showActivateModal ? "block" : "hidden"
+        }`}
+      >
+        {userToActivate && (
+          <div className="bg-white p-5 border border-black rounded-lg">
+            <p className="text-black">
+              Are you sure you want to Activate user: {userToActivate.name}?
+            </p>
+            <div className="flex justify-between mt-4">
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setShowActivateModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                data-cy="DeactivateUserConfirm"
+                onClick={() => handleActivate(userToActivate)}
+              >
+                Activate
               </button>
             </div>
           </div>

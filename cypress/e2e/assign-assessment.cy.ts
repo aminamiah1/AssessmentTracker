@@ -39,6 +39,8 @@ describe("Assign users by pop-up form activated on assessment tile button", () =
 
     cy.contains("button", "Submit").click();
 
-    cy.getByTestId("assigneeText").eq(0).should("have.text", "Module Leader");
+    cy.getByTestId("assigneeText")
+      .eq(0)
+      .should("have.text", "Liam Leader  ● module leader");
   });
 });

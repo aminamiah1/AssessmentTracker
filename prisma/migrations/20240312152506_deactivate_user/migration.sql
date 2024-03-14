@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "UserStatus" AS ENUM ('active', 'inactive', 'expired');
+CREATE TYPE "UserStatus" AS ENUM ('active', 'inactive');
  
 -- AlterTable
 ALTER TABLE "users" ADD COLUMN "status" "UserStatus";

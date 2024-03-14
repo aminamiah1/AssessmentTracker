@@ -137,5 +137,4 @@ enum ModuleStatus {
 enum UserStatus {
   active
   inactive
-  expired
 }

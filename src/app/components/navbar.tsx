@@ -103,7 +103,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
       <aside
         id="logo-sidebar"
         className={`fixed top-0 left-0 z-20 h-screen pt-20 bg-white border-r border-gray-300 dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 ease-in-out shadow-md ${
-          isSidebarOpen ? "w-64" : "w-16"
+          isSidebarOpen ? "min-w-max" : "w-16"
         }`}
         aria-label="Sidebar"
       >

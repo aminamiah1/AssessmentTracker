@@ -19,11 +19,12 @@ export function NavItem({ icon, isSidebarOpen, href, text }: NavItemProps) {
     <li>
       <Link
         href={href}
-        className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+        className={`p-2 ${isSidebarOpen ? "pl-5 justify-start" : "justify-center"}
+        min-h-12 flex items-center text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group`}
       >
         {modifiedIcon}
         <span
-          className={`${isSidebarOpen ? "flex-1 ms-3 whitespace-nowrap" : "hidden"} text-lg`}
+          className={`${isSidebarOpen ? "flex-1 whitespace-nowrap" : "hidden"} mx-2 text-lg`}
         >
           {text}
         </span>

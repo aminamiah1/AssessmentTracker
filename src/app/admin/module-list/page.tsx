@@ -51,8 +51,8 @@ export default function ModuleList() {
   }
 
   // Render the module list if authenticated
-  const isModuleLeader = session.user.roles.includes("module_leader");
-  return isModuleLeader ? (
+  const isPSTeam = session.user.roles.includes("ps_team");
+  return isPSTeam ? (
     <>
       <div className="bg-white dark:bg-darkmode h-screen max-h-full">
         <h1

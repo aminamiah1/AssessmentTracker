@@ -197,14 +197,6 @@ export default function ViewAssessmentsPSTeam() {
               }}
             >
               <h1 className="text-3xl">All Assessments Overview</h1>
-              <button
-                className="bg-gray-200 text-black h-10 mt-5 rounded"
-                style={{ width: "10rem" }}
-                onClick={() => setIsPopUpOpen(true)}
-                data-cy="importCSVButton"
-              >
-                Import CSV
-              </button>
             </div>
           </div>
           <div>
@@ -317,13 +309,19 @@ export default function ViewAssessmentsPSTeam() {
               </div>
               <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2">
                 <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
-                  <div className="w-full">
+                  <div className="w-full flex">
                     <button
-                      className="bg-gray-200 text-black h-10 mt-5 rounded"
-                      style={{ width: "100%", minWidth: "20rem" }}
+                      className="bg-gray-200 text-black h-10 mt-5 rounded w-1/2 min-w-[10rem]"
                       onClick={handleReset}
                     >
                       Reset Filter
+                    </button>
+                    <button
+                      className="bg-gray-200 text-black h-10 mt-5 ml-2 rounded w-1/2 min-w-[10rem]"
+                      onClick={() => setIsPopUpOpen(true)}
+                      data-cy="importCSVButton"
+                    >
+                      Import CSV
                     </button>
                   </div>
                 </div>

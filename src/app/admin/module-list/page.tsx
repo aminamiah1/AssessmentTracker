@@ -1,11 +1,13 @@
 "use client";
-
 import SearchBar from "@/app/components/SearchBar/SearchBar";
 import UnauthorizedAccess from "@/app/components/authError";
+import { archiveModule } from "@/app/actions/module-status";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdArchive, MdEdit } from "react-icons/md";
 
 export const dynamic = "force-dynamic";
 
@@ -36,11 +38,19 @@ export default function ModuleList() {
       const fetchedModules: ModuleData = await getModules(searchTerm);
       setModules(fetchedModules);
     }
-    if (session) {
-      // Fetch modules only if the session exists
-      fetchModules();
-    }
+    fetchModules();
   }, [searchTerm, session]);
+
+  async function handleArchiveModule(moduleCode: string) {
+    const res = await archiveModule(moduleCode);
+    if (res.error) {
+      toast.error(res.error, { position: "bottom-right" });
+    } else if (res.success) {
+      toast.success(res.success, { position: "bottom-right" });
+    }
+
+    setModules(modules.filter(({ module_code }) => module_code !== moduleCode));
+  }
 
   if (status === "loading") {
     return (
@@ -55,6 +65,7 @@ export default function ModuleList() {
   return isPSTeam ? (
     <>
       <div className="bg-white dark:bg-darkmode h-screen max-h-full">
+        <ToastContainer />
         <h1
           className="text-4xl px-4 py-5 text-gray-900 dark:text-gray-100"
           data-cy="page-title"
@@ -81,7 +92,8 @@ export default function ModuleList() {
             modules.map((module) => (
               <div
                 key={module.id}
-                className="module-card flex justify-between items-center text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border dark:border-gray-700 shadow-md dark:shadow-gray-500 rounded p-4"
+                data-cy="module-card"
+                className="flex justify-between items-center text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border dark:border-gray-700 shadow-md dark:shadow-gray-500 rounded p-4"
               >
                 <div className="mr-4">
                   <h3 className="text-xl">{module.module_name}</h3>
@@ -90,12 +102,17 @@ export default function ModuleList() {
                 <div className="flex gap-4">
                   <Link
                     href={`/admin/module-list/edit/${module.module_code}`}
-                    className="edit-button px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    data-cy="edit-button"
+                    className="px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
                     <MdEdit />
                   </Link>
-                  <button className="delete-button px-3 py-2 text-2xl border rounded transition-all bg-red-600 dark:bg-red-800 text-gray-100 hover:bg-red-700">
-                    <MdDelete />
+                  <button
+                    data-cy="archive-button"
+                    className="px-3 py-2 text-2xl border rounded transition-all bg-gray-600 dark:bg-gray-600 text-gray-100 hover:bg-gray-700"
+                    onClick={() => handleArchiveModule(module.module_code)}
+                  >
+                    <MdArchive />
                   </button>
                 </div>
               </div>

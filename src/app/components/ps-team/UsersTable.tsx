@@ -25,7 +25,7 @@ const UsersTable: React.FC = () => {
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
   const [userToActivate, setUserToActivate] = useState<User | null>(null);
-  const [isInActiveFilter, setIsActiveFilter] = useState(false); // false means show all users
+  const [isInActiveFilter, setIsActiveFilter] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {

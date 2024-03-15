@@ -18,6 +18,9 @@ describe("User Status", () => {
       "have.text",
       "Currently Inactive Users Shown",
     );
+
+    // Inactive user is shown
+    cy.getByTestId("userName").should("have.text", "Liam Leader");
   });
 
   // Activate a user account
@@ -41,6 +44,9 @@ describe("User Status", () => {
       "have.text",
       "Currently Active Users Shown",
     );
+
+    // Active user is shown
+    cy.getByTestId("userName").should("have.text", "Liam Leader");
   });
 
   it("handles invalid deactivate api call with appropriate message returned", () => {

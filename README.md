@@ -208,11 +208,21 @@ cy.login("internal@test.net"); // Now you have access to the site as an internal
 
 ## Useful Commands
 
-Others may be added as more tests are added.
+To start testing, you will need to start the test server, which runs on port 3001. This aims to separate development data from the necessary persistent test data.
+To start the test server locally, use:
+
+`npm run dev:test`
+
+To start the different test suites (in another terminal):
 
 `npm run test:e2e`
+`npm run test:component`
 
-If you plan to add any different paths for whatever reason inside the cypress folder, be sure to update the .gitlab-ci.yml and npm run test:all script in package.json as well with the updated tests so that we know all tests are running.
+Others may be added as more tests are added.
+
+When tests are run, the database is automatically seeded, so that tests are always using the same dataset.
+
+If you plan to add any different paths for whatever reason inside the cypress folder, be sure to update the .gitlab-ci.yml with the updated tests so that we know all tests are running.
 
 ## Contributing
 

@@ -16,7 +16,7 @@ describe("User Status", () => {
 
     cy.getByTestId("toggleStatusViewButton").should(
       "have.text",
-      "Currently Inactive Users Shown",
+      "Inactive Users",
     );
 
     // Inactive user is shown
@@ -42,7 +42,7 @@ describe("User Status", () => {
 
     cy.getByTestId("toggleStatusViewButton").should(
       "have.text",
-      "Currently Active Users Shown",
+      "Active Users",
     );
 
     // Active user is shown

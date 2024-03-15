@@ -3,6 +3,8 @@ import {
   getModuleName,
   editModuleName,
   editModuleCode,
+  getModuleLeaders,
+  updateModuleLeaders,
 } from "@/app/actions/module-form";
 
 export default async function EditModule({
@@ -10,6 +12,8 @@ export default async function EditModule({
 }: {
   params: { moduleCode: string };
 }) {
+  const moduleLeaders = await getModuleLeaders();
+  const { moduleCode } = params;
   return (
     <>
       <div className="flex flex-col justify-center items-center p-10 w-full min-h-fit h-full">
@@ -78,6 +82,46 @@ export default async function EditModule({
                 <RiSave3Fill />
               </button>
             </div>
+          </form>
+          <form
+            action={async (f) => {
+              "use server";
+              updateModuleLeaders(moduleCode, f);
+            }}
+            className="flex flex-col gap-2"
+          >
+            <label
+              htmlFor="new-leader-ids"
+              className="flex justify-start items-center col-span-2"
+            >
+              Update Module Leader(s)
+            </label>
+            {moduleLeaders.length > 0 ? (
+              <select
+                multiple
+                name="new-leader-ids[]"
+                data-cy="updateLeaders"
+                className="border focus:outline-none py-2 px-3 rounded-xl text-gray-800"
+              >
+                {moduleLeaders.map((leader) => (
+                  <option key={leader.id} value={leader.id}>
+                    {leader.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="text-gray-800 py-2">
+                No module leaders available.
+              </div>
+            )}
+            <button
+              data-cy="edit-module-leader-submit"
+              className="flex justify-start items-center text-2xl"
+              type="submit"
+              disabled={moduleLeaders.length === 0}
+            >
+              <RiSave3Fill />
+            </button>
           </form>
         </div>
       </div>

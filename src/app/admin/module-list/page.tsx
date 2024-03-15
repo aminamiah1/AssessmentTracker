@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdArchive, MdEdit } from "react-icons/md";
+import { Users } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ type ModuleData = {
   id: number;
   module_name: string;
   module_code: string;
+  module_leaders: Users[];
 }[];
 
 async function getModules(searchTerm: string) {
@@ -98,6 +100,13 @@ export default function ModuleList() {
                 <div className="mr-4">
                   <h3 className="text-xl">{module.module_name}</h3>
                   <p>Module Code: {module.module_code}</p>
+                  {module.module_leaders?.length > 0 ? (
+                    module.module_leaders.map((module_leader) => (
+                      <p> Module Leader: {module_leader.name} </p>
+                    ))
+                  ) : (
+                    <p>No module leaders assigned.</p>
+                  )}
                 </div>
                 <div className="flex gap-4">
                   <Link

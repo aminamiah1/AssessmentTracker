@@ -182,8 +182,7 @@ test-e2e:
     - apt-get update && apt-get install -y postgresql-client
   script:
     - *set-up-app-environment
-    - NODE_ENV=test npx prisma db seed
-    - npm start &
+    - npm run start:test &
     - npm run test:e2e:ci
 
 ##########################

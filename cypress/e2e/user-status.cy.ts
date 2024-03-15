@@ -16,13 +16,16 @@ describe("User Status", () => {
 
     cy.getByTestId("toggleStatusViewButton").should(
       "have.text",
-      "Currently Inactive Users Shown",
+      "Active Users",
     );
+
+    // Inactive user is shown
+    cy.contains("td", "Liam Leader");
   });
 
   // Activate a user account
   it("allows a ps-team member to mark a user active and toggle to see active users", () => {
-    // Mark a user as inactive and then active
+    // Mark a user as inactive and then active again
     cy.visit("/ps-team/user-management");
 
     cy.getByTestId("deactivateButton").eq(0).click();
@@ -39,8 +42,11 @@ describe("User Status", () => {
 
     cy.getByTestId("toggleStatusViewButton").should(
       "have.text",
-      "Currently Active Users Shown",
+      "Inactive Users",
     );
+
+    // Active user is shown
+    cy.contains("td", "Liam Leader");
   });
 
   it("handles invalid deactivate api call with appropriate message returned", () => {

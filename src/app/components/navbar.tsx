@@ -1,5 +1,6 @@
 "use client";
 
+import UserMenu from "@/app/components/navbarPopUps/userMenu"; // Import the UserMenu component
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,14 +13,13 @@ import {
   FaList,
   FaUsers,
 } from "react-icons/fa";
-import UserMenu from "@/app/components/navbarPopUps/userMenu"; // Import the UserMenu component
+import { NavItem } from "./ListItem/NavItem";
 import DarkModeToggle from "./darkModeToggle";
 
 interface NavbarProps {}
 
 export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
   const { data: session, status } = useSession();
-  const [showNavbar, setShowNavbar] = useState(true);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false); // State to manage user menu open/close
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen); // Toggle open/close state function
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -103,7 +103,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
       <aside
         id="logo-sidebar"
         className={`fixed top-0 left-0 z-20 h-screen pt-20 bg-white border-r border-gray-300 dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 ease-in-out shadow-md ${
-          isSidebarOpen ? "w-64" : "w-16"
+          isSidebarOpen ? "min-w-max" : "w-16"
         }`}
         aria-label="Sidebar"
       >
@@ -112,85 +112,49 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
             {/* TODO: Fix this to check each role individually
             (i.e. sudo user wouldn't see this) */}
             {!isPSTeam && (
-              <li>
-                <Link
-                  href="/todo"
-                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                >
-                  <FaClipboardList className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-                  <span
-                    className={`${isSidebarOpen ? "flex-1 ms-3 whitespace-nowrap" : "hidden"} text-lg`}
-                  >
-                    Todos
-                  </span>
-                </Link>
-              </li>
+              <NavItem
+                icon={<FaClipboardList />}
+                isSidebarOpen={isSidebarOpen}
+                href="/todo"
+                text="Todos"
+              />
             )}
             {isPSTeam && (
               <>
-                <li>
-                  <Link
-                    href="/admin/module-list"
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  >
-                    <FaList className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span
-                      className={`${isSidebarOpen ? "flex-1 ms-3 whitespace-nowrap" : "hidden"} text-lg`}
-                    >
-                      Module List
-                    </span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ps-team/user-management"
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  >
-                    <FaUsers className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span
-                      className={`${isSidebarOpen ? "flex-1 ms-3 whitespace-nowrap" : "hidden"} text-lg`}
-                    >
-                      User Management
-                    </span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ps-team/assessment-management"
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  >
-                    <FaFile className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-                    <span
-                      className={`${isSidebarOpen ? "flex-1 ms-3 whitespace-nowrap" : "hidden"} text-lg`}
-                    >
-                      PS Team Assessments
-                    </span>
-                  </Link>
-                </li>
+                <NavItem
+                  icon={<FaList />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/admin/module-list"
+                  text="Module List"
+                />
+                <NavItem
+                  icon={<FaUsers />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/ps-team/user-management"
+                  text="User Management"
+                />
+                <NavItem
+                  icon={<FaFile />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/ps-team/assessment-management"
+                  text="PS Team Assessments"
+                />
               </>
             )}
             {isModuleLeader && (
-              <li>
-                <Link
-                  href="/module-leader/assessment-management"
-                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                >
-                  <FaFile className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-                  <span
-                    className={`${isSidebarOpen ? "flex-1 ms-3 whitespace-nowrap" : "hidden"} text-lg`}
-                  >
-                    Assessment Management
-                  </span>
-                </Link>
-              </li>
+              <NavItem
+                icon={<FaFile />}
+                isSidebarOpen={isSidebarOpen}
+                href="/module-leader/assessment-management"
+                text="Assessment Management"
+              />
             )}
-            <li>
-              <Link
-                href="/api/auth/signout"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
+            <NavItem
+              href="/api/auth/signout"
+              isSidebarOpen={isSidebarOpen}
+              text="Sign Out"
+              icon={
                 <svg
-                  className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
@@ -204,13 +168,8 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                     d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"
                   />
                 </svg>
-                <span
-                  className={`${isSidebarOpen ? "flex-1 ms-3 whitespace-nowrap" : "hidden"} text-lg`}
-                >
-                  Sign Out
-                </span>
-              </Link>
-            </li>
+              }
+            />
           </ul>
           <div className="flex justify-center pb-4">
             <button

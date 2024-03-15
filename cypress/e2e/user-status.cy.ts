@@ -8,6 +8,10 @@ describe("User Status", () => {
     // Mark a user as inactive
     cy.visit("/ps-team/user-management");
 
+    if (cy.getByTestId("activateButton")) {
+      cy.getByTestId("toggleStatusViewButton").click();
+    } // Toggle to inactive view if on active view
+
     cy.getByTestId("deactivateButton").eq(0).click();
 
     cy.getByTestId("deactivateConfirmButton").click();
@@ -27,6 +31,10 @@ describe("User Status", () => {
   it("allows a ps-team member to mark a user active and toggle to see active users", () => {
     // Mark a user as inactive and then active
     cy.visit("/ps-team/user-management");
+
+    if (cy.getByTestId("activateButton")) {
+      cy.getByTestId("toggleStatusViewButton").click();
+    } // Toggle to inactive view if on active view
 
     cy.getByTestId("deactivateButton").eq(0).click();
 

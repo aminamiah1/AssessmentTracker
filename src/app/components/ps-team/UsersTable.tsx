@@ -25,7 +25,7 @@ const UsersTable: React.FC = () => {
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
   const [userToActivate, setUserToActivate] = useState<User | null>(null);
-  const [isInActiveFilter, setIsActiveFilter] = useState(false); // false means show all users
+  const [isInActiveFilter, setIsActiveFilter] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -34,11 +34,24 @@ const UsersTable: React.FC = () => {
           const response = await fetch("/api/ps-team/users/get");
           const data = await response.json();
           const users = data.sort((a: User, b: User) => a.id - b.id);
+
           // Filter users if inactive else show all users
-          const filteredUsers =
-            isInActiveFilter !== false
-              ? users.filter((user: User) => user.status === "inactive")
-              : users.filter((user: User) => user.status === "active");
+          // Apply both search and status filtering
+          const filteredUsers = users.filter((user: User) => {
+            if (!search) {
+              return user.status === (isInActiveFilter ? "active" : "inactive");
+            }
+
+            const searchTerm = search.toLowerCase();
+
+            return (
+              user.name.toLowerCase().includes(searchTerm) ||
+              user.roles.some((role: string) =>
+                role.toLowerCase().includes(searchTerm),
+              )
+            );
+          });
+
           setFilteredUsers(filteredUsers);
         } catch (e) {
           setUsers([]);
@@ -53,7 +66,7 @@ const UsersTable: React.FC = () => {
   const handleSearch = (event: any) => {
     setSearch(event.target.value);
     setFilteredUsers(
-      users.filter((user) => {
+      filteredUsers.filter((user) => {
         const searchTerm = event.target.value.toLowerCase();
         return (
           user.name.toLowerCase().includes(searchTerm) ||
@@ -117,7 +130,7 @@ const UsersTable: React.FC = () => {
           toast.error("Network error please try again");
         });
 
-      toast.success("De-activating user successful!");
+      toast.success("Deactivated user successfully!");
       setShowDeactivateModal(false);
       setRefetch(refetch + 1);
     } catch (error) {
@@ -143,14 +156,14 @@ const UsersTable: React.FC = () => {
             setSearch("");
             setUsers(users.filter((u) => u.id !== id));
           } else {
-            toast.error("'Error activating user");
+            toast.error("Error activating user");
           }
         })
         .catch((error) => {
           toast.error("Network error please try again");
         });
 
-      toast.success("Activating user successful!");
+      toast.success("Activated user successfully!");
       setShowActivateModal(false);
       setRefetch(refetch + 1);
     } catch (error) {
@@ -199,8 +212,7 @@ const UsersTable: React.FC = () => {
         },
       },
       ...(isInActiveFilter
-        ? [] // Check filter to determine whether to show de-activate column
-        : [
+        ? [
             {
               Header: "De-Activate",
               accessor: (id: User) => (
@@ -216,9 +228,8 @@ const UsersTable: React.FC = () => {
                 </button>
               ),
             },
-          ]),
-      ...(isInActiveFilter // Check filter to determine whether to show activate column
-        ? [
+          ]
+        : [
             {
               Header: "Re-Activate",
               accessor: (id: User) => (
@@ -234,8 +245,7 @@ const UsersTable: React.FC = () => {
                 </button>
               ),
             },
-          ]
-        : []),
+          ]),
       {
         Header: "Edit",
         accessor: (id: User) => (
@@ -258,6 +268,11 @@ const UsersTable: React.FC = () => {
 
   return (
     <>
+      <div className="flex justify-center items-center mb-3">
+        <h1 className="text-xl">
+          Currently Viewing {isInActiveFilter ? "Active" : "Inactive"} Users
+        </h1>
+      </div>
       <div className="flex items-center mb-3 overflow-y-auto">
         <FiSearch
           className="mr-2 mb-2 text-black"
@@ -285,8 +300,8 @@ const UsersTable: React.FC = () => {
           {isInActiveFilter === null
             ? "All Users"
             : isInActiveFilter
-              ? "Currently Inactive Users Shown"
-              : "Currently Active Users Shown"}
+              ? "Inactive Users"
+              : "Active Users"}
         </button>
       </div>
       <EditUser

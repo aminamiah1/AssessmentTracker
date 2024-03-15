@@ -33,9 +33,9 @@ export async function POST(NextRequest: NextRequest) {
       });
     } catch (error) {
       return new NextResponse(
-        JSON.stringify({ message: "User activation successful!" }),
+        JSON.stringify({ message: "Error activating user! ", error }),
         {
-          status: 200,
+          status: 500,
         },
       );
     }

@@ -7,7 +7,7 @@ describe("Admin edit module page", () => {
 
   it("should be able to access the edit module page", () => {
     cy.getByTestId("edit-button").last().should("be.visible").click();
-    cy.url().should("include", "/admin/module-list/edit/CM6127");
+    cy.url().should("include", "/admin/module-list/edit/IT1234");
   });
 
   it("should be able to change the name of a module", () => {

@@ -34,11 +34,24 @@ const UsersTable: React.FC = () => {
           const response = await fetch("/api/ps-team/users/get");
           const data = await response.json();
           const users = data.sort((a: User, b: User) => a.id - b.id);
+
           // Filter users if inactive else show all users
-          const filteredUsers =
-            isInActiveFilter !== false
-              ? users.filter((user: User) => user.status === "inactive")
-              : users.filter((user: User) => user.status === "active");
+          // Apply both search and status filtering
+          const filteredUsers = users.filter((user: User) => {
+            if (!search) {
+              return user.status === (isInActiveFilter ? "inactive" : "active");
+            }
+
+            const searchTerm = search.toLowerCase();
+
+            return (
+              user.name.toLowerCase().includes(searchTerm) ||
+              user.roles.some((role: string) =>
+                role.toLowerCase().includes(searchTerm),
+              )
+            );
+          });
+
           setFilteredUsers(filteredUsers);
         } catch (e) {
           setUsers([]);
@@ -53,7 +66,7 @@ const UsersTable: React.FC = () => {
   const handleSearch = (event: any) => {
     setSearch(event.target.value);
     setFilteredUsers(
-      users.filter((user) => {
+      filteredUsers.filter((user) => {
         const searchTerm = event.target.value.toLowerCase();
         return (
           user.name.toLowerCase().includes(searchTerm) ||

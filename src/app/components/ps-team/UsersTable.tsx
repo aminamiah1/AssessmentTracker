@@ -39,7 +39,7 @@ const UsersTable: React.FC = () => {
           // Apply both search and status filtering
           const filteredUsers = users.filter((user: User) => {
             if (!search) {
-              return user.status === (isInActiveFilter ? "inactive" : "active");
+              return user.status === (isInActiveFilter ? "active" : "inactive");
             }
 
             const searchTerm = search.toLowerCase();

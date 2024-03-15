@@ -16,7 +16,7 @@ describe("User Status", () => {
 
     cy.getByTestId("toggleStatusViewButton").should(
       "have.text",
-      "Inactive Users",
+      "Active Users",
     );
 
     // Inactive user is shown
@@ -25,7 +25,7 @@ describe("User Status", () => {
 
   // Activate a user account
   it("allows a ps-team member to mark a user active and toggle to see active users", () => {
-    // Mark a user as inactive and then active
+    // Mark a user as inactive and then active again
     cy.visit("/ps-team/user-management");
 
     cy.getByTestId("deactivateButton").eq(0).click();
@@ -42,7 +42,7 @@ describe("User Status", () => {
 
     cy.getByTestId("toggleStatusViewButton").should(
       "have.text",
-      "Active Users",
+      "Inactive Users",
     );
 
     // Active user is shown

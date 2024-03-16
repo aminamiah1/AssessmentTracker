@@ -28,10 +28,10 @@ export default function ManageUsersPSTeam() {
 
   const isPSTeam = session.user.roles.includes("ps_team");
   return isPSTeam ? (
-    <div className="bg-white dark:bg-darkmode h-screen max-h-full">
+    <div className="bg-white h-screen max-h-full dark:bg-darkmode">
       <ToastContainer />
       <div className="mb-10 mt-20">
-        <h1 className="text-3xl font-bold text-black text-center">
+        <h1 className="text-3xl font-bold text-black text-center dark:text-white">
           User Management
         </h1>
       </div>
@@ -42,7 +42,7 @@ export default function ManageUsersPSTeam() {
           <div>
             <button
               onClick={() => setShowCreateUserForm(true)}
-              className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20 mr-4"
+              className="bg-blue-600 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20 mr-4"
             >
               Create New User
             </button>

@@ -33,7 +33,7 @@ function CreateAssessmentModuleLeaders() {
 
   const searchParams = useSearchParams(); // Create search params object
 
-  const { data: session, status } = useSession({ required: true }); // Use useSession to get session and status
+  const { data: session, status } = useSession(); // Use useSession to get session and status
 
   const params = searchParams?.get("id"); // Get the id of the assessment to edit from the search params object
 
@@ -57,6 +57,27 @@ function CreateAssessmentModuleLeaders() {
       label: type.replaceAll("_", " "),
     }),
   );
+  const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
+
+  // This is needed for the setter logic to work please don't remove again
+  useEffect(() => {
+    if (session != null) {
+      //Check here from session.user.roles array if one of the entires is module_leader to set is module leader to true
+      const checkRoles = () => {
+        const roles = session.user.roles;
+        if (roles.includes("module_leader")) {
+          setIsModuleLeader(true);
+          //Set the assessment setter id to the current user
+          setSetterId(parseInt(session.user.id as string, 10));
+        } else {
+          // Else display unauthorised message
+          setIsModuleLeader(false);
+        }
+      };
+
+      checkRoles();
+    }
+  }, [status]);
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -149,7 +170,7 @@ function CreateAssessmentModuleLeaders() {
     }
 
     setLoading(false); // Set loading to false once data is fetched
-  }, []);
+  }, [isModuleLeader]);
 
   useEffect(() => {
     // This effect runs when the modules and assignees state is updated on editing assessment
@@ -302,7 +323,6 @@ function CreateAssessmentModuleLeaders() {
     );
   }
 
-  const isModuleLeader = session.user.roles.includes("module_leader");
   return isModuleLeader ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
@@ -315,7 +335,11 @@ function CreateAssessmentModuleLeaders() {
               <FiArrowLeft
                 className="cursor-pointer"
                 size={30}
-                style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
+                style={{
+                  marginRight: "1rem",
+                  width: "auto",
+                  marginTop: "4rem",
+                }}
               />
             </Link>
             <h1 className="text-3xl ml-2 pt-16 text-center">
@@ -325,7 +349,10 @@ function CreateAssessmentModuleLeaders() {
 
           <form onSubmit={handleSubmit} className="text-black">
             <div className="mb-4">
-              <label htmlFor="assessmentName" className="font-bold">
+              <label
+                htmlFor="assessmentName"
+                className="font-bold dark:text-white"
+              >
                 Assessment Title
               </label>
               <input
@@ -342,7 +369,7 @@ function CreateAssessmentModuleLeaders() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="module" className="font-bold">
+              <label htmlFor="module" className="font-bold dark:text-white">
                 Module
               </label>
               <div className="w-full mb-6">
@@ -357,7 +384,10 @@ function CreateAssessmentModuleLeaders() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="assessmentType" className="font-bold">
+              <label
+                htmlFor="assessmentType"
+                className="font-bold dark:text-white"
+              >
                 Assessment Type
               </label>
               <div className="mb-4">
@@ -380,7 +410,10 @@ function CreateAssessmentModuleLeaders() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="handOutWeek" className="font-bold">
+              <label
+                htmlFor="handOutWeek"
+                className="font-bold dark:text-white"
+              >
                 Hand Out Week
               </label>
               <div className="w-full">
@@ -396,7 +429,7 @@ function CreateAssessmentModuleLeaders() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="handInWeek" className="font-bold">
+              <label htmlFor="handInWeek" className="font-bold dark:text-white">
                 Hand In Week
               </label>
               <div className="w-full">
@@ -412,7 +445,7 @@ function CreateAssessmentModuleLeaders() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="assignees" className="font-bold">
+              <label htmlFor="assignees" className="font-bold dark:text-white">
                 Assignees
               </label>
               <div className="mb-4">

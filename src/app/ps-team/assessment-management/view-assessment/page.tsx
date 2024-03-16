@@ -129,7 +129,7 @@ function ViewAssessmentPSTeam() {
   const isPSTeam = session.user.roles.includes("ps_team");
 
   return isPSTeam ? (
-    <div className="p-4 bg-white h-screen text-black mt-4">
+    <div className="p-4 bg-white h-screen text-black mt-4 dark:bg-darkmode">
       <ToastContainer />
       {loading ? (
         <div>Loading form...</div>
@@ -138,17 +138,17 @@ function ViewAssessmentPSTeam() {
           <div className="flex items-center mb-4">
             <Link href={"/ps-team/assessment-management"}>
               <FiArrowLeft
-                className="cursor-pointer"
+                className="cursor-pointer dark:text-white"
                 size={30}
                 style={{ marginRight: "1rem", height: "2rem", width: "auto" }}
               />
             </Link>
-            <h1 className="text-3xl ml-2">
+            <h1 className="text-3xl ml-2 dark:text-white">
               Viewing Assessment: {assessment.assessment_name}
             </h1>
           </div>
 
-          <form className="text-black">
+          <form className="text-black dark:text-white">
             <div className="mb-4">
               <label htmlFor="assessmentName" className="font-bold">
                 Assessment Title

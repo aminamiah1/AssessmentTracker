@@ -195,7 +195,7 @@ const UsersTable: React.FC = () => {
     <>
       <div className="flex items-center mb-3 overflow-y-auto">
         <FiSearch
-          className="mr-2 mb-2 text-black"
+          className="mr-2 mb-2 text-black dark:text-white"
           size={30}
           style={{ marginRight: "1rem", height: "2rem", width: "fit" }}
         />

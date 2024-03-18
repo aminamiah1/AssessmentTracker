@@ -8,6 +8,7 @@ import Link from "next/link";
 import { FaTrash } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
+import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
 
 // Interface for the assessment model
 interface Assessment {
@@ -124,6 +125,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 </p>
               )}
             </div>
+            <AssessmentOverallProgress progress={0.1} />
           </div>
         </div>
         <div className="p-4 md:p-6 flex justify-between">

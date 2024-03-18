@@ -26,6 +26,7 @@ interface Assessment {
 interface Assignee {
   id: number;
   name: string;
+  roles: [];
 }
 // Functional component for rendering an assessment tile
 const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {

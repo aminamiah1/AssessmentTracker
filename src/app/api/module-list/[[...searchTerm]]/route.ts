@@ -62,11 +62,17 @@ export async function GET(
             },
           ],
         },
+        include: {
+          module_leaders: true,
+        },
       });
     } else {
       modules = await prisma.module.findMany({
         where: {
           status: "active",
+        },
+        include: {
+          module_leaders: true,
         },
       });
     }

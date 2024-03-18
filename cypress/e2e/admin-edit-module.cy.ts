@@ -27,4 +27,19 @@ describe("Admin edit module page", () => {
     cy.url().should("not.include", "/edit/");
     cy.contains("CM6128").should("exist");
   });
+
+  it("should successfully updates module leaders", () => {
+    cy.visit("/admin/module-list/edit/CM6128");
+    cy.getByTestId("updateLeaders").select(["1"]);
+    cy.getByTestId("edit-module-name-submit").click();
+    cy.visit("/admin/module-list");
+    cy.url().should("not.include", "/edit/");
+    cy.contains("Module Leader: ").should("exist");
+  });
+
+  it("should displays an error message if no module leader is selected", () => {
+    cy.visit("/admin/module-list/edit/CM6128");
+    cy.getByTestId("edit-module-name-submit").click();
+    //will add the should element when i revamp the modules block as the frontend cant handle client components atm
+  });
 });

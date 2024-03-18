@@ -36,23 +36,23 @@ export default function ManageUsersPSTeam() {
         </h1>
       </div>
       <div className="text-center">
-        {showCreateUserForm ? (
-          <CreateUser onClose={handleCloseCreateUserForm} />
-        ) : (
-          <div>
+        <div>
+          {showCreateUserForm ? (
+            <CreateUser onClose={handleCloseCreateUserForm} />
+          ) : (
             <button
               onClick={() => setShowCreateUserForm(true)}
               className="bg-blue-600 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20 mr-4"
             >
               Create New User
             </button>
-            <Link href="/ps-team/user-management/upload" passHref>
-              <button className="bg-blue-600 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20">
-                Import Users
-              </button>
-            </Link>
-          </div>
-        )}
+          )}
+          <Link href="/ps-team/user-management/upload" passHref>
+            <button className="bg-blue-600 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20">
+              Import Users
+            </button>
+          </Link>
+        </div>
       </div>
       <div>
         <UsersTable />

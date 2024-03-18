@@ -18,7 +18,7 @@ describe("Create Module Form", () => {
     cy.get('input[name="moduleName"]').type("Introduction to Testing");
     cy.get('input[name="moduleCode"]').type("IT1234");
     cy.get(".basic-multi-select").click();
-    cy.get(".select__option").contains("Module Leader").click();
+    cy.get(".select__option").contains("Liam Leader").click();
     cy.get("form").submit();
     cy.get("div.text-green-600").should(
       "contain",

@@ -13,8 +13,8 @@ import {
   FaList,
   FaUsers,
 } from "react-icons/fa";
-import { NavItem } from "./ListItem/NavItem";
-import DarkModeToggle from "./darkModeToggle";
+import { NavItem } from "@/app/components/ListItem/NavItem";
+import DarkModeToggle from "@/app/components/darkModeToggle";
 
 interface NavbarProps {}
 

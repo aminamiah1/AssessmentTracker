@@ -25,7 +25,7 @@ describe("<ErrorMessage />", () => {
     cy.mount(<ErrorMessage error={"CredentialsSignin"} />);
     cy.getByTestId("error-message").should(
       "have.text",
-      "Check the details you provided are correct.",
+      "Check the details you provided are correct and not for an inactive account.",
     );
   });
 });

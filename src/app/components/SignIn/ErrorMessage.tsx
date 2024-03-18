@@ -18,7 +18,8 @@ export default function SignInError({ error }: { error: SignInErrorTypes }) {
   let message: string;
   switch (error) {
     case "CredentialsSignin":
-      message = "Check the details you provided are correct.";
+      message =
+        "Check the details you provided are correct and not for an inactive account.";
       break;
     case "SessionRequired":
       message = "You need to sign in to access this page.";

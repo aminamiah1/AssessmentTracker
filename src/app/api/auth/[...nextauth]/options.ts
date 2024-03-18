@@ -27,7 +27,8 @@ export const authOptions: NextAuthOptions = {
           if (
             user &&
             user.password &&
-            (await bcrypt.compare(credentials.password, user.password))
+            (await bcrypt.compare(credentials.password, user.password)) &&
+            user.status === "active" // Add active user status check
           ) {
             return {
               id: user.id.toString(), // Convert numeric ID to string

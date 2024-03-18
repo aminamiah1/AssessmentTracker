@@ -26,6 +26,7 @@ interface Assessment {
 interface Assignee {
   id: number;
   name: string;
+  roles: [];
 }
 // Functional component for rendering an assessment tile
 const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
@@ -108,7 +109,12 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                       className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
                     >
                       <FaUserCircle className="mr-2 text-black" size={30} />
-                      <span className="text-sm">{assignee.name}</span>
+                      <span className="text-sm">
+                        {assignee.name}{" "}
+                        {assignee.roles.map(
+                          (role: string) => " ● " + role.replaceAll("_", " "),
+                        )}
+                      </span>
                     </div>
                   ))}
                 </div>

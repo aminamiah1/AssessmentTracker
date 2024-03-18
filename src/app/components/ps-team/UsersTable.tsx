@@ -315,7 +315,7 @@ const UsersTable: React.FC = () => {
         refetch={refetch}
       />
       <table
-        className="table-auto w-full bg-gray-100 border border-black shadow-md text-black shadow-md border-b-4 border-black mb-3 text-lg"
+        className="table-auto w-full bg-gray-100 border border-black shadow-md text-black shadow-md border-b-4 border-black mb-3 text-lg dark:text-white dark:bg-slate-800"
         {...getTableProps()}
       >
         <thead>

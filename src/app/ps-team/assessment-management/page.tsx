@@ -385,7 +385,7 @@ export default function ViewAssessmentsPSTeam() {
             <div className="text-black mb-4">
               <h2 className="mt-4 mb-4">Expected CSV Format</h2>
               <Image
-                src="/images/ExampleCSV.png"
+                src="/images/exampleCSV.png"
                 alt="example csv image"
                 className="mb-4"
                 width={1000}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa"; // Trash can icon
+import { FaEdit, FaToggleOff, FaTrash } from "react-icons/fa"; // Trash can icon
 import { FiSearch } from "react-icons/fi"; // Search icon
 import { useTable } from "react-table";
 import { toast } from "react-toastify";
@@ -11,6 +11,7 @@ interface User {
   name: string;
   password: string;
   roles: [];
+  status: string;
 }
 
 const UsersTable: React.FC = () => {
@@ -20,8 +21,11 @@ const UsersTable: React.FC = () => {
   const [search, setSearch] = React.useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [refetch, setRefetch] = useState(0);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [showActivateModal, setShowActivateModal] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [userToDeactivate, setUserToDeactivate] = useState<User | null>(null);
+  const [userToActivate, setUserToActivate] = useState<User | null>(null);
+  const [isInActiveFilter, setIsActiveFilter] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -29,9 +33,26 @@ const UsersTable: React.FC = () => {
         try {
           const response = await fetch("/api/ps-team/users/get");
           const data = await response.json();
-          const sortedUsers = data.sort((a: User, b: User) => a.id - b.id);
-          setUsers(sortedUsers);
-          setFilteredUsers(sortedUsers);
+          const users = data.sort((a: User, b: User) => a.id - b.id);
+
+          // Filter users if inactive else show all users
+          // Apply both search and status filtering
+          const filteredUsers = users.filter((user: User) => {
+            if (!search) {
+              return user.status === (isInActiveFilter ? "active" : "inactive");
+            }
+
+            const searchTerm = search.toLowerCase();
+
+            return (
+              user.name.toLowerCase().includes(searchTerm) ||
+              user.roles.some((role: string) =>
+                role.toLowerCase().includes(searchTerm),
+              )
+            );
+          });
+
+          setFilteredUsers(filteredUsers);
         } catch (e) {
           setUsers([]);
           setFilteredUsers([]);
@@ -40,12 +61,12 @@ const UsersTable: React.FC = () => {
     };
 
     fetchUsers();
-  }, [search, refetch]);
+  }, [isInActiveFilter, search, refetch]);
 
   const handleSearch = (event: any) => {
     setSearch(event.target.value);
     setFilteredUsers(
-      users.filter((user) => {
+      filteredUsers.filter((user) => {
         const searchTerm = event.target.value.toLowerCase();
         return (
           user.name.toLowerCase().includes(searchTerm) ||
@@ -84,14 +105,14 @@ const UsersTable: React.FC = () => {
       });
   };
 
-  const handleDelete = async (user: User) => {
+  const handleDeactivate = async (user: User) => {
     try {
       setSearch(" ");
 
       var id = user.id;
 
-      fetch(`/api/ps-team/user/delete?id=${id}`, {
-        method: "DELETE",
+      fetch(`/api/ps-team/user/deactivate?id=${id}`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -102,18 +123,51 @@ const UsersTable: React.FC = () => {
             setSearch("");
             setUsers(users.filter((u) => u.id !== id));
           } else {
-            toast.error("'Error deleting user");
+            toast.error("'Error de-activating user");
           }
         })
         .catch((error) => {
           toast.error("Network error please try again");
         });
 
-      toast.success("Delete user successful!");
-      setShowDeleteModal(false);
+      toast.success("Deactivated user successfully!");
+      setShowDeactivateModal(false);
       setRefetch(refetch + 1);
     } catch (error) {
-      toast.error("Error deleting user");
+      toast.error("Error de-activating user");
+    }
+  };
+
+  const handleActivate = async (user: User) => {
+    try {
+      setSearch(" ");
+
+      var id = user.id;
+
+      fetch(`/api/ps-team/user/activate?id=${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            setSearch("");
+            setUsers(users.filter((u) => u.id !== id));
+          } else {
+            toast.error("Error activating user");
+          }
+        })
+        .catch((error) => {
+          toast.error("Network error please try again");
+        });
+
+      toast.success("Activated user successfully!");
+      setShowActivateModal(false);
+      setRefetch(refetch + 1);
+    } catch (error) {
+      toast.error("Error activating user");
     }
   };
 
@@ -157,20 +211,41 @@ const UsersTable: React.FC = () => {
           return capitalizedRoles.join(" ● ");
         },
       },
-      {
-        Header: "Delete",
-        accessor: (id: User) => (
-          <button
-            onClick={() => {
-              setUserToDelete(id);
-              setShowDeleteModal(true);
-            }}
-            data-cy="DeleteUser"
-          >
-            <FaTrash className="cursor-pointer" size={30} />
-          </button>
-        ),
-      },
+      ...(isInActiveFilter
+        ? [
+            {
+              Header: "De-Activate",
+              accessor: (id: User) => (
+                <button
+                  onClick={() => {
+                    setUserToDeactivate(id);
+                    setShowDeactivateModal(true);
+                  }}
+                  className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                  data-cy="deactivateButton"
+                >
+                  <FaToggleOff className="cursor-pointer" size={30} />
+                </button>
+              ),
+            },
+          ]
+        : [
+            {
+              Header: "Re-Activate",
+              accessor: (id: User) => (
+                <button
+                  onClick={() => {
+                    setUserToActivate(id);
+                    setShowActivateModal(true);
+                  }}
+                  data-cy="activateButton"
+                  className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                >
+                  <FaToggleOff className="cursor-pointer" size={30} />
+                </button>
+              ),
+            },
+          ]),
       {
         Header: "Edit",
         accessor: (id: User) => (
@@ -180,7 +255,7 @@ const UsersTable: React.FC = () => {
         ),
       },
     ],
-    [],
+    [isInActiveFilter],
   );
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
@@ -193,6 +268,11 @@ const UsersTable: React.FC = () => {
 
   return (
     <>
+      <div className="flex justify-center items-center mb-3">
+        <h1 className="text-xl">
+          Currently Viewing {isInActiveFilter ? "Active" : "Inactive"} Users
+        </h1>
+      </div>
       <div className="flex items-center mb-3 overflow-y-auto">
         <FiSearch
           className="mr-2 mb-2 text-black dark:text-white"
@@ -207,6 +287,22 @@ const UsersTable: React.FC = () => {
           placeholder="Enter name or user role..."
           className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
         />
+        <button
+          onClick={() => setIsActiveFilter(!isInActiveFilter)}
+          className={
+            isInActiveFilter !== null
+              ? "bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded ml-2 flex"
+              : ""
+          }
+          data-cy="toggleStatusViewButton"
+        >
+          <FaToggleOff className="mr-2 mb-2 text-black" size={30} />
+          {isInActiveFilter === null
+            ? "All Users"
+            : isInActiveFilter
+              ? "Inactive Users"
+              : "Active Users"}
+        </button>
       </div>
       <EditUser
         show={showEditUserModal}
@@ -261,28 +357,57 @@ const UsersTable: React.FC = () => {
 
       <div
         className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
-          showDeleteModal ? "block" : "hidden"
+          showDeactivateModal ? "block" : "hidden"
         }`}
       >
-        {userToDelete && (
+        {userToDeactivate && (
           <div className="bg-white p-5 border border-black rounded-lg">
-            <p>Delete user: {userToDelete.name}?</p>
             <p className="text-black">
-              Are you sure you want to delete user: {userToDelete.name}?
+              Are you sure you want to de-activate user: {userToDeactivate.name}
+              ?
             </p>
             <div className="flex justify-between mt-4">
               <button
                 className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => setShowDeleteModal(false)}
+                onClick={() => setShowDeactivateModal(false)}
               >
                 Cancel
               </button>
               <button
                 className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                data-cy="DeleteUserConfirm"
-                onClick={() => handleDelete(userToDelete)}
+                data-cy="deactivateConfirmButton"
+                onClick={() => handleDeactivate(userToDeactivate)}
               >
-                Delete
+                De-activate
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div
+        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
+          showActivateModal ? "block" : "hidden"
+        }`}
+      >
+        {userToActivate && (
+          <div className="bg-white p-5 border border-black rounded-lg">
+            <p className="text-black">
+              Are you sure you want to activate user: {userToActivate.name}?
+            </p>
+            <div className="flex justify-between mt-4">
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setShowActivateModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                data-cy="activateConfirmButton"
+                onClick={() => handleActivate(userToActivate)}
+              >
+                Activate
               </button>
             </div>
           </div>

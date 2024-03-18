@@ -169,8 +169,11 @@ const AssessmentTilePS = ({
                         className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
                       >
                         <FaUserCircle className="mr-2 text-black" size={30} />
-                        <span className="text-sm" data-cy="assigneeText">
-                          {assignee.name}
+                        <span className="text-sm">
+                          {assignee.name}{" "}
+                          {assignee.roles.map(
+                            (role: string) => " ● " + role.replaceAll("_", " "),
+                          )}
                         </span>
                       </div>
                     ))}

@@ -96,7 +96,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
     <>
       <button
         onClick={handleShow}
-        className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20 mr-4"
+        className="bg-blue-600 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20 mr-4"
       >
         Create New User
       </button>

@@ -1,6 +1,7 @@
 import prisma from "@/app/db";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { UserStatus } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ export async function GET(request: Request) {
         name: true,
         email: true,
         roles: true,
+        status: true,
       },
     });
 

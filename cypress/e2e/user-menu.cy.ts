@@ -16,7 +16,7 @@ describe("User profile menu", () => {
     cy.visit("/ps-team/user-management");
     cy.getByTestId("profilePic").click();
     cy.contains("p", "ps@test.net").should("be.visible");
-    cy.contains("p", "PS Team User").should("be.visible");
+    cy.contains("p", "PS Penelope").should("be.visible");
     cy.contains("p", "ps team").should("be.visible");
   });
 });

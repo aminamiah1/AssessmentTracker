@@ -6,7 +6,7 @@ describe("Authentication", () => {
     cy.get("button").contains("Sign in").click();
     cy.url().should("include", "/");
 
-    const expectedUserName = "Module Leader";
+    const expectedUserName = "Liam Leader";
     cy.get("body").should("contain", `Hi ${expectedUserName}!`);
   });
 
@@ -21,7 +21,9 @@ describe("Authentication", () => {
     );
     cy.get("button").click();
     cy.get("div")
-      .contains("Check the details you provided are correct.")
+      .contains(
+        "Check the details you provided are correct and not for an inactive account.",
+      )
       .should("be.visible");
   });
 });

@@ -96,13 +96,7 @@ const CreateUser: React.FC<CreateUserProps> = ({ onClose }) => {
     <>
       <button
         onClick={handleShow}
-        className="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded"
-        style={{
-          marginTop: "1rem",
-          height: "5rem",
-          width: "20rem",
-          fontSize: "larger",
-        }}
+        className="bg-gray-800 text-white py-3 px-6 mt-4 rounded-lg text-lg font-semibold mb-20 mr-4"
       >
         Create New User
       </button>

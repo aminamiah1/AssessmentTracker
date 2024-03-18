@@ -100,7 +100,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 </span>
               </p>
             </div>
-            <div className="md:w-1/3 mt-4 md:mt-0">
+            <div className="md:w-1/4 mt-4 md:mt-0">
               <h6 className="mb-2">Assignees</h6>
               {assessment.assignees.length > 0 ? (
                 <div>
@@ -125,7 +125,10 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 </p>
               )}
             </div>
-            <AssessmentOverallProgress progress={0.1} />
+            <div className="md:w-1/2 md:mt-0 ml-2 text-center font-bold">
+              <h1>Last Completed Stage</h1>
+              <AssessmentOverallProgress progress={0.1} />
+            </div>
           </div>
         </div>
         <div className="p-4 md:p-6 flex justify-between">

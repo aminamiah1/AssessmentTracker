@@ -44,8 +44,7 @@ export function TaskList({ itemTemplateName, userId }: TaskListProps) {
         const { id: assessmentId } = task.assessment;
 
         const responseCount = task.part.Question.reduce(
-          (acc, question) =>
-            acc + (hasResponse(question, assessmentId) ? 1 : 0),
+          (acc, question) => acc + hasResponse(question, assessmentId),
           0,
         );
 
@@ -76,13 +75,16 @@ export function TaskList({ itemTemplateName, userId }: TaskListProps) {
   );
 }
 
-function hasResponse(question: QuestionWithResponse, assessmentId: number) {
+function hasResponse(
+  question: QuestionWithResponse,
+  assessmentId: number,
+): number {
   const { Response: responses } = question;
 
   const response = responses.find((r) => r.assessment_id === assessmentId);
 
-  if (!response) return false;
-  else if (response.value === "") return false;
+  if (!response) return 0;
+  else if (response.value === "") return 0;
 
-  return true;
+  return 1;
 }

@@ -329,7 +329,7 @@ function CreateAssessmentModuleLeaders() {
       {loading ? (
         <div>Loading form...</div>
       ) : (
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto dark:bg-darkmode">
           <div className="flex items-center mb-4">
             <Link href={"/module-leader/assessment-management"}>
               <FiArrowLeft
@@ -347,7 +347,7 @@ function CreateAssessmentModuleLeaders() {
             </h1>
           </div>
 
-          <form onSubmit={handleSubmit} className="text-black">
+          <form onSubmit={handleSubmit} className="text-black dark:bg-darkmode">
             <div className="mb-4">
               <label
                 htmlFor="assessmentName"

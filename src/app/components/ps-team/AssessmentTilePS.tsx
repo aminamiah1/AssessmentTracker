@@ -126,41 +126,41 @@ const AssessmentTilePS = ({
     // Assessment tile for ps team layout using grid system
     <>
       <div className="flex-grow-1 col-12 md:col-6 mb-4 border border-gray-500">
-        <div className="bg-white shadow-md">
+        <div className="bg-white shadow-md dark:bg-gray-700">
           <div className="p-4 md:p-6 border-b-2 border-gray-300">
             <div className="md:flex md:items-center">
               <div className="md:w-2/3">
                 <div className="flex items-center">
                   <Link
                     href={`/ps-team/assessment-management/view-assessment?id=${assessment.id}`}
-                    className="flex items-center"
+                    className="flex items-center dark:text-white"
                   >
-                    <p className="text-blue-500 hover:text-blue-700">
+                    <p className="text-blue-500 hover:text-blue-700 dark:text-white">
                       {assessment.assessment_name}
                     </p>
                   </Link>
                   {assessment.setter && (
                     <div>
-                      <span className="text-sm ml-2">
+                      <span className="text-sm ml-2 dark:text-white">
                         ● Setter: {assessment.setter.name}
                       </span>
                     </div>
                   )}
                 </div>
                 <p className="mt-4">
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-gray-700 dark:text-white">
                     {assessment.module_name} ●{" "}
                     {assessment.assessment_type.replaceAll("_", " ")}
                   </span>
                   <br />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-gray-700 dark:text-white">
                     Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")} ●
                     Stage: {0} of 11
                   </span>
                 </p>
               </div>
               <div className="md:w-1/3 mt-4 md:mt-0">
-                <h6 className="mb-2">Assignees</h6>
+                <h6 className="mb-2 dark:text-white">Assignees</h6>
                 {assessment.assignees.length > 0 ? (
                   <div>
                     {assessment.assignees.map((assignee: Assignee) => (
@@ -179,7 +179,7 @@ const AssessmentTilePS = ({
                     ))}
                   </div>
                 ) : (
-                  <h1>No Assignees</h1>
+                  <h1 className="dark:text-white">No Assignees</h1>
                 )}
                 <div>
                   <button

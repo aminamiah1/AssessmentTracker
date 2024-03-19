@@ -112,7 +112,7 @@ export default function CreateModule() {
   const isPSTeam = session.user.roles.includes("ps_team");
 
   return isPSTeam ? (
-    <div className="flex items-center justify-center min-h-screen bg-gray-200">
+    <div className="flex items-center justify-center min-h-screen bg-gray-200 dark:bg-darkmode">
       <div className="max-w-lg w-full p-8 bg-white shadow-lg rounded-lg mx-4">
         {errorMessage && (
           <div className="mb-4 text-center text-sm text-red-600">
@@ -173,7 +173,7 @@ export default function CreateModule() {
                 value: leader.id,
                 label: leader.name,
               }))}
-              className="basic-multi-select"
+              className="basic-multi-select dark:text-black"
               classNamePrefix="select"
               onChange={(selectedOptions) => {
                 setFormInputs((prev) => ({

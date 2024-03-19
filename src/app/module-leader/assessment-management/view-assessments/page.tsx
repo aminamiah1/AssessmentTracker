@@ -67,7 +67,7 @@ export default function ViewAssessmentsModuleLeaders() {
   const isModuleLeader = session.user.roles.includes("module_leader");
 
   return isModuleLeader ? (
-    <main className="bg-white">
+    <main className="bg-white dark:bg-darkmode">
       <div className="bg-white dark:bg-darkmode h-screen max-h-full">
         <ToastContainer />
         <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
@@ -107,7 +107,7 @@ export default function ViewAssessmentsModuleLeaders() {
               ))}
             </div>
           ) : (
-            <div className="text-center">
+            <div className="text-center dark:text-white">
               No assessments found matching the search criteria...
             </div>
           )}

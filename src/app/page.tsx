@@ -20,9 +20,10 @@ export default async function UserPage() {
         height: "100vh",
         boxSizing: "border-box",
       }}
+      className="bg-white dark:bg-darkmode"
     >
       <p
-        className="text-black"
+        className="text-black dark:text-white"
         style={{ fontSize: "24px", fontWeight: "bold" }}
       >
         Hi {session.user.name}!

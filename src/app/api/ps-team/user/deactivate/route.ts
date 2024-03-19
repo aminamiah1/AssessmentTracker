@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { UserStatus } from "@prisma/client";
 
-export async function POST(NextRequest: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession();
 
@@ -12,7 +12,7 @@ export async function POST(NextRequest: NextRequest) {
     }
 
     // Extract user ID from request query parameters or body
-    const { id } = await NextRequest.json();
+    const { id } = await request.json();
 
     // Validate user ID
     if (!id) {

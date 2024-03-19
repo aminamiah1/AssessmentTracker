@@ -15,6 +15,8 @@ interface User {
 }
 
 const UsersTable: React.FC = () => {
+  const darkButtonStyle =
+    "bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded";
   const [users, setUsers] = useState<User[]>([]);
   const [showEditUserModal, setShowEditUserModal] = useState(false);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
@@ -221,7 +223,7 @@ const UsersTable: React.FC = () => {
                     setUserToDeactivate(id);
                     setShowDeactivateModal(true);
                   }}
-                  className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                  className={darkButtonStyle}
                   data-cy="deactivateButton"
                 >
                   <FaToggleOff className="cursor-pointer" size={30} />
@@ -239,7 +241,7 @@ const UsersTable: React.FC = () => {
                     setShowActivateModal(true);
                   }}
                   data-cy="activateButton"
-                  className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                  className={darkButtonStyle}
                 >
                   <FaToggleOff className="cursor-pointer" size={30} />
                 </button>
@@ -275,7 +277,7 @@ const UsersTable: React.FC = () => {
       </div>
       <div className="flex items-center mb-3 overflow-y-auto">
         <FiSearch
-          className="mr-2 mb-2 text-black"
+          className="mr-2 mb-2 text-black dark:text-white"
           size={30}
           style={{ marginRight: "1rem", height: "2rem", width: "fit" }}
         />
@@ -313,7 +315,7 @@ const UsersTable: React.FC = () => {
         refetch={refetch}
       />
       <table
-        className="table-auto w-full bg-gray-100 border border-black shadow-md text-black shadow-md border-b-4 border-black mb-3 text-lg"
+        className="table-auto w-full bg-gray-100 border border-black shadow-md text-black shadow-md border-b-4 border-black mb-3 text-lg dark:text-white dark:bg-slate-800"
         {...getTableProps()}
       >
         <thead>
@@ -368,13 +370,13 @@ const UsersTable: React.FC = () => {
             </p>
             <div className="flex justify-between mt-4">
               <button
-                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                className={darkButtonStyle}
                 onClick={() => setShowDeactivateModal(false)}
               >
                 Cancel
               </button>
               <button
-                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                className={darkButtonStyle}
                 data-cy="deactivateConfirmButton"
                 onClick={() => handleDeactivate(userToDeactivate)}
               >
@@ -397,13 +399,13 @@ const UsersTable: React.FC = () => {
             </p>
             <div className="flex justify-between mt-4">
               <button
-                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                className={darkButtonStyle}
                 onClick={() => setShowActivateModal(false)}
               >
                 Cancel
               </button>
               <button
-                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                className={darkButtonStyle}
                 data-cy="activateConfirmButton"
                 onClick={() => handleActivate(userToActivate)}
               >

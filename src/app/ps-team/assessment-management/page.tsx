@@ -184,10 +184,13 @@ export default function ViewAssessmentsPSTeam() {
 
   return isPSTeam ? (
     <>
-      <main className="bg-white">
-        <div className="p-4 bg-white h-screen text-black">
+      <main className="bg-white dark:text-white">
+        <div className="p-4 bg-white h-screen text-black dark:bg-darkmode">
           <ToastContainer />
-          <div style={{ marginBottom: "2rem", marginTop: "2rem" }}>
+          <div
+            style={{ marginBottom: "2rem", marginTop: "2rem" }}
+            className="dark:text-white"
+          >
             <div
               style={{
                 display: "flex",
@@ -199,7 +202,7 @@ export default function ViewAssessmentsPSTeam() {
               <h1 className="text-3xl">All Assessments Overview</h1>
             </div>
           </div>
-          <div>
+          <div className="dark:text-white">
             <div className="flex items-center mb-3">
               <FiSearch
                 className="mr-2 mb-2"
@@ -235,7 +238,7 @@ export default function ViewAssessmentsPSTeam() {
                           : { value: "", label: "" }
                       } // Control the displayed value
                       id="module"
-                      className="react-select-container w-full"
+                      className="react-select-container w-full dark:text-black"
                       styles={{
                         control: (provided) => ({
                           ...provided,
@@ -265,7 +268,7 @@ export default function ViewAssessmentsPSTeam() {
                           ? selectedOption
                           : { value: "", label: "" }
                       } // Control the displayed value
-                      className="react-select-container w-full"
+                      className="react-select-container w-full dark:text-black"
                       styles={{
                         control: (provided) => ({
                           ...provided,
@@ -295,7 +298,7 @@ export default function ViewAssessmentsPSTeam() {
                           ? selectedOption
                           : { value: "", label: "" }
                       } // Control the displayed value
-                      className="react-select-container w-full"
+                      className="react-select-container w-full dark:text-black"
                       styles={{
                         control: (provided) => ({
                           ...provided,
@@ -341,7 +344,7 @@ export default function ViewAssessmentsPSTeam() {
                 ))}
               </div>
             ) : (
-              <div className="text-center">
+              <div className="text-center dark:text-white">
                 No assessments found matching the search criteria...
               </div>
             )}

@@ -210,7 +210,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
         </div>
       </aside>
       <main
-        className={`ml-16 ${isSidebarOpen ? "pl-64" : "pl-16"} min-h-screen absolute right-0 top-20 w-full overflow-y-auto bg-white dark:bg-slate-600`}
+        className={`ml-16 ${isSidebarOpen ? "pl-64" : "pl-16"} absolute right-0 top-[7vh] w-full h-screen overflow-y-auto bg-white dark:bg-darkmode`}
       >
         {children}
       </main>

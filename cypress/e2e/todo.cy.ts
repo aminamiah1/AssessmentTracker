@@ -61,6 +61,12 @@ describe("/todo", () => {
       );
     });
 
+    it("should not have any completed tasks", () => {
+      cy.visit("/done");
+
+      cy.get("main").should("contain.text", "No completed tasks");
+    });
+
     it("should be able to submit a form", () => {
       cy.getByTestId("task-list-container").children().first().click();
 
@@ -104,6 +110,14 @@ describe("/todo", () => {
 
       cy.get("main").should("contain.text", "No tasks! 🎉");
     });
+
+    it("should now have a completed task", () => {
+      cy.visit("/done");
+
+      cy.getByTestId("list-item").should("have.length", "1");
+
+      cy.getByTestId("side-text").and("have.text", "Part 1 of 11");
+    });
   });
 
   context("Part 2 - Internal", () => {
@@ -137,6 +151,12 @@ describe("/todo", () => {
         .type("Test response", { force: true })
         .blur()
         .wait("@saveResponse");
+    });
+
+    it("Should not have any completed tasks", () => {
+      cy.visit("/done");
+
+      cy.get("main").should("contain.text", "No completed tasks");
     });
   });
 });

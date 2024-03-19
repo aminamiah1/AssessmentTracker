@@ -13,16 +13,18 @@ datasource db {
 }
 
 model Users {
-  id              Int          @id @default(autoincrement())
-  email           String       @unique
+  id              Int              @id @default(autoincrement())
+  email           String           @unique
   name            String
   password        String
   roles           Role[]
   image           String?
   set_assessments Assessment[]
-  assessments     Assessment[] @relation("AssessmentsToUsers")
-  modules         Module[]     @relation("ModulesToUsers")
-  status          UserStatus   @default(active)
+  assessments     Assessment[]     @relation("AssessmentsToUsers")
+  modules         Module[]         @relation("ModulesToUsers")
+  PartSubmission  PartSubmission[]
+  status          UserStatus       @default(active)
+
   @@map("users")
 }
 
@@ -58,11 +60,16 @@ model Assessment {
 // be marked as submitted until they press the 'Submit' button - this will allow
 // the user to come back to the part and make changes before submitting
 model PartSubmission {
-  date_submitted DateTime   @default(now())
-  part_id        Int
-  assessment_id  Int
-  Part           Part       @relation(fields: [part_id], references: [id])
-  Assessment     Assessment @relation(fields: [assessment_id], references: [id])
+  date_submitted DateTime @default(now())
+
+  assessment_id Int
+  Assessment    Assessment @relation(fields: [assessment_id], references: [id])
+
+  part_id Int
+  Part    Part @relation(fields: [part_id], references: [id])
+
+  submitted_by Int
+  Submitter    Users @relation(fields: [submitted_by], references: [id])
 
   @@id([part_id, assessment_id])
 }

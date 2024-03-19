@@ -8,6 +8,7 @@ import React, { FC, PropsWithChildren, useState } from "react";
 import {
   FaArrowLeft,
   FaArrowRight,
+  FaClipboardCheck,
   FaClipboardList,
   FaFile,
   FaList,
@@ -36,8 +37,23 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
     return <main>{children}</main>;
   }
 
-  const isPSTeam = session!.user.roles.includes("ps_team");
-  const isModuleLeader = session!.user.roles.includes("module_leader");
+  const isPSTeam = session.user.roles.includes("ps_team");
+  const isModuleLeader = session.user.roles.includes("module_leader");
+  const isInternalModerator = session.user.roles.includes("internal_moderator");
+  const isExternalExaminer = session.user.roles.includes("external_examiner");
+  const isPanelMember = session.user.roles.includes("panel_member");
+
+  /**
+   * This check is preferred over a blanket !isPSTeam check because of an
+   * edge case where a user might be a module leader (or internal moderator,
+   * external examiner, panel member) and a PS team member - in that case,
+   * the TODO and Completed Tasks pages wouldn't appear in the sidenav
+   */
+  const hasTodoRelatedRole =
+    isModuleLeader ||
+    isInternalModerator ||
+    isExternalExaminer ||
+    isPanelMember;
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -109,15 +125,21 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
       >
         <div className="h-full overflow-y-auto bg-white dark:bg-gray-800">
           <ul className="space-y-2 font-medium">
-            {/* TODO: Fix this to check each role individually
-            (i.e. sudo user wouldn't see this) */}
-            {!isPSTeam && (
-              <NavItem
-                icon={<FaClipboardList />}
-                isSidebarOpen={isSidebarOpen}
-                href="/todo"
-                text="Todos"
-              />
+            {hasTodoRelatedRole && (
+              <>
+                <NavItem
+                  icon={<FaClipboardList />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/todo"
+                  text="Todos"
+                />
+                <NavItem
+                  icon={<FaClipboardCheck />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/done"
+                  text="Completed Tasks"
+                />
+              </>
             )}
             {isPSTeam && (
               <>

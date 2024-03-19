@@ -21,6 +21,7 @@ interface Assessment {
   module: [];
   setter_id: number;
   assignees: [];
+  partSubmissions: []; // Last part submission associated with assessment
 }
 
 // Interface for the assignees
@@ -33,11 +34,6 @@ interface Assignee {
 const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
   // State variable for managing the visibility of the delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const maxParts = 9; // Maximum number of parts
-  const exampleProgressPartsList = Array.from(
-    { length: maxParts },
-    (_, index) => `Assessment Tracking 10${index + 1}`,
-  ); // Example parts list for testing
 
   // Function to handle deletion of an assessment
   const handleDelete = () => {
@@ -132,7 +128,14 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
             </div>
             <div className="md:w-1/2 md:mt-0 ml-2 text-center font-bold">
               <h1>Last Completed Stage</h1>
-              <AssessmentOverallProgress partsList={exampleProgressPartsList} />
+              {assessment.partSubmissions &&
+              assessment.partSubmissions.length > 0 ? (
+                <AssessmentOverallProgress
+                  partsList={assessment.partSubmissions}
+                />
+              ) : (
+                <h1 className="mt-2">Tracking Process Not Started</h1>
+              )}
             </div>
           </div>
         </div>

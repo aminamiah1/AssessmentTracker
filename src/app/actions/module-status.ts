@@ -39,7 +39,7 @@ export async function archiveModule(
         id: moduleId.id,
       },
       data: {
-        status: ModuleStatus.inactive,
+        status: ModuleStatus.archived,
       },
     });
   } catch (error) {

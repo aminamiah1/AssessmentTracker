@@ -9,21 +9,31 @@ interface OverallProgressContent {
 }
 
 function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
-  // Get the last completed part title
+  // Get the last completed part title and number from object
   const lastCompletedPartTitle = lastCompletedPart.part_title;
-  const progress = lastCompletedPart.part_number / 11; // Divide last part number by the maximum number of parts (11) to get progress decimal
+  const lastCompletedPartNumber = lastCompletedPart.part_number;
+  const progress = lastCompletedPartNumber / 11; // Divide last part number by the maximum number of parts (11) to get progress decimal
   // Calculate the width of the completed portion of the progress bar
   const progressBarWidth = 100;
   const completedWidth = progress * progressBarWidth; //Calculate where to place last completed part text
 
   return (
-    <div className="w-full flex justify-evenly rounded p-4 items-center hover:bg-slate-800 relative">
+    <div className="w-full flex justify-evenly rounded p-4 items-center relative">
       <div className="w-[60%] relative overflow-hidden">
+        <h1 className="mb-4">Last Completed Stage</h1>
+        {/* Display the tracking form stages progress as visual bar*/}
         <ProgressBar progress={progress} />
-        {/* Only display the last part title */}
+        {/* Display the last completed part information*/}
         {lastCompletedPart && (
-          <div style={{ width: `${completedWidth}%`, textAlign: "right" }}>
-            <span className="font-bold">{lastCompletedPartTitle}</span>
+          <div>
+            <div style={{ width: `${completedWidth}%`, textAlign: "right" }}>
+              <span className="font-bold">{lastCompletedPartTitle}</span>
+            </div>
+            <div className="mt-6" style={{ textAlign: "left" }}>
+              <span className="font-bold">
+                Tracking Stages Complete: {lastCompletedPartNumber}/11
+              </span>
+            </div>
           </div>
         )}
       </div>
@@ -42,6 +52,7 @@ export function AssessmentOverallProgress({ ...props }) {
   // Access the last completed part from parts list associated with assessment in props
   let lastCompletedPart = null; // Initialize
 
+  // Error handling in place if last completed part does not exist
   try {
     lastCompletedPart = partsList[0].Part;
   } catch (error) {

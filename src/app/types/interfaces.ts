@@ -34,6 +34,7 @@ export interface AssessmentLoad {
   setter_id: number;
   module_name: string;
   assignees: [];
+  partSubmissions: [];
 }
 // Interface for the assessment model form details presented(edit forms)
 export interface AssessmentDetails {

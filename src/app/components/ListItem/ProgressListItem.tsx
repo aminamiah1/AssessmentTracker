@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ProgressBar } from "../ProgressBar/ProgressBar";
+import { ListItemWrapper } from "./ListItemWrapper";
 
 interface ProgressListItemContent {
   /** The progress of the item, as a decimal */
@@ -22,18 +23,16 @@ function ProgressListItemContent({
   title,
 }: ProgressListItemContent) {
   return (
-    <>
-      <div className="w-full flex justify-evenly rounded p-4 items-center hover:bg-slate-800">
-        <div className="min-w-max pr-6">
-          <h2 className="text-2xl">{title}</h2>
-          <h3 className="text-xl">{subtitle}</h3>
-        </div>
-        <div className="w-[60%] text-center">
-          <ProgressBar progress={progress} />
-          <span data-cy="progress-text">{progressText}</span>
-        </div>
+    <ListItemWrapper>
+      <div className="min-w-max pr-6">
+        <h2 className="text-2xl">{title}</h2>
+        <h3 className="text-xl">{subtitle}</h3>
       </div>
-    </>
+      <div className="w-[60%] text-center">
+        <ProgressBar progress={progress} />
+        <span data-cy="progress-text">{progressText}</span>
+      </div>
+    </ListItemWrapper>
   );
 }
 

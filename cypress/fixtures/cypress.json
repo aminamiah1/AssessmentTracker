@@ -1,6 +1,6 @@
 {
   "env": {
-    "localBaseUrl": "http://localhost:3000",
+    "localBaseUrl": "http://localhost:3001",
     "prodBaseUrl": "https://openshift-db-assessment-tracker.apps.openshift.cs.cf.ac.uk"
   }
 }

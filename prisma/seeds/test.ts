@@ -48,6 +48,30 @@ async function seedModules() {
               ],
             },
           },
+          {
+            id: 3,
+            assessment_name: "Database Design",
+            assessment_type: Assessment_type.Practical_Based_Assessment,
+            hand_in_week: example_date,
+            hand_out_week: example_date,
+            setter_id: 1,
+            assignees: {
+              connect: [
+                {
+                  email: "leader@test.net",
+                },
+                {
+                  email: "internal@test.net",
+                },
+                {
+                  email: "external@test.net",
+                },
+                {
+                  email: "panel@test.net",
+                },
+              ],
+            },
+          },
         ],
       },
     },

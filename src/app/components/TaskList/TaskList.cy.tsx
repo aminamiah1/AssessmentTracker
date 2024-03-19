@@ -1,8 +1,6 @@
-import { ProgressListItem } from "../ListItem/ProgressListItem";
-import * as hooks from "@/app/hooks/useAssessments";
+import { SWRConfig } from "swr";
 import { TaskList } from "./TaskList";
 import fixture from "./tasks.json";
-import { SWRConfig } from "swr";
 
 const tasks =
   fixture.tasksWithNoResponses as unknown as AssessmentAndPartAPIResponse[];

@@ -1,20 +1,15 @@
 import { ProgressBar } from "../ProgressBar/ProgressBar";
 
 interface OverallProgressContent {
-  /** The progress of the item, as a decimal */
-  progress: number;
-
   /** The array containing the text of the complemented parts so far to display next to the progress bar */
-  progressPartsList: string[];
+  partsList: string[];
 }
 
-function AssessmentProgressBar({
-  progress,
-  progressPartsList,
-}: OverallProgressContent) {
+function AssessmentProgressBar({ partsList }: OverallProgressContent) {
   // Get the last completed part title
-  const completedParts = Math.floor(progress * progressPartsList.length); // Adjust for indexing
-  const lastCompletedPart = progressPartsList[completedParts];
+  const completedParts = partsList.length; // Get the number of completed parts
+  const progress = completedParts / 11; // Divide by the maximum number of parts (11) to get progress
+  const lastCompletedPart = partsList[partsList.length - 1]; //Get text name of last completed part
   // Calculate the width of the completed portion of the progress bar
   const progressBarWidth = 100;
   const completedWidth = progress * progressBarWidth; //Calculate where to place last completed part text
@@ -35,22 +30,9 @@ function AssessmentProgressBar({
 }
 
 export function AssessmentOverallProgress({ ...props }) {
-  const { progress } = props;
-  const maxParts = 11; // Maximum number of parts
-  const exampleProgressPartsList = Array.from(
-    { length: maxParts },
-    (_, index) => `Assessment Tracking 10${index + 1}`,
-  ); // Example parts list
+  const { partsList } = props;
 
-  console.assert(
-    progress >= 0 && progress <= 1,
-    "Progress must be between 0 and 1, inclusively",
-  );
+  console.assert(partsList >= 0, "Parts list must contain 0 or more parts");
 
-  return (
-    <AssessmentProgressBar
-      progress={0.4}
-      progressPartsList={exampleProgressPartsList}
-    />
-  );
+  return <AssessmentProgressBar partsList={partsList} />;
 }

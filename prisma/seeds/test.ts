@@ -73,6 +73,39 @@ async function seedModules() {
       },
     },
   });
+
+  // Data used in assessment progress bar test suite to seperate testing enviroment from todo test suite
+  await prisma.module.create({
+    data: {
+      module_code: "CM6122",
+      module_name: "Python Apps",
+      module_leaders: {
+        connect: [{ email: "leader2@test.net" }, { email: "sudo@test.net" }],
+      },
+      assessments: {
+        createMany: {
+          data: [
+            {
+              id: 3,
+              assessment_name: "Python Fundamentals",
+              assessment_type: Assessment_type.Portfolio,
+              hand_out_week: example_date,
+              hand_in_week: example_date,
+              setter_id: 8,
+            },
+            {
+              id: 4,
+              assessment_name: "Python Advanced",
+              assessment_type: Assessment_type.Portfolio,
+              hand_out_week: example_date,
+              hand_in_week: example_date,
+              setter_id: 8,
+            },
+          ],
+        },
+      },
+    },
+  });
 }
 
 async function seedUsers() {
@@ -132,6 +165,13 @@ async function seedUsers() {
         roles: [...Object.values(Role)],
         status: "active",
       },
+      {
+        email: "leader2@test.net",
+        name: "Larry Leader",
+        password,
+        roles: [...Object.values(Role)],
+        status: "active",
+      },
     ],
   });
 }
@@ -139,10 +179,10 @@ async function seedUsers() {
 async function seedParts() {
   await prisma.partSubmission.create({
     data: {
-      part_id: 1,
+      part_id: 4,
       date_submitted: new Date(),
-      assessment_id: 2,
-      submitted_by: 1,
+      assessment_id: 4,
+      submitted_by: 8,
     },
   });
 }

@@ -133,7 +133,9 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                   partsList={assessment.partSubmissions}
                 />
               ) : (
-                <h1 className="mt-2">Tracking Process Not Yet Started</h1>
+                <h1 className="mt-2" data-cy="trackingFormToBeginStatus">
+                  Tracking Process Not Yet Started
+                </h1>
               )}
             </div>
           </div>

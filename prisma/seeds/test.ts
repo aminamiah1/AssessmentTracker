@@ -9,6 +9,7 @@ export default async function () {
   try {
     await seedUsers();
     await seedModules();
+    await seedParts();
   } catch (e) {
     console.error(e);
     process.exit(1);
@@ -132,5 +133,16 @@ async function seedUsers() {
         status: "active",
       },
     ],
+  });
+}
+
+async function seedParts() {
+  await prisma.partSubmission.create({
+    data: {
+      part_id: 1,
+      date_submitted: new Date(),
+      assessment_id: 2,
+      submitted_by: 1,
+    },
   });
 }

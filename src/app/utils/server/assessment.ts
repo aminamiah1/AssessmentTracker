@@ -20,6 +20,29 @@ export async function assessmentHasAssignee(
   return !!assignee;
 }
 
+export function getPartSubmissionsForUser(userId: number) {
+  return prisma.partSubmission.findMany({
+    where: {
+      Assessment: {
+        assignees: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+    },
+    include: {
+      Assessment: {
+        include: {
+          module: true,
+        },
+      },
+      Part: true,
+      Submitter: true,
+    },
+  });
+}
+
 export async function todosForUser(userId: number, roles: $Enums.Role[]) {
   // The idea is to get all assessments the user is assigned to,
   // check whether those assessments have any parts submitted:

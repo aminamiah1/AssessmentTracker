@@ -1,5 +1,7 @@
 "use server";
+import { getServerSession } from "next-auth";
 import prisma from "../db";
+import { authOptions } from "../api/auth/[...nextauth]/options";
 
 export async function getPartsWithQuestions(): Promise<PartWithQuestions[]> {
   const parts = await prisma.part.findMany({
@@ -86,6 +88,7 @@ export async function markPartAsSubmitted(
   partId: number,
   frontendResponses: { [key: string]: FormDataEntryValue },
 ): Promise<void> {
+  const session = await getServerSession(authOptions);
   const backendResponses = await getResponsesForPart(assessmentId, partId);
 
   // We want to make sure that all questions have responses
@@ -100,6 +103,11 @@ export async function markPartAsSubmitted(
     data: {
       assessment_id: assessmentId,
       part_id: partId,
+
+      // We know that this isn't going to be undefined, because it's being
+      // called from a route which validates the user's session before
+      // this function
+      submitted_by: +session!.user.id,
     },
   });
 }

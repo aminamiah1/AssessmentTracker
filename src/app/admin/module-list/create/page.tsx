@@ -173,7 +173,7 @@ export default function CreateModule() {
                 value: leader.id,
                 label: leader.name,
               }))}
-              className="basic-multi-select"
+              className="basic-multi-select dark:text-black"
               classNamePrefix="select"
               onChange={(selectedOptions) => {
                 setFormInputs((prev) => ({

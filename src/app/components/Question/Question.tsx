@@ -16,7 +16,9 @@ export function Question({ assessmentId, question }: QuestionProps) {
 
   // We don't NEED the value to exist - this is only
   // to catch the pre-existing response IF it exists
-  const prevResponse = response?.length ? response[0].value : "";
+  const prevResponse = response?.length
+    ? response.find((r) => r.assessment_id === assessmentId)!.value
+    : "";
 
   return (
     <div

@@ -22,12 +22,13 @@ export function TextArea({
   }, [previousResponse]);
 
   const handleBlur = async (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    setResponse(e.target.value);
+    // To not allow blank responses (like spaces, new lines etc.)
+    const newResponse = e.target.value.trim();
 
     // If the response hasn't changed, don't make an API call
-    if (e.target.value === savedResponse) return;
-    await saveResponse(assessmentId, +questionId, e.target.value);
-    setSavedResponse(e.target.value);
+    if (newResponse === savedResponse) return;
+    await saveResponse(assessmentId, +questionId, newResponse);
+    setSavedResponse(newResponse);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>

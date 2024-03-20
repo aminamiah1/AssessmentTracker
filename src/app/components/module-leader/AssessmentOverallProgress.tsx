@@ -20,7 +20,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
   return (
     <div className="w-full flex justify-evenly rounded p-4 items-center relative">
       <div className="w-[60%] relative overflow-hidden">
-        <h1 className="mb-4">Last Completed Stage</h1>
+        <h1 className="mb-8">Last Completed Stage</h1>
         {/* Display the tracking form stages progress as visual bar*/}
         <ProgressBar progress={progress} />
         {/* Display the last completed part information*/}

@@ -43,10 +43,14 @@ export default function ViewAssessmentsModuleLeaders() {
       try {
         const response = await fetch(`/api/module-leader/parts/get`);
         const data = await response.json();
-        const partsForSelect = data.map((data: Part) => ({
-          value: data.part_title,
-          label: data.part_title,
-        }));
+        // Insert the 'Process Not Started' option at the beginning
+        const partsForSelect = [
+          { value: "Process Not Started", label: "Process Not Started" },
+          ...data.map((data: Part) => ({
+            value: data.part_title,
+            label: data.part_title,
+          })),
+        ];
         setParts(partsForSelect);
       } catch (e) {
         setParts([]);
@@ -79,6 +83,10 @@ export default function ViewAssessmentsModuleLeaders() {
       // @ts-ignore
       // Had to do this due to parts list on assessment retrieved being hard to work with as double nested list format,
       // however optional chaining is used here to prevent issues of part list not being present for an assessment
+      ((assessment.partSubmissions as [][])?.[0]?.Part === undefined &&
+        selectedOption.value === "Process Not Started") ||
+      // @ts-ignore
+      // Filter by part title with search term associated
       (assessment.partSubmissions as [][])?.[0]?.Part?.part_title
         ?.toLowerCase()
         .includes(searchTerm.toLowerCase()) ||

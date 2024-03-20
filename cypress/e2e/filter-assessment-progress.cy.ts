@@ -35,7 +35,7 @@ describe("Assessment stage filter", () => {
       .eq(0)
       .should("have.text", "Moderation panel comments");
 
-    //Reset filter
+    // Reset filter
     cy.getByTestId("resetFilter").click();
 
     cy.getByTestId("stageLabel")
@@ -48,5 +48,19 @@ describe("Assessment stage filter", () => {
     cy.getByTestId("lastCompletedPart")
       .eq(0)
       .should("have.text", "External examiner feedback");
+
+    // Reset filter
+    cy.getByTestId("resetFilter").click();
+
+    cy.getByTestId("stageLabel")
+      .next()
+      .find("input")
+      .focus()
+      .type("Process Not Started{enter}");
+
+    // Should be assessment with no stage started
+    cy.getByTestId("trackingFormToBeginStatus")
+      .eq(0)
+      .should("have.text", "Tracking Process Not Yet Started");
   });
 });

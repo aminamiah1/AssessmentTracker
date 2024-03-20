@@ -151,6 +151,7 @@ export default function ViewAssessmentsModuleLeaders() {
                 <label
                   htmlFor="module"
                   className="font-bold block sm:inline-block mb-2 sm:mb-0 mr-2"
+                  data-cy="stageLabel"
                 >
                   Tracking Stage
                 </label>
@@ -179,6 +180,7 @@ export default function ViewAssessmentsModuleLeaders() {
             <button
               className="bg-gray-200 text-black h-10 mt-2 rounded w-1/2 min-w-[5rem] max-w-[10rem]"
               onClick={handleReset}
+              data-cy="resetFilter"
             >
               Reset Filter
             </button>
@@ -192,7 +194,10 @@ export default function ViewAssessmentsModuleLeaders() {
               ))}
             </div>
           ) : (
-            <div className="text-center dark:text-white">
+            <div
+              className="text-center dark:text-white"
+              data-cy="filterMessage"
+            >
               No assessments found matching the search criteria...
             </div>
           )}

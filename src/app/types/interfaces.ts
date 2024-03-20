@@ -78,3 +78,7 @@ export interface AssessmentEdit {
   setter: { id: number; name: string; roles: [] };
   assignees: { value: number }[] | { value: number; label: string }[];
 }
+//Interface for part list
+export interface Part {
+  part_title: string;
+}

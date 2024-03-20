@@ -1,19 +1,25 @@
 "use client";
 
 import UnauthorizedAccess from "@/app/components/authError";
-import { AssessmentLoad } from "@/app/types/interfaces";
+import { AssessmentLoad, Part } from "@/app/types/interfaces";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FiArrowLeft, FiSearch } from "react-icons/fi"; // Return arrow icon
+import { FiArrowLeft, FiSearch, FiFilter } from "react-icons/fi"; // Return arrow icon
 import { ToastContainer } from "react-toastify";
+import Select from "react-select";
 import AssessmentTile from "../../../components/module-leader/AssessmentTile";
 
 export default function ViewAssessmentsModuleLeaders() {
   const [assessments, setAssessments] = useState<AssessmentLoad[]>([]); // Variable to hold an array of assessment object types
   const [setterId, setSetterId] = useState(0);
   const [searchTerm, setSearchTerm] = useState(""); // Set the search term to blank for default
+  const [parts, setParts] = useState<{ value: string; label: string }[]>([]); // Parts select array
   const { data: session, status } = useSession({ required: true }); // Use useSession to get session and status
+  const [selectedOption, setSelectedOption] = useState({
+    value: "",
+    label: "",
+  }); // Variable to hold the current selected option
 
   useEffect(() => {
     const fetchAssessments = async () => {
@@ -32,8 +38,24 @@ export default function ViewAssessmentsModuleLeaders() {
       }
     };
 
+    const fetchParts = async () => {
+      // Fetch parts only when component mounts
+      try {
+        const response = await fetch(`/api/module-leader/parts/get`);
+        const data = await response.json();
+        const partsForSelect = data.map((data: Part) => ({
+          value: data.part_title,
+          label: data.part_title,
+        }));
+        setParts(partsForSelect);
+      } catch (e) {
+        setParts([]);
+      }
+    };
+
     if (isModuleLeader && setterId !== 0) {
       fetchAssessments();
+      fetchParts();
     }
   }, [setterId]);
 
@@ -44,17 +66,41 @@ export default function ViewAssessmentsModuleLeaders() {
   }, [status]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedOption({
+      value: "",
+      label: "",
+    });
     setSearchTerm(event.target.value);
   };
 
-  // Filter assessments when user searches by assessment name or module name assessment is tied to.
+  // Filter assessments when user searches by assessment name or module name or part assessment is tied to.
   const filteredAssessments = assessments.filter(
     (assessment) =>
+      // @ts-ignore
+      // Had to do this due to parts list on assessment retrieved being hard to work with as double nested list format,
+      // however optional chaining is used here to prevent issues of part list not being present for an assessment
+      (assessment.partSubmissions as [][])?.[0]?.Part?.part_title
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       assessment.assessment_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       assessment.module_name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  // Using any here as the selected option can come in multiple formats
+  const handleSelectChange = (selectedOption: any) => {
+    if (selectedOption.value != "") {
+      setSearchTerm(selectedOption ? selectedOption.value : "");
+      setSelectedOption(selectedOption);
+    }
+  };
+
+  // Handle resetting the search term and selected filter option on button click
+  const handleReset = () => {
+    setSearchTerm(""); // Reset search term
+    setSelectedOption({ value: "", label: "" }); // Reset selected option
+  };
 
   if (status === "loading") {
     return (
@@ -83,7 +129,7 @@ export default function ViewAssessmentsModuleLeaders() {
           </div>
         </div>
         <div>
-          <div className="flex items-center mb-3">
+          <div className="flex items-center mb-3 ml-2">
             <FiSearch
               className="mr-2 mb-2"
               size={30}
@@ -94,9 +140,48 @@ export default function ViewAssessmentsModuleLeaders() {
               type="text"
               value={searchTerm}
               onChange={handleSearch}
-              placeholder="Enter module or assessment name..."
-              className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
+              placeholder="Enter module or assessment name or tracking stage..."
+              className="p-2 mb-3 shadow-md border-b-4 border-black w-full mr-2 text-black"
             />
+          </div>
+          <div className="flex flex-col min-[1600px]:flex-row items-center mb-3 mr-2 ml-2">
+            <FiFilter className="mr-2" size={40} />
+            <div className="flex flex-wrap items-center mb-3 mr-2">
+              <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0 mr-2 ml-2">
+                <label
+                  htmlFor="module"
+                  className="font-bold block sm:inline-block mb-2 sm:mb-0 mr-2"
+                >
+                  Tracking Stage
+                </label>
+                <div>
+                  <Select
+                    onChange={(option) => handleSelectChange(option)}
+                    options={parts}
+                    value={
+                      parts.includes(selectedOption)
+                        ? selectedOption
+                        : { value: "", label: "" }
+                    } // Control the displayed value
+                    id="parts"
+                    className="react-select-container w-full dark:text-black"
+                    styles={{
+                      control: (provided: any) => ({
+                        ...provided,
+                        width: "100%",
+                        minWidth: "20rem",
+                      }),
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <button
+              className="bg-gray-200 text-black h-10 mt-2 rounded w-1/2 min-w-[5rem] max-w-[10rem]"
+              onClick={handleReset}
+            >
+              Reset Filter
+            </button>
           </div>
         </div>
         <div>

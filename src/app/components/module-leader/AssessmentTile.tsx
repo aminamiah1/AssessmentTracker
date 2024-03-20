@@ -95,14 +95,12 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 </span>
                 <br />
                 <span className="text-sm text-gray-700 dark:text-white">
-                  Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")} ●
-                  {/* To add later after tracking stages implemented */}
-                  Stage: {0} of 11
+                  Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")}
                 </span>
               </p>
             </div>
-            <div className="md:w-1/4 mt-4 md:mt-0">
-              <h6 className="mb-2">Assignees</h6>
+            <div className="md:w-1/2 mt-4 md:mt-0">
+              <h6 className="mb-2 font-bold">Assignees</h6>
               {assessment.assignees.length > 0 ? (
                 <div>
                   {assessment.assignees.map((assignee: Assignee) => (

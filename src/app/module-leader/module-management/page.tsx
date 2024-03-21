@@ -38,7 +38,6 @@ export default function ModuleList() {
 
   useEffect(() => {
     async function fetchModules() {
-      console.log(userId);
       if (userId) {
         const fetchedModules: ModuleData = await getModules(searchTerm, userId);
         setModules(fetchedModules);

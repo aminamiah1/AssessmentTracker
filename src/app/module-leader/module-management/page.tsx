@@ -71,14 +71,6 @@ export default function ModuleList() {
           <div data-cy="search-bar">
             <SearchBar onSearch={onSearch} />
           </div>
-          <div data-cy="create-module-btn">
-            <Link
-              className="px-4 py-2 min-w-20 border rounded transition-all bg-blue-500 hover:bg-blue-600 text-white"
-              href={"/admin/module-list/create"}
-            >
-              Create Module
-            </Link>
-          </div>
         </div>
         {/* Grid array of modules, 2 columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full p-4">

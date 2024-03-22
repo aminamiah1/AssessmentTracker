@@ -8,6 +8,7 @@ import Link from "next/link";
 import { FaTrash } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
+import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
 
 // Interface for the assessment model
 interface Assessment {
@@ -20,6 +21,7 @@ interface Assessment {
   module: [];
   setter_id: number;
   assignees: [];
+  partSubmissions: []; // Last part submission associated with assessment
 }
 
 // Interface for the assignees
@@ -93,14 +95,12 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 </span>
                 <br />
                 <span className="text-sm text-gray-700 dark:text-white">
-                  Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")} ●
-                  {/* To add later after tracking stages implemented */}
-                  Stage: {0} of 11
+                  Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")}
                 </span>
               </p>
             </div>
-            <div className="md:w-1/3 mt-4 md:mt-0">
-              <h6 className="mb-2">Assignees</h6>
+            <div className="md:w-1/2 mt-4 md:mt-0">
+              <h6 className="mb-2 font-bold">Assignees</h6>
               {assessment.assignees.length > 0 ? (
                 <div>
                   {assessment.assignees.map((assignee: Assignee) => (
@@ -122,6 +122,18 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 <p className="text-center text-gray-500 dark:text-white">
                   No assignees assigned
                 </p>
+              )}
+            </div>
+            <div className="md:w-1/2 md:mt-0 ml-2 text-center font-bold">
+              {assessment.partSubmissions &&
+              assessment.partSubmissions.length > 0 ? (
+                <AssessmentOverallProgress
+                  partsList={assessment.partSubmissions}
+                />
+              ) : (
+                <h1 className="mt-2" data-cy="trackingFormToBeginStatus">
+                  Tracking Process Not Yet Started
+                </h1>
               )}
             </div>
           </div>

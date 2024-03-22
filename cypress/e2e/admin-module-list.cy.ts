@@ -49,8 +49,27 @@ describe("Admin module list page", () => {
   });
 
   it("should remove a module from the page when it is archived", () => {
-    cy.getByTestId("archive-button").first().click();
+    cy.getByTestId("archive-button").last().click();
     cy.get(".Toastify__toast-body").should("be.visible");
-    cy.contains("[data-cy='module-card']", "CM6127").should("not.exist");
+    cy.contains("[data-cy='module-card']", "CM6128").should("not.exist");
+    cy.contains("[data-cy='module-card']", "CM3101").should("be.visible");
+  });
+
+  it("should not display any modules if no filters are selected", () => {
+    cy.getByTestId("active-filter").click();
+    cy.getByTestId("module-card").should("not.exist");
+  });
+
+  it("should display active and archived modules when both filters are selected", () => {
+    cy.getByTestId("archived-filter").click();
+    cy.contains("[data-cy='module-card']", "CM6128").should("be.visible");
+    cy.contains("[data-cy='module-card']", "CM3101").should("be.visible");
+  });
+
+  it("should only show archived modules when modules is selected", () => {
+    cy.getByTestId("active-filter").click();
+    cy.getByTestId("archived-filter").click();
+    cy.contains("[data-cy='module-card']", "CM3101").should("not.exist");
+    cy.contains("[data-cy='module-card']", "CM6128").should("be.visible");
   });
 });

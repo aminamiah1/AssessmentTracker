@@ -69,20 +69,6 @@ export default function ModuleDetails() {
     }
   }
 
-  async function handleArchiveModule(moduleCode: string) {
-    try {
-      const res = await archiveModule(moduleCode);
-      if (res.error) {
-        toast.error(res.error, { position: "bottom-right" });
-      } else if (res.success) {
-        toast.success(res.success, { position: "bottom-right" });
-      }
-    } catch (error) {
-      console.error("Error archiving module:", error);
-      toast.error("Failed to archive module", { position: "bottom-right" });
-    }
-  }
-
   if (!module) {
     return <div>Loading module details...</div>;
   }
@@ -121,7 +107,7 @@ export default function ModuleDetails() {
             Assessments
           </h3>
           <Link
-            href="/some-path-for-create-assessment"
+            href="/module-leader/assessment-management/create-assessment"
             className="px-6 py-2 text-sm font-medium bg-blue-500 dark:bg-blue-700 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 shadow inline-block"
             data-cy="create-assessments-button"
           >

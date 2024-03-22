@@ -76,31 +76,32 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
       <div className="bg-white shadow-md dark:bg-gray-700">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
           <div className="md:flex md:items-center">
-            <div className="md:w-2/3">
-              <div className="flex items-center">
-                <Link
+            <div className="md:w-1/2 md:mt-0  text-xl">
+              <div>
+                <a
+                  className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
                   href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
-                  className="flex items-center dark:text-white"
                 >
-                  <a className="text-blue-500 hover:text-blue-700 dark:text-white">
-                    {assessment.assessment_name}
-                  </a>
-                  <FaEdit className="cursor-pointer ml-4" size={30} />
-                </Link>
+                  {assessment.assessment_name}
+                </a>
               </div>
               <p className="mt-4">
-                <span className="text-sm text-gray-700 dark:text-white">
+                <span className="text-xl text-gray-700 dark:text-white mb-2">
                   {assessment.module_name} ●{" "}
                   {assessment.assessment_type.replaceAll("_", " ")}
                 </span>
                 <br />
-                <span className="text-sm text-gray-700 dark:text-white">
-                  Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")}
-                </span>
+                <div className="mt-4">
+                  <span className="text-xl text-gray-700 dark:text-white">
+                    Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")}
+                  </span>
+                </div>
               </p>
             </div>
             <div className="md:w-1/2 mt-4 md:mt-0">
-              <h6 className="mb-2 font-bold">Assignees</h6>
+              <h6 className="mb-4 text-xl text-gray-700 dark:text-white">
+                Assignees
+              </h6>
               {assessment.assignees.length > 0 ? (
                 <div>
                   {assessment.assignees.map((assignee: Assignee) => (
@@ -109,7 +110,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                       className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
                     >
                       <FaUserCircle className="mr-2 text-black" size={30} />
-                      <span className="text-sm dark:text-black">
+                      <span className="text-xl text-black dark:text-black">
                         {assignee.name}{" "}
                         {assignee.roles.map(
                           (role: string) => " ● " + role.replaceAll("_", " "),
@@ -119,12 +120,12 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-gray-500 dark:text-white">
+                <p className="text-xl text-gray-700 dark:text-white">
                   No assignees assigned
                 </p>
               )}
             </div>
-            <div className="md:w-1/2 md:mt-0 ml-2 text-center">
+            <div className="md:w-1/2 md:mt-0 text-center">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress
@@ -132,19 +133,25 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 />
               ) : (
                 <h1
-                  className="mt-2 text-lg"
+                  className="mt-2 text-xl text-gray-700 dark:text-white text-center"
                   data-cy="trackingFormToBeginStatus"
                 >
                   Tracking Process Not Yet Started
                 </h1>
               )}
             </div>
+            <div className="md:w-1/4 md:mt-0 text-center">
+              <button
+                className="mr-10"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                <FaTrash size={60} className="cursor-pointer" />
+              </button>
+              <button onClick={() => setShowDeleteModal(true)}>
+                <FaEdit size={60} className="cursor-pointer" />
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="p-4 md:p-6 flex justify-between">
-          <button onClick={() => setShowDeleteModal(true)}>
-            <FaTrash className="cursor-pointer" size={30} />
-          </button>
         </div>
       </div>
 

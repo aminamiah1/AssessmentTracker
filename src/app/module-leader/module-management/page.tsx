@@ -66,7 +66,7 @@ export default function ModuleList() {
         >
           My Modules List
         </h1>
-        {/* Search bar / filtering */}
+        {/* Search bar / filtering modules */}
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between px-4 py-1">
           <div data-cy="search-bar">
             <SearchBar onSearch={onSearch} />

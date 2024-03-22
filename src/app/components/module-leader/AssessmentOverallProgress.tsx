@@ -1,4 +1,4 @@
-import { ProgressBarOverall } from "./ProgressBarOverall";
+import { ProgressBarOverallModuleLeaders } from "./ProgressBarOverallModuleLeaders";
 
 interface OverallProgressContent {
   /** The array containing the text and current number of the last completed part for an assessment */
@@ -31,7 +31,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
             </h1>
             {/* Display the tracking form stages progress as visual bar*/}
             <div>
-              <ProgressBarOverall progress={progress} />
+              <ProgressBarOverallModuleLeaders progress={progress} />
             </div>
             <div>
               <div

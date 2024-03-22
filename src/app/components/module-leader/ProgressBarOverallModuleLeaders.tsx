@@ -2,7 +2,7 @@ interface ProgressBarProps {
   progress: number;
 }
 
-export function ProgressBarOverall({
+export function ProgressBarOverallModuleLeaders({
   progress: progressFraction,
 }: ProgressBarProps) {
   const progress = progressFraction * 100;

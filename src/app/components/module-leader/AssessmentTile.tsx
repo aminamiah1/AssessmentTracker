@@ -124,14 +124,17 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 </p>
               )}
             </div>
-            <div className="md:w-1/2 md:mt-0 ml-2 text-center font-bold">
+            <div className="md:w-1/2 md:mt-0 ml-2 text-center">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress
                   partsList={assessment.partSubmissions}
                 />
               ) : (
-                <h1 className="mt-2" data-cy="trackingFormToBeginStatus">
+                <h1
+                  className="mt-2 text-lg"
+                  data-cy="trackingFormToBeginStatus"
+                >
                   Tracking Process Not Yet Started
                 </h1>
               )}

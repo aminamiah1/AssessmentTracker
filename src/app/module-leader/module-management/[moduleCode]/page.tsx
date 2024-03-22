@@ -6,8 +6,10 @@ import { archiveModule } from "@/app/actions/module-status";
 import { usePathname } from "next/navigation";
 import AssessmentTile from "../../../components/module-leader/AssessmentTile";
 import { unwatchFile } from "fs";
+import { FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
 import { AssessmentLoad } from "@/app/types/interfaces";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Module {
   module_name: string;
@@ -17,6 +19,7 @@ interface Module {
 
 // Code largely adapted from ps team module view page, only changes here to do with making module leader focused
 export default function ModuleDetails() {
+  const router = useRouter(); // Create next router object
   const [module, setModule] = useState<Module | null>(null);
   const [assessments, setAssessments] = useState<AssessmentLoad[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -77,8 +80,11 @@ export default function ModuleDetails() {
 
   return (
     <div className="pt-16 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+      <div className="flex mb-4">
+        <button onClick={() => router.back()}>
+          <FiArrowLeft className="cursor-pointer mr-4" size={30} />
+        </button>
+        <h2 className="text-3xl font-bold text-left text-gray-900 dark:text-gray-100">
           {module_name}
         </h2>
       </div>

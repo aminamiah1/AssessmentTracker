@@ -58,7 +58,7 @@ export default function ModuleList() {
   const isModuleLeader = session.user.roles.includes("module_leader");
   return isModuleLeader ? (
     <>
-      <div className="bg-white dark:bg-darkmode h-screen max-h-full">
+      <div className="bg-white dark:bg-darkmode h-screen max-h-full mt-6">
         <ToastContainer />
         <h1
           className="text-4xl px-4 py-5 text-gray-900 dark:text-gray-100"

@@ -147,9 +147,13 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
               >
                 <FaTrash size={60} className="cursor-pointer" />
               </button>
-              <button onClick={() => setShowDeleteModal(true)}>
-                <FaEdit size={60} className="cursor-pointer" />
-              </button>
+              <div className="inline-table text-center">
+                <Link
+                  href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                >
+                  <FaEdit size={60} className="cursor-pointer" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>

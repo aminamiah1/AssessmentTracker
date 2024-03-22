@@ -14,14 +14,14 @@ describe("Module leader module list page", () => {
   it("should display the correct data from the database", () => {
     cy.getByTestId("module-card")
       .first()
-      .should("contain", "Example Module")
-      .and("contain", "CM6127");
+      .should("contain", "Updated Module Name")
+      .and("contain", "CM6128");
   });
 
   it("should show correct modules when search term is entered", () => {
-    cy.getByTestId("search-bar").type("CM6127{enter}");
+    cy.getByTestId("search-bar").type("CM6128{enter}");
     cy.getByTestId("module-card")
-      .should("contain", "Example Module")
+      .should("contain", "Updated Module Name")
       .and("have.length", 1);
   });
 });

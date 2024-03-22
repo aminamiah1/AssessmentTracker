@@ -82,7 +82,7 @@ export default function ModuleList() {
                 className="flex flex-col justify-between text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border dark:border-gray-700 shadow-md dark:shadow-gray-500 rounded p-4"
               >
                 <Link
-                  href={`/admin/module-list/${module.module_code}`}
+                  href={`/module-leader/module-management/${module.module_code}`}
                   className="text-xl hover:underline"
                   data-cy="linked-module"
                 >

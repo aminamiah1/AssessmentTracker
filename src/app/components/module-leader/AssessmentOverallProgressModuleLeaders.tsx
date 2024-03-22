@@ -50,7 +50,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
   );
 }
 
-export function AssessmentOverallProgress({ ...props }) {
+export function AssessmentOverallProgressModuleLeaders({ ...props }) {
   const { partsList } = props;
 
   console.assert(

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { FaTrash } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
-import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
+import { AssessmentOverallProgressModuleLeaders } from "@/app/components/module-leader/AssessmentOverallProgressModuleLeaders";
 
 // Interface for the assessment model
 interface Assessment {
@@ -128,7 +128,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
             <div className="md:w-1/2 md:mt-0 text-center">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
-                <AssessmentOverallProgress
+                <AssessmentOverallProgressModuleLeaders
                   partsList={assessment.partSubmissions}
                 />
               ) : (

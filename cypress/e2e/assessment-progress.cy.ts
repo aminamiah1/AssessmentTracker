@@ -17,7 +17,7 @@ describe("Assessment progress", () => {
     cy.visit("/module-leader/assessment-management/view-assessments");
     cy.getByTestId("trackingStagesComplete")
       .eq(0)
-      .should("have.text", "Tracking Stages Complete: 4/11");
+      .should("have.text", "Tracking Stage ● 4/11");
     cy.getByTestId("lastCompletedPart")
       .eq(0)
       .should("have.text", "Moderation panel comments");

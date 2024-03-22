@@ -23,7 +23,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
         {/* Display the last completed part information*/}
         {lastCompletedPart && (
           <>
-            <h1 className="mb-4 text-lg">
+            <h1 className="mb-4 text-lg" data-cy="trackingStagesComplete">
               Tracking Stage ● {lastCompletedPartNumber}/11
             </h1>
             {/* Display the tracking form stages progress as visual bar*/}

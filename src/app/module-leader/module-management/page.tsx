@@ -74,7 +74,7 @@ export default function ModuleList() {
         </div>
         {/* Grid array of modules, 2 columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full p-4">
-          {modules.length > 0 &&
+          {modules.length > 0 ? (
             modules.map((module) => (
               <div
                 key={module.id}
@@ -100,7 +100,10 @@ export default function ModuleList() {
                   <p>No module leaders assigned.</p>
                 )}
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="ml-1">No modules found associated with you</div>
+          )}
         </div>
       </div>
     </>

@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
+import { AssessmentOverallProgressModuleLeaders } from "../module-leader/AssessmentOverallProgressModuleLeaders";
 
 // Import interfaces from interfaces.ts
 import {
@@ -125,74 +126,93 @@ const AssessmentTilePS = ({
   return (
     // Assessment tile for ps team layout using grid system
     <>
-      <div className="flex-grow-1 col-12 md:col-6 mb-4 border border-gray-500">
-        <div className="bg-white shadow-md dark:bg-gray-700">
-          <div className="p-4 md:p-6 border-b-2 border-gray-300">
-            <div className="md:flex md:items-center">
-              <div className="md:w-2/3">
-                <div className="flex items-center">
-                  <Link
-                    href={`/ps-team/assessment-management/view-assessment?id=${assessment.id}`}
-                    className="flex items-center dark:text-white"
+      <div className="bg-white shadow-md mb-10 dark:bg-gray-700">
+        <div className="p-4 md:p-6 border-b-2 border-gray-300">
+          <div className="md:flex md:items-center">
+            <div className="md:w-1/2 md:mt-0  text-xl">
+              <div>
+                <Link
+                  href={`/ps-team/assessment-management/view-assessment?id=${assessment.id}`}
+                  className="flex items-center"
+                >
+                  <p
+                    className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
+                    data-cy="assessmentName"
                   >
-                    <p className="text-blue-500 hover:text-blue-700 dark:text-white">
-                      {assessment.assessment_name}
-                    </p>
-                  </Link>
-                  {assessment.setter && (
-                    <div>
-                      <span className="text-sm ml-2 dark:text-white">
-                        ● Setter: {assessment.setter.name}
+                    {assessment.assessment_name}
+                  </p>
+                </Link>
+              </div>
+              <p className="mt-4">
+                <span className="text-xl text-gray-700 dark:text-white mb-2">
+                  {assessment.module_name} ●{" "}
+                  {assessment.assessment_type.replaceAll("_", " ")}
+                </span>
+                <br />
+                <div className="mt-4">
+                  <span className="text-xl text-gray-700 dark:text-white">
+                    Setter: {assessment.setter?.name ?? "no setter assigned"}
+                  </span>
+                </div>
+                <div className="mt-4">
+                  <span className="text-xl text-gray-700 dark:text-white">
+                    Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")}
+                  </span>
+                </div>
+              </p>
+            </div>
+            <div className="md:w-1/2 mt-4 md:mt-0">
+              <h6 className="mb-4 text-xl text-gray-700 dark:text-white">
+                Assignees
+              </h6>
+              {assessment.assignees.length > 0 ? (
+                <div>
+                  {assessment.assignees.map((assignee: Assignee) => (
+                    <div
+                      key={assignee.id}
+                      className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
+                    >
+                      <FaUserCircle className="mr-2 text-black" size={30} />
+                      <span className="text-xl text-black dark:text-black">
+                        {assignee.name}{" "}
+                        {assignee.roles.map(
+                          (role: string) => " ● " + role.replaceAll("_", " "),
+                        )}
                       </span>
                     </div>
-                  )}
+                  ))}
                 </div>
-                <p className="mt-4">
-                  <span className="text-sm text-gray-700 dark:text-white">
-                    {assessment.module_name} ●{" "}
-                    {assessment.assessment_type.replaceAll("_", " ")}
-                  </span>
-                  <br />
-                  <span className="text-sm text-gray-700 dark:text-white">
-                    Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")} ●
-                    Stage: {0} of 11
-                  </span>
+              ) : (
+                <p className="text-xl text-gray-700 dark:text-white">
+                  No assignees assigned
                 </p>
-              </div>
-              <div className="md:w-1/3 mt-4 md:mt-0">
-                <h6 className="mb-2 dark:text-white">Assignees</h6>
-                {assessment.assignees.length > 0 ? (
-                  <div>
-                    {assessment.assignees.map((assignee: Assignee) => (
-                      <div
-                        key={assignee.id}
-                        className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
-                      >
-                        <FaUserCircle className="mr-2 text-black" size={30} />
-                        <span className="text-sm" data-cy="assigneeText">
-                          {assignee.name}{" "}
-                          {assignee.roles.map(
-                            (role: string) => " ● " + role.replaceAll("_", " "),
-                          )}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <h1 className="dark:text-white">No Assignees</h1>
-                )}
-                <div>
-                  <button
-                    className="bg-gray-200 text-black h-10 mt-5 rounded p-2"
-                    data-cy="assignUsers"
-                    onClick={() => {
-                      setIsPopUpOpen(true); // Open the pop-up
-                    }}
-                  >
-                    Assign assignees/setter?
-                  </button>
-                </div>
-              </div>
+              )}
+            </div>
+            <div className="md:w-1/2 md:mt-0 text-center">
+              {assessment.partSubmissions &&
+              assessment.partSubmissions.length > 0 ? (
+                <AssessmentOverallProgressModuleLeaders
+                  partsList={assessment.partSubmissions}
+                />
+              ) : (
+                <h1
+                  className="mt-2 text-xl text-gray-700 dark:text-white text-center"
+                  data-cy="trackingFormToBeginStatus"
+                >
+                  Tracking Process Not Yet Started
+                </h1>
+              )}
+            </div>
+            <div className="md:w-1/4 md:mt-0 text-center rounded">
+              <button
+                className="bg-gray-200 text-black h-20 mt-5 rounded p-3 text-xl"
+                data-cy="assignUsers"
+                onClick={() => {
+                  setIsPopUpOpen(true); // Open the pop-up
+                }}
+              >
+                Assign assignees/setter?
+              </button>
             </div>
           </div>
         </div>

@@ -331,7 +331,7 @@ function CreateAssessmentModuleLeaders() {
       ) : (
         <div className="max-w-3xl mx-auto dark:bg-darkmode">
           <div className="flex items-center mb-4">
-            <button onClick={() => router.back()}>
+            <button onClick={() => router.back()} data-cy="createBackButton">
               <FiArrowLeft
                 className="cursor-pointer"
                 size={30}

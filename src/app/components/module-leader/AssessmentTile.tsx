@@ -81,6 +81,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                 <a
                   className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
                   href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                  data-cy="assessmentName"
                 >
                   {assessment.assessment_name}
                 </a>
@@ -150,6 +151,7 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
               <div className="inline-table text-center">
                 <Link
                   href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                  data-cy="editAssessment"
                 >
                   <FaEdit size={60} className="cursor-pointer" />
                 </Link>

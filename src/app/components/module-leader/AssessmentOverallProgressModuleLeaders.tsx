@@ -1,5 +1,4 @@
-import { ProgressBarOverallModuleLeaders } from "./ProgressBarOverallModuleLeaders";
-
+import { ProgressBarOverallModuleLeaders } from "@/app/components/module-leader/ProgressBarOverallModuleLeaders";
 interface OverallProgressContent {
   /** The array containing the text and current number of the last completed part for an assessment */
   lastCompletedPart: {

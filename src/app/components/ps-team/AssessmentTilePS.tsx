@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
-import { AssessmentOverallProgressModuleLeaders } from "../module-leader/AssessmentOverallProgressModuleLeaders";
+import { AssessmentOverallProgressModuleLeaders } from "@/app/components/module-leader/AssessmentOverallProgressModuleLeaders";
 
 // Import interfaces from interfaces.ts
 import {

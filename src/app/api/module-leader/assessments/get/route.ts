@@ -30,6 +30,7 @@ export async function GET(request: Request) {
       },
       include: {
         assignees: { select: { name: true, roles: true } },
+        setter: { select: { name: true, id: true, roles: true } },
         partSubmissions: {
           select: { Part: true },
           orderBy: { part_id: "desc" },

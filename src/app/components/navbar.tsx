@@ -10,7 +10,7 @@ import {
   FaArrowRight,
   FaClipboardCheck,
   FaClipboardList,
-  FaFile,
+  FaTable,
   FaList,
   FaUsers,
   FaBox,
@@ -168,7 +168,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
             {isModuleLeader && (
               <>
                 <NavItem
-                  icon={<FaFile />}
+                  icon={<FaTable />}
                   isSidebarOpen={isSidebarOpen}
                   href="/module-leader/assessment-management"
                   text="Assessment Management"

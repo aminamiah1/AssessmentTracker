@@ -75,7 +75,7 @@ export default function ModuleDetails() {
   const { module_name, module_code, module_leaders } = module;
 
   return (
-    <div className="pt-16 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <div className="pt-16 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md min-h-screen">
       <div className="flex mb-4">
         <button onClick={() => router.back()}>
           <FiArrowLeft className="cursor-pointer mr-4" size={30} />

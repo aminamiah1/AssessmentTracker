@@ -32,6 +32,7 @@ export interface AssessmentLoad {
   module_id: number;
   module: [];
   setter_id: number;
+  setter: { id: number; name: string; roles: [] };
   module_name: string;
   assignees: [];
   partSubmissions: [];

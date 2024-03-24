@@ -9,29 +9,11 @@ import { FaTrash } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
 import { AssessmentOverallProgressModuleLeaders } from "@/app/components/module-leader/AssessmentOverallProgressModuleLeaders";
+// Import interfaces from interfaces.ts
+import { AssessmentTiles, Assignee } from "@/app/types/interfaces";
 
-// Interface for the assessment model
-interface Assessment {
-  id: number;
-  assessment_name: string;
-  assessment_type: string;
-  hand_out_week: Date;
-  hand_in_week: Date;
-  module_name: string;
-  module: [];
-  setter_id: number;
-  assignees: [];
-  partSubmissions: []; // Last part submission associated with assessment
-}
-
-// Interface for the assignees
-interface Assignee {
-  id: number;
-  name: string;
-  roles: [];
-}
 // Functional component for rendering an assessment tile
-const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
+const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
   // State variable for managing the visibility of the delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -92,6 +74,11 @@ const AssessmentTile = ({ assessment }: { assessment: Assessment }) => {
                   {assessment.assessment_type.replaceAll("_", " ")}
                 </span>
                 <br />
+                <div className="mt-4">
+                  <span className="text-xl text-gray-700 dark:text-white">
+                    Setter: {assessment.setter?.name ?? "no setter assigned"}
+                  </span>
+                </div>
                 <div className="mt-4">
                   <span className="text-xl text-gray-700 dark:text-white">
                     Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")}

@@ -405,6 +405,22 @@ To get their modules by their id, the module leaders can use the api located at 
 
 To get all users and retrieve only their names and roles, the module leaders can use the api located (url)/module-leader/users/get, used in assessment creation form to populate the assignees selection box. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful gets all users in the system to populate assignees box.
 
+# Assessments By Module Code(GET)
+
+To get their assessments by module code, the module leaders can use the api located at (url)/api/module-leader/assessments/(moduleCode). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves all the releated assessments and their details.
+
+# Module By Module Code(GET)
+
+To get a module by module code, the module leaders can use the api located at (url)/api/module-leader/modules/(moduleCode). Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves the module and all its details.
+
+# Parts(GET)
+
+To get all parts in the system, the module leaders can use the api located at (url)/api/module-leader/parts/get. Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves all the part titles of the parts in the system, used to populate tracking stage filter box.
+
+# Module List(GET)
+
+To get all modules the module leader is associated with, they can use the api located at (url)/api/module-leader/module-list.Can return 200 if successful and logged-in or error codes such as 400 or 401 unauthorised if not logged in. If successful retrieves all modules associated with the module leader and their details.
+
 ## Page Documentation
 
 ## All
@@ -427,4 +443,8 @@ On the dedicated assessment management page (base url)/ps-team/assessment-manage
 
 # Assessment management dashboard
 
-On the module-leader assessment management dashboard ((base url)/module-leader/assessment-management), module leader members can view individual assessments in responsive stacked cards. They may create new assessments using a dedicated form, with both actions accessible via clearly labeled dashboard buttons. Additionally, the 'View All Assessments' page enables editing and deleting of assessments through buttons integrated into each card.
+On the module leader assessment management dashboard ((base url)/module-leader/assessment-management), module leader members can view individual assessments in responsive stacked tiles. They may create new assessments using a dedicated form, with both actions accessible via clearly labeled dashboard buttons. Additionally, the 'View All Assessments' page enables editing and deleting of assessments through buttons integrated into each tile.
+
+# Module details and releated assessments dashboard
+
+On the module leader modules dashboard ((base url)/module-leader/module-management), module leader members can view their modules and click into a module to see their assessments for that module in assessment tile format. Can also click buttons to create assessment for the module as well as edit existing assessments or delete them. Also shows the tracking progress of assessments within the tiles, so the module leader can see last completed tracking stage in visual progress bar format.

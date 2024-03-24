@@ -187,14 +187,6 @@ async function seedUsers() {
 async function seedParts() {
   await prisma.partSubmission.create({
     data: {
-      part_id: 3,
-      date_submitted: new Date(),
-      assessment_id: 2,
-      submitted_by: 1,
-    },
-  });
-  await prisma.partSubmission.create({
-    data: {
       part_id: 4,
       date_submitted: new Date(),
       assessment_id: 4,

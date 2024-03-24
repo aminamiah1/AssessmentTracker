@@ -1,6 +1,6 @@
 "use client";
 import UnauthorizedAccess from "@/app/components/authError";
-import { AssessmentTiles, Module, User } from "@/app/types/interfaces";
+import { AssessmentTiles, Module, User, Part } from "@/app/types/interfaces";
 import uploadCSV from "@/app/utils/uploadCSV";
 import { Assessment_type } from "@prisma/client";
 import { useSession } from "next-auth/react"; // Import useSession and signInn
@@ -34,6 +34,7 @@ export default function ViewAssessmentsPSTeam() {
     value: "",
     label: "",
   }); // Variable to hold the current selected option
+  const [parts, setParts] = useState<{ value: string; label: string }[]>([]); // Parts select array
   let [isPopUpOpen, setIsPopUpOpen] = useState(false); // State to control pop-up
   const [selectedFileName, setSelectedFileName] = useState(""); // State to hold the selected csv file name
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State to hold the uploaded csv file
@@ -86,11 +87,31 @@ export default function ViewAssessmentsPSTeam() {
       setUsers(processedUsers);
     };
 
+    const fetchParts = async () => {
+      // Fetch parts only when component mounts
+      try {
+        const response = await fetch(`/api/module-leader/parts/get`);
+        const data = await response.json();
+        // Insert the 'Process Not Started' option at the beginning
+        const partsForSelect = [
+          { value: "Process Not Started", label: "Process Not Started" },
+          ...data.map((data: Part) => ({
+            value: data.part_title,
+            label: data.part_title,
+          })),
+        ];
+        setParts(partsForSelect);
+      } catch (e) {
+        setParts([]);
+      }
+    };
+
     if (status === "authenticated" && isPSTeam) {
       try {
         fetchAssessments();
         fetchModules();
         fetchUsers();
+        fetchParts();
       } catch (e) {
         setAssessments([]);
         setModules([]);
@@ -124,6 +145,16 @@ export default function ViewAssessmentsPSTeam() {
   // Filter assessments when user searches by assessment name or module name or users assessment is tied to.
   const filteredAssessments = assessments.filter(
     (assessment) =>
+      // @ts-ignore
+      // Had to do this due to parts list on assessment retrieved being hard to work with as double nested list format,
+      // however optional chaining is used here to prevent issues of part list not being present for an assessment
+      ((assessment.partSubmissions as [][])?.[0]?.Part === undefined &&
+        selectedOption.value === "Process Not Started") ||
+      // @ts-ignore
+      // Filter by part title with search term associated
+      (assessment.partSubmissions as [][])?.[0]?.Part?.part_title
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       assessment.assessment_name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
@@ -214,7 +245,7 @@ export default function ViewAssessmentsPSTeam() {
                 type="text"
                 value={searchTerm}
                 onChange={handleSearch}
-                placeholder="Enter module or assessment name..."
+                placeholder="Enter module or assessment name or tracking stage..."
                 className="p-2 mb-3 shadow-md border-b-4 border-black w-full text-black"
               />
             </div>
@@ -277,6 +308,37 @@ export default function ViewAssessmentsPSTeam() {
                         }),
                       }}
                     />
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center mt-3 mb-3">
+                  <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0 ml-2">
+                    <label
+                      htmlFor="module"
+                      className="font-bold block sm:inline-block mb-2 sm:mb-0 mr-2"
+                      data-cy="stageLabel"
+                    >
+                      Tracking Stage
+                    </label>
+                    <div>
+                      <Select
+                        onChange={(option) => handleSelectChange(option)}
+                        options={parts}
+                        value={
+                          parts.includes(selectedOption)
+                            ? selectedOption
+                            : { value: "", label: "" }
+                        } // Control the displayed value
+                        id="parts"
+                        className="react-select-container w-full dark:text-black"
+                        styles={{
+                          control: (provided: any) => ({
+                            ...provided,
+                            width: "100%",
+                            minWidth: "20rem",
+                          }),
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

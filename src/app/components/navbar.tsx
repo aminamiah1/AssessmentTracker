@@ -57,6 +57,8 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
     isExternalExaminer ||
     isPanelMember;
 
+  const moduleListRole = isModuleLeader || isPSTeam;
+
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
@@ -146,12 +148,6 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
             {isPSTeam && (
               <>
                 <NavItem
-                  icon={<FaList />}
-                  isSidebarOpen={isSidebarOpen}
-                  href="/admin/module-list"
-                  text="Module List"
-                />
-                <NavItem
                   icon={<FaUsers />}
                   isSidebarOpen={isSidebarOpen}
                   href="/ps-team/user-management"
@@ -173,13 +169,15 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                   href="/module-leader/assessment-management"
                   text="Assessment Management"
                 />
-                <NavItem
-                  icon={<FaList />}
-                  isSidebarOpen={isSidebarOpen}
-                  href="/admin/module-list"
-                  text="Module List"
-                />
               </>
+            )}
+            {moduleListRole && (
+              <NavItem
+                icon={<FaList />}
+                isSidebarOpen={isSidebarOpen}
+                href="/admin/module-list"
+                text="Module List"
+              />
             )}
             <NavItem
               href="/api/auth/signout"

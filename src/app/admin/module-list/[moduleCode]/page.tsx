@@ -144,13 +144,13 @@ export default function ModuleDetails() {
               <div>
                 <strong>{assessment.assessment_name}</strong>
                 <p>Type: {assessment.assessment_type}</p>
-                <p>
+                <p title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html">
                   Hand Out Week:{" "}
-                  {format(new Date(assessment.hand_out_week), "dd/MM/yyyy")}
+                  {format(new Date(assessment.hand_out_week), "yyyy/MM/dd")}
                 </p>
-                <p>
+                <p title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html">
                   Hand In Week:{" "}
-                  {format(new Date(assessment.hand_in_week), "dd/MM/yyyy")}
+                  {format(new Date(assessment.hand_in_week), "yyyy/MM/dd")}
                 </p>
                 <p>Setter: {assessment.setter?.name ?? "No setter assigned"}</p>
               </div>

@@ -126,7 +126,7 @@ const AssessmentTilePS = ({
   return (
     // Assessment tile for ps team layout using grid system
     <>
-      <div className="bg-white shadow-md mb-10 dark:bg-gray-700">
+      <div className="bg-gray-100 mb-2 dark:bg-gray-700 shadow-lg rounded-lg">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
           <div className="md:flex md:items-center">
             <div className="md:w-1/2 md:mt-0  text-xl">
@@ -150,13 +150,26 @@ const AssessmentTilePS = ({
                 </span>
                 <br />
                 <div className="mt-4">
-                  <span className="text-xl text-gray-700 dark:text-white">
-                    Setter: {assessment.setter?.name ?? "no setter assigned"}
+                  <span
+                    className="text-xl text-gray-700 dark:text-white"
+                    title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
+                  >
+                    Hand Out Week:{" "}
+                    {format(new Date(assessment.hand_out_week), "yyyy/MM/dd")}
+                  </span>
+                </div>
+                <div className="mt-4">
+                  <span
+                    className="text-xl text-gray-700 dark:text-white"
+                    title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
+                  >
+                    Hand In Week:{" "}
+                    {format(new Date(assessment.hand_in_week), "yyyy/MM/dd")}
                   </span>
                 </div>
                 <div className="mt-4">
                   <span className="text-xl text-gray-700 dark:text-white">
-                    Due Date: {format(assessment.hand_in_week, "yyyy-MM-dd")}
+                    Setter: {assessment.setter?.name ?? "no setter assigned"}
                   </span>
                 </div>
               </p>

@@ -395,7 +395,7 @@ export default function ViewAssessmentsPSTeam() {
           </div>
           <div>
             {filteredAssessments.length > 0 ? (
-              <div className="pb-20 mb-20">
+              <div className="pb-5 mb-5">
                 {filteredAssessments.map((assessment) => (
                   <AssessmentTilePS
                     key={assessment.id}

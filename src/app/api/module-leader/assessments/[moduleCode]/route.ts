@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
-import { title } from "process";
 
 // Adapted from PS team get assessments by module code route
 export async function GET(req: NextRequest) {

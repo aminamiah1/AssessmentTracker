@@ -114,6 +114,47 @@ async function seedModules() {
       },
     },
   });
+
+  // Data used in module block test
+  await prisma.module.create({
+    data: {
+      module_code: "CM6133",
+      module_name: "Python Apps 2",
+      module_leaders: {
+        connect: [{ email: "leader3@test.net" }],
+      },
+      assessments: {
+        createMany: {
+          data: [
+            {
+              id: 6,
+              assessment_name: "Python Fundamentals 2",
+              assessment_type: Assessment_type.Portfolio,
+              hand_out_week: example_date,
+              hand_in_week: example_date,
+              setter_id: 8,
+            },
+            {
+              id: 7,
+              assessment_name: "Python Advanced 2",
+              assessment_type: Assessment_type.Portfolio,
+              hand_out_week: example_date,
+              hand_in_week: example_date,
+              setter_id: 8,
+            },
+            {
+              id: 8,
+              assessment_name: "Python Next Level 2",
+              assessment_type: Assessment_type.Portfolio,
+              hand_out_week: example_date,
+              hand_in_week: example_date,
+              setter_id: 8,
+            },
+          ],
+        },
+      },
+    },
+  });
 }
 
 async function seedUsers() {
@@ -178,6 +219,13 @@ async function seedUsers() {
         name: "Larry Leader",
         password,
         roles: [...Object.values(Role)],
+        status: "active",
+      },
+      {
+        email: "leader3@test.net",
+        name: "Levi Leader",
+        password,
+        roles: [Role.module_leader],
         status: "active",
       },
     ],

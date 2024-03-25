@@ -1,15 +1,15 @@
 /// <reference types='cypress' />
 describe("Module leader module details page", () => {
   beforeEach(() => {
-    cy.login("leader2@test.net");
-    cy.visit("/module-leader/module-management");
+    cy.login("leader3@test.net");
+    cy.visit("/admin/module-list");
   });
 
   it("should display the correct module information when module name clicked", () => {
     cy.getByTestId("linked-module").first().click();
     cy.getByTestId("assessmentName")
       .first()
-      .should("have.text", "Python Fundamentals");
+      .should("have.text", "Python Fundamentals 2");
   });
 
   it("can visit create assessment page and go back to modules page", () => {
@@ -20,16 +20,16 @@ describe("Module leader module details page", () => {
     cy.getByTestId("createBackButton").click();
     cy.getByTestId("assessmentName")
       .first()
-      .should("have.text", "Python Fundamentals");
+      .should("have.text", "Python Fundamentals 2");
   });
 
   it("can visit edit assessment page and go back to modules page", () => {
     cy.getByTestId("linked-module").first().click();
     cy.getByTestId("editAssessment").first().click();
-    cy.getByTestId("name").should("have.value", "Python Fundamentals");
+    cy.getByTestId("name").should("have.value", "Python Fundamentals 2");
     cy.getByTestId("createBackButton").click();
     cy.getByTestId("assessmentName")
       .first()
-      .should("have.text", "Python Fundamentals");
+      .should("have.text", "Python Fundamentals 2");
   });
 });

@@ -13,6 +13,8 @@ import {
   FaFile,
   FaList,
   FaUsers,
+  FaBox,
+  FaListAlt,
 } from "react-icons/fa";
 import { NavItem } from "@/app/components/ListItem/NavItem";
 import DarkModeToggle from "@/app/components/darkModeToggle";
@@ -156,7 +158,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                   text="User Management"
                 />
                 <NavItem
-                  icon={<FaFile />}
+                  icon={<FaListAlt />}
                   isSidebarOpen={isSidebarOpen}
                   href="/ps-team/assessment-management"
                   text="PS Team Assessments"
@@ -164,12 +166,20 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
               </>
             )}
             {isModuleLeader && (
-              <NavItem
-                icon={<FaFile />}
-                isSidebarOpen={isSidebarOpen}
-                href="/module-leader/assessment-management"
-                text="Assessment Management"
-              />
+              <>
+                <NavItem
+                  icon={<FaFile />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/module-leader/assessment-management"
+                  text="Assessment Management"
+                />
+                <NavItem
+                  icon={<FaBox />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/module-leader/module-management"
+                  text="Module Management"
+                />
+              </>
             )}
             <NavItem
               href="/api/auth/signout"

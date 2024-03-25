@@ -27,6 +27,7 @@ export default function CreateModule() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { data: session, status } = useSession({ required: true });
+  const isModuleLeader = session?.user?.roles.includes("module_leader");
 
   useEffect(() => {
     const fetchModuleLeaders = async () => {

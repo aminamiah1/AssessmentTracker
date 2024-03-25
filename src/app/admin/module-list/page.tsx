@@ -163,10 +163,16 @@ export default function ModuleList() {
               <div
                 key={module.id}
                 data-cy="module-card"
-                className="flex justify-between items-center text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border dark:border-gray-700 shadow-md dark:shadow-gray-500 rounded p-4"
+                className="flex flex-col justify-between text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border dark:border-gray-700 shadow-md dark:shadow-gray-500 rounded p-4"
               >
                 <div className="mr-4">
-                  <h3 className="text-xl">{module.module_name}</h3>
+                  <Link
+                    href={`/admin/module-list/${module.module_code}`}
+                    className="text-xl hover:underline"
+                    data-cy="linked-module"
+                  >
+                    {module.module_name}
+                  </Link>
                   {/* Need to put in the academic year here once it's implemented */}
                   <p>AcaYear-{module.module_code}</p>
                   {module.module_leaders?.length > 0 ? (
@@ -181,24 +187,6 @@ export default function ModuleList() {
                   >
                     {module.status}
                   </p>
-                </div>
-                <div className="flex gap-4">
-                  <Link
-                    href={`/admin/module-list/edit/${module.module_code}`}
-                    data-cy="edit-button"
-                    className="px-3 py-2 text-2xl border rounded transition-all bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  >
-                    <MdEdit />
-                  </Link>
-                  {module.status === "active" && (
-                    <button
-                      data-cy="archive-button"
-                      className="px-3 py-2 text-2xl border rounded transition-all bg-gray-600 dark:bg-gray-600 text-gray-100 hover:bg-gray-700"
-                      onClick={() => handleArchiveModule(module.module_code)}
-                    >
-                      <MdArchive />
-                    </button>
-                  )}
                 </div>
               </div>
             ))}

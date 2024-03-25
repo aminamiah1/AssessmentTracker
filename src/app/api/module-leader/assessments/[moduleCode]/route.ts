@@ -78,11 +78,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    return new NextResponse(JSON.stringify(assessmentsWithModules), {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return NextResponse.json(assessmentsWithModules);
   } catch (error) {
     console.error("Error fetching assessments:", error);
     return new NextResponse(

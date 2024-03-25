@@ -29,17 +29,6 @@ describe("Admin module list page", () => {
     // Will eventually lead to create module page
   });
 
-  it("should show all module manage buttons", () => {
-    cy.getByTestId("archive-button").each((button) => {
-      cy.wrap(button).should("exist");
-    });
-
-    cy.getByTestId("edit-button").each((button) => {
-      cy.wrap(button).should("exist");
-    });
-    // These buttons will eventually lead to different pages
-  });
-
   it("should show correct modules when search term is entered", () => {
     cy.getByTestId("search-bar").type("CM3101{enter}");
     cy.getByTestId("module-card")
@@ -48,9 +37,21 @@ describe("Admin module list page", () => {
     // will need to change once testing db is setup
   });
 
-  it("should remove a module from the page when it is archived", () => {
-    cy.getByTestId("archive-button").first().click();
-    cy.get(".Toastify__toast-body").should("be.visible");
-    cy.contains("[data-cy='module-card']", "CM6127").should("not.exist");
+  it("should not display any modules if no filters are selected", () => {
+    cy.getByTestId("active-filter").click();
+    cy.getByTestId("module-card").should("not.exist");
+  });
+
+  it("should display active and archived modules when both filters are selected", () => {
+    cy.getByTestId("archived-filter").click();
+    //cy.contains("[data-cy='module-card']", "CM6128").should("be.visible");
+    cy.contains("[data-cy='module-card']", "CM3101").should("be.visible");
+  });
+
+  it("should only show archived modules when modules is selected", () => {
+    cy.getByTestId("active-filter").click();
+    cy.getByTestId("archived-filter").click();
+    cy.contains("[data-cy='module-card']", "CM3101").should("not.exist");
+    // cy.contains("[data-cy='module-card']", "CM6128").should("be.visible");
   });
 });

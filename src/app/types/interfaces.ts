@@ -13,6 +13,9 @@ export interface AssessmentForm {
 export interface Module {
   id: number;
   module_name: string;
+  module_code: string;
+  module_leaders: User[];
+  assessments: AssessmentTiles[];
 }
 // Interface for the user model
 export interface User {
@@ -77,4 +80,25 @@ export interface AssessmentEdit {
   setter_id: { value: number; label: string };
   setter: { id: number; name: string; roles: [] };
   assignees: { value: number }[] | { value: number; label: string }[];
+}
+//Interface for part list
+export interface Part {
+  part_title: string;
+}
+
+export interface ModulePS {
+  module_name: string;
+  module_code: string;
+  module_leaders: { id: number; name: string; roles: string[] }[];
+}
+
+export interface AssessmentPS {
+  id: number;
+  assessment_name: string;
+  assessment_type: string;
+  hand_out_week: Date;
+  hand_in_week: Date;
+  partSubmissions: [];
+  setter_id: number;
+  setter: { id: number; name: string; roles: [] };
 }

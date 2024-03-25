@@ -1,4 +1,4 @@
-import { ProgressBar } from "../ProgressBar/ProgressBar";
+import { ProgressBarOverall } from "./ProgressBarOverall";
 
 interface OverallProgressContent {
   /** The array containing the text and current number of the last completed part for an assessment */
@@ -18,25 +18,29 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
   const completedWidth = progress * progressBarWidth; //Calculate where to place last completed part text
 
   return (
-    <div className="w-full flex justify-evenly rounded p-4 items-center relative">
-      <div className="w-[60%] relative overflow-hidden">
-        <h1 className="mb-8">Last Completed Stage</h1>
-        {/* Display the tracking form stages progress as visual bar*/}
-        <ProgressBar progress={progress} />
+    <div className="w-full flex justify-evenly rounded p-4">
+      <div className="w-[60%] relative overflow-hidden text-left">
         {/* Display the last completed part information*/}
         {lastCompletedPart && (
-          <div>
-            <div style={{ width: `${completedWidth}%`, textAlign: "right" }}>
-              <span className="font-bold" data-cy="lastCompletedPart">
-                {lastCompletedPartTitle}
-              </span>
+          <>
+            <h1 className="mb-4 text-lg" data-cy="trackingStagesComplete">
+              Tracking Stage ● {lastCompletedPartNumber}/11
+            </h1>
+            {/* Display the tracking form stages progress as visual bar*/}
+            <div>
+              <ProgressBarOverall progress={progress} />
             </div>
-            <div className="mt-6" style={{ textAlign: "left" }}>
-              <span className="font-bold" data-cy="trackingStagesComplete">
-                Tracking Stages Complete: {lastCompletedPartNumber}/11
-              </span>
+            <div>
+              <div
+                className="mt-2  text-lg"
+                style={{ width: `${completedWidth}%`, textAlign: "right" }}
+              >
+                <span data-cy="lastCompletedPart">
+                  {lastCompletedPartTitle}
+                </span>
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

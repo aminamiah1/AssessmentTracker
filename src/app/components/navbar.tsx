@@ -174,10 +174,10 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                   text="Assessment Management"
                 />
                 <NavItem
-                  icon={<FaBox />}
+                  icon={<FaList />}
                   isSidebarOpen={isSidebarOpen}
-                  href="/module-leader/module-management"
-                  text="Module Management"
+                  href="/admin/module-list"
+                  text="Module List"
                 />
               </>
             )}

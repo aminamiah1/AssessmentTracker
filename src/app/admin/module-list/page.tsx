@@ -14,17 +14,16 @@ import { ModuleData } from "@/app/types/module";
 
 export const dynamic = "force-dynamic";
 
-type ModuleData = {
-  id: number;
-  module_name: string;
-  module_code: string;
-  module_leaders: Users[];
-}[];
-
-async function getModulesPS(searchTerm: string) {
-  const data = await fetch(`/api/module-list/${searchTerm}`, {
-    next: { revalidate: 3600 },
-  });
+async function getModulesPS(
+  searchTerm: string,
+  filters: { active: string; archived: string; completed: string },
+) {
+  const data = await fetch(
+    `/api/module-list/${searchTerm}?active=${filters.active}&archived=${filters.archived}&completed=${filters.completed}`,
+    {
+      next: { revalidate: 3600 },
+    },
+  );
   return data.json();
 }
 
@@ -49,21 +48,17 @@ export default function ModuleList() {
     setSearchTerm(term);
   }
 
-  async function fetchModules() {
+  async function fetchModulesPS() {
     const filters = {
       active: activeFilter ? "true" : "false",
       archived: archivedFilter ? "true" : "false",
       completed: completedFilter ? "true" : "false",
     };
-    const fetchedModules: ModuleData = await getModules(searchTerm, filters);
+    const fetchedModules: ModuleData = await getModulesPS(searchTerm, filters);
     setModules(fetchedModules);
   }
 
   useEffect(() => {
-    async function fetchModulesPS() {
-      const fetchedModules: ModuleData = await getModulesPS(searchTerm);
-      setModules(fetchedModules);
-    }
     async function fetchModulesLeader() {
       if (userId) {
         const fetchedModules: ModuleData = await getModulesLeader(
@@ -78,7 +73,7 @@ export default function ModuleList() {
     } else if (isModuleLeader) {
       fetchModulesLeader();
     }
-  }, [searchTerm, session]);
+  }, [searchTerm, activeFilter, archivedFilter, completedFilter, session]);
 
   async function handleArchiveModule(moduleCode: string) {
     const res = await archiveModule(moduleCode);
@@ -91,7 +86,7 @@ export default function ModuleList() {
         position: "bottom-right",
       });
     }
-    fetchModules();
+    fetchModulesPS();
   }
 
   function handleFiltering(status: ModuleStatus) {

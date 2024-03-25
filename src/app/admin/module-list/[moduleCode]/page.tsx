@@ -13,7 +13,16 @@ export default function ModuleDetails() {
   const [assessments, setAssessments] = useState<AssessmentPS[]>([]);
   const [error, setError] = useState<string | null>(null);
   const pathname = usePathname();
-  const moduleCode = pathname.split("/").pop();
+  let moduleCode = "";
+  //Check path name is not undefined befor continuing
+  if (pathname != undefined) {
+    let path = pathname.split("/").pop()?.toString();
+    if (path != undefined) {
+      moduleCode = path;
+    }
+  } else {
+    console.error("Path can not be undefined");
+  }
 
   useEffect(() => {
     if (moduleCode) {

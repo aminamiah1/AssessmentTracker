@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
-import { AssessmentOverallProgressModuleLeaders } from "@/app/components/module-leader/AssessmentOverallProgressModuleLeaders";
+import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
 
 // Import interfaces from interfaces.ts
 import {
@@ -194,7 +194,7 @@ const AssessmentTilePS = ({
             <div className="md:w-1/2 md:mt-0 text-center">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
-                <AssessmentOverallProgressModuleLeaders
+                <AssessmentOverallProgress
                   partsList={assessment.partSubmissions}
                 />
               ) : (

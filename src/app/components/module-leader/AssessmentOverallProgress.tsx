@@ -1,4 +1,4 @@
-import { ProgressBarOverallModuleLeaders } from "@/app/components/module-leader/ProgressBarOverallModuleLeaders";
+import { ProgressBarOverall } from "@/app/components/module-leader/ProgressBarOverall";
 interface OverallProgressContent {
   /** The array containing the text and current number of the last completed part for an assessment */
   lastCompletedPart: {
@@ -30,7 +30,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
             </h1>
             {/* Display the tracking form stages progress as visual bar*/}
             <div>
-              <ProgressBarOverallModuleLeaders progress={progress} />
+              <ProgressBarOverall progress={progress} />
             </div>
             <div>
               <div
@@ -49,7 +49,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
   );
 }
 
-export function AssessmentOverallProgressModuleLeaders({ ...props }) {
+export function AssessmentOverallProgress({ ...props }) {
   const { partsList } = props;
 
   console.assert(

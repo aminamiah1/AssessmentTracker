@@ -19,7 +19,7 @@ export async function getBulkResponsesForPart(
 ): Promise<{ [key: number]: QuestionWithResponse[] }> {
   console.assert(assessmentIds.length === partIds.length);
 
-  const responses = await prisma.question.findMany({
+  const questionCollection = await prisma.question.findMany({
     include: {
       Response: true,
     },
@@ -43,12 +43,18 @@ export async function getBulkResponsesForPart(
 
   const sortedResponses: { [key: number]: QuestionWithResponse[] } = {};
 
-  responses.forEach((response) => {
-    if (!sortedResponses[response.Response[0].assessment_id]) {
-      sortedResponses[response.Response[0].assessment_id] = [];
+  questionCollection.forEach((questionAndResponse: QuestionWithResponse) => {
+    const { Response: responseList } = questionAndResponse;
+
+    const response = responseList.find((response) =>
+      assessmentIds.includes(response.assessment_id),
+    )!;
+
+    if (!sortedResponses[response.assessment_id]) {
+      sortedResponses[response.assessment_id] = [];
     }
 
-    sortedResponses[response.Response[0].assessment_id].push(response);
+    sortedResponses[response.assessment_id].push(questionAndResponse);
   });
 
   return sortedResponses;
@@ -60,15 +66,14 @@ export async function getResponsesForPart(
 ): Promise<QuestionWithResponse[]> {
   const responses = prisma.question.findMany({
     include: {
-      Response: true,
-    },
-    where: {
-      part_id: partId,
       Response: {
-        some: {
+        where: {
           assessment_id: assessmentId,
         },
       },
+    },
+    where: {
+      part_id: partId,
     },
   });
 
@@ -91,6 +96,9 @@ export async function markPartAsSubmitted(
   const session = await getServerSession(authOptions);
   const backendResponses = await getResponsesForPart(assessmentId, partId);
 
+  // If any submission exists for this assessment and part, an error will be thrown
+  verifyIsFirstSubmission(assessmentId, partId);
+
   // We want to make sure that all questions have responses
   verifyAllQuestionsAreAnswered(backendResponses);
 
@@ -112,12 +120,30 @@ export async function markPartAsSubmitted(
   });
 }
 
-function verifyAllQuestionsAreAnswered(responses: QuestionWithResponse[]) {
-  responses.forEach((response) => {
-    if (!response.Response.length || !response.Response[0].value) {
+function verifyAllQuestionsAreAnswered(
+  questionAndResponses: QuestionWithResponse[],
+) {
+  questionAndResponses.forEach((responses) => {
+    if (!responses.Response.length || !responses.Response[0].value) {
       throw new Error("All questions must be answered");
     }
   });
+}
+
+export async function verifyIsFirstSubmission(
+  assessmentId: number,
+  partId: number,
+) {
+  const hasSubmission = await prisma.partSubmission.findFirst({
+    where: {
+      assessment_id: assessmentId,
+      part_id: partId,
+    },
+  });
+
+  if (hasSubmission) {
+    throw new Error("Part has already been submitted");
+  }
 }
 
 function verifyResponsesMatch(

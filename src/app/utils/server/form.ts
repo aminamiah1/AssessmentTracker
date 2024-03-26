@@ -2,6 +2,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import prisma from "@/app/db";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
+import { verifyIsFirstSubmission } from "../form";
 
 /**
  * For saving individual responses as the user goes through the tracking
@@ -18,6 +19,22 @@ export async function saveResponse(
   const session = await getServerSession(authOptions);
 
   if (!session) throw new Error("No session found when saving response");
+
+  // We want to verify that a submission doesn't already exist for the
+  // part the user is attempting to respond to
+  const part = await prisma.part.findFirst({
+    where: {
+      Question: {
+        some: {
+          id: questionId,
+        },
+      },
+    },
+  });
+
+  if (!part) throw new Error("No part found for question");
+
+  verifyIsFirstSubmission(assessmentId, part.id);
 
   await prisma.response.upsert({
     where: {

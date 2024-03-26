@@ -1,12 +1,11 @@
+import { PartContext, saveResponse } from "@/app/utils/client/form";
 import { $Enums } from "@prisma/client";
+import { useContext, useEffect, useState } from "react";
 import { BooleanChoice } from "./BooleanChoice";
 import { MultiChoice } from "./MultiChoice";
 import { TextArea } from "./TextArea";
 
 interface ResponseProps {
-  /** The assessment ID to which this response is relating to */
-  assessmentId: number;
-
   /** Default value (i.e. if the user has made changes and comes back to the page) */
   previousResponse: string;
 
@@ -23,8 +22,28 @@ interface ResponseProps {
 export function Response({
   choices = [],
   responseType,
-  ...props
+  previousResponse,
+  ...respProps
 }: ResponseProps) {
+  const [response, setResponse] = useState(previousResponse);
+
+  const { assessmentId, postsave, presave, readonly } = useContext(PartContext);
+
+  useEffect(() => {
+    setResponse(previousResponse);
+  }, [previousResponse]);
+
+  const handleSaveResponse = async (resp: string = response) => {
+    presave?.(resp);
+
+    setResponse(resp);
+    await saveResponse(assessmentId, +respProps.questionId, resp);
+
+    postsave?.(resp);
+  };
+
+  const props = { ...respProps, handleSaveResponse, response };
+
   switch (responseType) {
     case "string":
       const isMultichoice = choices.length > 1;
@@ -36,11 +55,16 @@ export function Response({
       }
 
       return isMultichoice ? (
-        <MultiChoice choices={choices} {...props} />
+        <MultiChoice disabled={readonly} choices={choices} {...props} />
       ) : (
-        <TextArea {...props} />
+        <TextArea
+          disabled={readonly}
+          handleChange={(e) => setResponse(e.target.value)}
+          previousResponse={previousResponse}
+          {...props}
+        />
       );
     case "boolean":
-      return <BooleanChoice {...props} />;
+      return <BooleanChoice disabled={readonly} {...props} />;
   }
 }

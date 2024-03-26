@@ -1,10 +1,13 @@
 "use client";
 
-import { submitPart } from "@/app/utils/client/assessment";
-import { Question as IQuestion } from "@prisma/client";
-import { FormEvent } from "react";
-import { Question } from "../Question/Question";
 import { usePartTodo } from "@/app/hooks/useAssessments";
+import { submitPart } from "@/app/utils/client/assessment";
+import { PartContext } from "@/app/utils/client/form";
+import { Question as IQuestion } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
+import { Question } from "../Question/Question";
 
 interface PartTodoByFetchProps {
   assessmentId: number;
@@ -26,9 +29,12 @@ export function Part({
   afterSubmit,
   readonly = false,
 }: PartProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
   const { Question: questions } = part;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    setIsLoading(true);
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -49,29 +55,41 @@ export function Part({
     } catch (e) {
       console.error(e);
       alert(e);
+    } finally {
+      setIsLoading(false);
     }
   }
+
+  const presave = (response: string) => {
+    setIsLoading(true);
+  };
+  const postsave = (response: string) => {
+    setIsLoading(false);
+  };
 
   return (
     <form
       onSubmit={handleSubmit}
       autoComplete="off"
-      className="flex flex-col justify-center"
+      className="flex flex-col items-center"
     >
-      <h1 className="pt-10 pb-2 text-3xl">{part.part_title}</h1>
-      <ol className="flex max-w-prose gap-16 flex-col">
-        {questions.map((question, key) => (
-          <Question
-            assessmentId={assessmentId}
-            key={key}
-            question={question as QuestionWithResponse}
-          />
-        ))}
+      <h1 id={`${part.id}`} className="mb-10 mt-4 pb-2 text-3xl">
+        {part.part_title}
+      </h1>
+      <ol className="flex peer max-w-prose gap-16 flex-col">
+        <PartContext.Provider
+          value={{ assessmentId, readonly, presave, postsave }}
+        >
+          {questions.map((question, key) => (
+            <Question key={key} question={question as QuestionWithResponse} />
+          ))}
+        </PartContext.Provider>
       </ol>
       {!readonly && (
         <button
+          className="disabled:cursor-not-allowed w-fit disabled:bg-blue-300 mb-12 mt-12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg"
+          disabled={isLoading}
           type="submit"
-          className="m-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Submit
         </button>
@@ -81,9 +99,24 @@ export function Part({
 }
 
 export function PartTodoByFetch({ assessmentId }: PartTodoByFetchProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { data: session } = useSession({ required: true });
   const { partTodo, isLoading, error } = usePartTodo(assessmentId);
 
-  if (isLoading) return <div>Loading...</div>;
+  useEffect(() => {
+    if (!session) return;
+
+    // We don't want to interrupt a user's navigation if they're already
+    // navigating to a specific part
+    if (!partTodo || window.location.hash) return;
+
+    // Navigate the user to the outstanding part if they have the correct role
+    if (session.user.roles.includes(partTodo[0].role))
+      router.replace(`${pathname}#${partTodo[0].id}`);
+  }, [partTodo, session]);
+
+  if (isLoading || !session) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (

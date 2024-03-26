@@ -41,8 +41,10 @@ export function TaskList({ itemTemplateName, userId }: TaskListProps) {
   return (
     <div data-cy="task-list-container">
       {tasks.map((task) => {
+        const { id: assessmentId } = task.assessment;
+
         const responseCount = task.part.Question.reduce(
-          (acc, question) => acc + (hasResponse(question) ? 1 : 0),
+          (acc, question) => acc + hasResponse(question, assessmentId),
           0,
         );
 
@@ -73,8 +75,16 @@ export function TaskList({ itemTemplateName, userId }: TaskListProps) {
   );
 }
 
-function hasResponse({ Response: response }: QuestionWithResponse) {
-  if (response.length === 0) return false;
-  else if (response[0].value === "") return false;
-  return true;
+function hasResponse(
+  question: QuestionWithResponse,
+  assessmentId: number,
+): number {
+  const { Response: responses } = question;
+
+  const response = responses.find((r) => r.assessment_id === assessmentId);
+
+  if (!response) return 0;
+  else if (response.value === "") return 0;
+
+  return 1;
 }

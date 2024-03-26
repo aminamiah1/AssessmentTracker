@@ -2,7 +2,6 @@ import { ProgressListItem } from "./ProgressListItem";
 
 const defaults = {
   progress: 0.5,
-  progressText: "50% complete",
   subtitle: "Subtitle",
   title: "Title",
 };
@@ -24,7 +23,9 @@ describe("<ProgressListItem />", () => {
 
   it("displays the progress text", () => {
     cy.mount(<ProgressListItem {...defaults} />);
-    cy.contains(defaults.progressText).should("be.visible");
+
+    const progressText = defaults.progress * 100 + "% complete";
+    cy.contains(progressText).should("be.visible");
   });
 
   it("displays the progress bar", () => {

@@ -6,6 +6,7 @@ declare global {
     interface Chainable {
       mount: typeof mount;
       mountNoCache: typeof mount;
+      mountWithPart: typeof mount;
     }
   }
 }

@@ -1,3 +1,5 @@
+import { createContext } from "react";
+
 export function saveResponse(
   assessmentId: number,
   questionId: number,
@@ -8,3 +10,12 @@ export function saveResponse(
     body: JSON.stringify({ newValue: response }),
   });
 }
+
+interface PartContext {
+  assessmentId: number;
+  readonly: boolean;
+  presave: (response: string) => void;
+  postsave: (response: string) => void;
+}
+
+export const PartContext = createContext<PartContext>(null!);

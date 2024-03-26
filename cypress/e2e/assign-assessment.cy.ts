@@ -29,13 +29,15 @@ describe("Assign users by pop-up form activated on assessment tile button", () =
       .next()
       .find("input")
       .eq(0)
-      .type("Test User{enter}");
+      .type("Test User")
+      .blur();
 
     cy.contains("label", "Assignees")
       .next()
       .find("input")
       .eq(0)
-      .type("Test User{enter}");
+      .type("Test User")
+      .blur();
 
     cy.contains("button", "Submit").click();
 

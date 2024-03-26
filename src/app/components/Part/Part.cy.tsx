@@ -72,5 +72,14 @@ describe("<Part />", () => {
 
       cy.wait("@submitPart", { timeout: 2000 });
     });
+
+    it("disables all inputs in read-only mode", () => {
+      cy.mount(<Part {...defaults} readonly />);
+
+      cy.get("textarea").should("be.disabled");
+      cy.get('input[type="radio"]').should("be.disabled");
+      cy.get("select").should("be.disabled");
+      cy.get('button[type="submit"]').should("not.exist");
+    });
   });
 });

@@ -77,12 +77,25 @@ export async function POST(request: NextRequest) {
 
       if (module) {
         if (!module.module_leaders.some((leader) => leader.id === setter_id)) {
-          // User is not already a module leader, so connect them
+          // Fetch full user details from assignees list for module leader role checks
+          const usersToCheck = await prisma.users.findMany({
+            where: {
+              id: {
+                in: [...assigneesIds, { id: setter_id }].map((obj) => obj.id),
+              },
+            },
+          });
+
+          const userIds = usersToCheck
+            .filter((user) => user.roles.includes("module_leader"))
+            .map((user) => ({ id: user.id }));
+
+          // Users are not already module leaders for this module, so connect them
           const assignModule = await prisma.module.update({
             where: { id: moduleId },
             data: {
               module_leaders: {
-                connect: setter.map((user) => ({ id: user.id })),
+                connect: userIds.map((user) => ({ id: user.id })),
               },
             },
           });

@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { FiArrowLeft, FiSearch, FiFilter } from "react-icons/fi"; // Return arrow icon
 import { ToastContainer } from "react-toastify";
 import Select from "react-select";
-import AssessmentTile from "../../../components/module-leader/AssessmentTile";
+import AssessmentTile from "@/app/components/module-leader/AssessmentTile";
 
 export default function ViewAssessmentsModuleLeaders() {
   const [assessments, setAssessments] = useState<AssessmentLoad[]>([]); // Variable to hold an array of assessment object types

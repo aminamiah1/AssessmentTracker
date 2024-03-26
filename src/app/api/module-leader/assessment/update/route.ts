@@ -95,8 +95,5 @@ export async function POST(request: NextRequest) {
       JSON.stringify({ message: "Internal Server Error" }),
       { status: 500 },
     );
-  } finally {
-    // Close Prisma client connection
-    await prisma.$disconnect();
   }
 }

@@ -1,13 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import { format } from "date-fns";
-import { archiveModule } from "@/app/actions/module-status";
 import { usePathname } from "next/navigation";
-import AssessmentTile from "../../../components/module-leader/AssessmentTile";
-import { unwatchFile } from "fs";
+import AssessmentTile from "@/app/components/module-leader/AssessmentTile";
+import { FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
 import { AssessmentLoad } from "@/app/types/interfaces";
+import { useRouter } from "next/navigation";
 
 interface Module {
   module_name: string;
@@ -17,6 +15,7 @@ interface Module {
 
 // Code largely adapted from ps team module view page, only changes here to do with making module leader focused
 export default function ModuleDetails() {
+  const router = useRouter(); // Create next router object
   const [module, setModule] = useState<Module | null>(null);
   const [assessments, setAssessments] = useState<AssessmentLoad[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -69,20 +68,6 @@ export default function ModuleDetails() {
     }
   }
 
-  async function handleArchiveModule(moduleCode: string) {
-    try {
-      const res = await archiveModule(moduleCode);
-      if (res.error) {
-        toast.error(res.error, { position: "bottom-right" });
-      } else if (res.success) {
-        toast.success(res.success, { position: "bottom-right" });
-      }
-    } catch (error) {
-      console.error("Error archiving module:", error);
-      toast.error("Failed to archive module", { position: "bottom-right" });
-    }
-  }
-
   if (!module) {
     return <div>Loading module details...</div>;
   }
@@ -90,9 +75,12 @@ export default function ModuleDetails() {
   const { module_name, module_code, module_leaders } = module;
 
   return (
-    <div className="pt-16 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+    <div className="pt-16 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md min-h-screen">
+      <div className="flex mb-4">
+        <button onClick={() => router.back()}>
+          <FiArrowLeft className="cursor-pointer mr-4" size={30} />
+        </button>
+        <h2 className="text-3xl font-bold text-left text-gray-900 dark:text-gray-100">
           {module_name}
         </h2>
       </div>
@@ -121,7 +109,7 @@ export default function ModuleDetails() {
             Assessments
           </h3>
           <Link
-            href="/some-path-for-create-assessment"
+            href="/module-leader/assessment-management/create-assessment"
             className="px-6 py-2 text-sm font-medium bg-blue-500 dark:bg-blue-700 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 shadow inline-block"
             data-cy="create-assessments-button"
           >

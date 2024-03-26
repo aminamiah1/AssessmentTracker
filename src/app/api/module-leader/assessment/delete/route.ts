@@ -53,8 +53,5 @@ export async function DELETE(request: NextRequest) {
         status: 500,
       },
     );
-  } finally {
-    // Close Prisma client connection
-    await prisma.$disconnect();
   }
 }

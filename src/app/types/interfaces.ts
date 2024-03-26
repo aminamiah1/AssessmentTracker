@@ -35,6 +35,7 @@ export interface AssessmentLoad {
   module_id: number;
   module: [];
   setter_id: number;
+  setter: { id: number; name: string; roles: [] };
   module_name: string;
   assignees: [];
   partSubmissions: [];
@@ -61,6 +62,7 @@ export interface AssessmentTiles {
   setter_id: number;
   setter: { id: number; name: string; roles: [] };
   assignees: [];
+  partSubmissions: []; // Last part submission associated with assessment
 }
 // Interface for the assignees
 export interface Assignee {

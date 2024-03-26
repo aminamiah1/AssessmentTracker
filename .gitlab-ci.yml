@@ -225,9 +225,9 @@ create-prod-db-backup:
     - *do-openshift-login
     # Need to extract the pod name from the postgres service;
     # rsync works by pod name, not service name
-    - PODS=$(oc get pods -l name=postgresql-prod | grep "Running")
+    - PODS=$(oc get pods -l name=prod-db | grep "Running")
     - echo "$PODS"
-    - POD_REGEX="(postgresql-prod[^ ]+)"
+    - POD_REGEX="(prod-db[^ ]+)"
     - if [[ $PODS =~ $POD_REGEX ]]; then export POD_NAME="${BASH_REMATCH[1]}"; fi
     - echo "$POD_NAME"
 
@@ -237,9 +237,9 @@ create-staging-db-backup:
     - /^release-\d+$/
   before_script:
     - *do-openshift-login
-    - PODS=$(oc get pods -l name=postgresql-staging | grep "Running")
+    - PODS=$(oc get pods -l name=staging-db | grep "Running")
     - echo "$PODS"
-    - POD_REGEX="(postgresql-staging[^ ]+)"
+    - POD_REGEX="(staging-db[^ ]+)"
     - if [[ $PODS =~ $POD_REGEX ]]; then export POD_NAME="${BASH_REMATCH[1]}"; fi
     - echo "$POD_NAME"
 

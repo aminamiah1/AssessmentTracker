@@ -58,7 +58,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
       <div className="bg-gray-100 shadow-lg rounded-lg dark:bg-gray-700">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
           <div className="md:flex md:items-center">
-            <div className="md:w-1/2 md:mt-0  text-xl">
+            <div className="md:w-1/2 md:mt-0  text-lg">
               <div>
                 <a
                   className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
@@ -69,14 +69,14 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </a>
               </div>
               <p className="mt-4">
-                <span className="text-xl text-gray-700 dark:text-white mb-2">
+                <span className="text-lg text-gray-700 dark:text-white mb-2">
                   Module: {assessment.module_name} ● Type:{" "}
                   {assessment.assessment_type.replaceAll("_", " ")}
                 </span>
                 <br />
                 <div className="mt-4">
                   <span
-                    className="text-xl text-gray-700 dark:text-white"
+                    className="text-lg text-gray-700 dark:text-white"
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand Out Week:{" "}
@@ -85,7 +85,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </div>
                 <div className="mt-4">
                   <span
-                    className="text-xl text-gray-700 dark:text-white"
+                    className="text-lg text-gray-700 dark:text-white"
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand In Week:{" "}
@@ -93,14 +93,14 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   </span>
                 </div>
                 <div className="mt-4">
-                  <span className="text-xl text-gray-700 dark:text-white">
+                  <span className="text-lg text-gray-700 dark:text-white">
                     Setter: {assessment.setter?.name ?? "no setter assigned"}
                   </span>
                 </div>
               </p>
             </div>
             <div className="md:w-1/2 mt-4 md:mt-0">
-              <h6 className="mb-4 text-xl text-gray-700 dark:text-white">
+              <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
                 Assignees
               </h6>
               {assessment.assignees.length > 0 ? (
@@ -111,7 +111,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                       className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
                     >
                       <FaUserCircle className="mr-2 text-black" size={30} />
-                      <span className="text-xl text-black dark:text-black">
+                      <span className="text-lg text-black dark:text-black">
                         {assignee.name}{" "}
                         {assignee.roles.map(
                           (role: string) => " ● " + role.replaceAll("_", " "),
@@ -121,7 +121,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   ))}
                 </div>
               ) : (
-                <p className="text-xl text-gray-700 dark:text-white">
+                <p className="text-lg text-gray-700 dark:text-white">
                   No assignees assigned
                 </p>
               )}
@@ -134,7 +134,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 />
               ) : (
                 <h1
-                  className="mt-2 text-xl text-gray-700 dark:text-white text-center"
+                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
                   data-cy="trackingFormToBeginStatus"
                 >
                   Tracking Process Not Yet Started

@@ -129,14 +129,14 @@ const AssessmentTilePS = ({
       <div className="bg-gray-100 mb-2 dark:bg-gray-700 shadow-lg rounded-lg">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
           <div className="md:flex md:items-center">
-            <div className="md:w-1/2 md:mt-0  text-xl">
+            <div className="md:w-1/2 md:mt-0  text-lg">
               <div>
                 <Link
                   href={`/ps-team/assessment-management/view-assessment?id=${assessment.id}`}
-                  className="flex items-center"
+                  className="flex items-center text-xl"
                 >
                   <p
-                    className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
+                    className="text-blue-500 hover:text-blue-700 text-lg dark:text-white"
                     data-cy="assessmentName"
                   >
                     {assessment.assessment_name}
@@ -144,14 +144,14 @@ const AssessmentTilePS = ({
                 </Link>
               </div>
               <p className="mt-4">
-                <span className="text-xl text-gray-700 dark:text-white mb-2">
+                <span className="text-lg text-gray-700 dark:text-white mb-2">
                   {assessment.module_name} ●{" "}
                   {assessment.assessment_type.replaceAll("_", " ")}
                 </span>
                 <br />
                 <div className="mt-4">
                   <span
-                    className="text-xl text-gray-700 dark:text-white"
+                    className="text-lg text-gray-700 dark:text-white"
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand Out Week:{" "}
@@ -160,7 +160,7 @@ const AssessmentTilePS = ({
                 </div>
                 <div className="mt-4">
                   <span
-                    className="text-xl text-gray-700 dark:text-white"
+                    className="text-lg text-gray-700 dark:text-white"
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand In Week:{" "}
@@ -168,14 +168,14 @@ const AssessmentTilePS = ({
                   </span>
                 </div>
                 <div className="mt-4">
-                  <span className="text-xl text-gray-700 dark:text-white">
+                  <span className="text-lg text-gray-700 dark:text-white">
                     Setter: {assessment.setter?.name ?? "no setter assigned"}
                   </span>
                 </div>
               </p>
             </div>
             <div className="md:w-1/2 mt-4 md:mt-0">
-              <h6 className="mb-4 text-xl text-gray-700 dark:text-white">
+              <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
                 Assignees
               </h6>
               {assessment.assignees.length > 0 ? (
@@ -187,7 +187,7 @@ const AssessmentTilePS = ({
                     >
                       <FaUserCircle className="mr-2 text-black" size={30} />
                       <span
-                        className="text-xl text-black dark:text-black"
+                        className="text-lg text-black dark:text-black"
                         data-cy="assigneeText"
                       >
                         {assignee.name}{" "}
@@ -199,7 +199,7 @@ const AssessmentTilePS = ({
                   ))}
                 </div>
               ) : (
-                <p className="text-xl text-gray-700 dark:text-white">
+                <p className="text-lg text-gray-700 dark:text-white">
                   No assignees assigned
                 </p>
               )}
@@ -212,7 +212,7 @@ const AssessmentTilePS = ({
                 />
               ) : (
                 <h1
-                  className="mt-2 text-xl text-gray-700 dark:text-white text-center"
+                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
                   data-cy="trackingFormToBeginStatus"
                 >
                   Tracking Process Not Yet Started
@@ -221,7 +221,7 @@ const AssessmentTilePS = ({
             </div>
             <div className="md:w-1/4 md:mt-0 text-center rounded">
               <button
-                className="bg-gray-200 text-black h-20 mt-5 rounded p-3 text-xl"
+                className="bg-gray-200 text-black h-20 mt-5 rounded p-3 text-lg"
                 data-cy="assignUsers"
                 onClick={() => {
                   setIsPopUpOpen(true); // Open the pop-up

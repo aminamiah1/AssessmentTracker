@@ -29,7 +29,7 @@ async function getModulesPS(
 
 async function getModulesLeader(searchTerm: string, userId: string) {
   const queryParams = new URLSearchParams({ searchTerm, userId }).toString();
-  const data = await fetch(`/api/module-leader/module-list/?${queryParams}`, {
+  const data = await fetch(`/api/module-leader/module-list?${queryParams}`, {
     next: { revalidate: 3600 },
   });
   return data.json();

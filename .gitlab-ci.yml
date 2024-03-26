@@ -16,8 +16,8 @@ variables:
   # For image building
   CI_COMMIT_LABEL: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
   PROD_TAG: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
-  PROD_CONFIG_NAME: assessmenttracking-prod-generated-$PROD_TAG
-  STAGING_CONFIG_NAME: assessmenttracking-staging-generated-$CI_COMMIT_LABEL
+  PROD_CONFIG_NAME: prod-generated-$PROD_TAG
+  STAGING_CONFIG_NAME: staging-generated-$CI_COMMIT_LABEL
 
 ###############
 # JOB ANCHORS #
@@ -29,8 +29,9 @@ variables:
   - oc version
 
 .use-openshift: &use-openshift
-  rules:
-    - when: never
+  only:
+    - main
+    - /^release-\d+$/
   image: openshift/origin-cli
   before_script: # will allow for concatenation with script in the job
     - *do-openshift-login
@@ -218,6 +219,8 @@ test-e2e:
 
 create-prod-db-backup:
   <<: *use-openshift-backup
+  only:
+    - main
   before_script:
     - *do-openshift-login
     # Need to extract the pod name from the postgres service;
@@ -230,6 +233,8 @@ create-prod-db-backup:
 
 create-staging-db-backup:
   <<: *use-openshift-backup
+  only:
+    - /^release-\d+$/
   before_script:
     - *do-openshift-login
     - PODS=$(oc get pods -l name=postgresql-staging | grep "Running")
@@ -241,8 +246,6 @@ create-staging-db-backup:
 #-----------------------------------------#
 
 .update-tag-template: &update-tag-template
-  rules:
-    - when: never
   stage: prepare-deploy
   image: alpine:3.19
   needs:
@@ -254,12 +257,16 @@ create-staging-db-backup:
 
 update-prod-tag:
   <<: *update-tag-template
+  only:
+    - main
   script:
     - echo "Updating tags for production...";
     - skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:$PROD_TAG docker://$REGISTRY_HOST/$REGISTRY_PATH/prod:stable;
 
 update-staging-tag:
   <<: *update-tag-template
+  only:
+    - /^release-\d+$/
   script:
     - echo "Updating tags for staging...";
     - skopeo copy docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:$CI_COMMIT_LABEL docker://$REGISTRY_HOST/$REGISTRY_PATH/staging:latest;
@@ -274,9 +281,11 @@ deploy-prod-openshift:
   needs:
     - create-prod-db-backup
     - update-prod-tag
+  only:
+    - main
   script:
     - echo "Deploying production...";
-    - oc rollout latest dc/assessment-tracker-prod;
+    - oc rollout latest dc/prod-app;
 
 deploy-staging-openshift:
   <<: *use-openshift
@@ -284,6 +293,8 @@ deploy-staging-openshift:
   needs:
     - create-staging-db-backup
     - update-staging-tag
+  only:
+    - /^release-\d+$/
   script:
     - echo "Deploying staging...";
-    - oc rollout latest dc/assessment-tracker-staging;
+    - oc rollout latest dc/staging-app;

@@ -36,11 +36,11 @@ RUN npm run build
 
 # From error logs in:
 # https://console.openshift.cs.cf.ac.uk/k8s/ns/assessment-tracker/pods/assessmenttracking-5d4746bfcc-99q6z/logs
-RUN mkdir /.npm && chown -R 1000900000:0 /.npm
+RUN mkdir /.npm && chown -R 1002790000 /.npm
 
 # Attempt fix for:
 # https://git.cardiff.ac.uk/c21063494/assessmenttracking/-/issues/42
-RUN mkdir -p .next/cache/images && chown -R 1000900000:0 .next/cache/images
+RUN mkdir -p .next/cache/images && chown -R 1002790000 .next/cache/images
 
 EXPOSE 3000
 

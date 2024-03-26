@@ -20,6 +20,7 @@ export default async function () {
 
 // Please do not use manual ids for the assessments as this caused errors with postgresql internal sequencing
 async function seedModules() {
+  // First module defined, assessment not connected yet as needs to be inserted after the expected assessment with an id of 1
   await prisma.module.create({
     data: {
       module_code: "CM3101",
@@ -27,6 +28,7 @@ async function seedModules() {
     },
   });
 
+  // Second module defined connects the assessment with an id assigned of 1
   await prisma.module.create({
     data: {
       module_code: "CM6127",
@@ -46,7 +48,7 @@ async function seedModules() {
     },
   });
 
-  // Have to insert assessment after as needs id 2 for tests but should not manually assign it as stated above
+  // Second assessment linked to the first defined module after creation with an id assigned of 2
   await prisma.assessment.create({
     data: {
       assessment_name: "Cyber Security",

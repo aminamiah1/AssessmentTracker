@@ -106,7 +106,7 @@ export async function todosForUser(userId: number, roles: $Enums.Role[]) {
       // query
       const { part_id } = assessment.partSubmissions[0];
 
-      part = parts.find((part) => part.previous_part[0].id === part_id)!;
+      part = parts.find((part) => part.previous_part[0]?.id === part_id)!;
     } else {
       // If the assessment doesn't yet have a part submission, it's safe
       // to assume that the first part needs to be completed
@@ -116,5 +116,5 @@ export async function todosForUser(userId: number, roles: $Enums.Role[]) {
     return { assessment, part };
   });
 
-  return partsToBeReturned;
+  return partsToBeReturned.filter((part) => !!part.part);
 }

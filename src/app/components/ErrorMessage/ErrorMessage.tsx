@@ -14,8 +14,17 @@ export type SignInErrorTypes =
   | "SessionRequired"
   | "default";
 
-export default function SignInError({ error }: { error: SignInErrorTypes }) {
-  let message: string;
+interface ErrorProps {
+  error?: SignInErrorTypes | "default";
+  message?: string;
+  title?: string;
+}
+
+export default function Error({
+  error = "default",
+  message = "Something went wrong.",
+  title = "Error",
+}: ErrorProps) {
   switch (error) {
     case "CredentialsSignin":
       message =
@@ -26,7 +35,6 @@ export default function SignInError({ error }: { error: SignInErrorTypes }) {
       break;
     default:
       console.error(`Unhandled error: ${error}`);
-      message = "Something went wrong.";
   }
 
   return (
@@ -34,7 +42,9 @@ export default function SignInError({ error }: { error: SignInErrorTypes }) {
       className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 w-96 rounded-lg mx-auto mb-2"
       role="alert"
     >
-      <p className="font-bold">Sign in failed.</p>
+      <p data-cy="error-title" className="font-bold">
+        {title}
+      </p>
       <p data-cy="error-message">{message}</p>
     </div>
   );

@@ -1,3 +1,4 @@
+import { PartContext } from "@/app/utils/client/form";
 import { Question } from "./Question";
 
 const booleanQuestion: QuestionWithResponse = {
@@ -52,39 +53,43 @@ describe("<Question />", () => {
   });
 
   it("mounts", () => {
-    cy.mount(<Question {...defaults} />);
+    cy.mountWithPart(<Question {...defaults} />);
   });
 
   context("visuals", () => {
     it("displays the prompt", () => {
-      cy.mount(<Question {...defaults} />);
+      cy.mountWithPart(<Question {...defaults} />);
       cy.contains(defaults.question.question_title).should("be.visible");
     });
 
     it("displays the response component", () => {
-      cy.mount(<Question {...defaults} />);
+      cy.mountWithPart(<Question {...defaults} />);
       cy.getByTestId("response").should("be.visible");
     });
 
     it("displays the boolean response component ", () => {
-      cy.mount(<Question {...defaults} question={booleanQuestion} />);
+      cy.mountWithPart(<Question {...defaults} question={booleanQuestion} />);
       cy.getByTestId("response")
         .get('input[type="radio"]')
         .should("have.length", 2);
     });
 
     it("displays the multichoice response component ", () => {
-      cy.mount(<Question {...defaults} question={multichoiceQuestion} />);
+      cy.mountWithPart(
+        <Question {...defaults} question={multichoiceQuestion} />,
+      );
       cy.getByTestId("response").get("option").should("have.length", 5);
     });
 
     it("displays the text response component ", () => {
-      cy.mount(<Question {...defaults} question={textQuestion} />);
+      cy.mountWithPart(<Question {...defaults} question={textQuestion} />);
       cy.getByTestId("response").get("textarea").should("be.visible");
     });
 
     it("displays the previous response", () => {
-      cy.mount(<Question {...defaults} question={multichoiceWithResponse} />);
+      cy.mountWithPart(
+        <Question {...defaults} question={multichoiceWithResponse} />,
+      );
       cy.getByTestId("response")
         .get("select")
         .invoke("val")
@@ -94,7 +99,9 @@ describe("<Question />", () => {
 
   context("functionality", () => {
     it("allows the user to choose an option", () => {
-      cy.mount(<Question {...defaults} question={multichoiceQuestion} />);
+      cy.mountWithPart(
+        <Question {...defaults} question={multichoiceQuestion} />,
+      );
       cy.getByTestId("response").get("select").select("Green");
 
       cy.getByTestId("response")
@@ -104,14 +111,14 @@ describe("<Question />", () => {
     });
 
     it("allows the user to choose a boolean option", () => {
-      cy.mount(<Question {...defaults} question={booleanQuestion} />);
+      cy.mountWithPart(<Question {...defaults} question={booleanQuestion} />);
       cy.getByTestId("response").get('input[value="Yes"]').check();
 
       cy.getByTestId("response").get('input[value="Yes"]').should("be.checked");
     });
 
     it("allows the user to enter text", () => {
-      cy.mount(<Question {...defaults} question={textQuestion} />);
+      cy.mountWithPart(<Question {...defaults} question={textQuestion} />);
       cy.getByTestId("response").get("textarea").type("Hello");
 
       cy.getByTestId("response").get("textarea").should("have.value", "Hello");

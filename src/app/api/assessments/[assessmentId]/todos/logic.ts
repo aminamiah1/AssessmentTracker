@@ -27,7 +27,11 @@ async function fetchAllTodos(assessmentId: number) {
     include: {
       Question: {
         include: {
-          Response: true,
+          Response: {
+            where: {
+              assessment_id: assessmentId,
+            },
+          },
         },
       },
     },
@@ -57,7 +61,11 @@ async function fetchCurrentTodo(assessmentId: number) {
     include: {
       Question: {
         include: {
-          Response: true,
+          Response: {
+            where: {
+              assessment_id: assessmentId,
+            },
+          },
         },
       },
     },

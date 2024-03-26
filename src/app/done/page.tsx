@@ -56,7 +56,7 @@ export default async function Page() {
               <div className="flex items-center my-6">
                 <GenericListItem
                   key={key}
-                  href={`/todo/${assessment_id}`}
+                  href={`/todo/${assessment_id}#${part_id}`}
                   className="!rounded-lg dark:hover:shadow-black shadow-[3px_3px_8px] hover:shadow-[4px_4px_12px] shadow-slate-800 hover:shadow-slate-700"
                   title={title}
                   subtitle={Part.part_title}

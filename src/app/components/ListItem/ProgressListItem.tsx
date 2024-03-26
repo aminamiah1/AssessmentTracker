@@ -12,13 +12,13 @@ interface ProgressListItemContent {
   /** The main title of the list item */
   title: string;
 
-  /** The text to display next to the progress bar */
-  progressText: string;
+  /** The text to display next to the progress bar - by default, this shows as XX% complete */
+  progressText?: string;
 }
 
 function ProgressListItemContent({
   progress,
-  progressText,
+  progressText = progress * 100 + "% complete",
   subtitle,
   title,
 }: ProgressListItemContent) {

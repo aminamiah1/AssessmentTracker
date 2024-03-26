@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
-import { title } from "process";
 
 // Adapted from PS team get assessments by module code route
 export async function GET(req: NextRequest) {
@@ -42,6 +41,7 @@ export async function GET(req: NextRequest) {
       },
       include: {
         assignees: { select: { name: true, roles: true } },
+        setter: { select: { name: true, id: true, roles: true } },
         partSubmissions: {
           select: { Part: true },
           orderBy: { part_id: "desc" },
@@ -78,11 +78,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    return new NextResponse(JSON.stringify(assessmentsWithModules), {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return NextResponse.json(assessmentsWithModules);
   } catch (error) {
     console.error("Error fetching assessments:", error);
     return new NextResponse(

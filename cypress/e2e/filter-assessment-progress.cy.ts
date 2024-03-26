@@ -2,12 +2,10 @@ describe("Assessment stage filter", () => {
   // Module leader logging in
   beforeEach(() => {
     cy.login("leader2@test.net");
+    cy.visit("/module-leader/assessment-management/view-assessments");
   });
 
-  // Check assessment stage filter displays message if no assessments associated with that stage
   it("Check assessment stage filter displays message if no assessments associated with that stage", () => {
-    cy.visit("/module-leader/assessment-management/view-assessments");
-
     cy.getByTestId("stageLabel")
       .next()
       .find("input")
@@ -20,10 +18,7 @@ describe("Assessment stage filter", () => {
     );
   });
 
-  // Check assessment currently in tracking process are shown with filter applied
   it("Check assessments with stage applied by filter appear", () => {
-    cy.visit("/module-leader/assessment-management/view-assessments");
-
     cy.getByTestId("stageLabel")
       .next()
       .find("input")

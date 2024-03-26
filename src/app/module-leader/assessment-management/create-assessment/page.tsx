@@ -284,7 +284,7 @@ function CreateAssessmentModuleLeaders() {
       }
 
       toast.success("Assessment edited successfully!");
-      router.push("/module-leader/assessment-management/view-assessments");
+      router.back();
     } else {
       // Create the assessment using the api endpoint
       const response = await fetch("/api/module-leader/assessment/post", {
@@ -311,7 +311,7 @@ function CreateAssessmentModuleLeaders() {
       }
 
       toast.success("Assessment added successfully!");
-      router.push("/module-leader/assessment-management/view-assessments");
+      router.back();
     }
   };
 
@@ -331,7 +331,7 @@ function CreateAssessmentModuleLeaders() {
       ) : (
         <div className="max-w-3xl mx-auto dark:bg-darkmode">
           <div className="flex items-center mb-4">
-            <Link href={"/module-leader/assessment-management"}>
+            <button onClick={() => router.back()} data-cy="createBackButton">
               <FiArrowLeft
                 className="cursor-pointer"
                 size={30}
@@ -341,7 +341,7 @@ function CreateAssessmentModuleLeaders() {
                   marginTop: "4rem",
                 }}
               />
-            </Link>
+            </button>
             <h1 className="text-3xl ml-2 pt-16 text-center">
               {isEdit ? "Edit Assessment" : "Create Assessment"}
             </h1>

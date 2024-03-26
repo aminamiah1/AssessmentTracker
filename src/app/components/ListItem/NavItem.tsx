@@ -16,7 +16,7 @@ export function NavItem({ icon, isSidebarOpen, href, text }: NavItemProps) {
   });
 
   return (
-    <li>
+    <li title={text}>
       <Link
         href={href}
         className={`p-2 ${isSidebarOpen ? "pl-5 justify-start" : "justify-center"}

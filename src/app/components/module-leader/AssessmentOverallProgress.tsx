@@ -1,5 +1,4 @@
-import { ProgressBarOverall } from "./ProgressBarOverall";
-
+import { ProgressBarOverall } from "@/app/components/module-leader/ProgressBarOverall";
 interface OverallProgressContent {
   /** The array containing the text and current number of the last completed part for an assessment */
   lastCompletedPart: {
@@ -23,7 +22,10 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
         {/* Display the last completed part information*/}
         {lastCompletedPart && (
           <>
-            <h1 className="mb-4 text-lg" data-cy="trackingStagesComplete">
+            <h1
+              className="mb-4 text-xl text-gray-700 dark:text-white"
+              data-cy="trackingStagesComplete"
+            >
               Tracking Stage ● {lastCompletedPartNumber}/11
             </h1>
             {/* Display the tracking form stages progress as visual bar*/}
@@ -32,7 +34,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
             </div>
             <div>
               <div
-                className="mt-2  text-lg"
+                className="mt-2 text-xl text-gray-700 dark:text-white"
                 style={{ width: `${completedWidth}%`, textAlign: "right" }}
               >
                 <span data-cy="lastCompletedPart">

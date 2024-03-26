@@ -24,33 +24,6 @@ async function seedModules() {
     data: {
       module_code: "CM3101",
       module_name: "Software Engineering",
-      assessments: {
-        create: [
-          {
-            assessment_name: "Cyber Security",
-            assessment_type: "Portfolio",
-            hand_in_week: new Date(),
-            hand_out_week: new Date(),
-            setter_id: 1,
-            assignees: {
-              connect: [
-                {
-                  email: "leader@test.net",
-                },
-                {
-                  email: "internal@test.net",
-                },
-                {
-                  email: "external@test.net",
-                },
-                {
-                  email: "panel@test.net",
-                },
-              ],
-            },
-          },
-        ],
-      },
     },
   });
 
@@ -69,6 +42,34 @@ async function seedModules() {
           hand_in_week: example_date,
           setter_id: 1,
         },
+      },
+    },
+  });
+
+  // Have to insert assessment after as needs id 2 for tests but should not manually assign it as stated above
+  await prisma.assessment.create({
+    data: {
+      assessment_name: "Cyber Security",
+      assessment_type: "Portfolio",
+      module_id: 1,
+      hand_in_week: new Date(),
+      hand_out_week: new Date(),
+      setter_id: 1,
+      assignees: {
+        connect: [
+          {
+            email: "leader@test.net",
+          },
+          {
+            email: "internal@test.net",
+          },
+          {
+            email: "external@test.net",
+          },
+          {
+            email: "panel@test.net",
+          },
+        ],
       },
     },
   });

@@ -18,6 +18,7 @@ export default async function () {
   }
 }
 
+// Please do not use manual ids for the assessments as this caused errors with postgresql internal sequencing
 async function seedModules() {
   await prisma.module.create({
     data: {
@@ -26,7 +27,6 @@ async function seedModules() {
       assessments: {
         create: [
           {
-            id: 2,
             assessment_name: "Cyber Security",
             assessment_type: "Portfolio",
             hand_in_week: new Date(),
@@ -63,7 +63,6 @@ async function seedModules() {
       },
       assessments: {
         create: {
-          id: 1,
           assessment_name: "My new assessment",
           assessment_type: Assessment_type.Portfolio,
           hand_out_week: example_date,
@@ -86,7 +85,6 @@ async function seedModules() {
         createMany: {
           data: [
             {
-              id: 3,
               assessment_name: "Python Fundamentals",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -94,7 +92,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 4,
               assessment_name: "Python Advanced",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -102,7 +99,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 5,
               assessment_name: "Python Next Level",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -127,7 +123,6 @@ async function seedModules() {
         createMany: {
           data: [
             {
-              id: 6,
               assessment_name: "Python Fundamentals 2",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -135,7 +130,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 7,
               assessment_name: "Python Advanced 2",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -143,7 +137,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 8,
               assessment_name: "Python Next Level 2",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,

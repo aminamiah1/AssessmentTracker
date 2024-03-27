@@ -127,7 +127,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </p>
               )}
             </div>
-            <div className="md:w-1/2 md:mt-0 text-center">
+            <div className="md:w-1/3 md:mt-0 text-center">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress

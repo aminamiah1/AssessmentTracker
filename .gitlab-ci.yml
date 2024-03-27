@@ -58,7 +58,7 @@ variables:
     - echo "Creating $CI_JOB_STAGE database..."
     - psql -h postgres -U postgres -c "CREATE DATABASE $POSTGRES_DB;"
     - echo "Setting up app environment..."
-    - npm ci --cache .npm --prefer-offline
+    - npm ci --cache .npm --prefer-offline --no-audit --omit=dev
     - npx prisma generate
     - npx prisma db push
     - npm i -g dotenv-cli ts-node

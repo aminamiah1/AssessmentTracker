@@ -18,8 +18,6 @@ describe("User Status", () => {
 
     cy.getByTestId("toggleStatusViewButton").click();
 
-    cy.wait(1000);
-
     // Use activate button to the side of the liam leader row
     cy.contains("td", "Liam Leader").getByTestId("activateButton").click();
 

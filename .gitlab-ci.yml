@@ -48,12 +48,22 @@ variables:
 
 .set-up-app-environment:
   .app-cache: &set-up-app-cache
+    rules:
+      - if: $CI_JOB_STAGE == "build"
+        variables:
+          POLICY: pull-push
+      - if: $CI_JOB_STAGE == "test"
+        variables:
+          POLICY: pull
     cache:
-      key:
-        files:
-          - package-lock.json
-      paths:
-        - .npm/
+      - key: $CI_COMMIT_REF_SLUG
+        paths:
+          - .next/
+      - key:
+          files:
+            - package-lock.json
+        paths:
+          - .npm/
   .app-script: &set-up-app-script
     - echo "Creating $CI_JOB_STAGE database..."
     - psql -h postgres -U postgres -c "CREATE DATABASE $POSTGRES_DB;"

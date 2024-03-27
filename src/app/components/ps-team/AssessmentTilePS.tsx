@@ -6,6 +6,7 @@ import Link from "next/link";
 import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
 import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
+import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
 
 // Import interfaces from interfaces.ts
 import {
@@ -216,6 +217,22 @@ const AssessmentTilePS = ({
                   data-cy="trackingFormToBeginStatus"
                 >
                   Tracking Process Not Yet Started
+                </h1>
+              )}
+            </div>
+            <div className="md:w-1/2 mb-4 md:mt-0 text-center">
+              {assessment.hand_in_week && assessment.hand_out_week ? (
+                <TimeOverallProgress
+                  handOutDate={assessment.hand_out_week}
+                  handInDate={assessment.hand_in_week}
+                  partsList={assessment.partSubmissions}
+                />
+              ) : (
+                <h1
+                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
+                  data-cy="trackingFormToBeginStatus"
+                >
+                  No hand in and out weeks assigned
                 </h1>
               )}
             </div>

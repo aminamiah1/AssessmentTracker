@@ -81,10 +81,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand Out Week:{" "}
-                    {format(
-                      new Date(assessment.hand_out_week),
-                      "do 'of' MMMM yyyy",
-                    )}
+                    {format(new Date(assessment.hand_out_week), "yyyy/MM/dd")}
                   </span>
                 </div>
                 <div className="mt-4">
@@ -93,10 +90,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand In Week:{" "}
-                    {format(
-                      new Date(assessment.hand_in_week),
-                      "do 'of' MMMM yyyy",
-                    )}
+                    {format(new Date(assessment.hand_in_week), "yyyy/MM/dd")}
                   </span>
                 </div>
                 <div className="mt-4">

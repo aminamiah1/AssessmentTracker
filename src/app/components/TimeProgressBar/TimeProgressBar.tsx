@@ -31,19 +31,19 @@ function TimeProgressBar({
       <div className="w-[60%] relative overflow-hidden text-left mb-4">
         {/* Display the visual date progress*/}
         <>
-          <h1 className="mb-4 text-lg text-gray-700 dark:text-white text-right">
+          <h1 className="mb-4 text-md font-bold text-gray-700 dark:text-white text-right">
             {days} {timeLabel}
           </h1>
           <div>
             <TimeBar progress={progress} />
           </div>
           <div className="flex">
-            <div className="text-lg text-gray-700 dark:text-white w-full text-left">
+            <div className="text-lg text-gray-700 dark:text-white w-full text-left mt-2">
               <p data-cy="dateShowHandOut">
                 {format(handOutDate, "dd MMM yy")}
               </p>
             </div>
-            <div className="text-lg text-gray-700 dark:text-white w-full text-right">
+            <div className="text-lg text-gray-700 dark:text-white w-full text-right mt-2">
               <p data-cy="dateShowHandIn">{format(handInDate, "dd MMM yy")}</p>
             </div>
           </div>
@@ -51,7 +51,7 @@ function TimeProgressBar({
       </div>
     </div>
   ) : (
-    <p>Tracking complete</p>
+    <p className="text-center">Tracking complete</p>
   );
 }
 

@@ -11,6 +11,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
 // Import interfaces from interfaces.ts
 import { AssessmentTiles, Assignee } from "@/app/types/interfaces";
+import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
 
 // Functional component for rendering an assessment tile
 const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
@@ -80,7 +81,10 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand Out Week:{" "}
-                    {format(new Date(assessment.hand_out_week), "yyyy/MM/dd")}
+                    {format(
+                      new Date(assessment.hand_out_week),
+                      "do 'of' MMMM yyyy",
+                    )}
                   </span>
                 </div>
                 <div className="mt-4">
@@ -89,7 +93,10 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand In Week:{" "}
-                    {format(new Date(assessment.hand_in_week), "yyyy/MM/dd")}
+                    {format(
+                      new Date(assessment.hand_in_week),
+                      "do 'of' MMMM yyyy",
+                    )}
                   </span>
                 </div>
                 <div className="mt-4">
@@ -138,6 +145,21 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   data-cy="trackingFormToBeginStatus"
                 >
                   Tracking Process Not Yet Started
+                </h1>
+              )}
+            </div>
+            <div className="md:w-1/2 md:mt-0 text-center">
+              {assessment.hand_in_week && assessment.hand_out_week ? (
+                <TimeOverallProgress
+                  handOutDate={assessment.hand_out_week}
+                  handInDate={assessment.hand_in_week}
+                />
+              ) : (
+                <h1
+                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
+                  data-cy="trackingFormToBeginStatus"
+                >
+                  No hand in and out weeks assigned
                 </h1>
               )}
             </div>

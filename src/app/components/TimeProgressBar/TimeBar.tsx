@@ -7,7 +7,7 @@ export function TimeBar({ progress: progressFraction }: ProgressBarProps) {
   return (
     <div
       data-cy="progress-container"
-      className="h-5 w-full bg-gray-300 rounded-full shadow-gray-700 shadow-md dark:shadow-black"
+      className="h-2 w-full bg-gray-300 rounded-full shadow-gray-700 shadow-md dark:shadow-black"
     >
       <div
         data-cy="progress-bar"

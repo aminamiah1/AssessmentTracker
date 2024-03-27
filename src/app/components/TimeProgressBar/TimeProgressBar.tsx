@@ -22,28 +22,42 @@ function TimeProgressBar({
   // Check and render if overdue or how many days left
   const daysRemaining = differenceInDays(handInDate, new Date()); // Difference in days
   const isOverdue = daysRemaining < 0;
-  const timeLabel = isOverdue ? "Days Overdue" : "Days Left";
+  const timeLabel = isOverdue ? "Overdue" : "Days Left";
   const days = Math.abs(daysRemaining); // Absolute value for both left or overdue.
+  // Calculate the width of the completed portion of the progress bar
+  const progressBarWidth = 100;
+  const completedWidth = progress * progressBarWidth + 20; //Calculate where to place days left text
 
   // Only show date progress if tracking not complete
   return lastCompletedPart.part_title != "Mark and feedback availability" ? (
     <div className="w-full flex justify-evenly rounded p-4">
-      <div className="w-[60%] relative overflow-hidden text-left mb-4">
+      <div className="w-[60%] relative overflow-hidden text-left">
         {/* Display the visual date progress*/}
         <>
-          <h1 className="mb-4 text-md font-bold text-gray-700 dark:text-white text-right">
-            {days} {timeLabel}
-          </h1>
+          {isOverdue ? (
+            <h1 className="mb-4 text-lg text-gray-700 dark:text-white text-right">
+              {timeLabel}
+            </h1>
+          ) : (
+            <h1
+              className="mb-4 text-lg text-gray-700 dark:text-white text-right"
+              style={{ width: `${completedWidth}%` }}
+            >
+              {days} {timeLabel}
+            </h1>
+          )}
           <div>
             <TimeBar progress={progress} />
           </div>
           <div className="flex">
             <div className="text-lg text-gray-700 dark:text-white w-full text-left mt-2">
+              <p> {isOverdue ? "" : "⦿"}</p>
               <p data-cy="dateShowHandOut">
-                {format(handOutDate, "dd MMM yy")}
+                {isOverdue ? "" : format(handOutDate, "dd MMM yy")}
               </p>
             </div>
             <div className="text-lg text-gray-700 dark:text-white w-full text-right mt-2">
+              <p>{isOverdue ? "⦿" : "⦾"}</p>
               <p data-cy="dateShowHandIn">{format(handInDate, "dd MMM yy")}</p>
             </div>
           </div>

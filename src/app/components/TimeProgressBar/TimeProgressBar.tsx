@@ -22,11 +22,11 @@ function TimeProgressBar({
   // Check and render if overdue or how many days left
   const daysRemaining = differenceInDays(handInDate, new Date()); // Difference in days
   const isOverdue = daysRemaining < 0;
-  const timeLabel = isOverdue ? "Overdue" : "Days Left";
+  const timeLabel = isOverdue ? "Overdue" : "Days";
   const days = Math.abs(daysRemaining); // Absolute value for both left or overdue.
   // Calculate the width of the completed portion of the progress bar
   const progressBarWidth = 100;
-  const completedWidth = progress * progressBarWidth + 20; //Calculate where to place days left text
+  const completedWidth = progress * progressBarWidth; //Calculate where to place days left text
 
   // Only show date progress if tracking not complete
   return lastCompletedPart.part_title != "Mark and feedback availability" ? (

@@ -16,17 +16,26 @@ function TimeProgressBar({
   lastCompletedPart,
 }: OverallProgressContent) {
   // Calculate progress for the bar using date-fns
-  const totalTime = differenceInMilliseconds(handInDate, handOutDate);
-  const elapsedTime = differenceInMilliseconds(new Date(), handOutDate);
-  let progress = Math.min(1, elapsedTime / totalTime);
-  // Check and render if overdue or how many days left
-  const daysRemaining = differenceInDays(handInDate, new Date()); // Difference in days
-  const isOverdue = daysRemaining < 0;
+  const daysRemaining = differenceInDays(handInDate, new Date()); // Day difference between now and hand in date
+  const isOverdue = daysRemaining < 0; // Check if overdue i.e. minus day difference numbers
+
+  // Calculate progress conditionally
+  let progress;
+  if (isOverdue) {
+    progress = 1;
+    // If overdue, progress is complete
+  } else {
+    progress = Math.min(1, 1 - Math.abs(daysRemaining) / 100);
+    // Calculate progress bar point based on days remaining in float format
+  }
+
+  // Labels for progress bar
   const timeLabel = isOverdue ? "Overdue" : "Days";
-  const days = Math.abs(daysRemaining); // Absolute value for both left or overdue.
+  const days = Math.abs(daysRemaining);
+
   // Calculate the width of the completed portion of the progress bar
   const progressBarWidth = 100;
-  const completedWidth = progress * progressBarWidth; //Calculate where to place days left text
+  const completedWidth = progress * progressBarWidth; // Calculate where to place days text
 
   // Only show date progress if tracking not complete
   return lastCompletedPart.part_title != "Mark and feedback availability" ? (

@@ -23,7 +23,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
         {lastCompletedPart && (
           <>
             <h1
-              className="mb-4 text-xl text-gray-700 dark:text-white"
+              className="mb-4 text-lg text-gray-700 dark:text-white"
               data-cy="trackingStagesComplete"
             >
               Tracking Stage ● {lastCompletedPartNumber}/11
@@ -34,7 +34,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
             </div>
             <div>
               <div
-                className="mt-2 text-xl text-gray-700 dark:text-white"
+                className="mt-2 text-lg text-gray-700 dark:text-white"
                 style={{ width: `${completedWidth}%`, textAlign: "right" }}
               >
                 <span data-cy="lastCompletedPart">

@@ -4,10 +4,17 @@ interface OverallProgressContent {
   /** Passing assessment hand in date and hand out date here to visualise time difference */
   handInDate: Date;
   handOutDate: Date;
-  // Last completed part title and number needed to render overall progress visual for assessment
+  lastCompletedPart: {
+    part_title: string;
+    part_number: number;
+  }; // Last completed part title and number needed to render overall progress visual for assessment
 }
 
-function TimeProgressBar({ handInDate, handOutDate }: OverallProgressContent) {
+function TimeProgressBar({
+  handInDate,
+  handOutDate,
+  lastCompletedPart,
+}: OverallProgressContent) {
   // Calculate progress for the bar using date-fns
   const totalTime = differenceInMilliseconds(handInDate, handOutDate);
   const elapsedTime = differenceInMilliseconds(new Date(), handOutDate);
@@ -17,21 +24,15 @@ function TimeProgressBar({ handInDate, handOutDate }: OverallProgressContent) {
   const isOverdue = daysRemaining < 0;
   const timeLabel = isOverdue ? "Days Overdue" : "Days Left";
   const days = Math.abs(daysRemaining); // Absolute value for both left or overdue.
-  // Calculate the width of the completed portion of the progress bar
-  const progressBarWidth = 100;
-  const completedWidth = progress * progressBarWidth; //Calculate where to place last completed part text
 
-  return (
+  // Only show date progress if tracking not complete
+  return lastCompletedPart.part_title != "Mark and feedback availability" ? (
     <div className="w-full flex justify-evenly rounded p-4">
-      <div className="w-[60%] relative overflow-hidden text-left">
+      <div className="w-[60%] relative overflow-hidden text-left mb-4">
         {/* Display the visual date progress*/}
         <>
-          <h1
-            className="mb-4 text-lg text-gray-700 dark:text-white"
-            data-cy="trackingStagesComplete"
-            style={{ textAlign: "right" }}
-          >
-            {timeLabel} ● {days}
+          <h1 className="mb-4 text-lg text-gray-700 dark:text-white text-right">
+            {days} {timeLabel}
           </h1>
           <div>
             <TimeBar progress={progress} />
@@ -49,16 +50,41 @@ function TimeProgressBar({ handInDate, handOutDate }: OverallProgressContent) {
         </>
       </div>
     </div>
+  ) : (
+    <p>Tracking complete</p>
   );
 }
 
 export function TimeOverallProgress({ ...props }) {
-  const { handInDate, handOutDate } = props;
+  const { handInDate, handOutDate, partsList } = props;
 
   console.assert(
     handInDate != null && handOutDate != null,
     "Dates passed must be valid and exist",
   );
 
-  return <TimeProgressBar handInDate={handInDate} handOutDate={handOutDate} />;
+  console.assert(
+    partsList >= 0,
+    "Parts list must contain the last completed part",
+  );
+
+  // Access the last completed part from parts list associated with assessment in props
+  let lastCompletedPart = null; // Initialize
+
+  // Error handling in place if last completed part does not exist
+  try {
+    lastCompletedPart = partsList[0].Part;
+  } catch (error) {
+    console.error("Error retrieving last completed part:", error);
+    // Handle the error gracefully, e.g.,  default lastCompletedPart of not started
+    lastCompletedPart = { part_title: "Tracking Not Started", part_number: 0 };
+  }
+
+  return (
+    <TimeProgressBar
+      handInDate={handInDate}
+      handOutDate={handOutDate}
+      lastCompletedPart={lastCompletedPart}
+    />
+  );
 }

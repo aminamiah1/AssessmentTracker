@@ -153,6 +153,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 <TimeOverallProgress
                   handOutDate={assessment.hand_out_week}
                   handInDate={assessment.hand_in_week}
+                  partsList={assessment.partSubmissions}
                 />
               ) : (
                 <h1

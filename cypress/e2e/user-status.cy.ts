@@ -3,38 +3,23 @@ describe("User Status", () => {
     cy.login("ps@test.net");
   });
 
-  // De-activate a user account
-  it("allows a ps-team member to mark a user inactive and toggle to see inactive users", () => {
-    // Mark a user as inactive
-    cy.visit("/ps-team/user-management");
-
-    cy.getByTestId("deactivateButton").eq(0).click();
-
-    cy.getByTestId("deactivateConfirmButton").click();
-
-    cy.getByTestId("toggleStatusViewButton").click();
-
-    cy.getByTestId("toggleStatusViewButton").should(
-      "have.text",
-      "Active Users",
-    );
-
-    // Inactive user is shown
-    cy.contains("td", "Liam Leader");
-  });
-
-  // Activate a user account
-  it("allows a ps-team member to mark a user active and toggle to see active users", () => {
+  // De-activate a user account and then re-activate targeting liam leader
+  it("allows a ps-team member to mark a user active and de-activate and toggle to see active users", () => {
     // Mark a user as inactive and then active again
     cy.visit("/ps-team/user-management");
 
-    cy.getByTestId("deactivateButton").eq(0).click();
+    // Use de-activate button to the side of the liam leader row
+    cy.contains("td", "Liam Leader")
+      .nextUntil("#deactivateButton")
+      .eq(2)
+      .click();
 
     cy.getByTestId("deactivateConfirmButton").click();
 
     cy.getByTestId("toggleStatusViewButton").click();
 
-    cy.getByTestId("activateButton").eq(0).click();
+    // Use activate button to the side of the liam leader row
+    cy.contains("td", "Liam Leader").getByTestId("activateButton").click();
 
     cy.getByTestId("activateConfirmButton").click();
 

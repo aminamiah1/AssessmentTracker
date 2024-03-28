@@ -19,12 +19,14 @@ function TimeProgressBar({
   // Calculate progress for the bar using date-fns
   const daysRemaining = differenceInDays(handInDate, new Date()); // Day difference between now and hand in date
   const isOverdue = daysRemaining < 0; // Check if overdue i.e. minus day difference numbers
+  const isComplete =
+    lastCompletedPart.part_title === "Mark and feedback availability";
 
   // Calculate progress conditionally
   let progress;
-  if (isOverdue) {
+  if (isOverdue || isComplete) {
     progress = 1;
-    // If overdue, progress is complete
+    // If overdue or complete, progress is complete
   } else {
     // If days remaining less than or equal to 100 calculate progress as float
     if (daysRemaining <= 100) {
@@ -40,14 +42,14 @@ function TimeProgressBar({
   const days = Math.abs(daysRemaining);
 
   // Only show date progress if tracking not complete
-  return lastCompletedPart.part_title != "Mark and feedback availability" ? (
+  return (
     <div className="w-full flex justify-evenly rounded p-4 mb-4">
       <div className="w-[60%] relative overflow-hidden text-center">
         {/* Display the visual date progress*/}
         <>
-          {isOverdue ? (
+          {isOverdue || isComplete ? (
             <h1 className="mb-4 text-lg text-gray-700 dark:text-white text-right">
-              {timeLabel}
+              {isOverdue ? timeLabel : "Completed"}
             </h1>
           ) : (
             <h1 className="mb-4 text-lg justify-center text-gray-700 dark:text-white text-center w-full flex mb-6">
@@ -56,12 +58,18 @@ function TimeProgressBar({
             </h1>
           )}
           <div className="mt-6">
-            <TimeBar progress={progress} isOverDue={isOverdue} />
+            <TimeBar
+              progress={progress}
+              isOverDue={isOverdue}
+              isComplete={isComplete}
+            />
           </div>
           <div className="flex">
             <div className="text-lg text-gray-700 dark:text-white w-full text-left mt-2">
               <p data-cy="dateShowHandOut">
-                {isOverdue ? "" : format(handOutDate, "dd MMM yy")}
+                {isOverdue || isComplete
+                  ? ""
+                  : format(handOutDate, "dd MMM yy")}
               </p>
             </div>
             <div className="text-lg text-gray-700 dark:text-white w-full text-right mt-2">
@@ -71,8 +79,6 @@ function TimeProgressBar({
         </>
       </div>
     </div>
-  ) : (
-    <p className="text-center">Tracking complete</p>
   );
 }
 

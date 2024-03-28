@@ -1,3 +1,5 @@
+import { ModuleStatus } from "@prisma/client";
+
 // Interface for the assessment model to work with form(e.g. react select boxes)
 export interface AssessmentForm {
   id: number;
@@ -92,6 +94,7 @@ export interface ModulePS {
   module_name: string;
   module_code: string;
   module_leaders: { id: number; name: string; roles: string[] }[];
+  status: ModuleStatus;
 }
 
 export interface AssessmentPS {

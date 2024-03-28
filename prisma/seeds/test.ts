@@ -101,6 +101,27 @@ async function seedModules() {
     },
   });
 
+  await prisma.module.create({
+    data: {
+      module_code: "CM8264",
+      module_name: "Module To Archive",
+      module_leaders: {
+        connect: [{ email: "leader@test.net" }, { email: "sudo@test.net" }],
+      },
+    },
+  });
+
+  await prisma.module.create({
+    data: {
+      module_code: "CM9155",
+      module_name: "Archived Module",
+      module_leaders: {
+        connect: [{ email: "leader@test.net" }],
+      },
+      status: "archived",
+    },
+  });
+
   // Data used in assessment progress bar test suite to seperate testing enviroment from todo test suite
   await prisma.module.create({
     data: {

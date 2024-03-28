@@ -1,36 +1,32 @@
 "use client";
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 import { format } from "date-fns";
 import { archiveModule } from "@/app/actions/module-status";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
 import { ModulePS, AssessmentPS } from "@/app/types/interfaces";
 import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
+import { useSession } from "next-auth/react";
 
-export default function ModuleDetails() {
+export default function ModuleDetails({
+  params,
+}: {
+  params: { moduleCode: string };
+}) {
+  const { data: session, status } = useSession({ required: true });
   const [module, setModule] = useState<ModulePS | null>(null);
   const [assessments, setAssessments] = useState<AssessmentPS[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const pathname = usePathname();
-  let moduleCode = "";
-  //Check path name is not undefined befor continuing
-  if (pathname != undefined) {
-    let path = pathname.split("/").pop()?.toString();
-    if (path != undefined) {
-      moduleCode = path;
-    }
-  } else {
-    console.error("Path can not be undefined");
-  }
+  const { moduleCode } = params;
 
   useEffect(() => {
     if (moduleCode) {
       fetchModuleData(moduleCode);
       fetchAssessments(moduleCode);
     }
-  }, [moduleCode]);
+  }, [session]);
 
   async function fetchModuleData(moduleCode: string) {
     try {
@@ -74,14 +70,19 @@ export default function ModuleDetails() {
     }
   }
 
-  if (!module) {
-    return <div>Loading module details...</div>;
+  if (status === "loading" || !module) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   const { module_name, module_code, module_leaders } = module;
 
   return (
-    <div className="pt-16 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+      <ToastContainer />
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
           {module_name}
@@ -94,14 +95,16 @@ export default function ModuleDetails() {
           >
             Edit
           </Link>
-          <button
-            type="button"
-            className="px-6 py-2 text-sm font-medium bg-orange-500 dark:bg-orange-600 text-white rounded-md hover:bg-orange-600 dark:hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
-            onClick={() => handleArchiveModule(module_code)}
-            data-cy="archive-button"
-          >
-            Archive
-          </button>
+          {module.status !== "archived" && (
+            <button
+              type="button"
+              className="px-6 py-2 text-sm font-medium bg-orange-500 dark:bg-orange-600 text-white rounded-md hover:bg-orange-600 dark:hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
+              onClick={() => handleArchiveModule(module_code)}
+              data-cy="archive-button"
+            >
+              Archive
+            </button>
+          )}
         </div>
       </div>
       <div className="mb-4">

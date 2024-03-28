@@ -1,5 +1,6 @@
 import { TimeBar } from "@/app/components/TimeProgressBar/TimeBar";
 import { format, differenceInMilliseconds, differenceInDays } from "date-fns"; // Import necessary functions
+import { FiCalendar } from "react-icons/fi";
 interface OverallProgressContent {
   /** Passing assessment hand in date and hand out date here to visualise time difference */
   handInDate: Date;
@@ -35,13 +36,13 @@ function TimeProgressBar({
   }
 
   // Labels for progress bar
-  const timeLabel = isOverdue ? "Overdue" : "Days";
+  const timeLabel = isOverdue ? "Overdue" : "Days Left";
   const days = Math.abs(daysRemaining);
 
   // Only show date progress if tracking not complete
   return lastCompletedPart.part_title != "Mark and feedback availability" ? (
     <div className="w-full flex justify-evenly rounded p-4 mb-4">
-      <div className="w-[60%] relative overflow-hidden text-left">
+      <div className="w-[60%] relative overflow-hidden text-center">
         {/* Display the visual date progress*/}
         <>
           {isOverdue ? (
@@ -49,11 +50,12 @@ function TimeProgressBar({
               {timeLabel}
             </h1>
           ) : (
-            <h1 className="mb-4 text-lg text-gray-700 dark:text-white text-center w-full">
+            <h1 className="mb-4 text-lg justify-center text-gray-700 dark:text-white text-center w-full flex mb-6">
+              <FiCalendar size={30} className="mr-2 flex" />
               {days} {timeLabel}
             </h1>
           )}
-          <div>
+          <div className="mt-6">
             <TimeBar progress={progress} isOverDue={isOverdue} />
           </div>
           <div className="flex">

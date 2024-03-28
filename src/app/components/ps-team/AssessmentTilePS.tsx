@@ -175,7 +175,7 @@ const AssessmentTilePS = ({
                 </div>
               </p>
             </div>
-            <div className="md:w-1/2 mt-4 md:mt-0">
+            <div className="md:w-1/4 mt-4 md:mt-0">
               <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
                 Assignees
               </h6>
@@ -205,7 +205,7 @@ const AssessmentTilePS = ({
                 </p>
               )}
             </div>
-            <div className="md:w-1/2 md:mt-0 text-center">
+            <div className="md:w-1/3 md:mt-0 text-center">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress

@@ -155,7 +155,7 @@ export default function ModuleDetails() {
                 </p>
                 <p>Setter: {assessment.setter?.name ?? "No setter assigned"}</p>
               </div>
-              <div className="w-1/3 min-w-max">
+              <div className="w-1/2 min-w-max">
                 {assessment.hand_in_week && assessment.hand_out_week ? (
                   <TimeOverallProgress
                     handOutDate={assessment.hand_out_week}

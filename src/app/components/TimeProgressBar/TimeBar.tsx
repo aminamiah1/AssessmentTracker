@@ -16,8 +16,8 @@ export function TimeBar({
       <div
         className={
           isOverDue
-            ? "absolute h-6 w-6 rounded-full bg-red-600 top-9 right-0"
-            : "absolute h-6 w-6 rounded-full border border-blue-600 bg-gray-200 top-9 right-0"
+            ? "absolute h-6 w-6 rounded-full bg-red-600 top-11 right-0 max-[1365px]:invisible"
+            : "absolute h-6 w-6 rounded-full border border-blue-600 bg-gray-200 top-12 right-0 max-[1365px]:invisible"
         }
       ></div>
       <div
@@ -31,7 +31,9 @@ export function TimeBar({
       ></div>
       <div
         className={
-          isOverDue ? "" : "absolute h-6 w-6 rounded-full bg-blue-600 top-9"
+          isOverDue
+            ? ""
+            : "absolute h-6 w-6 rounded-full bg-blue-600 top-12 max-[1365px]:invisible"
         }
       ></div>
     </div>

@@ -1,13 +1,9 @@
 "use client";
 import SearchBar from "@/app/components/SearchBar/SearchBar";
 import UnauthorizedAccess from "@/app/components/authError";
-import { archiveModule } from "@/app/actions/module-status";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/ReactToastify.css";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { MdArchive, MdEdit } from "react-icons/md";
 import { FiFilter } from "react-icons/fi";
 import { ModuleStatus } from "@prisma/client";
 import { ModuleData } from "@/app/types/module";
@@ -75,20 +71,6 @@ export default function ModuleList() {
     }
   }, [searchTerm, activeFilter, archivedFilter, completedFilter, session]);
 
-  async function handleArchiveModule(moduleCode: string) {
-    const res = await archiveModule(moduleCode);
-    if (res.error) {
-      toast.error(res.error, { position: "bottom-right" });
-    } else if (res.success) {
-      toast.success(res.success, { position: "bottom-right" });
-    } else {
-      toast.warn("There was an issue when trying to archive the module.", {
-        position: "bottom-right",
-      });
-    }
-    fetchModulesPS();
-  }
-
   function handleFiltering(status: ModuleStatus) {
     switch (status) {
       case "active":
@@ -117,7 +99,6 @@ export default function ModuleList() {
   return isPSTeam ? (
     <>
       <div className="bg-white dark:bg-darkmode h-screen max-h-full">
-        <ToastContainer />
         <h1
           className="text-4xl px-4 py-5 text-gray-900 dark:text-gray-100"
           data-cy="page-title"
@@ -219,7 +200,6 @@ export default function ModuleList() {
   ) : isModuleLeader ? (
     <>
       <div className="bg-white dark:bg-darkmode h-screen max-h-full mt-6">
-        <ToastContainer />
         <h1
           className="text-4xl px-4 py-5 text-gray-900 dark:text-gray-100"
           data-cy="page-title"

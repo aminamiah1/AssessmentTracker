@@ -158,19 +158,20 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </h1>
               )}
             </div>
-            <div className="md:w-1/4 md:mt-0 text-center">
-              <button
-                className="mr-10"
-                onClick={() => setShowDeleteModal(true)}
-              >
-                <FaTrash size={60} className="cursor-pointer" />
+            <div className="md:w-1/5 md:mt-0 text-center">
+              <button className="mb-2" onClick={() => setShowDeleteModal(true)}>
+                <button className="px-6 py-2 mr-4 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
+                  Delete
+                </button>
               </button>
-              <div className="inline-table text-center">
+              <div className="inline-table">
                 <Link
                   href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
                   data-cy="editAssessment"
                 >
-                  <FaEdit size={60} className="cursor-pointer" />
+                  <button className="px-6 py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
+                    Edit
+                  </button>
                 </Link>
               </div>
             </div>

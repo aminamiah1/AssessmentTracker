@@ -7,6 +7,7 @@ import { archiveModule } from "@/app/actions/module-status";
 import Link from "next/link";
 import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
 import { ModulePS, AssessmentPS } from "@/app/types/interfaces";
+import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
 import { useSession } from "next-auth/react";
 
 export default function ModuleDetails({
@@ -156,6 +157,22 @@ export default function ModuleDetails({
                   {format(new Date(assessment.hand_in_week), "yyyy/MM/dd")}
                 </p>
                 <p>Setter: {assessment.setter?.name ?? "No setter assigned"}</p>
+              </div>
+              <div className="w-1/2 min-w-max">
+                {assessment.hand_in_week && assessment.hand_out_week ? (
+                  <TimeOverallProgress
+                    handOutDate={assessment.hand_out_week}
+                    handInDate={assessment.hand_in_week}
+                    partsList={assessment.partSubmissions}
+                  />
+                ) : (
+                  <h1
+                    className="mt-2 text-lg text-gray-700 dark:text-white text-center"
+                    data-cy="trackingFormToBeginStatus"
+                  >
+                    No hand in and out weeks assigned
+                  </h1>
+                )}
               </div>
               <div className="w-1/3 min-w-max">
                 {assessment.partSubmissions &&

@@ -148,6 +148,7 @@ export default function ViewAssessmentsModuleLeaders() {
               type="text"
               value={searchTerm}
               onChange={handleSearch}
+              data-cy="assessmentLeaderSearch"
               placeholder="Enter module or assessment name or tracking stage..."
               className="p-2 mb-3 shadow-md border-b-4 border-black w-full mr-2 text-black"
             />

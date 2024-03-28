@@ -48,16 +48,22 @@ function TimeProgressBar({
         {/* Display the visual date progress*/}
         <>
           {isOverdue || isComplete ? (
-            <h1 className="mb-4 text-lg text-gray-700 dark:text-white text-right flex justify-end">
-              {isOverdue ? timeLabel : "Completed"}
-              {isOverdue ? (
-                <FiClock size={30} className="ml-2 flex" />
-              ) : (
+            <h1
+              data-cy="dateStatus"
+              className="mb-4 text-lg text-gray-700 dark:text-white text-right flex justify-end"
+            >
+              {isComplete ? "Completed" : timeLabel}
+              {isComplete ? (
                 <FiCheck size={30} className="ml-2 flex" />
+              ) : (
+                <FiClock size={30} className="ml-2 flex" />
               )}
             </h1>
           ) : (
-            <h1 className="mb-4 text-lg justify-center text-gray-700 dark:text-white text-center w-full flex mb-6">
+            <h1
+              data-cy="dateStatusProgress"
+              className="mb-4 text-lg justify-center text-gray-700 dark:text-white text-center w-full flex mb-6"
+            >
               <FiCalendar size={30} className="mr-2 flex" />
               {days} {timeLabel}
             </h1>
@@ -71,14 +77,14 @@ function TimeProgressBar({
           </div>
           <div className="flex">
             <div className="text-lg text-gray-700 dark:text-white w-full text-left mt-2">
-              <p data-cy="dateShowHandOut">
+              <p data-cy="startDateBar">
                 {isOverdue || isComplete
                   ? ""
                   : format(handOutDate, "dd MMM yy")}
               </p>
             </div>
             <div className="text-lg text-gray-700 dark:text-white w-full text-right mt-2">
-              <p data-cy="dateShowHandIn">{format(handInDate, "dd MMM yy")}</p>
+              <p data-cy="endDateBar">{format(handInDate, "dd MMM yy")}</p>
             </div>
           </div>
         </>

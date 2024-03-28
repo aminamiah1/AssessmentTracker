@@ -132,8 +132,13 @@ async function seedModules() {
               id: 5,
               assessment_name: "Python Next Level",
               assessment_type: Assessment_type.Portfolio,
-              hand_out_week: example_date,
-              hand_in_week: example_date,
+              hand_out_week: new Date(),
+              // Get hand in date a two months from current date
+              hand_in_week: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth() + 2,
+                new Date().getDate(),
+              ),
               setter_id: 8,
             },
           ],
@@ -273,6 +278,14 @@ async function seedParts() {
       part_id: 6,
       date_submitted: new Date(),
       assessment_id: 5,
+      submitted_by: 8,
+    },
+  });
+  await prisma.partSubmission.create({
+    data: {
+      part_id: 11,
+      date_submitted: new Date(),
+      assessment_id: 7,
       submitted_by: 8,
     },
   });

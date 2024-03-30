@@ -3,93 +3,83 @@ import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
 
 export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession();
-
-    if (!session) {
-      return new NextResponse(JSON.stringify({ error: "Must be logged in" }), {
-        status: 401,
-      });
-    }
-
-    const { moduleId, moduleName, moduleCode, moduleLeaderNames } =
-      await request.json();
-    if (!moduleId) {
-      return new NextResponse(
-        JSON.stringify({ error: "Module ID is required for updating" }),
-        { status: 400 },
-      );
-    }
-
-    const existingModule = await prisma.module.findUnique({
-      where: { id: moduleId },
-      include: {
-        module_leaders: true,
-      },
+  const session = await getServerSession();
+  if (!session) {
+    return new NextResponse(JSON.stringify({ error: "Must be logged in" }), {
+      status: 401,
     });
+  }
 
-    if (!existingModule) {
-      return new NextResponse(JSON.stringify({ error: "Module not found" }), {
-        status: 404,
-      });
-    }
+  const { moduleId, moduleName, moduleCode, moduleLeaderNames } =
+    await request.json();
+  if (!moduleId) {
+    return new NextResponse(
+      JSON.stringify({ error: "Module ID is required for updating" }),
+      { status: 400 },
+    );
+  }
 
-    if (!moduleName || !moduleCode || !moduleLeaderNames) {
-      return new NextResponse(
-        JSON.stringify({ message: "Please include all required fields" }),
-        { status: 400 },
-      );
-    }
+  const parsedModuleId = parseInt(moduleId, 10); // Parse moduleId to integer
+
+  const existingModule = await prisma.module.findUnique({
+    where: { id: parsedModuleId },
+  });
+  if (!existingModule) {
+    return new NextResponse(JSON.stringify({ error: "Module not found" }), {
+      status: 404,
+    });
+  }
+
+  const updatePayload: Record<string, any> = {};
+
+  if (moduleName !== undefined) {
+    updatePayload.module_name = moduleName;
+  }
+
+  if (moduleCode !== undefined) {
+    updatePayload.module_code = moduleCode;
+  }
+
+  if (moduleLeaderNames !== undefined) {
+    const parsedLeaderIds: number[] = moduleLeaderNames.map((id: string) =>
+      parseInt(id, 10),
+    ); // Parse each leader ID to integer
 
     const validModuleLeaders = await prisma.users.findMany({
       where: {
-        name: { in: moduleLeaderNames },
-        roles: {
-          has: "module_leader",
-        },
+        id: { in: parsedLeaderIds },
+        roles: { has: "module_leader" },
       },
-      select: {
-        id: true,
-      },
+      select: { id: true },
     });
 
-    if (validModuleLeaders.length !== moduleLeaderNames.length) {
+    if (validModuleLeaders.length !== parsedLeaderIds.length) {
       return new NextResponse(
         JSON.stringify({ error: "Invalid module leader name(s) provided." }),
         { status: 400 },
       );
     }
 
+    updatePayload.module_leaders = {
+      set: [],
+      connect: validModuleLeaders.map((leader) => ({ id: leader.id })),
+    };
+  }
+
+  try {
     await prisma.module.update({
-      where: { id: moduleId },
-      data: {
-        module_leaders: {
-          set: [],
-        },
-      },
+      where: { id: parsedModuleId },
+      data: updatePayload,
     });
-
-    const updatedModule = await prisma.module.update({
-      where: { id: moduleId },
-      data: {
-        module_name: moduleName,
-        module_code: moduleCode,
-        module_leaders: {
-          connect: validModuleLeaders.map((leader) => ({ id: leader.id })),
-        },
-      },
-    });
-
-    return new NextResponse(JSON.stringify({ existingModule, updatedModule }), {
-      status: 200,
-    });
+    return new NextResponse(
+      JSON.stringify({ message: "Module updated successfully" }),
+      { status: 200 },
+    );
   } catch (error) {
-    console.error(error);
+    console.error("Error updating module:", error);
     return new NextResponse(
       JSON.stringify({ message: "Internal Server Error" }),
       { status: 500 },
     );
   }
 }
-
-//TODO: frontend

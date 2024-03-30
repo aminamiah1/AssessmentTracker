@@ -91,6 +91,7 @@ export interface Part {
 }
 
 export interface ModulePS {
+  id: number;
   module_name: string;
   module_code: string;
   module_leaders: { id: number; name: string; roles: string[] }[];
@@ -106,4 +107,14 @@ export interface AssessmentPS {
   partSubmissions: [];
   setter_id: number;
   setter: { id: number; name: string; roles: [] };
+}
+
+export interface ModuleLeader {
+  id: string;
+  name: string;
+}
+
+export interface SelectOption {
+  value: string; // module leader's ID
+  label: string; // module leader's name
 }

@@ -78,7 +78,7 @@ export default function ModuleDetails({
     );
   }
 
-  const { module_name, module_code, module_leaders } = module;
+  const { id, module_name, module_code, module_leaders } = module;
 
   return (
     <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
@@ -89,7 +89,7 @@ export default function ModuleDetails({
         </h2>
         <div>
           <Link
-            href={`/admin/module-list/edit/${module_code}`}
+            href={`/admin/module-list/edit/${id}`}
             className="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-300 dark:bg-gray-700 rounded-md hover:bg-gray-400 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow inline-block mr-2"
             data-cy="edit-button"
           >

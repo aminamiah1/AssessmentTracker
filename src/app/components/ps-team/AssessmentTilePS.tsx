@@ -285,15 +285,17 @@ const AssessmentTilePS = ({
               >
                 Assign assignees/setter?
               </button>
-              <button
-                className="px-6 mt-2 w-full py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
-                data-cy="assignUsers"
-                onClick={() => {
-                  setIsPopUpOpen(true); // Open the pop-up
-                }}
+              <Link
+                href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                data-cy="editAssessment"
               >
-                Edit
-              </button>
+                <button
+                  className="px-6 mt-2 w-full py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
+                  data-cy="assignUsers"
+                >
+                  Edit
+                </button>
+              </Link>
               <button
                 className="px-6 mt-2 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
                 data-cy="assignUsers"

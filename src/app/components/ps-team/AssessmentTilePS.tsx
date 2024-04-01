@@ -7,6 +7,8 @@ import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
 import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
 import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 // Import interfaces from interfaces.ts
 import {
@@ -26,7 +28,7 @@ const AssessmentTilePS = ({
   refetch: any;
   setRefetch: any;
 }) => {
-  let [isPopUpOpen, setIsPopUpOpen] = useState(false); // State to control pop-up
+  let [isPopUpOpen, setIsPopUpOpen] = useState(false); // State to control pop-up for assignees
   const [users, setUsers] = useState([]); // Variable to hold all assignees of an existing assessment
   // Default assessment object used on create form mode as default
   const [assessmentToEdit, setAssessmentToEdit] = useState<AssessmentEdit>({
@@ -35,6 +37,42 @@ const AssessmentTilePS = ({
     assignees: [],
   });
   const [loading, setLoading] = useState(true); // Initialize loading state to true
+  // State variable for managing the visibility of the delete confirmation modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  // Function to handle deletion of an assessment
+  const handleDelete = () => {
+    try {
+      // Extracting the assessment ID
+      var id = assessment.id;
+
+      // Sending a DELETE request to the server to delete the assessment
+      fetch(`/api/module-leader/assessment/delete?id=${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            // Displaying a success toast notification and reloading the page on successful deletion
+            toast.success("Delete assessment successful!");
+            window.location.reload();
+          } else {
+            // Displaying an error toast notification if deletion fails
+            toast.error("Error deleting assessment");
+          }
+        })
+        .catch((error) => {
+          // Handling network errors and displaying a toast notification to inform the user
+          toast.error("Network error please try again");
+        });
+    } catch (error) {
+      // Displaying an error toast notification if an unexpected error occurs
+      toast.error("Error deleting assessment");
+    }
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -127,6 +165,7 @@ const AssessmentTilePS = ({
   return (
     // Assessment tile for ps team layout using grid system
     <>
+      <ToastContainer />
       <div className="bg-gray-100 mb-2 dark:bg-gray-700 shadow-lg rounded-lg">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
           <div className="md:flex md:items-center">
@@ -238,13 +277,31 @@ const AssessmentTilePS = ({
             </div>
             <div className="md:w-1/4 md:mt-0 text-center rounded">
               <button
-                className="bg-gray-200 text-black h-20 mt-5 rounded p-3 text-lg"
+                className="px-6 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
                 data-cy="assignUsers"
                 onClick={() => {
                   setIsPopUpOpen(true); // Open the pop-up
                 }}
               >
                 Assign assignees/setter?
+              </button>
+              <button
+                className="px-6 mt-2 w-full py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
+                data-cy="assignUsers"
+                onClick={() => {
+                  setIsPopUpOpen(true); // Open the pop-up
+                }}
+              >
+                Edit
+              </button>
+              <button
+                className="px-6 mt-2 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
+                data-cy="assignUsers"
+                onClick={() => {
+                  setShowDeleteModal(true); // Open the pop-up
+                }}
+              >
+                Delete
               </button>
             </div>
           </div>
@@ -322,6 +379,36 @@ const AssessmentTilePS = ({
             </form>
           </div>
         </div>
+      </div>
+
+      <div
+        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
+          showDeleteModal ? "block" : "hidden"
+        }`}
+      >
+        {assessment && (
+          <div className="bg-white p-5 border border-black rounded-lg">
+            <p className="text-black mb-4">Delete Assessment?</p>
+            <p className="text-black mb-4">
+              Are you sure you want to delete the assessment:{" "}
+              {assessment.assessment_name}?
+            </p>
+            <div className="flex justify-between mt-4">
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

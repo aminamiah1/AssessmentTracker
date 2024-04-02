@@ -43,10 +43,12 @@ describe("Import CSV", () => {
 
     cy.getByTestId("uploadCSV").click({ force: true });
 
-    cy.get(".Toastify__toast-icon", { timeout: 10000 }).contains(
-      "div",
-      "Please select a valid CSV file. Invalid file format.Error parsing csv, check format and try again",
-    );
+    cy.get(".Toastify__toast-icon", { timeout: 10000 })
+      .next()
+      .should(
+        "contain.text",
+        "Please select a valid CSV file. Invalid file format.Error parsing csv, check format and try again",
+      );
   });
 
   it("Informs the user if they upload an malformed csv.", () => {
@@ -58,9 +60,11 @@ describe("Import CSV", () => {
 
     cy.getByTestId("uploadCSV").click({ force: true });
 
-    cy.get(".Toastify__toast-icon", { timeout: 10000 }).contains(
-      "div",
-      "Please select a valid CSV file. Invalid file format.Error parsing csv, check format and try again",
-    );
+    cy.get(".Toastify__toast-icon", { timeout: 10000 })
+      .next()
+      .should(
+        "contain.text",
+        "Please select a valid CSV file. Invalid file format.Error parsing csv, check format and try again",
+      );
   });
 });

@@ -15,6 +15,7 @@ import {
   FaUsers,
   FaBox,
   FaListAlt,
+  FaChartLine,
 } from "react-icons/fa";
 import { NavItem } from "@/app/components/ListItem/NavItem";
 import DarkModeToggle from "@/app/components/darkModeToggle";
@@ -147,6 +148,12 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
             )}
             {isPSTeam && (
               <>
+                <NavItem
+                  icon={<FaChartLine />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/ps-team/analytics"
+                  text="Analytics"
+                />
                 <NavItem
                   icon={<FaUsers />}
                   isSidebarOpen={isSidebarOpen}

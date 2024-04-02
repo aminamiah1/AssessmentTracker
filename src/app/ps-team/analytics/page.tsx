@@ -25,7 +25,7 @@ export default function analyticsPSTeam() {
       </div>
       <div className="flex justify-center items-center pt-38">
         <div className="mb-0">
-          <Link href="/">
+          <Link href="analytics/overdue-statistics">
             <button className="bg-gray-800 text-white h-32 md:h-80 w-32 md:w-80 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
               <div>
                 <i className="bi bi-alarm text-5xl md:text-9xl"></i>

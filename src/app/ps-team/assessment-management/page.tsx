@@ -13,6 +13,7 @@ import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AssessmentTilePS from "../../components/ps-team/AssessmentTilePS";
+import Link from "next/link";
 
 export default function ViewAssessmentsPSTeam() {
   const [assessments, setAssessments] = useState<AssessmentTiles[]>([]); // Variable to hold an array of assessment object types
@@ -231,6 +232,24 @@ export default function ViewAssessmentsPSTeam() {
               }}
             >
               <h1 className="text-3xl">All Assessments Overview</h1>
+              <div className="flex flex-row">
+                <Link
+                  href="/module-leader/assessment-management/create-assessment"
+                  data-cy="create-assessments-button"
+                  className="text-white "
+                >
+                  <button className="bg-gray-600 text-white mt-5 p-2 mr-2 rounded">
+                    Create Assessment
+                  </button>
+                </Link>
+                <button
+                  className="bg-gray-600 text-white mt-5 p-2 rounded"
+                  onClick={() => setIsPopUpOpen(true)}
+                  data-cy="importCSVButton"
+                >
+                  Import CSV
+                </button>
+              </div>
             </div>
           </div>
           <div className="dark:text-white">
@@ -376,17 +395,10 @@ export default function ViewAssessmentsPSTeam() {
                 <div className="w-full sm:w-1/2 lg:w-auto mb-2 sm:mb-0">
                   <div className="w-full flex">
                     <button
-                      className="bg-gray-200 text-black h-10 mt-5 rounded w-1/2 min-w-[10rem]"
+                      className="bg-gray-600 text-white h-10 mt-5 rounded w-1/2 min-w-[10rem]"
                       onClick={handleReset}
                     >
                       Reset Filter
-                    </button>
-                    <button
-                      className="bg-gray-200 text-black h-10 mt-5 ml-2 rounded w-1/2 min-w-[10rem]"
-                      onClick={() => setIsPopUpOpen(true)}
-                      data-cy="importCSVButton"
-                    >
-                      Import CSV
                     </button>
                   </div>
                 </div>

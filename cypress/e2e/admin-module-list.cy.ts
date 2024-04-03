@@ -44,7 +44,7 @@ describe("Admin module list page", () => {
 
   it("should display active and archived modules when both filters are selected", () => {
     cy.getByTestId("archived-filter").click();
-    cy.contains("[data-cy='module-card']", "CM6128").should("be.visible");
+    cy.contains("[data-cy='module-card']", "CM6122").should("be.visible");
     cy.contains("[data-cy='module-card']", "CM3101").should("be.visible");
   });
 

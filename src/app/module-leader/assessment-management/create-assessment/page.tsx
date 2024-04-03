@@ -57,21 +57,29 @@ function CreateAssessmentModuleLeaders() {
       label: type.replaceAll("_", " "),
     }),
   );
-  const [isModuleLeader, setIsModuleLeader] = useState(false); // Confirm if the user is a module leader role type
+  const [isRole, setIsRole] = useState(false); // Confirm if the user is a module leader role type
+
+  const [roleName, setRoleName] = useState("");
 
   // This is needed for the setter logic to work please don't remove again
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (session != null) {
       //Check here from session.user.roles array if one of the entires is module_leader to set is module leader to true
       const checkRoles = () => {
         const roles = session.user.roles;
-        if (roles.includes("module_leader")) {
-          setIsModuleLeader(true);
+        if (roles.includes("module_leader") || roles.includes("ps_team")) {
+          setIsRole(true);
+          if (roles.includes("module_leader")) {
+            setRoleName("module_leader");
+          } else if (roles.includes("ps_team")) {
+            setRoleName("ps_team");
+          }
           //Set the assessment setter id to the current user
           setSetterId(parseInt(session.user.id as string, 10));
         } else {
           // Else display unauthorised message
-          setIsModuleLeader(false);
+          setIsRole(false);
         }
       };
 
@@ -81,18 +89,30 @@ function CreateAssessmentModuleLeaders() {
 
   useEffect(() => {
     const fetchModules = async () => {
-      // Fetch modules by setter only when component mounts
-      // Getting response as module leader 1 while waiting for login feature
-      const response = await fetch(
-        `/api/module-leader/modules/get?id=${setterId}`,
-      );
-      const data = await response.json();
-      if (data.length > 0) {
-        const processedModules = data[0].modules.map((module: Module) => ({
-          value: module.id,
-          label: module.module_name,
-        }));
-        setModules(processedModules);
+      // Fetch all modules if the user has the ps team role type
+      if (roleName === "ps_team") {
+        const response = await fetch(`/api/ps-team/modules/get`);
+        const data = await response.json();
+        if (data.length > 0) {
+          const processedModules = data.map((module: Module) => ({
+            value: module.id,
+            label: module.module_name,
+          }));
+          setModules(processedModules);
+        }
+        // Else if the user has the module leader role, then fetch their modules only
+      } else {
+        const response = await fetch(
+          `/api/module-leader/modules/get?id=${setterId}`,
+        );
+        const data = await response.json();
+        if (data.length > 0) {
+          const processedModules = data[0].modules.map((module: Module) => ({
+            value: module.id,
+            label: module.module_name,
+          }));
+          setModules(processedModules);
+        }
       }
     };
 
@@ -159,22 +179,22 @@ function CreateAssessmentModuleLeaders() {
     };
 
     //Check if there are params and change to edit form, if not then continue with create form
-    if (params && isModuleLeader === true && setterId != 0) {
+    if (params && isRole === true && setterId != 0) {
       setIsEdit(true);
       fetchAssignees();
       fetchModules();
       fetchAssessmentData(params);
-    } else if (isModuleLeader === true && setterId != 0) {
+    } else if (isRole === true && setterId != 0) {
       fetchAssignees();
       fetchModules();
     }
 
     setLoading(false); // Set loading to false once data is fetched
-  }, [isModuleLeader]);
+  }, [isRole]);
 
   useEffect(() => {
     // This effect runs when the modules and assignees state is updated on editing assessment
-    if (modules && moduleId && isModuleLeader === true && setterId != 0) {
+    if (modules && moduleId && isRole === true && setterId != 0) {
       // Find the default module with moduleId and set it as the default value
       const defaultModule = modules.find(
         (module: any) => module.value === moduleId,
@@ -323,7 +343,7 @@ function CreateAssessmentModuleLeaders() {
     );
   }
 
-  return isModuleLeader ? (
+  return isRole ? (
     <div className="bg-white dark:bg-darkmode h-screen max-h-full">
       <ToastContainer />
       {loading ? (

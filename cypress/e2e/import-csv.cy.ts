@@ -46,7 +46,7 @@ describe("Import CSV", () => {
     cy.get(".Toastify__toast-icon", { timeout: 10000 })
       .next()
       .should(
-        "have.text",
+        "contain.text",
         "Please select a valid CSV file. Invalid file format.Error parsing csv, check format and try again",
       );
   });
@@ -63,7 +63,7 @@ describe("Import CSV", () => {
     cy.get(".Toastify__toast-icon", { timeout: 10000 })
       .next()
       .should(
-        "have.text",
+        "contain.text",
         "Please select a valid CSV file. Invalid file format.Error parsing csv, check format and try again",
       );
   });

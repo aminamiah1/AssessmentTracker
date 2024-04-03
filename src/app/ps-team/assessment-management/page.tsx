@@ -232,6 +232,15 @@ export default function ViewAssessmentsPSTeam() {
               }}
             >
               <h1 className="text-3xl">All Assessments Overview</h1>
+              <Link
+                href="/module-leader/assessment-management/create-assessment"
+                data-cy="create-assessments-button"
+                className="text-white "
+              >
+                <button className="bg-gray-600 text-white mt-5 p-2 rounded">
+                  Create Assessment
+                </button>
+              </Link>
             </div>
           </div>
           <div className="dark:text-white">
@@ -389,15 +398,6 @@ export default function ViewAssessmentsPSTeam() {
                     >
                       Import CSV
                     </button>
-                    <Link
-                      href="/module-leader/assessment-management/create-assessment"
-                      data-cy="create-assessments-button"
-                      className="text-white "
-                    >
-                      <button className="bg-gray-600 text-white h-10 mt-5 ml-2 rounded w-1/2 min-w-[10rem]">
-                        Create Assessment
-                      </button>
-                    </Link>
                   </div>
                 </div>
               </div>

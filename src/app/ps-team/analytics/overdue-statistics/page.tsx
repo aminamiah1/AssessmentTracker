@@ -83,11 +83,11 @@ export default function overdueStatisticsPSTeam() {
       </aside>
       <ToastContainer />
       <div className="text-center mb-10 mt-10">
-        <h1 className="text-3xl">Overdue Statistics</h1>
+        <h1 className="text-4xl">Overdue Statistics</h1>
       </div>
       <div className="flex flex-col h-screen w-full justify-center items-center">
         <div className="text-center">
-          <h1 className="mb-2 font-bold">
+          <h1 className="mb-2 text-xl">
             Top 5 most late users by number of overdue assessments
           </h1>
         </div>
@@ -98,6 +98,11 @@ export default function overdueStatisticsPSTeam() {
             indexBy="email" // Set the key used for the x-axis as user email
             margin={{ top: 100, right: 100, bottom: 100, left: 100 }}
             labelTextColor={"#000000"}
+            tooltip={(point) => {
+              return (
+                <div className="text-black bg-white p-2">{point.label}</div>
+              );
+            }}
             theme={{
               text: {
                 fill: "#ffffff",

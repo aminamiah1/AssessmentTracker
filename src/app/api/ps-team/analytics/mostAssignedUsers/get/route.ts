@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  // Get all users with number of overdue assessments
+  // Get all users with number of assigned assessments
   try {
     const session = await getServerSession();
 
@@ -18,14 +18,7 @@ export async function GET(request: Request) {
         email: true,
         _count: {
           select: {
-            assessments: {
-              where: {
-                hand_in_week: { lt: new Date() }, // Past the due date
-                partSubmissions: {
-                  none: { Part: { part_number: { lt: 11 } } }, // No submissions for Part 11 or beyond
-                },
-              },
-            },
+            assessments: true,
           },
         },
       },

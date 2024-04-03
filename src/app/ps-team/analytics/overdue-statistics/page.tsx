@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react"; // Import useSession and signIn
 import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { FaChartLine } from "react-icons/fa";
-import { ResponsiveBarCanvas } from "@nivo/bar";
+import OverDueUsersChart from "@/app/components/Charts/overDueStatistics/OverDueUsersChart";
 
 export default function overdueStatisticsPSTeam() {
   const { data: session, status } = useSession({ required: true }); // Use useSession to get session and status
@@ -92,40 +92,7 @@ export default function overdueStatisticsPSTeam() {
           </h1>
         </div>
         <div className="w-[80vw] h-[80vw] text-white bg-gray-700 shadow-lg rounded-lg">
-          <ResponsiveBarCanvas
-            data={overDueUsers} // Use the formatted data retrieved from the api
-            keys={["overdueAssessments"]} // Indicate the value field of number of overdue assessments
-            indexBy="email" // Set the key used for the x-axis as user email
-            margin={{ top: 100, right: 100, bottom: 100, left: 100 }}
-            labelTextColor={"#000000"}
-            tooltip={(point) => {
-              return (
-                <div className="text-black bg-white p-2">{point.label}</div>
-              );
-            }}
-            theme={{
-              text: {
-                fill: "#ffffff",
-              },
-            }}
-            // Define the axis
-            axisBottom={{
-              tickRotation: -45,
-              tickPadding: 10,
-              tickSize: 5,
-              legendPosition: "middle",
-              legendOffset: 32,
-            }}
-            axisLeft={{
-              tickSize: 5,
-              tickPadding: 5,
-              legend: "Number of Overdue Assessments",
-              legendPosition: "middle",
-              legendOffset: -60,
-              format: (value) => Math.round(value), // Format function to display whole numbers
-              tickValues: "every 1",
-            }}
-          />
+          <OverDueUsersChart data={overDueUsers} />
         </div>
         <div className="flex h-screen">
           <h1>Graph 2 Goes Here</h1>

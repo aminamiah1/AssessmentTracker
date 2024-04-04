@@ -1,4 +1,4 @@
-import { ProgressBarOverall } from "@/app/components/module-leader/ProgressBarOverall";
+import { TimeBar } from "@/app/components/TimeProgressBar/TimeBar";
 interface OverallProgressContent {
   /** The array containing the text and current number of the last completed part for an assessment */
   lastCompletedPart: {
@@ -11,7 +11,7 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
   // Get the last completed part title and number from object
   const lastCompletedPartTitle = lastCompletedPart.part_title;
   const lastCompletedPartNumber = lastCompletedPart.part_number;
-  const progress = lastCompletedPartNumber / 11; // Divide last part number by the maximum number of parts (11) to get progress decimal
+  const progress = lastCompletedPartNumber / 10; // Divide last part number by the maximum number of parts (10) for first tracking stage to get progress decimal
   // Calculate the width of the completed portion of the progress bar
   const progressBarWidth = 100;
   const completedWidth = progress * progressBarWidth; //Calculate where to place last completed part text
@@ -22,24 +22,56 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
         {/* Display the last completed part information*/}
         {lastCompletedPart && (
           <>
-            <h1
-              className="mb-4 text-lg text-gray-700 dark:text-white"
-              data-cy="trackingStagesComplete"
-            >
-              Tracking Stage ● {lastCompletedPartNumber}/11
-            </h1>
+            <div className="flex">
+              <div>
+                <h1
+                  className="mb-4 text-md text-gray-700 dark:text-white"
+                  data-cy="trackingStagesComplete"
+                >
+                  Internal Moderation
+                </h1>
+              </div>
+              <div>
+                <h1
+                  className="mb-4 ml-4 text-md text-gray-700 dark:text-white"
+                  data-cy="trackingStagesComplete"
+                >
+                  Moderation Panel
+                </h1>
+              </div>
+              <div>
+                <h1
+                  className="mb-4 ml-4 text-md text-gray-700 dark:text-white"
+                  data-cy="trackingStagesComplete"
+                >
+                  External Examiner
+                </h1>
+              </div>
+              <div>
+                <h1
+                  className="mb-4 ml-4 text-md text-gray-700 dark:text-white"
+                  data-cy="trackingStagesComplete"
+                >
+                  Post-Marking Moderation
+                </h1>
+              </div>
+            </div>
             {/* Display the tracking form stages progress as visual bar*/}
-            <div>
-              <ProgressBarOverall progress={progress} />
+            <div className="w-full">
+              <TimeBar
+                progress={progress}
+                isComplete={false}
+                isOverDue={false}
+              />
             </div>
             <div>
               <div
                 className="mt-2 text-lg text-gray-700 dark:text-white"
                 style={{ width: `${completedWidth}%`, textAlign: "right" }}
               >
-                <span data-cy="lastCompletedPart">
+                {/* <span data-cy="lastCompletedPart">
                   {lastCompletedPartTitle}
-                </span>
+                </span> */}
               </div>
             </div>
           </>

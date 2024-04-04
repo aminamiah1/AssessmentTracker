@@ -169,7 +169,7 @@ const AssessmentTilePS = ({
       <div className="bg-gray-100 mb-2 dark:bg-gray-700 shadow-lg rounded-lg">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
           <div className="md:flex md:items-center">
-            <div className="md:w-1/2 md:mt-0  text-lg">
+            <div className="md:w-1/6 md:mt-0  text-lg">
               <div>
                 <Link
                   href={`/ps-team/assessment-management/view-assessment?id=${assessment.id}`}
@@ -214,7 +214,7 @@ const AssessmentTilePS = ({
                 </div>
               </p>
             </div>
-            <div className="md:w-1/4 mt-4 md:mt-0">
+            <div className="md:w-1/6 mt-4 md:mt-0">
               <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
                 Assignees
               </h6>
@@ -244,7 +244,7 @@ const AssessmentTilePS = ({
                 </p>
               )}
             </div>
-            <div className="md:w-1/3 md:mt-0 text-center">
+            <div className="md:w-1/2 md:mt-0 text-center">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress
@@ -259,23 +259,7 @@ const AssessmentTilePS = ({
                 </h1>
               )}
             </div>
-            <div className="md:w-1/2 mb-4 md:mt-0 text-center">
-              {assessment.hand_in_week && assessment.hand_out_week ? (
-                <TimeOverallProgress
-                  handOutDate={assessment.hand_out_week}
-                  handInDate={assessment.hand_in_week}
-                  partsList={assessment.partSubmissions}
-                />
-              ) : (
-                <h1
-                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
-                  data-cy="trackingFormToBeginStatus"
-                >
-                  No hand in and out weeks assigned
-                </h1>
-              )}
-            </div>
-            <div className="md:w-1/4 md:mt-0 text-center rounded">
+            <div className="md:w-1/6 md:mt-0 text-center rounded">
               <button
                 className="px-6 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
                 data-cy="assignUsers"

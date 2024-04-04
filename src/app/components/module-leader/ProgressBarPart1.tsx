@@ -15,11 +15,11 @@ export function ProgressBarPart1({
   return isComplete ? (
     <div
       data-cy="progress-container"
-      className="h-2 w-full bg-gray-300 rounded-full shadow-gray-700 shadow-md dark:shadow-black"
+      className="h-3 w-full bg-gray-300 rounded-full shadow-gray-700 shadow-md dark:shadow-black"
     >
       <div
         className={
-          "absolute h-6 w-6 rounded-full bg-green-600 top-[3.5rem] right-0 max-[1433px]:invisible"
+          "absolute h-6 w-6 rounded-full bg-green-600 top-[3.6em] right-0 max-[1433px]:invisible"
         }
       ></div>
       <div
@@ -46,28 +46,28 @@ export function ProgressBarPart1({
         className={
           isOverDue
             ? ""
-            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[3.5rem] max-[1433px]:invisible"
+            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[3.6em] max-[1433px]:invisible"
         }
       ></div>
       <div
         className={
           isOverDue
-            ? "absolute h-6 w-6 rounded-full bg-red-600 top-[3.5rem] right-0 max-[1433px]:invisible"
-            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[3.5rem] right-[2vw] max-[1433px]:invisible"
-        }
-      ></div>
-      <div
-        className={
-          isOverDue
-            ? ""
-            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[3.5rem] left-[8vw] max-[1433px]:invisible"
+            ? "absolute h-6 w-6 rounded-full bg-red-600 top-[3.6em] right-0 max-[1433px]:invisible"
+            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[3.6em] right-[2vw] max-[1433px]:invisible"
         }
       ></div>
       <div
         className={
           isOverDue
             ? ""
-            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[3.5rem] right-[11vw] max-[1433px]:invisible"
+            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[3.6em] left-[8vw] max-[1433px]:invisible"
+        }
+      ></div>
+      <div
+        className={
+          isOverDue
+            ? ""
+            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[3.6em] right-[11vw] max-[1433px]:invisible"
         }
       ></div>
     </div>

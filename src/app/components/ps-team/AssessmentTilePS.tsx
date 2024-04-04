@@ -244,7 +244,7 @@ const AssessmentTilePS = ({
                 </p>
               )}
             </div>
-            <div className="md:w-1/2 md:mt-0 text-center">
+            <div className="w-1/2">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress

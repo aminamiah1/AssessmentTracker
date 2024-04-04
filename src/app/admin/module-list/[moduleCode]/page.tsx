@@ -146,7 +146,7 @@ export default function ModuleDetails({
               className="shadow-lg rounded-lg p-4 mb-4 bg-gray-100 dark:bg-gray-700 text-lg text-gray-900 dark:text-gray-200"
             >
               <div className="flex justify-between items-center">
-                <div>
+                <div className="w-1/8">
                   <strong>{assessment.assessment_name}</strong>
                   <p>Type: {assessment.assessment_type}</p>
                   <p title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html">
@@ -161,23 +161,7 @@ export default function ModuleDetails({
                     Setter: {assessment.setter?.name ?? "No setter assigned"}
                   </p>
                 </div>
-                <div className="w-1/2 min-w-max">
-                  {assessment.hand_in_week && assessment.hand_out_week ? (
-                    <TimeOverallProgress
-                      handOutDate={assessment.hand_out_week}
-                      handInDate={assessment.hand_in_week}
-                      partsList={assessment.partSubmissions}
-                    />
-                  ) : (
-                    <h1
-                      className="mt-2 text-lg text-gray-700 dark:text-white text-center"
-                      data-cy="trackingFormToBeginStatus"
-                    >
-                      No hand in and out weeks assigned
-                    </h1>
-                  )}
-                </div>
-                <div className="w-1/3 min-w-max">
+                <div className="w-1/2 md:mt-0">
                   {assessment.partSubmissions &&
                   assessment.partSubmissions.length > 0 ? (
                     <AssessmentOverallProgress

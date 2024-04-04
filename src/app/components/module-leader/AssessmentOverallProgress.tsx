@@ -76,12 +76,19 @@ function AssessmentProgressPart1({
               </div>
             </div>
             {/* Display the tracking form stages progress as visual bar*/}
-            <div className="w-full">
+            <div className="w-full group">
               <ProgressBarPart1
                 progress={progress}
                 isComplete={isComplete}
                 isOverDue={isOverdue}
               />
+              {/* Hover Box */}
+              <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-10 hidden opacity-0 group-hover:opacity-100 group-hover:block bg-white rounded shadow p-2">
+                <h2 className="text-sm">
+                  Tracking Stage ● {lastCompletedPartNumber}/11
+                </h2>
+                <h2 className="text-sm mt-2">{lastCompletedPartTitle} </h2>
+              </div>
             </div>
             <div className="flex justify-end">
               {!isComplete && (

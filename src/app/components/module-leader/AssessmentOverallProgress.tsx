@@ -47,7 +47,7 @@ function AssessmentProgressPart1({
                   className="mb-4 text-md text-gray-700 dark:text-white"
                   data-cy="trackingStagesComplete"
                 >
-                  Internal Moderation
+                  Internal Peer Moderation Feedback
                 </h1>
               </div>
               <div>
@@ -55,7 +55,7 @@ function AssessmentProgressPart1({
                   className="mb-4 ml-4 text-md text-gray-700 dark:text-white"
                   data-cy="trackingStagesComplete"
                 >
-                  Moderation Panel
+                  Moderation Panel Comments
                 </h1>
               </div>
               <div>
@@ -63,7 +63,7 @@ function AssessmentProgressPart1({
                   className="mb-4 ml-4 text-md text-gray-700 dark:text-white"
                   data-cy="trackingStagesComplete"
                 >
-                  External Examiner
+                  External Examiner Feedback
                 </h1>
               </div>
               <div>
@@ -71,7 +71,7 @@ function AssessmentProgressPart1({
                   className="mb-4 ml-4 text-md text-gray-700 dark:text-white"
                   data-cy="trackingStagesComplete"
                 >
-                  Post-Marking Moderation
+                  Sample Availability Declared
                 </h1>
               </div>
             </div>

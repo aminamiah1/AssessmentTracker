@@ -17,7 +17,7 @@ export function ProgressBarPart1({
     >
       <div
         className={
-          "absolute h-6 w-6 rounded-full bg-green-600 top-[3.6em] right-0 max-[1433px]:invisible"
+          "absolute h-6 w-6 rounded-full bg-green-600 top-[5em] right-0 max-[1433px]:invisible"
         }
       ></div>
       <div
@@ -44,28 +44,28 @@ export function ProgressBarPart1({
         className={
           isOverDue
             ? ""
-            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[3.6em] max-[1433px]:invisible"
+            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[5em] max-[1433px]:invisible"
         }
       ></div>
       <div
         className={
           isOverDue
-            ? "absolute h-6 w-6 rounded-full bg-red-600 top-[3.6em] right-0 max-[1433px]:invisible"
-            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[3.6em] right-[2vw] max-[1433px]:invisible"
-        }
-      ></div>
-      <div
-        className={
-          isOverDue
-            ? ""
-            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[3.6em] left-[8vw] max-[1433px]:invisible"
+            ? "absolute h-6 w-6 rounded-full bg-red-600 top-[5em] right-0 max-[1433px]:invisible"
+            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[5em] right-[2vw] max-[1433px]:invisible"
         }
       ></div>
       <div
         className={
           isOverDue
             ? ""
-            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[3.6em] right-[11vw] max-[1433px]:invisible"
+            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[5em] left-[8vw] max-[1433px]:invisible"
+        }
+      ></div>
+      <div
+        className={
+          isOverDue
+            ? ""
+            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[5em] right-[10vw] max-[1433px]:invisible"
         }
       ></div>
     </div>

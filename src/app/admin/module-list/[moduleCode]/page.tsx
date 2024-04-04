@@ -7,7 +7,6 @@ import { archiveModule } from "@/app/actions/module-status";
 import Link from "next/link";
 import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
 import { ModulePS, AssessmentPS } from "@/app/types/interfaces";
-import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
 import { useSession } from "next-auth/react";
 
 export default function ModuleDetails({

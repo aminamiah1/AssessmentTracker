@@ -1,4 +1,6 @@
-import { TimeBar } from "@/app/components/TimeProgressBar/TimeBar";
+import { ProgressBarPart1 } from "@/app/components/module-leader/ProgressBarPart1";
+import { format, differenceInDays } from "date-fns"; // Import necessary functions
+import { FiCalendar, FiClock, FiCheck } from "react-icons/fi";
 interface OverallProgressContent {
   /** The array containing the text and current number of the last completed part for an assessment */
   lastCompletedPart: {
@@ -15,6 +17,21 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
   // Calculate the width of the completed portion of the progress bar
   const progressBarWidth = 100;
   const completedWidth = progress * progressBarWidth; //Calculate where to place last completed part text
+
+  // Caluclate time from now till the next july the 1st
+  const daysRemaining = differenceInDays(
+    new Date(
+      new Date().getFullYear() + (new Date().getMonth() >= 6 ? 1 : 0),
+      6,
+      1,
+    ),
+    new Date(),
+  ); // Day difference between now and hand in date
+  const isOverdue = daysRemaining < 0; // Check if overdue i.e. minus day difference numbers
+  const isComplete =
+    lastCompletedPart.part_title === "Internal moderation of marked sample" ||
+    lastCompletedPart.part_title === "Mark and feedback availability";
+  // Check if complete by comparing part title to the two stages after final section 4 stage
 
   return (
     <div className="w-full flex justify-evenly rounded p-4">
@@ -58,21 +75,33 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
             </div>
             {/* Display the tracking form stages progress as visual bar*/}
             <div className="w-full">
-              <TimeBar
+              <ProgressBarPart1
                 progress={progress}
-                isComplete={false}
-                isOverDue={false}
+                daysRemaining={daysRemaining}
+                isComplete={isComplete}
+                isOverDue={isOverdue}
               />
             </div>
-            <div>
-              <div
-                className="mt-2 text-lg text-gray-700 dark:text-white"
-                style={{ width: `${completedWidth}%`, textAlign: "right" }}
-              >
-                {/* <span data-cy="lastCompletedPart">
+            <div className="flex justify-end">
+              {!isComplete && (
+                <div className="flex flex-col">
+                  <h1
+                    className="mt-4 text-md text-gray-700 dark:text-white text-center flex justify-center"
+                    data-cy="trackingStagesComplete"
+                  >
+                    <FiCalendar size={20} className="mr-2 flex" />
+                    {daysRemaining} Days Left
+                  </h1>
+                </div>
+              )}
+            </div>
+            <div
+              className="mt-2 text-lg text-gray-700 dark:text-white"
+              style={{ width: `${completedWidth}%`, textAlign: "right" }}
+            >
+              {/* <span data-cy="lastCompletedPart">
                   {lastCompletedPartTitle}
                 </span> */}
-              </div>
             </div>
           </>
         )}

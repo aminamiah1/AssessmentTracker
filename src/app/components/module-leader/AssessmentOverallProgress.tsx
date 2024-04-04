@@ -9,7 +9,9 @@ interface OverallProgressContent {
   }; // Last completed part title and number needed to render overall progress visual for assessment
 }
 
-function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
+function AssessmentProgressPart1({
+  lastCompletedPart,
+}: OverallProgressContent) {
   // Get the last completed part title and number from object
   const lastCompletedPartTitle = lastCompletedPart.part_title;
   const lastCompletedPartNumber = lastCompletedPart.part_number;
@@ -77,7 +79,6 @@ function AssessmentProgressBar({ lastCompletedPart }: OverallProgressContent) {
             <div className="w-full">
               <ProgressBarPart1
                 progress={progress}
-                daysRemaining={daysRemaining}
                 isComplete={isComplete}
                 isOverDue={isOverdue}
               />
@@ -130,5 +131,5 @@ export function AssessmentOverallProgress({ ...props }) {
     lastCompletedPart = { part_title: "Tracking Not Started", part_number: 0 };
   }
 
-  return <AssessmentProgressBar lastCompletedPart={lastCompletedPart} />;
+  return <AssessmentProgressPart1 lastCompletedPart={lastCompletedPart} />;
 }

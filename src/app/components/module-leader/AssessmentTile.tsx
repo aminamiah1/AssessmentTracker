@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
-import { FaTrash } from "react-icons/fa";
-import { FaEdit } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
 import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
 // Import interfaces from interfaces.ts

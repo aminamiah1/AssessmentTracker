@@ -2,14 +2,12 @@ interface ProgressBarProps {
   progress: number;
   isOverDue: boolean;
   isComplete: boolean;
-  daysRemaining: number;
 }
 
 export function ProgressBarPart1({
   progress: progressFraction,
   isOverDue: isOverDue,
   isComplete: isComplete,
-  daysRemaining: daysRemaining,
 }: ProgressBarProps) {
   const progress = progressFraction * 100;
   return isComplete ? (

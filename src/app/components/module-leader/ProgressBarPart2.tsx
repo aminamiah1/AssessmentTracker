@@ -4,7 +4,7 @@ interface ProgressBarProps {
   isComplete: boolean;
 }
 
-export function ProgressBarPart1({
+export function ProgressBarPart2({
   progress: progressFraction,
   isOverDue: isOverDue,
   isComplete: isComplete,
@@ -51,21 +51,7 @@ export function ProgressBarPart1({
         className={
           isOverDue
             ? "absolute h-6 w-6 rounded-full bg-red-600 top-[5em] right-0 max-[1433px]:invisible"
-            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[5.1em] right-0 max-[1433px]:invisible"
-        }
-      ></div>
-      <div
-        className={
-          isOverDue
-            ? ""
-            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[5em] left-[8vw] max-[1433px]:invisible"
-        }
-      ></div>
-      <div
-        className={
-          isOverDue
-            ? ""
-            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[5em] right-[10vw] max-[1433px]:invisible"
+            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[5em] right-0 max-[1433px]:invisible"
         }
       ></div>
     </div>

@@ -71,7 +71,7 @@ function AssessmentProgressPart1({
                   className="mb-4 ml-4 text-md text-gray-700 dark:text-white"
                   data-cy="trackingStagesComplete"
                 >
-                  Sample Availability Declared
+                  Post Marking Moderation
                 </h1>
               </div>
             </div>
@@ -103,19 +103,18 @@ function AssessmentProgressPart1({
                 </div>
               )}
             </div>
-            <div
-              className="mt-2 text-lg text-gray-700 dark:text-white"
-              style={{ width: `${completedWidth}%`, textAlign: "right" }}
-            >
-              {/* <span data-cy="lastCompletedPart">
-                  {lastCompletedPartTitle}
-                </span> */}
-            </div>
           </>
         )}
       </div>
     </div>
   );
+}
+
+function AssessmentProgressPart2({
+  lastCompletedPart,
+}: OverallProgressContent) {
+  // Dynamically render progress bar 2 if in last tracking stage to complete post hand out marks
+  return <h1>PlaceHolder</h1>;
 }
 
 export function AssessmentOverallProgress({ ...props }) {
@@ -138,5 +137,12 @@ export function AssessmentOverallProgress({ ...props }) {
     lastCompletedPart = { part_title: "Tracking Not Started", part_number: 0 };
   }
 
-  return <AssessmentProgressPart1 lastCompletedPart={lastCompletedPart} />;
+  if (
+    lastCompletedPart.part_title === "Mark and feedback availability" ||
+    lastCompletedPart.part_title === "Internal moderation of marked sample"
+  ) {
+    return <AssessmentProgressPart2 lastCompletedPart={lastCompletedPart} />;
+  } else {
+    return <AssessmentProgressPart1 lastCompletedPart={lastCompletedPart} />;
+  }
 }

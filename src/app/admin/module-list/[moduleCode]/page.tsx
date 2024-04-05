@@ -145,7 +145,7 @@ export default function ModuleDetails({
               className="shadow-lg rounded-lg p-4 mb-4 bg-gray-100 dark:bg-gray-700 text-lg text-gray-900 dark:text-gray-200"
             >
               <div className="flex justify-between items-center">
-                <div className="w-1/8">
+                <div className="w-1/6">
                   <strong>{assessment.assessment_name}</strong>
                   <p>Type: {assessment.assessment_type}</p>
                   <p title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html">
@@ -160,7 +160,7 @@ export default function ModuleDetails({
                     Setter: {assessment.setter?.name ?? "No setter assigned"}
                   </p>
                 </div>
-                <div className="w-1/2 md:mt-0">
+                <div className="w-[70%] md:mt-0">
                   {assessment.partSubmissions &&
                   assessment.partSubmissions.length > 0 ? (
                     <AssessmentOverallProgress
@@ -178,7 +178,7 @@ export default function ModuleDetails({
                     </div>
                   )}
                 </div>
-                <div className="w-1/8 min-w-max">
+                <div className="w-1/10 min-w-max">
                   <Link
                     href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
                     data-cy="editAssessment"

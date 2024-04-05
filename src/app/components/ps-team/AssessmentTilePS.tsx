@@ -214,11 +214,11 @@ const AssessmentTilePS = ({
               </p>
             </div>
             <div className="md:w-1/6 mt-4 md:mt-0">
-              <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
-                Assignees
-              </h6>
               {assessment.assignees.length > 0 ? (
                 <div>
+                  <h6 className="mb-4 text-lg text-gray-700 dark:text-white ml-2">
+                    Assignees
+                  </h6>
                   {assessment.assignees.map((assignee: Assignee) => (
                     <div
                       key={assignee.id}
@@ -238,12 +238,12 @@ const AssessmentTilePS = ({
                   ))}
                 </div>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-white">
+                <p className="text-lg text-gray-700 dark:text-white text-center ml-2">
                   No assignees assigned
                 </p>
               )}
             </div>
-            <div className="w-1/2">
+            <div className="w-full">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress

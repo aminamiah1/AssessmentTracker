@@ -98,11 +98,11 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
               </p>
             </div>
             <div className="md:w-1/6 mt-4 md:mt-0">
-              <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
-                Assignees
-              </h6>
               {assessment.assignees.length > 0 ? (
                 <div>
+                  <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
+                    Assignees
+                  </h6>
                   {assessment.assignees.map((assignee: Assignee) => (
                     <div
                       key={assignee.id}
@@ -119,12 +119,12 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   ))}
                 </div>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-white">
+                <p className="text-lg text-gray-700 dark:text-white ml-2 text-center">
                   No assignees assigned
                 </p>
               )}
             </div>
-            <div className="md:w-1/2 md:mt-0 text-center">
+            <div className="w-full md:mt-0 text-center">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress

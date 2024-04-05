@@ -28,14 +28,12 @@ function AssessmentProgressPart1({
   const progress = lastCompletedPartNumber / 10; // Divide last part number by the maximum number of parts (10) for first tracking stage to get progress decimal
 
   // Caluclate time from now till the next july the 1st
-  const daysRemaining = differenceInDays(
-    new Date(
-      new Date().getFullYear() + (new Date().getMonth() >= 6 ? 1 : 0),
-      6,
-      1,
-    ),
-    new Date(),
-  ); // Day difference between now and hand in date
+  const nextJuly = new Date(
+    new Date().getFullYear() + (new Date().getMonth() >= 6 ? 1 : 0),
+    6,
+    1,
+  );
+  const daysRemaining = differenceInDays(nextJuly, new Date()); // Day difference between now and hand in date
   const isOverdue = daysRemaining < 0; // Check if overdue i.e. minus day difference numbers
   const isComplete =
     lastCompletedPart.part_title === "Internal moderation of marked sample" ||
@@ -97,19 +95,21 @@ function AssessmentProgressPart1({
                 <div className="flex flex-col h-5" />
               </div>
             ) : (
-              <div className="flex justify-end">
-                <div className="flex flex-col text-gray-700">
-                  <h1 className="text-right text-md mt-2 flex justify-end">
-                    <FiCalendar size={20} className="mr-2 flex" />
-                    1st July
-                  </h1>
-                  <h1
-                    className="mt-2 text-md text-gray-700 dark:text-white text-center flex justify-center"
-                    data-cy="trackingStagesComplete"
-                  >
-                    <FiClock size={20} className="mr-2 flex" />
-                    {daysRemaining} Days Left
-                  </h1>
+              <div className="flex justify-center">
+                <div className="flex flex-row text-gray-700">
+                  <div className="flex justify-center">
+                    <h1 className="text-right text-md mt-2 dark:text-white flex mr-2">
+                      <FiCalendar size={20} className="mr-2" />
+                      {format(nextJuly, "dd MMM yy")}
+                    </h1>
+                    <h1
+                      className="mt-2 text-md dark:text-white text-center flex"
+                      data-cy="trackingStagesComplete"
+                    >
+                      <FiClock size={20} className="mr-2" />
+                      {daysRemaining} Days Left
+                    </h1>
+                  </div>
                 </div>
               </div>
             )}
@@ -208,19 +208,21 @@ function AssessmentProgressPart2({
               <div className="flex flex-col h-5" />
             </div>
           ) : (
-            <div className="flex justify-end">
-              <div className="flex flex-col text-gray-700">
-                <h1 className="text-right text-md mt-2 flex justify-end">
-                  <FiCalendar size={20} className="mr-2 flex" />
-                  {format(postMarkingHandIn, "dd MMM yy")}
-                </h1>
-                <h1
-                  className="mt-2 text-md text-gray-700 dark:text-white text-center flex justify-center"
-                  data-cy="trackingStagesComplete"
-                >
-                  <FiClock size={20} className="mr-2 flex" />
-                  {daysRemaining} Days Left
-                </h1>
+            <div className="flex justify-center">
+              <div className="flex flex-row text-gray-700">
+                <div className="flex justify-center">
+                  <h1 className="text-right text-md mt-2 dark:text-white flex mr-2">
+                    <FiCalendar size={20} className="mr-2" />
+                    {format(postMarkingHandIn, "dd MMM yy")}
+                  </h1>
+                  <h1
+                    className="mt-2 text-md dark:text-white text-center flex"
+                    data-cy="trackingStagesComplete"
+                  >
+                    <FiClock size={20} className="mr-2" />
+                    {daysRemaining} Days Left
+                  </h1>
+                </div>
               </div>
             </div>
           )}

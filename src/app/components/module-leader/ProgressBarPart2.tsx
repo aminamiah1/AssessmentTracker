@@ -17,7 +17,7 @@ export function ProgressBarPart2({
     >
       <div
         className={
-          "absolute h-6 w-6 rounded-full bg-green-600 top-[3em] right-0 max-[1433px]:invisible"
+          "absolute h-6 w-6 rounded-full bg-green-600 top-[2.5em] right-0 max-[1433px]:invisible"
         }
       ></div>
       <div
@@ -50,7 +50,7 @@ export function ProgressBarPart2({
       <div
         className={
           isOverDue
-            ? "absolute h-6 w-6 rounded-full bg-red-600 top-[4.6em] right-0 max-[1433px]:invisible"
+            ? "absolute h-6 w-6 rounded-full bg-red-600 top-[2.5em] right-0 max-[1433px]:invisible"
             : "absolute h-6 w-6 rounded-full bg-blue-600 top-[4.6em] right-0 max-[1433px]:invisible"
         }
       ></div>

@@ -26,9 +26,6 @@ function AssessmentProgressPart1({
   const lastCompletedPartTitle = lastCompletedPart.part_title;
   const lastCompletedPartNumber = lastCompletedPart.part_number;
   const progress = lastCompletedPartNumber / 10; // Divide last part number by the maximum number of parts (10) for first tracking stage to get progress decimal
-  // Calculate the width of the completed portion of the progress bar
-  const progressBarWidth = 100;
-  const completedWidth = progress * progressBarWidth; //Calculate where to place last completed part text
 
   // Caluclate time from now till the next july the 1st
   const daysRemaining = differenceInDays(
@@ -48,7 +45,6 @@ function AssessmentProgressPart1({
   return (
     <div className="w-full flex justify-evenly rounded p-4">
       <div className="w-[60%] relative overflow-hidden text-left">
-        {/* Display the last completed part information*/}
         {lastCompletedPart && (
           <>
             <div className="flex">
@@ -100,8 +96,12 @@ function AssessmentProgressPart1({
                 <h2 className="text-sm mt-2">{lastCompletedPartTitle} </h2>
               </div>
             </div>
-            <div className="flex justify-end">
-              {!isComplete && (
+            {isOverdue || isComplete ? (
+              <div className="flex justify-end">
+                <div className="flex flex-col h-5" />
+              </div>
+            ) : (
+              <div className="flex justify-end">
                 <div className="flex flex-col text-gray-700">
                   <h1 className="text-right text-md mt-2 flex justify-end">
                     <FiCalendar size={20} className="mr-2 flex" />
@@ -115,8 +115,8 @@ function AssessmentProgressPart1({
                     {daysRemaining} Days Left
                   </h1>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </>
         )}
       </div>
@@ -156,7 +156,6 @@ function AssessmentProgressPart2({
 
   // Labels for progress bar
   const timeLabel = isOverdue ? "Overdue" : "Days Left";
-  const days = Math.abs(daysRemaining);
 
   // Only show date progress if tracking not complete
   return (
@@ -204,21 +203,27 @@ function AssessmentProgressPart2({
               <h2 className="text-sm mt-2">{lastCompletedPartTitle} </h2>
             </div>
           </div>
-          <div className="flex justify-end">
-            <div className="flex flex-col text-gray-700">
-              <h1 className="text-right text-md mt-2 flex justify-end">
-                <FiCalendar size={20} className="mr-2 flex" />
-                {format(postMarkingHandIn, "dd MMM yy")}
-              </h1>
-              <h1
-                className="mt-2 text-md text-gray-700 dark:text-white text-center flex justify-center"
-                data-cy="trackingStagesComplete"
-              >
-                <FiClock size={20} className="mr-2 flex" />
-                {daysRemaining} Days Left
-              </h1>
+          {isOverdue || isComplete ? (
+            <div className="flex justify-end">
+              <div className="flex flex-col h-5" />
             </div>
-          </div>
+          ) : (
+            <div className="flex justify-end">
+              <div className="flex flex-col text-gray-700">
+                <h1 className="text-right text-md mt-2 flex justify-end">
+                  <FiCalendar size={20} className="mr-2 flex" />
+                  {format(postMarkingHandIn, "dd MMM yy")}
+                </h1>
+                <h1
+                  className="mt-2 text-md text-gray-700 dark:text-white text-center flex justify-center"
+                  data-cy="trackingStagesComplete"
+                >
+                  <FiClock size={20} className="mr-2 flex" />
+                  {daysRemaining} Days Left
+                </h1>
+              </div>
+            </div>
+          )}
         </>
       </div>
     </div>

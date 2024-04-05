@@ -248,6 +248,7 @@ const AssessmentTilePS = ({
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress
                   partsList={assessment.partSubmissions}
+                  handInDate={assessment.hand_in_week}
                 />
               ) : (
                 <h1

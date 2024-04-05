@@ -165,6 +165,7 @@ export default function ModuleDetails({
                   assessment.partSubmissions.length > 0 ? (
                     <AssessmentOverallProgress
                       partsList={assessment.partSubmissions}
+                      handInDate={assessment.hand_in_week}
                     />
                   ) : (
                     <div className="text-center p-4">

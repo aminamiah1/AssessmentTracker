@@ -17,7 +17,7 @@ export function ProgressBarPart1({
     >
       <div
         className={
-          "absolute h-6 w-6 rounded-full bg-green-600 top-[5em] right-0 max-[1433px]:invisible"
+          "absolute h-6 w-6 rounded-full bg-green-600 top-[5em] right-0 max-[1200px]:invisible"
         }
       ></div>
       <div
@@ -36,36 +36,15 @@ export function ProgressBarPart1({
         style={{ width: `${progress}%` }}
         className={
           isOverDue
-            ? "h-full rounded-full bg-red-600 absoulute"
-            : "h-full rounded-full bg-blue-600 absoulute"
+            ? "flex h-full rounded-full bg-red-600 absoulute"
+            : "flex h-full rounded-full bg-blue-600 absoulute"
         }
       ></div>
       <div
         className={
           isOverDue
-            ? ""
-            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[5em] max-[1433px]:invisible"
-        }
-      ></div>
-      <div
-        className={
-          isOverDue
-            ? "absolute h-6 w-6 rounded-full bg-red-600 top-[5em] right-0 max-[1433px]:invisible"
-            : "absolute h-6 w-6 rounded-full bg-blue-600 top-[5.1em] right-0 max-[1433px]:invisible"
-        }
-      ></div>
-      <div
-        className={
-          isOverDue
-            ? ""
-            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[5em] left-[8vw] max-[1433px]:invisible"
-        }
-      ></div>
-      <div
-        className={
-          isOverDue
-            ? ""
-            : "absolute h-6 w-6 rounded-full  bg-blue-600 top-[5em] right-[10vw] max-[1433px]:invisible"
+            ? "absolute h-6 w-6 rounded-full bg-red-600 top-[2.5em] right-0 max-[1200px]:invisible"
+            : "absolute h-6 w-6 rounded-full border border-blue-600 bg-gray-200 top-[5em] right-0 max-[1200px]:invisible"
         }
       ></div>
     </div>

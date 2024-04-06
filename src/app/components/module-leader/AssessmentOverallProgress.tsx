@@ -47,28 +47,28 @@ function AssessmentProgressPart1({
           <>
             <div className="flex justify-between">
               <div>
-                <div className="mb-4 text-md text-gray-700 dark:text-white">
+                <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm  max-[600px]:invisible">
                   <h1 data-cy="trackingStagesComplete">Internal Peer</h1>
                   <h1>Moderation</h1>
                   <h1>Feedback</h1>
                 </div>
               </div>
               <div>
-                <div className="mb-4 text-md text-gray-700 dark:text-white">
+                <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[600px]:invisible">
                   <h1 data-cy="trackingStagesComplete">Moderation</h1>
                   <h1>Panel</h1>
                   <h1>Comments</h1>
                 </div>
               </div>
               <div>
-                <div className="mb-4 text-md text-gray-700 dark:text-white">
+                <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[600px]:invisible">
                   <h1 data-cy="trackingStagesComplete">External</h1>
                   <h1>Examiner</h1>
                   <h1>Feedback</h1>
                 </div>
               </div>
               <div>
-                <div className="mb-4 text-md text-gray-700 dark:text-white text-left">
+                <div className="mb-4 text-md text-gray-700 dark:text-white text-left max-[1200px]:text-sm max-[600px]:invisible">
                   <h1 data-cy="trackingStagesComplete">Post</h1>
                   <h1>Marking</h1>
                   <h1>Moderation</h1>
@@ -174,14 +174,14 @@ function AssessmentProgressPart2({
           ) : (
             <div className="flex w-full mb-2">
               <div className="justify-start w-full">
-                <div className="text-md text-gray-700 dark:text-white text-left text-wrap w-2">
+                <div className="text-md text-gray-700 dark:text-white text-left text-wrap w-2 max-[1200px]:text-sm">
                   <h1>Post</h1>
                   <h1>Marking</h1>
                   <h1>Moderation</h1>
                 </div>
               </div>
               <div className="justify-end w-full">
-                <div className="text-md text-gray-700 dark:text-white text-right text-wrap pl-[5em]">
+                <div className="text-md text-gray-700 dark:text-white text-right text-wrap pl-[5em] max-[1200px]:text-sm">
                   <p>Marks And</p>
                   <p>Feedback</p>
                   <p>Avaliability</p>

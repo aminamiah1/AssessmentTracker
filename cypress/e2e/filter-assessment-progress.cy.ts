@@ -31,7 +31,7 @@ describe("Assessment stage filter", () => {
       .should("have.text", "Internal Peer");
 
     // Reset filter
-    cy.getByTestId("resetFilter").click();
+    cy.getByTestId("resetFilter").click({ force: true });
 
     cy.getByTestId("stageLabel")
       .next()

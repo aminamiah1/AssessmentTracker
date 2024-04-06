@@ -84,7 +84,7 @@ function AssessmentProgressPart1({
               />
               {/* Hover Box */}
               <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-10 hidden opacity-0 group-hover:opacity-100 group-hover:block bg-white rounded shadow p-2">
-                <h2 className="text-sm">
+                <h2 className="text-sm" data-cy="currentTrackingStage">
                   Tracking Stage ● {lastCompletedPartNumber}/11
                 </h2>
                 <h2 className="text-sm mt-2">{lastCompletedPartTitle} </h2>
@@ -100,14 +100,16 @@ function AssessmentProgressPart1({
                   <div className="flex justify-center">
                     <h1 className="text-right text-md mt-2 dark:text-white flex mr-2">
                       <FiCalendar size={20} className="mr-2" />
-                      {format(nextJuly, "dd MMM yy")}
+                      <span data-cy="deadline">
+                        {format(nextJuly, "dd MMM yy")}
+                      </span>
                     </h1>
                     <h1
                       className="mt-2 text-md dark:text-white text-center flex"
                       data-cy="trackingStagesComplete"
                     >
                       <FiClock size={20} className="mr-2" />
-                      {daysRemaining} Days Left
+                      <span data-cy="daysLeft">{daysRemaining} Days Left</span>
                     </h1>
                   </div>
                 </div>
@@ -164,7 +166,11 @@ function AssessmentProgressPart2({
               data-cy="dateStatus"
               className="mb-4 text-lg text-gray-700 dark:text-white text-right flex justify-end"
             >
-              {isComplete ? "Completed" : timeLabel}
+              {isComplete ? (
+                <span data-cy="completeText">Completed</span>
+              ) : (
+                timeLabel
+              )}
               {isComplete ? (
                 <FiCheck size={30} className="ml-2 flex" />
               ) : (
@@ -213,14 +219,18 @@ function AssessmentProgressPart2({
                 <div className="flex justify-center">
                   <h1 className="text-right text-md mt-2 dark:text-white flex mr-2">
                     <FiCalendar size={20} className="mr-2" />
-                    {format(postMarkingHandIn, "dd MMM yy")}
+                    <span data-cy="handInDeadline">
+                      {format(postMarkingHandIn, "dd MMM yy")}
+                    </span>
                   </h1>
                   <h1
                     className="mt-2 text-md dark:text-white text-center flex"
                     data-cy="trackingStagesComplete"
                   >
                     <FiClock size={20} className="mr-2" />
-                    {daysRemaining} Days Left
+                    <span data-cy="daysLeftMarking">
+                      {daysRemaining} Days Left
+                    </span>
                   </h1>
                 </div>
               </div>

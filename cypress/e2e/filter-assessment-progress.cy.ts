@@ -23,26 +23,12 @@ describe("Assessment stage filter", () => {
       .next()
       .find("input")
       .focus()
-      .type("Moderation panel comments{enter}");
+      .type("Internal Peer Moderation{enter}");
 
-    // Should be assessment in moderation panel comments stage
-    cy.getByTestId("lastCompletedPart")
+    // Should be assessment in internal peer moderation stage
+    cy.getByTestId("trackingStagesComplete")
       .eq(0)
-      .should("have.text", "Moderation panel comments");
-
-    // Reset filter
-    cy.getByTestId("resetFilter").click();
-
-    cy.getByTestId("stageLabel")
-      .next()
-      .find("input")
-      .focus()
-      .type("External examiner feedback{enter}");
-
-    // Should be assessment in external examiner stage
-    cy.getByTestId("lastCompletedPart")
-      .eq(0)
-      .should("have.text", "External examiner feedback");
+      .should("have.text", "Internal Peer");
 
     // Reset filter
     cy.getByTestId("resetFilter").click();

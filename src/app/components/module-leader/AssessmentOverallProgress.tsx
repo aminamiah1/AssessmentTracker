@@ -90,7 +90,10 @@ function AssessmentProgressPart1({
                 className="mt-2 text-md text-gray-700 dark:text-white min-[944px]:invisible"
                 style={{ width: `${completedWidth}%`, textAlign: "right" }}
               >
-                <span data-cy="lastCompletedPart">
+                <span
+                  data-cy="lastCompletedPart"
+                  className="min-[944px]:text-[0.1rem]"
+                >
                   {lastCompletedPartTitle}
                 </span>
               </div>
@@ -226,7 +229,7 @@ function AssessmentProgressPart2({
               <div className="flex flex-col h-5" />
             </div>
           ) : (
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-8">
               <div className="flex flex-row text-gray-700">
                 <div className="flex justify-center">
                   <h1 className="text-right text-md mt-2 dark:text-white flex mr-2">

@@ -27,6 +27,10 @@ function AssessmentProgressPart1({
   const lastCompletedPartNumber = lastCompletedPart.part_number;
   const progress = lastCompletedPartNumber / 10; // Divide last part number by the maximum number of parts (10) for first tracking stage to get progress decimal
 
+  // Calculate the width of the completed portion of the progress bar for mobile view
+  const progressBarWidth = 100;
+  const completedWidth = progress * progressBarWidth; //Calculate where to place last completed part text
+
   // Caluclate time from now till the next july the 1st
   const nextJuly = new Date(
     new Date().getFullYear() + (new Date().getMonth() >= 6 ? 1 : 0),
@@ -47,28 +51,28 @@ function AssessmentProgressPart1({
           <>
             <div className="flex justify-between">
               <div>
-                <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm  max-[600px]:invisible">
+                <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm  max-[944px]:invisible">
                   <h1 data-cy="trackingStagesComplete">Internal Peer</h1>
                   <h1>Moderation</h1>
                   <h1>Feedback</h1>
                 </div>
               </div>
               <div>
-                <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[600px]:invisible">
+                <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[944px]:invisible">
                   <h1 data-cy="trackingStagesComplete">Moderation</h1>
                   <h1>Panel</h1>
                   <h1>Comments</h1>
                 </div>
               </div>
               <div>
-                <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[600px]:invisible">
+                <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[944px]:invisible">
                   <h1 data-cy="trackingStagesComplete">External</h1>
                   <h1>Examiner</h1>
                   <h1>Feedback</h1>
                 </div>
               </div>
               <div>
-                <div className="mb-4 text-md text-gray-700 dark:text-white text-left max-[1200px]:text-sm max-[600px]:invisible">
+                <div className="mb-4 text-md text-gray-700 dark:text-white text-left max-[1200px]:text-sm max-[944px]:invisible">
                   <h1 data-cy="trackingStagesComplete">Post</h1>
                   <h1>Marking</h1>
                   <h1>Moderation</h1>
@@ -82,6 +86,14 @@ function AssessmentProgressPart1({
                 isComplete={isComplete}
                 isOverDue={isOverdue}
               />
+              <div
+                className="mt-2 text-md text-gray-700 dark:text-white min-[944px]:invisible"
+                style={{ width: `${completedWidth}%`, textAlign: "right" }}
+              >
+                <span data-cy="lastCompletedPart">
+                  {lastCompletedPartTitle}
+                </span>
+              </div>
               {/* Hover Box */}
               <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-10 hidden opacity-0 group-hover:opacity-100 group-hover:block bg-white rounded shadow p-2">
                 <h2 className="text-sm" data-cy="currentTrackingStage">

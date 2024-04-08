@@ -24,6 +24,7 @@ model Users {
   modules         Module[]         @relation("ModulesToUsers")
   PartSubmission  PartSubmission[]
   status          UserStatus       @default(active)
+  AssigneeRole    AssigneeRole[]
 
   @@map("users")
 }
@@ -50,9 +51,19 @@ model Assessment {
   partSubmissions PartSubmission[]
   Response        Response[]
   assignees       Users[]          @relation("AssessmentsToUsers")
+  assigneesRole   AssigneeRole[]
   // Declare the composite unique key to stop duplicate assessment details being submitted through csv
-
   @@unique([assessment_name, module_id, hand_out_week, hand_in_week])
+}
+
+model AssigneeRole {
+  id            Int        @id @default(autoincrement())
+  user_id       Int
+  role          Role
+  assessment_id Int
+  user          Users      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  assessment    Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
+  priority      Int?
 }
 
 // 'PartSubmission' is for keeping track of when parts have been submitted;

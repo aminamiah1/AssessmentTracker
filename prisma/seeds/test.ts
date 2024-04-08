@@ -50,6 +50,28 @@ async function seedModules() {
                 },
               ],
             },
+            assigneesRole: {
+              createMany: {
+                data: [
+                  {
+                    role: Role.module_leader,
+                    user_id: 1,
+                  },
+                  {
+                    role: Role.internal_moderator,
+                    user_id: 2,
+                  },
+                  {
+                    role: Role.external_examiner,
+                    user_id: 4,
+                  },
+                  {
+                    role: Role.panel_member,
+                    user_id: 3,
+                  },
+                ],
+              },
+            },
           },
           {
             id: 6,
@@ -73,6 +95,28 @@ async function seedModules() {
                   email: "panel@test.net",
                 },
               ],
+            },
+            assigneesRole: {
+              createMany: {
+                data: [
+                  {
+                    role: Role.module_leader,
+                    user_id: 1,
+                  },
+                  {
+                    role: Role.internal_moderator,
+                    user_id: 2,
+                  },
+                  {
+                    role: Role.external_examiner,
+                    user_id: 4,
+                  },
+                  {
+                    role: Role.panel_member,
+                    user_id: 3,
+                  },
+                ],
+              },
             },
           },
         ],

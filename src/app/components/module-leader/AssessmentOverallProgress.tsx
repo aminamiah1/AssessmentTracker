@@ -116,7 +116,7 @@ function AssessmentProgressPart1({
                     <h1 className="text-right text-md mt-2 dark:text-white flex mr-2">
                       <FiCalendar size={20} className="mr-2" />
                       <span data-cy="deadline">
-                        {format(nextJuly, "dd MMM yy")}
+                        {format(nextJuly, "dd MMM yyyy")}
                       </span>
                     </h1>
                     <h1
@@ -235,7 +235,7 @@ function AssessmentProgressPart2({
                   <h1 className="text-right text-md mt-2 dark:text-white flex mr-2">
                     <FiCalendar size={20} className="mr-2" />
                     <span data-cy="handInDeadline">
-                      {format(postMarkingHandIn, "dd MMM yy")}
+                      {format(postMarkingHandIn, "dd MMM yyyy")}
                     </span>
                   </h1>
                   <h1

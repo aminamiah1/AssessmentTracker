@@ -1,6 +1,6 @@
 import { ProgressBarPart1 } from "@/app/components/module-leader/ProgressBarPart1";
 import { ProgressBarPart2 } from "@/app/components/module-leader/ProgressBarPart2";
-import { format, differenceInDays, addDays } from "date-fns"; // Import necessary functions
+import { format, differenceInDays, addDays } from "date-fns";
 import { FiCalendar, FiClock, FiCheck } from "react-icons/fi";
 interface OverallProgressContentPart1 {
   /** The array containing the text and current number of the last completed part for an assessment */
@@ -12,7 +12,7 @@ interface OverallProgressContentPart1 {
 
 interface OverallProgressContentPart2 {
   handInDate: Date;
-  /** The array containing the text and current number of the last completed part for an assessment */
+  /** The object containing the text and current number of the last completed part for an assessment */
   lastCompletedPart: {
     part_title: string;
     part_number: number;

@@ -42,7 +42,7 @@ describe("Assessment progress", () => {
       .should("have.text", daysRemaining + " Days Left");
     cy.getByTestId("deadline")
       .eq(0)
-      .should("have.text", format(nextJuly, "dd MMM yy"));
+      .should("have.text", format(nextJuly, "dd MMM yyyy"));
   });
 
   it("Assessment completed has information displayed", () => {

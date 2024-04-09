@@ -4,12 +4,15 @@ interface ProgressBarProps {
   isComplete: boolean;
 }
 
-export function ProgressBarPart1({
+// CSS for progress bar part 2 with conditional rendering for the visuals of the two sections with end circle
+// or the completed bar or the overdue bar
+export function ProgressBarPart2({
   progress: progressFraction,
   isOverDue: isOverDue,
   isComplete: isComplete,
 }: ProgressBarProps) {
   const progress = progressFraction * 100;
+  // If the tracking process is complete return the green completed bar
   return isComplete ? (
     <div
       data-cy="progress-container"
@@ -17,7 +20,7 @@ export function ProgressBarPart1({
     >
       <div
         className={
-          "absolute h-6 w-6 rounded-full bg-green-600 top-[5em] right-0 max-[1200px]:invisible"
+          "absolute h-6 w-6 rounded-full bg-green-600 top-[2.2em] right-0 max-[1200px]:invisible"
         }
       ></div>
       <div
@@ -27,6 +30,8 @@ export function ProgressBarPart1({
       ></div>
     </div>
   ) : (
+    // Else render the in progress tracking bar for part 2 showing a bar conditionally filled by days left progress compared
+    // to hand in date plus 20 days, if overdue just render a red bar
     <div
       data-cy="progress-container"
       className="h-3 w-full bg-gray-300 rounded-full shadow-gray-700 shadow-md dark:shadow-black"
@@ -36,15 +41,15 @@ export function ProgressBarPart1({
         style={{ width: `${progress}%` }}
         className={
           isOverDue
-            ? "flex h-full rounded-full bg-red-600 absoulute"
-            : "flex h-full rounded-full bg-blue-600 absoulute"
+            ? "h-full rounded-full bg-red-600 absoulute"
+            : "h-full rounded-full bg-blue-600 absoulute"
         }
       ></div>
       <div
         className={
           isOverDue
             ? "absolute h-6 w-6 rounded-full bg-red-600 top-[2.5em] right-0 max-[1200px]:invisible"
-            : "absolute h-6 w-6 rounded-full border border-blue-600 bg-gray-200 top-[5em] right-0 max-[1200px]:invisible"
+            : "absolute h-6 w-6 rounded-full border border-blue-600 bg-gray-200 top-[4.6em] right-0 max-[1200px]:invisible"
         }
       ></div>
     </div>

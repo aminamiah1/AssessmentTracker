@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
-import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
+import { AssessmentOverallProgress } from "@/app/components/trackingProgress/AssessmentOverallProgress";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 

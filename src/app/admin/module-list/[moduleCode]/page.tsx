@@ -5,7 +5,7 @@ import "react-toastify/ReactToastify.css";
 import { format } from "date-fns";
 import { archiveModule } from "@/app/actions/module-status";
 import Link from "next/link";
-import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
+import { AssessmentOverallProgress } from "@/app/components/trackingProgress/AssessmentOverallProgress";
 import { ModulePS, AssessmentPS } from "@/app/types/interfaces";
 import { useSession } from "next-auth/react";
 

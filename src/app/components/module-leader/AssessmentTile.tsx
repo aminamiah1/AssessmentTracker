@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { FaUserCircle } from "react-icons/fa";
-import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
+import { AssessmentOverallProgress } from "@/app/components/trackingProgress/AssessmentOverallProgress";
 // Import interfaces from interfaces.ts
 import { AssessmentTiles, Assignee } from "@/app/types/interfaces";
 

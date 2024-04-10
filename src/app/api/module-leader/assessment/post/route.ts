@@ -61,6 +61,10 @@ export async function POST(request: NextRequest) {
         user_id: user.value,
         role: Role.ps_team,
       })),
+      {
+        user_id: setter_id,
+        role: Role.module_leader,
+      },
     ];
 
     // Attach assignees to assessment with their specific role for the assessment

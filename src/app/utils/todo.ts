@@ -5,9 +5,9 @@ export async function getAssessmentsWithPartSubmissionsForUser(
 ): Promise<AssessmentWithPartSubmission[]> {
   return await prisma.assessment.findMany({
     where: {
-      assignees: {
+      assigneesRole: {
         some: {
-          id: userId,
+          user_id: userId,
         },
       },
     },

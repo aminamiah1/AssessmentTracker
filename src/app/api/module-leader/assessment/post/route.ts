@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       hand_in_week,
       module_id,
       setter_id,
-      externalModerators,
+      externalExaminers,
       internalModerators,
       panelMembers,
       psTeamMembers,
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       !hand_in_week ||
       !module_id ||
       !setter_id ||
-      !externalModerators ||
+      !externalExaminers ||
       !internalModerators ||
       !panelMembers ||
       !psTeamMembers
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     // Construct assigneeRoles data for bulk creation
     const assigneeRolesData = [
-      ...externalModerators.map((user: SelectOption) => ({
+      ...externalExaminers.map((user: SelectOption) => ({
         user_id: user.value,
         role: Role.external_examiner,
       })),

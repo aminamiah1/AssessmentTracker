@@ -11,7 +11,7 @@ describe("Admin module list assessment management interactions", () => {
       cy.contains("label", "Assessment Title")
         .next()
         .eq(0)
-        .should("have.value", "Database Design");
+        .should("have.value", "Cyber Security");
     });
 
     it("should allow assessment creation form to be accessed from ps team module block page", () => {

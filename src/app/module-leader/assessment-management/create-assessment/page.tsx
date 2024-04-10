@@ -32,7 +32,7 @@ function CreateAssessmentModuleLeaders() {
   // State to hold the different assignee types added to the assessment
   const [internalModerators, setInternalModerators] = useState([]);
 
-  const [externalModerators, setExternalModerators] = useState([]);
+  const [externalExaminers, setExternalExaminers] = useState([]);
 
   const [psTeamMembers, setPsTeamMembers] = useState([]);
 
@@ -261,7 +261,7 @@ function CreateAssessmentModuleLeaders() {
         setInternalModerators(selectedAssignees);
         break;
       case "external":
-        setExternalModerators(selectedAssignees);
+        setExternalExaminers(selectedAssignees);
         break;
       case "panel":
         setPanelMembers(selectedAssignees);
@@ -281,7 +281,7 @@ function CreateAssessmentModuleLeaders() {
     // Check if assignees or modules are empty
     if (
       internalModerators.length === 0 ||
-      externalModerators.length === 0 ||
+      externalExaminers.length === 0 ||
       panelMembers.length === 0 ||
       psTeamMembers.length === 0 ||
       assessment.module.length === 0
@@ -310,7 +310,7 @@ function CreateAssessmentModuleLeaders() {
           module_id: selectedModuleValue,
           setter_id: setterId,
           internalModerators: Array.from(internalModerators),
-          externalModerators: Array.from(externalModerators),
+          externalExaminers: Array.from(externalExaminers),
           psTeamMembers: Array.from(psTeamMembers),
           panelMembers: Array.from(panelMembers),
         }),
@@ -340,7 +340,7 @@ function CreateAssessmentModuleLeaders() {
           module_id: selectedModuleValue,
           setter_id: setterId,
           internalModerators: Array.from(internalModerators),
-          externalModerators: Array.from(externalModerators),
+          externalExaminers: Array.from(externalExaminers),
           psTeamMembers: Array.from(psTeamMembers),
           panelMembers: Array.from(panelMembers),
         }),
@@ -501,7 +501,9 @@ function CreateAssessmentModuleLeaders() {
                   onChange={(option) =>
                     handleSelectChangeAssignees("internal", option)
                   }
-                  options={users}
+                  options={users.filter((user: any) => {
+                    return user.label.includes("internal_moderator");
+                  })}
                   id="internalModerators"
                   value={internalModerators}
                   isMulti
@@ -512,19 +514,21 @@ function CreateAssessmentModuleLeaders() {
 
             <div className="mb-4">
               <label
-                htmlFor="externalModerators"
+                htmlFor="externalExaminers"
                 className="font-bold dark:text-white"
               >
-                External Moderators
+                External Examiners
               </label>
               <div className="mb-4">
                 <Select
                   onChange={(option) =>
                     handleSelectChangeAssignees("external", option)
                   }
-                  options={users}
-                  id="externalModerators"
-                  value={externalModerators}
+                  options={users.filter((user: any) => {
+                    return user.label.includes("external_examiner");
+                  })}
+                  id="externalExaminers"
+                  value={externalExaminers}
                   isMulti
                   className="react-select-container mb-6"
                 />
@@ -543,7 +547,9 @@ function CreateAssessmentModuleLeaders() {
                   onChange={(option) =>
                     handleSelectChangeAssignees("panel", option)
                   }
-                  options={users}
+                  options={users.filter((user: any) => {
+                    return user.label.includes("panel_member");
+                  })}
                   id="panelMembers"
                   value={panelMembers}
                   isMulti
@@ -564,7 +570,9 @@ function CreateAssessmentModuleLeaders() {
                   onChange={(option) =>
                     handleSelectChangeAssignees("ps", option)
                   }
-                  options={users}
+                  options={users.filter((user: any) => {
+                    return user.label.includes("ps_team");
+                  })}
                   id="psTeamMembers"
                   value={psTeamMembers}
                   isMulti

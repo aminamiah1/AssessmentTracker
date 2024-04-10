@@ -12,12 +12,11 @@ export function ProgressBarPart2({
   isComplete: isComplete,
 }: ProgressBarProps) {
   const progress = progressFraction * 100;
+  const progressContainerStyles =
+    "h-3 w-full bg-gray-300 rounded-full shadow-gray-700 shadow-md dark:shadow-black";
   // If the tracking process is complete return the green completed bar
   return isComplete ? (
-    <div
-      data-cy="progress-container"
-      className="h-3 w-full bg-gray-300 rounded-full shadow-gray-700 shadow-md dark:shadow-black"
-    >
+    <div data-cy="progress-container" className={progressContainerStyles}>
       <div
         className={
           "absolute h-6 w-6 rounded-full bg-green-600 top-[2.2em] right-0 max-[1200px]:invisible"
@@ -32,25 +31,14 @@ export function ProgressBarPart2({
   ) : (
     // Else render the in progress tracking bar for part 2 showing a bar conditionally filled by days left progress compared
     // to hand in date plus 20 days, if overdue just render a red bar
-    <div
-      data-cy="progress-container"
-      className="h-3 w-full bg-gray-300 rounded-full shadow-gray-700 shadow-md dark:shadow-black"
-    >
+    <div data-cy="progress-container" className={progressContainerStyles}>
       <div
         data-cy="progress-bar"
         style={{ width: `${progress}%` }}
-        className={
-          isOverDue
-            ? "h-full rounded-full bg-red-600 absoulute"
-            : "h-full rounded-full bg-blue-600 absoulute"
-        }
+        className={`flex h-full rounded-full ${isOverDue ? "bg-red-600" : "bg-blue-600"}`}
       ></div>
       <div
-        className={
-          isOverDue
-            ? "absolute h-6 w-6 rounded-full bg-red-600 top-[2.5em] right-0 max-[1200px]:invisible"
-            : "absolute h-6 w-6 rounded-full border border-blue-600 bg-gray-200 top-[4.6em] right-0 max-[1200px]:invisible"
-        }
+        className={`absolute h-6 w-6 rounded-full max-[1200px]:invisible right-0 ${isOverDue ? "bg-red-600 top-[2.5em]" : "border border-blue-600 bg-gray-200 top-[4.6em]"}`}
       ></div>
     </div>
   );

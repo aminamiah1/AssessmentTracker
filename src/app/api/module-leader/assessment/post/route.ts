@@ -1,3 +1,5 @@
+import { Role } from "@prisma/client";
+import { SelectOption } from "@/app/types/interfaces";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
@@ -17,7 +19,10 @@ export async function POST(request: NextRequest) {
       hand_in_week,
       module_id,
       setter_id,
-      assigneesList,
+      externalModerators,
+      internalModerators,
+      panelMembers,
+      psTeamMembers,
     } = await request.json();
 
     if (
@@ -27,7 +32,10 @@ export async function POST(request: NextRequest) {
       !hand_in_week ||
       !module_id ||
       !setter_id ||
-      !assigneesList
+      !externalModerators ||
+      !internalModerators ||
+      !panelMembers ||
+      !psTeamMembers
     ) {
       return new NextResponse(
         JSON.stringify({ message: "Please include all required fields" }),
@@ -35,8 +43,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const assigneesIds = assigneesList.map((userId: any) => ({ id: userId }));
+    // Construct assigneeRoles data for bulk creation
+    const assigneeRolesData = [
+      ...externalModerators.map((user: SelectOption) => ({
+        user_id: user.value,
+        role: Role.external_examiner,
+      })),
+      ...internalModerators.map((user: SelectOption) => ({
+        user_id: user.value,
+        role: Role.internal_moderator,
+      })),
+      ...panelMembers.map((user: SelectOption) => ({
+        user_id: user.value,
+        role: Role.panel_member,
+      })),
+      ...psTeamMembers.map((user: SelectOption) => ({
+        user_id: user.value,
+        role: Role.ps_team,
+      })),
+    ];
 
+    // Attach assignees to assessment with their specific role for the assessment
     const newAssessment = await prisma.assessment.create({
       data: {
         assessment_name,
@@ -45,8 +72,11 @@ export async function POST(request: NextRequest) {
         hand_in_week,
         module_id,
         setter_id,
-        assignees: {
-          connect: assigneesIds,
+        assigneesRole: {
+          createMany: {
+            data: assigneeRolesData,
+            skipDuplicates: true,
+          },
         },
       },
     });

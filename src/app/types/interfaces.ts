@@ -9,7 +9,6 @@ export interface AssessmentForm {
   hand_in_week: Date;
   module: { value: string }[] | { value: string; label: string }[]; // Allow the react select format to also be used for the module
   setter_id: number;
-  assignees: { value: number }[] | { value: number; label: string }[]; // Allow the react select format to also be used for the assignees
 }
 // Interface for the module model
 export interface Module {

@@ -25,11 +25,18 @@ function CreateAssessmentModuleLeaders() {
 
   const [moduleId, setModuleId] = useState(null); // Variable to hold existing assessment module ID
 
-  const [users, setUsers] = useState(); // Variable to hold all users in the system
+  const [users, setUsers] = useState([]); // Variable to hold all users in the system
 
   const router = useRouter(); // Create next router object
 
-  const [assignees, setAssignees] = useState([]); // Variable to hold all assignees of an existing assessment
+  // State to hold the different assignee types added to the assessment
+  const [internalModerators, setInternalModerators] = useState([]);
+
+  const [externalModerators, setExternalModerators] = useState([]);
+
+  const [psTeamMembers, setPsTeamMembers] = useState([]);
+
+  const [panelMembers, setPanelMembers] = useState([]);
 
   const searchParams = useSearchParams(); // Create search params object
 
@@ -46,7 +53,6 @@ function CreateAssessmentModuleLeaders() {
     hand_in_week: new Date(2024, 1, 26),
     module: [],
     setter_id: setterId,
-    assignees: [],
   });
 
   const typesOptionsSet = new Set(Object.values(Assessment_type));
@@ -170,7 +176,6 @@ function CreateAssessmentModuleLeaders() {
 
           // Set the data to be manipulated in the effect hook to work with react select boxes
           setModuleId(data.module_id);
-          setAssignees(data.assignees);
         })
         .catch((error) => {
           // Handle network errors with toast to inform user
@@ -204,18 +209,6 @@ function CreateAssessmentModuleLeaders() {
         setAssessment((prevState) => ({
           ...prevState,
           module: defaultModule,
-        }));
-      }
-
-      if (assignees) {
-        // Find the default assignees for the assessment and select them in the drop-down selector
-        const defaultAssignees = assignees.map((user: User) => ({
-          value: user.id,
-          label: user.name + " ● Roles: " + user.roles,
-        }));
-        setAssessment((prevState) => ({
-          ...prevState,
-          assignees: defaultAssignees,
         }));
       }
 
@@ -256,22 +249,48 @@ function CreateAssessmentModuleLeaders() {
     setAssessment({ ...assessment, [fieldName]: selectedOption });
   };
 
+  // Handle assignees with role from select box, have to use any due to using react-select box which uses non-standard array type
+  // Multi<never>
+  const handleSelectChangeAssignees = (
+    role: string,
+    selectedAssignees: any,
+  ) => {
+    // Add the selected assigness to the appropriate user type array
+    switch (role) {
+      case "internal":
+        setInternalModerators(selectedAssignees);
+        break;
+      case "external":
+        setExternalModerators(selectedAssignees);
+        break;
+      case "panel":
+        setPanelMembers(selectedAssignees);
+        break;
+      case "ps":
+        setPsTeamMembers(selectedAssignees);
+        break;
+      default:
+        break;
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // Check if assignees or modules are empty
-    if (assessment.assignees.length === 0 || assessment.module.length === 0) {
+    if (
+      internalModerators.length === 0 ||
+      externalModerators.length === 0 ||
+      panelMembers.length === 0 ||
+      psTeamMembers.length === 0 ||
+      assessment.module.length === 0
+    ) {
       toast.error(
-        "Please select at least one asignee or module for the assessment",
+        "Please select at least one assignee for each type box or module for the assessment",
       );
       return; // Then prevent form submission
     }
-
-    // Get the selected assignees from the drop-down multi-selector and get only the value property, the database is expecting
-    const selectedAssigneesValues = new Set(
-      assessment.assignees.map((assignee) => assignee["value"]),
-    );
 
     // Convert selected module value to format database is expecting i.e. the value from the selector box
     const selectedModuleValue = (assessment.module as any).value;
@@ -290,7 +309,10 @@ function CreateAssessmentModuleLeaders() {
           assessment_type: selectedAssessmentTypeValue,
           module_id: selectedModuleValue,
           setter_id: setterId,
-          assigneesList: Array.from(selectedAssigneesValues),
+          internalModerators: Array.from(internalModerators),
+          externalModerators: Array.from(externalModerators),
+          psTeamMembers: Array.from(psTeamMembers),
+          panelMembers: Array.from(panelMembers),
         }),
       });
 
@@ -306,7 +328,7 @@ function CreateAssessmentModuleLeaders() {
       toast.success("Assessment edited successfully!");
       router.back();
     } else {
-      // Create the assessment using the api endpoint
+      // Create the assessment using the api endpoint, send across the assignee type arrays
       const response = await fetch("/api/module-leader/assessment/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -317,7 +339,10 @@ function CreateAssessmentModuleLeaders() {
           hand_in_week: assessment.hand_in_week,
           module_id: selectedModuleValue,
           setter_id: setterId,
-          assigneesList: Array.from(selectedAssigneesValues),
+          internalModerators: Array.from(internalModerators),
+          externalModerators: Array.from(externalModerators),
+          psTeamMembers: Array.from(psTeamMembers),
+          panelMembers: Array.from(panelMembers),
         }),
       });
 
@@ -465,15 +490,83 @@ function CreateAssessmentModuleLeaders() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="assignees" className="font-bold dark:text-white">
-                Assignees
+              <label
+                htmlFor="internalModerators"
+                className="font-bold dark:text-white"
+              >
+                Internal Moderators
               </label>
               <div className="mb-4">
                 <Select
-                  onChange={(option) => handleSelectChange(option, "assignees")}
+                  onChange={(option) =>
+                    handleSelectChangeAssignees("internal", option)
+                  }
                   options={users}
-                  id="assignees"
-                  value={assessment.assignees}
+                  id="internalModerators"
+                  value={internalModerators}
+                  isMulti
+                  className="react-select-container mb-6"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="externalModerators"
+                className="font-bold dark:text-white"
+              >
+                External Moderators
+              </label>
+              <div className="mb-4">
+                <Select
+                  onChange={(option) =>
+                    handleSelectChangeAssignees("external", option)
+                  }
+                  options={users}
+                  id="externalModerators"
+                  value={externalModerators}
+                  isMulti
+                  className="react-select-container mb-6"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="panelMembers"
+                className="font-bold dark:text-white"
+              >
+                Panel Members
+              </label>
+              <div className="mb-4">
+                <Select
+                  onChange={(option) =>
+                    handleSelectChangeAssignees("panel", option)
+                  }
+                  options={users}
+                  id="panelMembers"
+                  value={panelMembers}
+                  isMulti
+                  className="react-select-container mb-6"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="psTeamMembers"
+                className="font-bold dark:text-white"
+              >
+                PS Team Members
+              </label>
+              <div className="mb-4">
+                <Select
+                  onChange={(option) =>
+                    handleSelectChangeAssignees("ps", option)
+                  }
+                  options={users}
+                  id="psTeamMembers"
+                  value={psTeamMembers}
                   isMulti
                   className="react-select-container mb-6"
                 />

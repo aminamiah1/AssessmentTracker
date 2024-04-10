@@ -113,10 +113,9 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                     >
                       <FaUserCircle className="mr-2 text-black" size={30} />
                       <span className="text-lg text-black dark:text-black">
-                        {assignee.name}{" "}
-                        {assignee.roles.map(
-                          (role: string) => " ● " + role.replaceAll("_", " "),
-                        )}
+                        {assignee.name}
+                        {" ●"}
+                        {assignee.role.replaceAll("_", " ")}
                       </span>
                     </div>
                   ))}

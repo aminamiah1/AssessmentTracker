@@ -70,7 +70,7 @@ export interface AssessmentTiles {
 export interface Assignee {
   id: number;
   name: string;
-  roles: [];
+  role: string;
 }
 //Interface for assessment to edit
 export interface AssessmentEdit {

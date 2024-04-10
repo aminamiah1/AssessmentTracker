@@ -230,10 +230,9 @@ const AssessmentTilePS = ({
                         className="text-lg text-black dark:text-black"
                         data-cy="assigneeText"
                       >
-                        {assignee.name}{" "}
-                        {assignee.roles.map(
-                          (role: string) => " ● " + role.replaceAll("_", " "),
-                        )}
+                        {assignee.name}
+                        {" ●"}
+                        {assignee.role.replaceAll("_", " ")}
                       </span>
                     </div>
                   ))}

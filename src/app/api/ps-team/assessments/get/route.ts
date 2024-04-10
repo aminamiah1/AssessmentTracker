@@ -13,7 +13,15 @@ export async function GET(request: Request) {
     // Fetch assessments with error handling
     const assessments = await prisma.assessment.findMany({
       include: {
-        assignees: { select: { id: true, name: true, roles: true } },
+        // Get assessment specific role for assignees
+        assigneesRole: {
+          select: {
+            role: true,
+            user: {
+              select: { name: true, email: true },
+            },
+          },
+        },
         setter: { select: { id: true, name: true, roles: true } },
         partSubmissions: {
           select: { Part: true },
@@ -38,6 +46,12 @@ export async function GET(request: Request) {
         module_name: moduleNames.find(
           (module: any) => module.id === assessment.module_id,
         )!.module_name,
+        // Send assignees as the front end expects with role just for this assessment
+        assignees: assessment.assigneesRole.map((assigneeRole: any) => ({
+          name: assigneeRole.user.name,
+          email: assigneeRole.user.email,
+          role: assigneeRole.role,
+        })),
       }));
 
       // Return the assessments with the modules as json if successful

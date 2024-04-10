@@ -20,7 +20,7 @@ export default async function () {
 
 // Please do not use manual ids for the assessments as this caused errors with postgresql internal sequencing
 async function seedModules() {
-  // First module defined, assessment not connected yet as needs to be inserted after the expected assessment with an id of 1
+  // First module declared
   await prisma.module.create({
     data: {
       module_code: "CM3101",
@@ -28,7 +28,6 @@ async function seedModules() {
       assessments: {
         create: [
           {
-            id: 2,
             assessment_name: "Cyber Security",
             assessment_type: "Portfolio",
             hand_in_week: new Date(),
@@ -36,45 +35,24 @@ async function seedModules() {
             setter_id: 1,
             assignees: {
               connect: [
-                {
-                  email: "leader@test.net",
-                },
-                {
-                  email: "internal@test.net",
-                },
-                {
-                  email: "external@test.net",
-                },
-                {
-                  email: "panel@test.net",
-                },
+                { email: "leader@test.net" },
+                { email: "internal@test.net" },
+                { email: "external@test.net" },
+                { email: "panel@test.net" },
               ],
             },
             assigneesRole: {
               createMany: {
                 data: [
-                  {
-                    role: Role.module_leader,
-                    user_id: 1,
-                  },
-                  {
-                    role: Role.internal_moderator,
-                    user_id: 2,
-                  },
-                  {
-                    role: Role.external_examiner,
-                    user_id: 4,
-                  },
-                  {
-                    role: Role.panel_member,
-                    user_id: 3,
-                  },
+                  { role: Role.module_leader, user_id: 1 },
+                  { role: Role.internal_moderator, user_id: 2 },
+                  { role: Role.external_examiner, user_id: 4 },
+                  { role: Role.panel_member, user_id: 3 },
                 ],
               },
             },
           },
           {
-            id: 6,
             assessment_name: "Database Design",
             assessment_type: Assessment_type.Practical_Based_Assessment,
             hand_in_week: example_date,
@@ -82,39 +60,19 @@ async function seedModules() {
             setter_id: 1,
             assignees: {
               connect: [
-                {
-                  email: "leader@test.net",
-                },
-                {
-                  email: "internal@test.net",
-                },
-                {
-                  email: "external@test.net",
-                },
-                {
-                  email: "panel@test.net",
-                },
+                { email: "leader@test.net" },
+                { email: "internal@test.net" },
+                { email: "external@test.net" },
+                { email: "panel@test.net" },
               ],
             },
             assigneesRole: {
               createMany: {
                 data: [
-                  {
-                    role: Role.module_leader,
-                    user_id: 1,
-                  },
-                  {
-                    role: Role.internal_moderator,
-                    user_id: 2,
-                  },
-                  {
-                    role: Role.external_examiner,
-                    user_id: 4,
-                  },
-                  {
-                    role: Role.panel_member,
-                    user_id: 3,
-                  },
+                  { role: Role.module_leader, user_id: 1 },
+                  { role: Role.internal_moderator, user_id: 2 },
+                  { role: Role.external_examiner, user_id: 4 },
+                  { role: Role.panel_member, user_id: 3 },
                 ],
               },
             },
@@ -124,7 +82,7 @@ async function seedModules() {
     },
   });
 
-  // Second module defined connects the assessment with an id assigned of 1
+  // Second  module defined
   await prisma.module.create({
     data: {
       module_code: "CM6127",
@@ -134,7 +92,6 @@ async function seedModules() {
       },
       assessments: {
         create: {
-          id: 1,
           assessment_name: "My new assessment",
           assessment_type: Assessment_type.Portfolio,
           hand_out_week: example_date,
@@ -178,7 +135,6 @@ async function seedModules() {
         createMany: {
           data: [
             {
-              id: 3,
               assessment_name: "Python Fundamentals",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -186,7 +142,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 4,
               assessment_name: "Python Advanced",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -194,7 +149,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 5,
               assessment_name: "Python Next Level",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: new Date(),
@@ -224,7 +178,6 @@ async function seedModules() {
         createMany: {
           data: [
             {
-              id: 7,
               assessment_name: "Python Fundamentals 2",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -232,7 +185,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 8,
               assessment_name: "Python Advanced 2",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -240,7 +192,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 9,
               assessment_name: "Python Next Level 2",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,

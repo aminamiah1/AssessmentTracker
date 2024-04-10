@@ -483,6 +483,7 @@ function CreateAssessmentModuleLeaders() {
             <div className="h-screen">
               <button
                 type="submit"
+                data-cy="submit"
                 className="bg-gray-700 hover:bg-azure-700 text-white font-bold rounded w-full py-7"
               >
                 {isEdit ? "Edit Assessment" : "Create Assessment"}

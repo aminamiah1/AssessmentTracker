@@ -4,29 +4,18 @@ describe("Add a assessment", () => {
     cy.login("leader@test.net");
   });
 
-  // Pass if they can add a assessment's details
   it("allows a module leader to add a assessment", () => {
     // By visting the create assessments page and typing out the details
     cy.visit("/module-leader/assessment-management/create-assessment");
 
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/users/get", {
-      fixture: "users.json",
-    }).as("getAssignees");
-
-    // Spoof getting modules by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
-      fixture: "modules.json",
-    }).as("getModules");
-
     // Enter test assessment form data
-    cy.getByTestId("name").type("New Assessment");
+    cy.getByTestId("name").type("new assessment");
 
     cy.contains("label", "Module")
       .next()
       .find("input")
       .eq(0)
-      .type("Computing basics 1{enter}");
+      .type("Example Module{enter}");
 
     cy.contains("label", "Assessment Type")
       .next()
@@ -38,23 +27,21 @@ describe("Add a assessment", () => {
       .next()
       .find("input")
       .eq(0)
-      .type("Carol White{enter}");
+      .type("Liam Leader{enter}");
+
+    cy.getByTestId("submit").click();
+
+    cy.visit("/module-leader/assessment-management/view-assessments");
+
+    cy.getByTestId("assessmentName")
+      .last()
+      .should("have.text", "new assessment");
   });
 
   // Pass if they cannot submit a blank assessment name
   it("does not allow a module leader to submit an assessment with a blank name", () => {
     // By visting the create assessments page and typing out the details
     cy.visit("/module-leader/assessment-management/create-assessment");
-
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/users/get", {
-      fixture: "users.json",
-    }).as("getAssignees");
-
-    // Spoof getting modules by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
-      fixture: "modules.json",
-    }).as("getModules");
 
     cy.contains("label", "Module")
       .next()
@@ -78,6 +65,7 @@ describe("Add a assessment", () => {
 
     cy.contains("label", "Assessment Title").should("have.value", ""); // Should still be on the same page as not submitted
 
+    // Test validation message appears
     cy.getByTestId("name").then(($input: any) => {
       // Had to change this to be browser-agnostic (not checking entire string,
       // just that some of the string is what we expect it to be)

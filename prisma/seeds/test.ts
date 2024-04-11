@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient({ log: ["query"] });
 
-const example_date = new Date(2024, 1, 26);
+const example_date = new Date(2024, 3, 29);
 
 export default async function () {
   try {
@@ -307,6 +307,14 @@ async function seedParts() {
       part_id: 11,
       date_submitted: new Date(),
       assessment_id: 7,
+      submitted_by: 8,
+    },
+  });
+  await prisma.partSubmission.create({
+    data: {
+      part_id: 10,
+      date_submitted: new Date(),
+      assessment_id: 9,
       submitted_by: 8,
     },
   });

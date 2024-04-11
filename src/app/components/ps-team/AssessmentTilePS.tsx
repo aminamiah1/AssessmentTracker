@@ -5,8 +5,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
-import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
-import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
+import { AssessmentOverallProgress } from "@/app/components/trackingProgress/AssessmentOverallProgress";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 
@@ -169,7 +168,7 @@ const AssessmentTilePS = ({
       <div className="bg-gray-100 mb-2 dark:bg-gray-700 shadow-lg rounded-lg">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
           <div className="md:flex md:items-center">
-            <div className="md:w-1/2 md:mt-0  text-lg">
+            <div className="md:w-1/6 md:mt-0  text-lg">
               <div>
                 <Link
                   href={`/ps-team/assessment-management/view-assessment?id=${assessment.id}`}
@@ -214,12 +213,12 @@ const AssessmentTilePS = ({
                 </div>
               </p>
             </div>
-            <div className="md:w-1/4 mt-4 md:mt-0">
-              <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
-                Assignees
-              </h6>
+            <div className="md:w-1/6 mt-4 md:mt-0">
               {assessment.assignees.length > 0 ? (
                 <div>
+                  <h6 className="mb-4 text-lg text-gray-700 dark:text-white ml-2">
+                    Assignees
+                  </h6>
                   {assessment.assignees.map((assignee: Assignee) => (
                     <div
                       key={assignee.id}
@@ -239,16 +238,17 @@ const AssessmentTilePS = ({
                   ))}
                 </div>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-white">
+                <p className="text-lg text-gray-700 dark:text-white text-center ml-2">
                   No assignees assigned
                 </p>
               )}
             </div>
-            <div className="md:w-1/3 md:mt-0 text-center">
+            <div className="w-full">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress
                   partsList={assessment.partSubmissions}
+                  handInDate={assessment.hand_in_week}
                 />
               ) : (
                 <h1
@@ -259,23 +259,7 @@ const AssessmentTilePS = ({
                 </h1>
               )}
             </div>
-            <div className="md:w-1/2 mb-4 md:mt-0 text-center">
-              {assessment.hand_in_week && assessment.hand_out_week ? (
-                <TimeOverallProgress
-                  handOutDate={assessment.hand_out_week}
-                  handInDate={assessment.hand_in_week}
-                  partsList={assessment.partSubmissions}
-                />
-              ) : (
-                <h1
-                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
-                  data-cy="trackingFormToBeginStatus"
-                >
-                  No hand in and out weeks assigned
-                </h1>
-              )}
-            </div>
-            <div className="md:w-1/4 md:mt-0 text-center rounded">
+            <div className="md:w-1/6 md:mt-0 text-center rounded">
               <button
                 className="px-6 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
                 data-cy="assignUsers"

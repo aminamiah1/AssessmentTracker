@@ -33,18 +33,20 @@ export function Question({ question }: QuestionProps) {
   return (
     <div
       id={`question-${id}`}
-      className={`question px-8 py-3 rounded-lg text-center
+      className={`question w-full lg:grid lg:grid-cols-3 gap-4 px-8 py-3 rounded-lg text-center
     dark:bg-slate-700 bg-gray-100 shadow-md dark:shadow-2xl`}
     >
-      <li>
-        <p className="pb-4">{questionTitle}</p>
-        <Response
-          previousResponse={previousResponse}
-          questionId={id.toString()}
-          choices={choices}
-          responseType={responseType}
-        />
+      <li
+        className={`w-full ${responseType === "string" ? "lg:col-span-3" : "lg:col-span-2"}`}
+      >
+        <p className="pb-4 lg:p-0">{questionTitle}</p>
       </li>
+      <Response
+        previousResponse={previousResponse}
+        questionId={id.toString()}
+        choices={choices}
+        responseType={responseType}
+      />
     </div>
   );
 }

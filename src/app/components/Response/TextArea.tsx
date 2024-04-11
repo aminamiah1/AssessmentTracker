@@ -26,14 +26,14 @@ export function TextArea({
   };
 
   return (
-    <div className="flex">
+    <div className="lg:col-span-3">
       {/* Empty label required for the textarea to appear in the server action's FormData */}
       <label htmlFor={questionId}></label>
       <textarea
         aria-required
         required
         data-cy="response"
-        className="m-5 p-2 max-w-full w-dvw min-h-32 disabled:cursor-not-allowed dark:bg-slate-500 rounded-lg"
+        className="p-2 max-w-full w-dvw min-h-32 disabled:cursor-not-allowed dark:bg-slate-500 rounded-lg"
         name={questionId}
         onBlur={async (e) => await handleBlur(e)}
         onChange={handleChange}

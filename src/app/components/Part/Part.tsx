@@ -76,7 +76,7 @@ export function Part({
       <h1 id={`${part.id}`} className="mb-10 mt-4 pb-2 text-3xl">
         {part.part_title}
       </h1>
-      <ol className="flex peer max-w-prose gap-16 flex-col">
+      <ol className="flex peer max-w-prose gap-8 lg:gap-4 flex-col">
         <PartContext.Provider
           value={{ assessmentId, readonly, presave, postsave }}
         >

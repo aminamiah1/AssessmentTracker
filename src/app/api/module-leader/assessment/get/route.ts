@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
           select: {
             role: true,
             user: {
-              select: { name: true, email: true },
+              select: { name: true, email: true, id: true },
             },
           },
         },
@@ -53,6 +53,7 @@ export async function GET(request: NextRequest) {
             name: assigneeRole.user.name,
             email: assigneeRole.user.email,
             role: assigneeRole.role,
+            id: assigneeRole.user.id,
           }))
         : [], // Provide an empty array if assessment is null
     };

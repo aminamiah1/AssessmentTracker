@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
+import { SelectOption } from "@/app/types/interfaces";
+import { Role } from "@prisma/client";
 import prisma from "@/app/db";
 
 export async function POST(request: NextRequest) {
@@ -18,7 +20,9 @@ export async function POST(request: NextRequest) {
       hand_in_week,
       module_id,
       setter_id,
-      assigneesList,
+      externalExaminers,
+      internalModerators,
+      panelMembers,
     } = await request.json();
 
     // Validate mandatory fields
@@ -29,7 +33,9 @@ export async function POST(request: NextRequest) {
       !hand_in_week ||
       !module_id ||
       !setter_id ||
-      !assigneesList
+      !externalExaminers ||
+      !internalModerators ||
+      !panelMembers
     ) {
       return new NextResponse(
         JSON.stringify({ message: "Please include all required fields" }),
@@ -37,20 +43,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const assigneesIds = assigneesList.map((userId: any) => ({ id: userId }));
+    // Construct assigneeRoles data for bulk creation
+    const assigneeRolesData = [
+      ...externalExaminers.map((user: SelectOption) => ({
+        user_id: user.value,
+        role: Role.external_examiner,
+      })),
+      ...internalModerators.map((user: SelectOption) => ({
+        user_id: user.value,
+        role: Role.internal_moderator,
+      })),
+      ...panelMembers.map((user: SelectOption) => ({
+        user_id: user.value,
+        role: Role.panel_member,
+      })),
+      {
+        user_id: setter_id,
+        role: Role.module_leader,
+      },
+    ];
 
     // Locate the assessment by ID
     const existingAssessment = await prisma.assessment.findUnique({
       where: { id },
-      select: {
-        id: true,
-        assessment_name: true,
-        assessment_type: true,
-        hand_out_week: true,
-        hand_in_week: true,
-        module_id: true,
-        assignees: { select: { id: true } },
-      }, // Select desired assignee field
     });
 
     // Ensure assessment exists
@@ -61,12 +76,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Take off the existing connected assignees to the assessment
-    const takeOffExistingAssignees = await prisma.assessment.update({
-      where: { id },
-      data: {
-        assignees: {
-          disconnect: existingAssessment.assignees, // This disconnects existing assignees
+    // Get all users
+    const allUserIds = [
+      ...externalExaminers,
+      ...internalModerators,
+      ...panelMembers,
+    ].map((user) => user.value);
+
+    // Delete roles for users outside of the updated assignee list
+    await prisma.assigneeRole.deleteMany({
+      where: {
+        assessment_id: id,
+        NOT: {
+          user_id: { in: allUserIds },
         },
       },
     });
@@ -81,10 +103,19 @@ export async function POST(request: NextRequest) {
         hand_in_week,
         module_id,
         setter_id,
-        assignees: {
-          connect: assigneesIds, //Add on the new assignees
+        assigneesRole: {
+          upsert: assigneeRolesData.map((roleData) => ({
+            where: {
+              user_id_assessment_id: {
+                user_id: roleData.user_id,
+                assessment_id: id,
+              },
+            },
+            update: { role: roleData.role },
+            create: roleData,
+          })),
         },
-      }, // Update desired fields
+      },
     });
 
     // Return updated assessment data

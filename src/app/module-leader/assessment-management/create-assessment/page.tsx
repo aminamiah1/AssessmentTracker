@@ -31,7 +31,9 @@ function CreateAssessmentModuleLeaders() {
 
   const [moduleId, setModuleId] = useState(null); // Variable to hold existing assessment module ID
 
-  const [users, setUsers] = useState([]); // Variable to hold all users in the system
+  const [users, setUsers] = useState<SelectOptionRoles[]>([]); // Variable to hold all users in the system
+
+  const [existingAssignees, setExistingAssignees] = useState([]);
 
   const router = useRouter(); // Create next router object
 
@@ -51,6 +53,8 @@ function CreateAssessmentModuleLeaders() {
   const { data: session, status } = useSession(); // Use useSession to get session and status
 
   const params = searchParams?.get("id"); // Get the id of the assessment to edit from the search params object
+
+  const [updateUsers, setUpdateUsers] = useState(false); // Used to triggering updating the user arrays with existing assignees
 
   // Default assessment object used on create form mode as default
   const [assessment, setAssessment] = useState<AssessmentForm>({
@@ -183,37 +187,10 @@ function CreateAssessmentModuleLeaders() {
             setterId,
           }));
 
-          // Add the existing assignees to the appropriate user type array
-          assignees.forEach((assignee: Assignee) => {
-            const { role, name, id } = assignee;
-
-            // Check the role of the assignee and add them to the corresponding role type array
-            switch (role) {
-              case "internal_moderator":
-                setInternalModerators((prevModerators) => [
-                  ...prevModerators,
-                  { value: id, label: `${name} ● Roles: ${role}` },
-                ]);
-                break;
-              case "external_examiner":
-                setExternalExaminers((prevExaminers) => [
-                  ...prevExaminers,
-                  { value: id, label: `${name} ● Roles: ${role}` },
-                ]);
-                break;
-              case "panel_member":
-                setPanelMembers((prevPanel) => [
-                  ...prevPanel,
-                  { value: id, label: `${name} ● Roles: ${role}` },
-                ]);
-                break;
-              default:
-                break;
-            }
-          });
-
           // Set the data to be manipulated in the effect hook to work with react select boxes
           setModuleId(data.module_id);
+          setExistingAssignees(assignees);
+          setUpdateUsers(true);
         })
         .catch((error) => {
           // Handle network errors with toast to inform user
@@ -264,7 +241,46 @@ function CreateAssessmentModuleLeaders() {
         }
       }
     }
-  }, [modules, moduleId]); // Runs if editing the assessment and is a module leader
+
+    if (existingAssignees) {
+      // Add the existing assignees to the appropriate user type array
+      existingAssignees.forEach((assignee: Assignee) => {
+        const { role, name, id } = assignee;
+
+        // Stop duplicate existing users being shown in options
+        setUsers((prevUsers) => [
+          ...prevUsers.filter((user) => {
+            console.log("Comparing:", user.value, id);
+            return user.value !== id;
+          }),
+        ]);
+
+        // Check the role of the assignee and add them to the corresponding role type array
+        switch (role) {
+          case "internal_moderator":
+            setInternalModerators((prevModerators) => [
+              ...prevModerators,
+              { value: id, label: `${name} ● Roles: ${role}` },
+            ]);
+            break;
+          case "external_examiner":
+            setExternalExaminers((prevExaminers) => [
+              ...prevExaminers,
+              { value: id, label: `${name} ● Roles: ${role}` },
+            ]);
+            break;
+          case "panel_member":
+            setPanelMembers((prevPanel) => [
+              ...prevPanel,
+              { value: id, label: `${name} ● Roles: ${role}` },
+            ]);
+            break;
+          default:
+            break;
+        }
+      });
+    }
+  }, [modules, moduleId, updateUsers]); // Runs if editing the assessment and is a module leader
 
   // Handle text changes for the form
   const handleTextChange = (event: any) => {

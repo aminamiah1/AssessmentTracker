@@ -13,3 +13,6 @@ ALTER TABLE "AssigneeRole" ADD CONSTRAINT "AssigneeRole_user_id_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "AssigneeRole" ADD CONSTRAINT "AssigneeRole_assessment_id_fkey" FOREIGN KEY ("assessment_id") REFERENCES "Assessment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- CreateIndex
+CREATE UNIQUE INDEX "AssigneeRole_user_id_assessment_id_key" ON "AssigneeRole"("user_id", "assessment_id");

@@ -117,3 +117,8 @@ export interface SelectOption {
   value: string; // module leader's ID
   label: string; // module leader's name
 }
+
+export interface SelectOptionRoles {
+  value: number;
+  label: string;
+}

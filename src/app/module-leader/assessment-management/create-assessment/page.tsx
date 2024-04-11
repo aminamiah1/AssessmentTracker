@@ -1,7 +1,13 @@
 "use client";
 
 import UnauthorizedAccess from "@/app/components/authError";
-import { AssessmentForm, Module, User } from "@/app/types/interfaces";
+import {
+  AssessmentForm,
+  Assignee,
+  Module,
+  SelectOptionRoles,
+  User,
+} from "@/app/types/interfaces";
 import { Assessment_type } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -30,13 +36,17 @@ function CreateAssessmentModuleLeaders() {
   const router = useRouter(); // Create next router object
 
   // State to hold the different assignee types added to the assessment
-  const [internalModerators, setInternalModerators] = useState([]);
+  const [internalModerators, setInternalModerators] = useState<
+    SelectOptionRoles[]
+  >([]);
 
-  const [externalExaminers, setExternalExaminers] = useState([]);
+  const [externalExaminers, setExternalExaminers] = useState<
+    SelectOptionRoles[]
+  >([]);
 
-  const [psTeamMembers, setPsTeamMembers] = useState([]);
+  const [psTeamMembers, setPsTeamMembers] = useState<SelectOptionRoles[]>([]);
 
-  const [panelMembers, setPanelMembers] = useState([]);
+  const [panelMembers, setPanelMembers] = useState<SelectOptionRoles[]>([]);
 
   const searchParams = useSearchParams(); // Create search params object
 
@@ -161,6 +171,7 @@ function CreateAssessmentModuleLeaders() {
             hand_out_week,
             hand_in_week,
             setterId,
+            assignees,
           } = data;
 
           // Only set the fields with the types that do not need to be adapted to work with the react select boxes
@@ -173,6 +184,41 @@ function CreateAssessmentModuleLeaders() {
             hand_in_week,
             setterId,
           }));
+
+          // Add the existing assignees to the appropriate user type array
+          assignees.forEach((assignee: Assignee) => {
+            const { role, name, id } = assignee;
+
+            // Check the role of the assignee and add them to the corresponding role type array
+            switch (role) {
+              case "internal_moderator":
+                setInternalModerators((prevModerators) => [
+                  ...prevModerators,
+                  { value: id, label: `${name} ● Roles: ${role}` },
+                ]);
+                break;
+              case "external_examiner":
+                setExternalExaminers((prevExaminers) => [
+                  ...prevExaminers,
+                  { value: id, label: `${name} ● Roles: ${role}` },
+                ]);
+                break;
+              case "panel_member":
+                setPanelMembers((prevPanel) => [
+                  ...prevPanel,
+                  { value: id, label: `${name} ● Roles: ${role}` },
+                ]);
+                break;
+              case "ps_team":
+                setPsTeamMembers((prevPS) => [
+                  ...prevPS,
+                  { value: id, label: `${name} ● Roles: ${role}` },
+                ]);
+                break;
+              default:
+                break;
+            }
+          });
 
           // Set the data to be manipulated in the effect hook to work with react select boxes
           setModuleId(data.module_id);

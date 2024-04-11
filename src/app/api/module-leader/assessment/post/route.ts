@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
       externalExaminers,
       internalModerators,
       panelMembers,
-      psTeamMembers,
     } = await request.json();
 
     if (
@@ -34,8 +33,7 @@ export async function POST(request: NextRequest) {
       !setter_id ||
       !externalExaminers ||
       !internalModerators ||
-      !panelMembers ||
-      !psTeamMembers
+      !panelMembers
     ) {
       return new NextResponse(
         JSON.stringify({ message: "Please include all required fields" }),
@@ -56,10 +54,6 @@ export async function POST(request: NextRequest) {
       ...panelMembers.map((user: SelectOption) => ({
         user_id: user.value,
         role: Role.panel_member,
-      })),
-      ...psTeamMembers.map((user: SelectOption) => ({
-        user_id: user.value,
-        role: Role.ps_team,
       })),
       {
         user_id: setter_id,

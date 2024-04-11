@@ -44,8 +44,6 @@ function CreateAssessmentModuleLeaders() {
     SelectOptionRoles[]
   >([]);
 
-  const [psTeamMembers, setPsTeamMembers] = useState<SelectOptionRoles[]>([]);
-
   const [panelMembers, setPanelMembers] = useState<SelectOptionRoles[]>([]);
 
   const searchParams = useSearchParams(); // Create search params object
@@ -209,12 +207,6 @@ function CreateAssessmentModuleLeaders() {
                   { value: id, label: `${name} ● Roles: ${role}` },
                 ]);
                 break;
-              case "ps_team":
-                setPsTeamMembers((prevPS) => [
-                  ...prevPS,
-                  { value: id, label: `${name} ● Roles: ${role}` },
-                ]);
-                break;
               default:
                 break;
             }
@@ -312,9 +304,6 @@ function CreateAssessmentModuleLeaders() {
       case "panel":
         setPanelMembers(selectedAssignees);
         break;
-      case "ps":
-        setPsTeamMembers(selectedAssignees);
-        break;
       default:
         break;
     }
@@ -329,7 +318,6 @@ function CreateAssessmentModuleLeaders() {
       internalModerators.length === 0 ||
       externalExaminers.length === 0 ||
       panelMembers.length === 0 ||
-      psTeamMembers.length === 0 ||
       assessment.module.length === 0
     ) {
       toast.error(
@@ -357,7 +345,6 @@ function CreateAssessmentModuleLeaders() {
           setter_id: setterId,
           internalModerators: Array.from(internalModerators),
           externalExaminers: Array.from(externalExaminers),
-          psTeamMembers: Array.from(psTeamMembers),
           panelMembers: Array.from(panelMembers),
         }),
       });
@@ -387,7 +374,6 @@ function CreateAssessmentModuleLeaders() {
           setter_id: setterId,
           internalModerators: Array.from(internalModerators),
           externalExaminers: Array.from(externalExaminers),
-          psTeamMembers: Array.from(psTeamMembers),
           panelMembers: Array.from(panelMembers),
         }),
       });
@@ -598,29 +584,6 @@ function CreateAssessmentModuleLeaders() {
                   })}
                   id="panelMembers"
                   value={panelMembers}
-                  isMulti
-                  className="react-select-container mb-6"
-                />
-              </div>
-            </div>
-
-            <div className="mb-4">
-              <label
-                htmlFor="psTeamMembers"
-                className="font-bold dark:text-white"
-              >
-                PS Team Members
-              </label>
-              <div className="mb-4">
-                <Select
-                  onChange={(option) =>
-                    handleSelectChangeAssignees("ps", option)
-                  }
-                  options={users.filter((user: any) => {
-                    return user.label.includes("ps_team");
-                  })}
-                  id="psTeamMembers"
-                  value={psTeamMembers}
                   isMulti
                   className="react-select-container mb-6"
                 />

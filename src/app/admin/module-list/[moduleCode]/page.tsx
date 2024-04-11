@@ -5,9 +5,8 @@ import "react-toastify/ReactToastify.css";
 import { format } from "date-fns";
 import { archiveModule } from "@/app/actions/module-status";
 import Link from "next/link";
-import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
+import { AssessmentOverallProgress } from "@/app/components/trackingProgress/AssessmentOverallProgress";
 import { ModulePS, AssessmentPS } from "@/app/types/interfaces";
-import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
 import { useSession } from "next-auth/react";
 
 export default function ModuleDetails({
@@ -146,7 +145,7 @@ export default function ModuleDetails({
               className="shadow-lg rounded-lg p-4 mb-4 bg-gray-100 dark:bg-gray-700 text-lg text-gray-900 dark:text-gray-200"
             >
               <div className="flex justify-between items-center">
-                <div>
+                <div className="w-1/6">
                   <strong>{assessment.assessment_name}</strong>
                   <p>Type: {assessment.assessment_type}</p>
                   <p title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html">
@@ -161,27 +160,12 @@ export default function ModuleDetails({
                     Setter: {assessment.setter?.name ?? "No setter assigned"}
                   </p>
                 </div>
-                <div className="w-1/2 min-w-max">
-                  {assessment.hand_in_week && assessment.hand_out_week ? (
-                    <TimeOverallProgress
-                      handOutDate={assessment.hand_out_week}
-                      handInDate={assessment.hand_in_week}
-                      partsList={assessment.partSubmissions}
-                    />
-                  ) : (
-                    <h1
-                      className="mt-2 text-lg text-gray-700 dark:text-white text-center"
-                      data-cy="trackingFormToBeginStatus"
-                    >
-                      No hand in and out weeks assigned
-                    </h1>
-                  )}
-                </div>
-                <div className="w-1/3 min-w-max">
+                <div className="w-[70%] md:mt-0">
                   {assessment.partSubmissions &&
                   assessment.partSubmissions.length > 0 ? (
                     <AssessmentOverallProgress
                       partsList={assessment.partSubmissions}
+                      handInDate={assessment.hand_in_week}
                     />
                   ) : (
                     <div className="text-center p-4">
@@ -194,7 +178,7 @@ export default function ModuleDetails({
                     </div>
                   )}
                 </div>
-                <div className="w-1/8 min-w-max">
+                <div className="w-1/10 min-w-max">
                   <Link
                     href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
                     data-cy="editAssessment"

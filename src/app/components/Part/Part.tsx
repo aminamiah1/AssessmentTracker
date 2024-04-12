@@ -73,7 +73,7 @@ export function Part({
       autoComplete="off"
       className="flex flex-col items-center"
     >
-      <h1 id={`${part.id}`} className="mb-10 mt-4 pb-2 text-3xl">
+      <h1 id={`${part.id}`} className="mb-6 mt-12 pb-2 text-3xl">
         {part.part_title}
       </h1>
       <ol className="flex peer max-w-prose gap-8 lg:gap-4 flex-col">
@@ -87,7 +87,7 @@ export function Part({
       </ol>
       {!readonly && (
         <button
-          className="disabled:cursor-not-allowed w-fit disabled:bg-blue-300 mb-12 mt-12 bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg"
+          className="disabled:cursor-not-allowed w-fit disabled:bg-blue-300 mt-6 mb-14 bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg"
           disabled={isLoading}
           type="submit"
         >

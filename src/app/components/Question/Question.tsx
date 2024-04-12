@@ -37,7 +37,7 @@ export function Question({ question }: QuestionProps) {
     dark:bg-slate-700 bg-gray-100 shadow-md dark:shadow-2xl`}
     >
       <li
-        className={`w-full ${responseType === "string" ? "lg:col-span-3" : "lg:col-span-2"}`}
+        className={`w-full ${responseType === "boolean" ? "lg:col-span-2" : choices.length > 0 ? "lg:col-span-2" : "lg:col-span-3"}`}
       >
         <p className="pb-4 lg:p-0">{questionTitle}</p>
       </li>

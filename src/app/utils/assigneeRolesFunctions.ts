@@ -28,8 +28,9 @@ export function constructAssigneeRolesDataForCreate(
   externalExaminers: SelectOptionRoles[],
   internalModerators: SelectOptionRoles[],
   panelMembers: SelectOptionRoles[],
-  setter_id: number,
-): { user_id: number; role: Role }[] {
+  module_leaders: { id: number }[] | undefined,
+): { user_id: number; role: Role }[] | null {
+  // Allow 'null' to indicate no module leaders error
   const assigneeRolesData = [
     ...externalExaminers.map((user: SelectOptionRoles) => ({
       user_id: user.value,
@@ -43,11 +44,18 @@ export function constructAssigneeRolesDataForCreate(
       user_id: user.value,
       role: Role.panel_member,
     })),
-    {
-      user_id: setter_id,
-      role: Role.module_leader,
-    },
+    ...(module_leaders
+      ? module_leaders.map((leader) => ({
+          user_id: leader.id,
+          role: Role.module_leader,
+        }))
+      : []),
   ];
+
+  // Flag to user that module leaders need to be added for module first before assessment can be set
+  if (!module_leaders || module_leaders.length === 0) {
+    return null;
+  }
 
   return assigneeRolesData;
 }

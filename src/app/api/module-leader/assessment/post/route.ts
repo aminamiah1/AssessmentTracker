@@ -42,13 +42,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    //Get module leaders from assessment associated module
+    const module = await prisma.module.findUnique({
+      where: {
+        id: module_id,
+      },
+      select: {
+        module_leaders: {
+          select: {
+            // Select only the 'id'
+            id: true,
+          },
+        },
+      },
+    });
+
     // Construct assigneeRoles data for bulk creation
     const assigneeRolesData = constructAssigneeRolesDataForCreate(
       externalExaminers,
       internalModerators,
       panelMembers,
-      setter_id,
+      module?.module_leaders,
     );
+
+    if (!assigneeRolesData) {
+      return new NextResponse(
+        JSON.stringify({
+          message:
+            "Please make sure assessment module has module leaders assigned.",
+        }),
+        { status: 400 },
+      );
+    }
 
     // Attach assignees to assessment with their specific role for the assessment
     const newAssessment = await prisma.assessment.create({

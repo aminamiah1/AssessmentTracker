@@ -79,6 +79,9 @@ function CreateAssessmentModuleLeaders() {
 
   const [roleName, setRoleName] = useState("");
 
+  const noModuleLeadersMessage =
+    '{"message":"Please make sure assessment module has module leaders assigned."}';
+
   // This is needed for the setter logic to work please don't remove again
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -371,6 +374,11 @@ function CreateAssessmentModuleLeaders() {
       // Alert the user if the api response failed
       if (!response.ok) {
         const errorData = await response.text();
+        if (errorData === noModuleLeadersMessage) {
+          toast.error(
+            "Please make sure assessment module has module leaders assigned.",
+          );
+        }
         toast.error(
           "Assessment either already exists or incorrect details entered or database server failed, please try again",
         );
@@ -400,9 +408,16 @@ function CreateAssessmentModuleLeaders() {
       // Alert the user if the api response failed
       if (!response.ok) {
         const errorData = await response.text();
-        toast.error(
-          "Assessment either already exists or incorrect details entered or database server failed, please try again",
-        );
+        // Let the user know if the assessment module has no module leaders assigned
+        if (errorData === noModuleLeadersMessage) {
+          toast.error(
+            "Please make sure assessment module has module leaders assigned.",
+          );
+        } else {
+          toast.error(
+            "Assessment either already exists or incorrect details entered or database server failed, please try again",
+          );
+        }
         throw new Error(errorData || "Failed to add assessment");
       }
 

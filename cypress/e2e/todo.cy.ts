@@ -15,7 +15,7 @@ describe("/todo", () => {
     cy.get("main").should("contain.text", "No tasks! 🎉");
   });
 
-  it.only("handles errors", () => {
+  it("handles errors", () => {
     cy.on("uncaught:exception", (err) => {
       return false;
     });
@@ -193,6 +193,11 @@ describe("/todo", () => {
       }).as("saveResponse");
     });
 
+    afterEach(() => {
+      // Clear SWR cache
+      mutate((key) => true, undefined, { revalidate: false });
+    });
+
     it("Should be able to see and interact with their task", () => {
       cy.getByTestId("task-list-container").children().should("have.length", 2);
 
@@ -218,6 +223,61 @@ describe("/todo", () => {
       cy.visit("/done");
 
       cy.get("main").should("contain.text", "No completed tasks");
+
+      cy.visit("/todo/2");
+
+      cy.intercept("POST", "/api/assessments/2/submissions", (req) => {
+        req.continue((res) => {
+          expect(res.statusCode).to.equal(200);
+        });
+      }).as("submit");
+
+      cy.get("button[type='submit']").click();
+
+      cy.wait("@submit");
+    });
+
+    it("Should not be able to save a module leader's response", () => {
+      cy.visit("/todo/2");
+
+      // Frontend checks
+      cy.get("main")
+        .should("contain.text", "Assessment availability")
+        .and("contain.text", "Internal moderator comments")
+        .and("contain.text", "Response to internal moderation");
+
+      cy.get("input").each((el) => {
+        cy.wrap(el).should("be.disabled");
+      });
+
+      // Backend checks
+      cy.request({
+        body: {
+          newValue: "Test value response",
+        },
+        method: "PUT",
+        url: "/api/assessments/2/responses/19",
+        failOnStatusCode: false,
+      }).then((res) => {
+        expect(res.status).to.equal(401);
+        expect(res.body).to.deep.equal({
+          message: "Unauthorised",
+        });
+      });
+
+      cy.request({
+        method: "PUT",
+        url: "/api/assessments/2/responses/9999",
+        body: {
+          newValue: "Test value response",
+        },
+        failOnStatusCode: false,
+      }).then((res) => {
+        expect(res.status).to.equal(401);
+        expect(res.body).to.deep.equal({
+          message: "No part found for question",
+        });
+      });
     });
   });
 });

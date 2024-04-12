@@ -27,15 +27,23 @@ export function useTasks(userId: number): TaskHook {
 }
 
 interface PartTodoHook {
-  partTodo: PartWithQuestionsAndResponses[];
+  parts: PartWithQuestionsAndResponses[];
   error: any;
   isLoading: boolean;
 }
 
-export function usePartTodo(assessmentId: number): PartTodoHook {
+/**
+ * @param assessmentId The ID of the assessment to get parts for
+ * @param getAll Whether to get ALL parts of the assessment form, or just the outstanding part todo/in progress
+ * @returns An object containing an array of parts, any errors, and the loading state
+ */
+export function useParts(
+  assessmentId: number,
+  getAll: boolean = false,
+): PartTodoHook {
   const { data, error, isLoading, isValidating } = useSWR(
-    `/api/assessments/${assessmentId}/todos`,
-    async (url) => {
+    `/api/assessments/${assessmentId}/todos?all=${getAll}`,
+    async (url: string) => {
       const response = await fetch(url);
 
       if (response.status !== 200)
@@ -49,7 +57,7 @@ export function usePartTodo(assessmentId: number): PartTodoHook {
   );
 
   return {
-    partTodo: data,
+    parts: data,
     error,
     isLoading: isLoading ?? isValidating,
   };

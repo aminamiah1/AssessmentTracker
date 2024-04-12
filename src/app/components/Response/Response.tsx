@@ -1,6 +1,8 @@
 import { PartContext, saveResponse } from "@/app/utils/client/form";
 import { $Enums } from "@prisma/client";
 import { useContext, useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { BooleanChoice } from "./BooleanChoice";
 import { MultiChoice } from "./MultiChoice";
 import { TextArea } from "./TextArea";
@@ -34,16 +36,28 @@ export function Response({
   }, [previousResponse]);
 
   const handleSaveResponse = async (resp: string = response) => {
-    presave?.(resp);
+    try {
+      presave?.(resp);
 
-    setResponse(resp);
-    await saveResponse(assessmentId, +respProps.questionId, resp);
+      setResponse(resp);
+      const res = await saveResponse(assessmentId, +respProps.questionId, resp);
+      const json = await res.json();
 
-    postsave?.(resp);
+      if (!res.ok) {
+        throw new Error("Error whilst submitting response: " + json.message);
+      }
+
+      postsave?.(resp);
+    } catch (e) {
+      // We don't want to call the postsave callback if the save
+      // fails - the user hasn't actually saved anything
+      toast.error((e as Error).message);
+    }
   };
 
   const props = { ...respProps, handleSaveResponse, response };
 
+  let ResponseComponent: JSX.Element;
   switch (responseType) {
     case "string":
       const isMultichoice = choices.length > 1;
@@ -54,7 +68,7 @@ export function Response({
         );
       }
 
-      return isMultichoice ? (
+      ResponseComponent = isMultichoice ? (
         <MultiChoice disabled={readonly} choices={choices} {...props} />
       ) : (
         <TextArea
@@ -64,7 +78,16 @@ export function Response({
           {...props}
         />
       );
+      break;
     case "boolean":
-      return <BooleanChoice disabled={readonly} {...props} />;
+      ResponseComponent = <BooleanChoice disabled={readonly} {...props} />;
+      break;
   }
+
+  return (
+    <>
+      {ResponseComponent}
+      <ToastContainer />
+    </>
+  );
 }

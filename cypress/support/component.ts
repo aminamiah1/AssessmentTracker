@@ -1,4 +1,5 @@
 import "@/app/globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import "./commands";
 
 import { PartContext } from "@/app/utils/client/form";

@@ -29,6 +29,19 @@ describe("<Response />", () => {
     cy.mountWithPart(<Response {...defaults} />);
   });
 
+  it("displays an error toast if the saveResponse fails", () => {
+    cy.intercept("PUT", "/api/assessments/0/responses/0", (req) => {
+      req.reply(400, { message: "Invalid 'questionId' format" });
+    }).as("saveResponse");
+
+    cy.mountWithPart(<Response {...defaults} />);
+
+    cy.getByTestId("response").get("textarea").type("Hello").blur();
+    cy.wait("@saveResponse");
+
+    cy.get(".Toastify__toast-body").should("exist");
+  });
+
   context("<TextArea />", () => {
     it("displays a textarea for a 'text/string' response type", () => {
       cy.mountWithPart(<Response {...defaults} responseType="string" />);

@@ -22,7 +22,7 @@ export function ListItemWrapper({
     { href },
     <div
       data-cy="list-item"
-      className={`w-full flex ${href ? "cursor-pointer hover:dark:bg-slate-800 hover:bg-slate-200" : ""} justify-evenly rounded p-4 items-center ${className}`}
+      className={`w-full flex ${href ? "cursor-pointer hover:dark:bg-slate-600 hover:bg-slate-200" : ""} justify-evenly rounded p-4 items-center ${className}`}
     >
       {children}
     </div>,

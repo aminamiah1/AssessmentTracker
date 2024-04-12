@@ -9,15 +9,16 @@ export default async function Page() {
   if (!session) redirect("/api/auth/signin");
 
   return (
-    <div className="w-[80%] mt-10">
+    <div className="flex flex-col items-center mt-10">
       <div className="text-center">
         <h1 className={`text-3xl text-black dark:text-white hover:text-white`}>
           Task List
         </h1>
       </div>
       <TaskList
-        userId={+session.user.id}
+        className="md:min-w-[60vw] mt-6 flex-col"
         itemTemplateName={"ProgressListItem"}
+        userId={+session.user.id}
       />
     </div>
   );

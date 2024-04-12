@@ -1,7 +1,7 @@
 // Import used libraries
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
-import { useSession, signIn } from "next-auth/react"; // Import useSession and signIn
+import { useSession } from "next-auth/react"; // Import useSession and signIn
 import { ToastContainer } from "react-toastify";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,9 +11,7 @@ import Select from "react-select";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
-import AuthContext from "@/app/utils/authContext";
 import UnauthorizedAccess from "@/app/components/authError";
-// Import interfaces from interfaces.ts
 import { AssessmentDetails, User } from "@/app/types/interfaces";
 
 function ViewAssessmentPSTeam() {

@@ -32,12 +32,12 @@ describe("<Part />", () => {
 
   context("Functionality", () => {
     it("submits the form when the submit button is clicked", () => {
-      cy.intercept("POST", "/api/assessments/0/submissions", {
-        statusCode: 200,
+      cy.intercept("POST", "/api/assessments/0/submissions", (req) => {
+        req.reply(200, {});
       }).as("submitPart");
 
-      cy.intercept("PUT", "/api/assessments/0/responses/*", {
-        statusCode: 200,
+      cy.intercept("PUT", "/api/assessments/0/responses/*", (req) => {
+        req.reply(200, {});
       }).as("saveResponse");
 
       cy.mount(<Part {...defaults} />);

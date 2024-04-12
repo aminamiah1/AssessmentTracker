@@ -5,13 +5,10 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
-import { FaTrash } from "react-icons/fa";
-import { FaEdit } from "react-icons/fa";
 import { FaUserCircle } from "react-icons/fa";
-import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
+import { AssessmentOverallProgress } from "@/app/components/trackingProgress/AssessmentOverallProgress";
 // Import interfaces from interfaces.ts
 import { AssessmentTiles, Assignee } from "@/app/types/interfaces";
-import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
 
 // Functional component for rendering an assessment tile
 const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
@@ -59,7 +56,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
       <div className="bg-gray-100 shadow-lg rounded-lg dark:bg-gray-700">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
           <div className="md:flex md:items-center">
-            <div className="md:w-1/2 md:mt-0  text-lg">
+            <div className="md:w-1/6 md:mt-0  text-lg">
               <div>
                 <a
                   className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
@@ -100,12 +97,12 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </div>
               </p>
             </div>
-            <div className="md:w-1/4 mt-4 md:mt-0">
-              <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
-                Assignees
-              </h6>
+            <div className="md:w-1/6 mt-4 md:mt-0">
               {assessment.assignees.length > 0 ? (
                 <div>
+                  <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
+                    Assignees
+                  </h6>
                   {assessment.assignees.map((assignee: Assignee) => (
                     <div
                       key={assignee.id}
@@ -121,16 +118,17 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   ))}
                 </div>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-white">
+                <p className="text-lg text-gray-700 dark:text-white ml-2 text-center">
                   No assignees assigned
                 </p>
               )}
             </div>
-            <div className="md:w-1/3 md:mt-0 text-center">
+            <div className="w-full md:mt-0 text-center">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress
                   partsList={assessment.partSubmissions}
+                  handInDate={assessment.hand_in_week}
                 />
               ) : (
                 <h1
@@ -141,23 +139,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </h1>
               )}
             </div>
-            <div className="md:w-1/2 md:mt-0 text-center">
-              {assessment.hand_in_week && assessment.hand_out_week ? (
-                <TimeOverallProgress
-                  handOutDate={assessment.hand_out_week}
-                  handInDate={assessment.hand_in_week}
-                  partsList={assessment.partSubmissions}
-                />
-              ) : (
-                <h1
-                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
-                  data-cy="trackingFormToBeginStatus"
-                >
-                  No hand in and out weeks assigned
-                </h1>
-              )}
-            </div>
-            <div className="md:w-1/5 md:mt-0 text-center">
+            <div className="md:w-1/6 md:mt-0 text-center">
               <button className="mb-2" onClick={() => setShowDeleteModal(true)}>
                 <button className="px-6 py-2 mr-4 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
                   Delete

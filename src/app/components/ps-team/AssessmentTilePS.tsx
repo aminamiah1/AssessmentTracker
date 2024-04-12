@@ -1,12 +1,10 @@
 // Import necessary modules and components from React
 "use client";
-import React, { useState, useEffect, FormEvent } from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import Link from "next/link";
-import Select from "react-select";
 import { FaUserCircle } from "react-icons/fa";
-import { AssessmentOverallProgress } from "@/app/components/module-leader/AssessmentOverallProgress";
-import { TimeOverallProgress } from "@/app/components/TimeProgressBar/TimeProgressBar";
+import { AssessmentOverallProgress } from "@/app/components/trackingProgress/AssessmentOverallProgress";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 
@@ -14,15 +12,7 @@ import { ToastContainer } from "react-toastify";
 import { AssessmentTiles, Assignee } from "@/app/types/interfaces";
 
 // Functional component for rendering an assessment tile for the ps team
-const AssessmentTilePS = ({
-  assessment,
-  refetch,
-  setRefetch,
-}: {
-  assessment: AssessmentTiles;
-  refetch: any;
-  setRefetch: any;
-}) => {
+const AssessmentTilePS = ({ assessment }: { assessment: AssessmentTiles }) => {
   // State variable for managing the visibility of the delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -141,11 +131,12 @@ const AssessmentTilePS = ({
                 </p>
               )}
             </div>
-            <div className="md:w-1/3 md:mt-0 text-center">
+            <div className="w-full">
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress
                   partsList={assessment.partSubmissions}
+                  handInDate={assessment.hand_in_week}
                 />
               ) : (
                 <h1
@@ -153,22 +144,6 @@ const AssessmentTilePS = ({
                   data-cy="trackingFormToBeginStatus"
                 >
                   Tracking Process Not Yet Started
-                </h1>
-              )}
-            </div>
-            <div className="md:w-1/2 mb-4 md:mt-0 text-center">
-              {assessment.hand_in_week && assessment.hand_out_week ? (
-                <TimeOverallProgress
-                  handOutDate={assessment.hand_out_week}
-                  handInDate={assessment.hand_in_week}
-                  partsList={assessment.partSubmissions}
-                />
-              ) : (
-                <h1
-                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
-                  data-cy="trackingFormToBeginStatus"
-                >
-                  No hand in and out weeks assigned
                 </h1>
               )}
             </div>

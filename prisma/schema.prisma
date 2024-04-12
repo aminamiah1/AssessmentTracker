@@ -20,7 +20,6 @@ model Users {
   roles           Role[]
   image           String?
   set_assessments Assessment[]
-  assessments     Assessment[]     @relation("AssessmentsToUsers")
   modules         Module[]         @relation("ModulesToUsers")
   PartSubmission  PartSubmission[]
   status          UserStatus       @default(active)
@@ -50,7 +49,6 @@ model Assessment {
   setter          Users?           @relation(fields: [setter_id], references: [id], onDelete: Cascade)
   partSubmissions PartSubmission[]
   Response        Response[]
-  assignees       Users[]          @relation("AssessmentsToUsers")
   assigneesRole   AssigneeRole[]
   // Declare the composite unique key to stop duplicate assessment details being submitted through csv
   @@unique([assessment_name, module_id, hand_out_week, hand_in_week])

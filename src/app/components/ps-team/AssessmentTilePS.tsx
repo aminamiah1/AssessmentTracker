@@ -68,7 +68,7 @@ const AssessmentTilePS = ({
             <div className="md:w-1/2 md:mt-0  text-lg">
               <div>
                 <Link
-                  href={`/ps-team/assessment-management/view-assessment?id=${assessment.id}`}
+                  href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
                   className="flex items-center text-xl"
                 >
                   <p
@@ -176,11 +176,6 @@ const AssessmentTilePS = ({
               >
                 Delete
               </button>
-              <Link href={`/todo/${assessment.id}`} data-cy="seeTrackingForms">
-                <button className="px-6 mt-2 w-full py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
-                  See Tracking Form
-                </button>
-              </Link>
             </div>
           </div>
         </div>

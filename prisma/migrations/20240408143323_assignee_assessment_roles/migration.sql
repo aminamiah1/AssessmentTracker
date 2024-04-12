@@ -1,3 +1,12 @@
+-- DropForeignKey
+ALTER TABLE "_AssessmentsToUsers" DROP CONSTRAINT "_AssessmentsToUsers_A_fkey";
+
+-- DropForeignKey
+ALTER TABLE "_AssessmentsToUsers" DROP CONSTRAINT "_AssessmentsToUsers_B_fkey";
+
+-- DropTable
+DROP TABLE "_AssessmentsToUsers";
+
 -- CreateTable
 CREATE TABLE "AssigneeRole" (
     "id" SERIAL NOT NULL,

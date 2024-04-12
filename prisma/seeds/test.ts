@@ -33,14 +33,6 @@ async function seedModules() {
             hand_in_week: new Date(),
             hand_out_week: new Date(),
             setter_id: 1,
-            assignees: {
-              connect: [
-                { email: "leader@test.net" },
-                { email: "internal@test.net" },
-                { email: "external@test.net" },
-                { email: "panel@test.net" },
-              ],
-            },
             assigneesRole: {
               createMany: {
                 data: [
@@ -58,14 +50,6 @@ async function seedModules() {
             hand_in_week: example_date,
             hand_out_week: example_date,
             setter_id: 1,
-            assignees: {
-              connect: [
-                { email: "leader@test.net" },
-                { email: "internal@test.net" },
-                { email: "external@test.net" },
-                { email: "panel@test.net" },
-              ],
-            },
             assigneesRole: {
               createMany: {
                 data: [

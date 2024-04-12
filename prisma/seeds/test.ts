@@ -20,7 +20,15 @@ export default async function () {
 
 // Please do not use manual ids for the assessments as this caused errors with postgresql internal sequencing
 async function seedModules() {
-  // First  module defined
+  // First module declared, assessments declared later due to order needed for tests to work
+  await prisma.module.create({
+    data: {
+      module_code: "CM3101",
+      module_name: "Software Engineering",
+    },
+  });
+
+  // Second module declared
   await prisma.module.create({
     data: {
       module_code: "CM6127",
@@ -40,47 +48,40 @@ async function seedModules() {
     },
   });
 
-  // Second module declared
-  await prisma.module.create({
+  // Assessments for first module declared after to keep test friendly auto ids assigned
+  await prisma.assessment.create({
     data: {
-      module_code: "CM3101",
-      module_name: "Software Engineering",
-      assessments: {
+      assessment_name: "Cyber Security",
+      assessment_type: "Portfolio",
+      hand_in_week: new Date(),
+      hand_out_week: new Date(),
+      setter_id: 1,
+      module_id: 1,
+      assigneesRole: {
         create: [
-          {
-            assessment_name: "Cyber Security",
-            assessment_type: "Portfolio",
-            hand_in_week: new Date(),
-            hand_out_week: new Date(),
-            setter_id: 1,
-            assigneesRole: {
-              createMany: {
-                data: [
-                  { role: Role.module_leader, user_id: 1 },
-                  { role: Role.internal_moderator, user_id: 2 },
-                  { role: Role.external_examiner, user_id: 4 },
-                  { role: Role.panel_member, user_id: 3 },
-                ],
-              },
-            },
-          },
-          {
-            assessment_name: "Database Design",
-            assessment_type: Assessment_type.Practical_Based_Assessment,
-            hand_in_week: example_date,
-            hand_out_week: example_date,
-            setter_id: 1,
-            assigneesRole: {
-              createMany: {
-                data: [
-                  { role: Role.module_leader, user_id: 1 },
-                  { role: Role.internal_moderator, user_id: 2 },
-                  { role: Role.external_examiner, user_id: 4 },
-                  { role: Role.panel_member, user_id: 3 },
-                ],
-              },
-            },
-          },
+          { role: Role.module_leader, user_id: 1 },
+          { role: Role.internal_moderator, user_id: 2 },
+          { role: Role.external_examiner, user_id: 4 },
+          { role: Role.panel_member, user_id: 3 },
+        ],
+      },
+    },
+  });
+
+  await prisma.assessment.create({
+    data: {
+      assessment_name: "Database Design",
+      assessment_type: Assessment_type.Practical_Based_Assessment,
+      hand_in_week: example_date,
+      hand_out_week: example_date,
+      setter_id: 1,
+      module_id: 1,
+      assigneesRole: {
+        create: [
+          { role: Role.module_leader, user_id: 1 },
+          { role: Role.internal_moderator, user_id: 2 },
+          { role: Role.external_examiner, user_id: 4 },
+          { role: Role.panel_member, user_id: 3 },
         ],
       },
     },

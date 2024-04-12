@@ -1,4 +1,4 @@
-import { ModuleStatus } from "@prisma/client";
+import { ModuleStatus, Assessment_type, Role } from "@prisma/client";
 
 // Interface for the assessment model to work with form(e.g. react select boxes)
 export interface AssessmentForm {
@@ -121,4 +121,37 @@ export interface SelectOption {
 export interface SelectOptionRoles {
   value: number;
   label: string;
+}
+
+export interface AssessmentEditAssigneeRoles {
+  id: number;
+  assessment_name: string;
+  assessment_type: Assessment_type;
+  hand_out_week: Date;
+  hand_in_week: Date;
+  module_id: number;
+  setter_id: number | null;
+}
+
+export interface AssessmentGetAssigneeRoles {
+  id: number;
+  assessment_name: string;
+  assessment_type: Assessment_type;
+  hand_out_week: Date;
+  hand_in_week: Date;
+  module_id: number;
+  setter_id: number | null;
+  assigneesRole: {
+    user: { id: number; name: string; email: string };
+    role: Role;
+  }[];
+}
+
+export interface assigneeRole {
+  user: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  role: Role;
 }

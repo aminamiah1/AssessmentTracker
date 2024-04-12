@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
+import { formatAssessmentOnGet } from "@/app/utils/assigneeRolesFunctions";
 import prisma from "@/app/db";
 
 //Force api route to dynamically render
@@ -45,21 +46,10 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Restructure assessment into the expected format with assignees
-    const formattedAssessment = {
-      ...assessment,
-      assignees: assessment
-        ? assessment.assigneesRole.map((assigneeRole) => ({
-            name: assigneeRole.user.name,
-            email: assigneeRole.user.email,
-            role: assigneeRole.role,
-            id: assigneeRole.user.id,
-          }))
-        : [], // Provide an empty array if assessment is null
-    };
-
     // Check if assessment was found and return details
     if (assessment) {
+      // Restructure assessment into the expected format with assignees
+      const formattedAssessment = formatAssessmentOnGet(assessment);
       return NextResponse.json(formattedAssessment);
     } else {
       console.error("Error retrieving assessment");

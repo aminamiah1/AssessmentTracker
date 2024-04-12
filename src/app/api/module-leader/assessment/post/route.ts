@@ -2,6 +2,7 @@ import { Role } from "@prisma/client";
 import { SelectOption } from "@/app/types/interfaces";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
+import { constructAssigneeRolesDataForCreate } from "@/app/utils/assigneeRolesFunctions";
 import prisma from "@/app/db";
 
 export async function POST(request: NextRequest) {
@@ -42,24 +43,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Construct assigneeRoles data for bulk creation
-    const assigneeRolesData = [
-      ...externalExaminers.map((user: SelectOption) => ({
-        user_id: user.value,
-        role: Role.external_examiner,
-      })),
-      ...internalModerators.map((user: SelectOption) => ({
-        user_id: user.value,
-        role: Role.internal_moderator,
-      })),
-      ...panelMembers.map((user: SelectOption) => ({
-        user_id: user.value,
-        role: Role.panel_member,
-      })),
-      {
-        user_id: setter_id,
-        role: Role.module_leader,
-      },
-    ];
+    const assigneeRolesData = constructAssigneeRolesDataForCreate(
+      externalExaminers,
+      internalModerators,
+      panelMembers,
+      setter_id,
+    );
 
     // Attach assignees to assessment with their specific role for the assessment
     const newAssessment = await prisma.assessment.create({

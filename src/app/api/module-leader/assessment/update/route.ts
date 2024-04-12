@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { SelectOption } from "@/app/types/interfaces";
-import { Role } from "@prisma/client";
+import { constructAssigneeRolesDataForUpdate } from "@/app/utils/assigneeRolesFunctions";
 import prisma from "@/app/db";
 
 export async function POST(request: NextRequest) {
@@ -50,31 +49,6 @@ export async function POST(request: NextRequest) {
       where: { id },
     });
 
-    // Construct assigneeRoles data for bulk creation
-    const assigneeRolesData = [
-      ...externalExaminers.map((user: SelectOption) => ({
-        user_id: user.value,
-        role: Role.external_examiner,
-      })),
-      ...internalModerators.map((user: SelectOption) => ({
-        user_id: user.value,
-        role: Role.internal_moderator,
-      })),
-      ...panelMembers.map((user: SelectOption) => ({
-        user_id: user.value,
-        role: Role.panel_member,
-      })),
-      // Add module leader as setter conditionally if sent by a module leader else keep setter the same
-      ...(roleName === "module_leader"
-        ? [{ user_id: setter_id, role: Role.module_leader }]
-        : [
-            {
-              user_id: existingAssessment?.setter_id,
-              role: Role.module_leader,
-            },
-          ]),
-    ];
-
     // Ensure assessment exists
     if (!existingAssessment) {
       return new NextResponse(
@@ -83,14 +57,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get all users
+    // Construct assigneeRoles data for bulk updating
+    const assigneeRolesData = constructAssigneeRolesDataForUpdate(
+      externalExaminers,
+      internalModerators,
+      panelMembers,
+      setter_id,
+      existingAssessment,
+      roleName,
+    );
+
+    // Get all user ids
     const allUserIds = [
       ...externalExaminers,
       ...internalModerators,
       ...panelMembers,
     ].map((user) => user.value);
 
-    // Delete roles for users outside of the updated assignee list
+    // Delete assessment roles for users outside of the sent updated assignee list
     await prisma.assigneeRole.deleteMany({
       where: {
         assessment_id: id,

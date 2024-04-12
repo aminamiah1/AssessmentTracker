@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       externalExaminers,
       internalModerators,
       panelMembers,
+      roleName,
     } = await request.json();
 
     // Validate mandatory fields
@@ -35,13 +36,19 @@ export async function POST(request: NextRequest) {
       !setter_id ||
       !externalExaminers ||
       !internalModerators ||
-      !panelMembers
+      !panelMembers ||
+      !roleName
     ) {
       return new NextResponse(
         JSON.stringify({ message: "Please include all required fields" }),
         { status: 400 },
       );
     }
+
+    // Locate the assessment by ID
+    const existingAssessment = await prisma.assessment.findUnique({
+      where: { id },
+    });
 
     // Construct assigneeRoles data for bulk creation
     const assigneeRolesData = [
@@ -57,16 +64,16 @@ export async function POST(request: NextRequest) {
         user_id: user.value,
         role: Role.panel_member,
       })),
-      {
-        user_id: setter_id,
-        role: Role.module_leader,
-      },
+      // Add module leader as setter conditionally if sent by a module leader else keep setter the same
+      ...(roleName === "module_leader"
+        ? [{ user_id: setter_id, role: Role.module_leader }]
+        : [
+            {
+              user_id: existingAssessment?.setter_id,
+              role: Role.module_leader,
+            },
+          ]),
     ];
-
-    // Locate the assessment by ID
-    const existingAssessment = await prisma.assessment.findUnique({
-      where: { id },
-    });
 
     // Ensure assessment exists
     if (!existingAssessment) {
@@ -102,13 +109,18 @@ export async function POST(request: NextRequest) {
         hand_out_week,
         hand_in_week,
         module_id,
-        setter_id,
+        setter_id:
+          roleName === "module_leader"
+            ? setter_id
+            : existingAssessment.setter_id, // Set new setter id only if module leader role type
         assigneesRole: {
           upsert: assigneeRolesData.map((roleData) => ({
             where: {
-              user_id_assessment_id: {
+              // Unique identifer to check if existing assignee with role already exists for assessment
+              user_id_assessment_id_role: {
                 user_id: roleData.user_id,
                 assessment_id: id,
+                role: roleData.role,
               },
             },
             update: { role: roleData.role },

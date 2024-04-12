@@ -65,8 +65,8 @@ model AssigneeRole {
   assessment    Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
   priority      Int?
 
-  // Unique key used for editing assessment lookup
-  @@unique([user_id, assessment_id]) 
+  // Unique key used for editing assessment assignee roles
+  @@unique([user_id, assessment_id, role]) 
 }
 
 // 'PartSubmission' is for keeping track of when parts have been submitted;

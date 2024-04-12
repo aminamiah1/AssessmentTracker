@@ -88,10 +88,10 @@ function CreateAssessmentModuleLeaders() {
         const roles = session.user.roles;
         if (roles.includes("module_leader") || roles.includes("ps_team")) {
           setIsRole(true);
-          if (roles.includes("module_leader")) {
-            setRoleName("module_leader");
-          } else if (roles.includes("ps_team")) {
+          if (roles.includes("ps_team")) {
             setRoleName("ps_team");
+          } else if (roles.includes("module_leader")) {
+            setRoleName("module_leader");
           }
           //Set the assessment setter id to the current user
           setSetterId(parseInt(session.user.id as string, 10));
@@ -242,7 +242,7 @@ function CreateAssessmentModuleLeaders() {
       }
     }
 
-    if (existingAssignees) {
+    if (existingAssignees && updateUsers) {
       // Add the existing assignees to the appropriate user type array
       existingAssignees.forEach((assignee: Assignee) => {
         const { role, name, id } = assignee;
@@ -279,6 +279,8 @@ function CreateAssessmentModuleLeaders() {
             break;
         }
       });
+
+      setUpdateUsers(false);
     }
   }, [modules, moduleId, updateUsers]); // Runs if editing the assessment and is a module leader
 
@@ -362,6 +364,7 @@ function CreateAssessmentModuleLeaders() {
           internalModerators: Array.from(internalModerators),
           externalExaminers: Array.from(externalExaminers),
           panelMembers: Array.from(panelMembers),
+          roleName: roleName,
         }),
       });
 

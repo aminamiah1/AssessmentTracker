@@ -12,7 +12,15 @@ import { ToastContainer } from "react-toastify";
 import { AssessmentTiles, Assignee } from "@/app/types/interfaces";
 
 // Functional component for rendering an assessment tile for the ps team
-const AssessmentTilePS = ({ assessment }: { assessment: AssessmentTiles }) => {
+const AssessmentTilePS = ({
+  assessment,
+  refetch,
+  setRefetch,
+}: {
+  assessment: AssessmentTiles;
+  refetch: any;
+  setRefetch: any;
+}) => {
   // State variable for managing the visibility of the delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 

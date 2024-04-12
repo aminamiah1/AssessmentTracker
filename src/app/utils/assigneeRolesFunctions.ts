@@ -24,7 +24,7 @@ export function formatAssessmentOnGet(assessment: AssessmentGetAssigneeRoles) {
 }
 
 // Function to construct assignee roles data from the selection box data sent, to represent format assignee roles table is expecting
-export function constructAssigneeRolesDataForCreate(
+export function constructAssigneeRolesData(
   externalExaminers: SelectOptionRoles[],
   internalModerators: SelectOptionRoles[],
   panelMembers: SelectOptionRoles[],
@@ -32,6 +32,7 @@ export function constructAssigneeRolesDataForCreate(
 ): { user_id: number; role: Role }[] | null {
   // Allow 'null' to indicate no module leaders error
   const assigneeRolesData = [
+    // Map assignee types for the assessment from the selection box data
     ...externalExaminers.map((user: SelectOptionRoles) => ({
       user_id: user.value,
       role: Role.external_examiner,
@@ -44,6 +45,7 @@ export function constructAssigneeRolesDataForCreate(
       user_id: user.value,
       role: Role.panel_member,
     })),
+    // Map module leaders from the assessment associated module
     ...(module_leaders
       ? module_leaders.map((leader) => ({
           user_id: leader.id,
@@ -56,41 +58,6 @@ export function constructAssigneeRolesDataForCreate(
   if (!module_leaders || module_leaders.length === 0) {
     return null;
   }
-
-  return assigneeRolesData;
-}
-
-// Function to construct updated assignee roles data from the selection box data sent, to represent format assignee roles table is expecting
-export function constructAssigneeRolesDataForUpdate(
-  externalExaminers: SelectOptionRoles[],
-  internalModerators: SelectOptionRoles[],
-  panelMembers: SelectOptionRoles[],
-  setter_id: number,
-  existingAssessment: AssessmentEditAssigneeRoles,
-  roleName: string,
-): { user_id: number; role: Role }[] {
-  const assigneeRolesData = [
-    ...externalExaminers.map((user: SelectOptionRoles) => ({
-      user_id: user.value,
-      role: Role.external_examiner,
-    })),
-    ...internalModerators.map((user: SelectOptionRoles) => ({
-      user_id: user.value,
-      role: Role.internal_moderator,
-    })),
-    ...panelMembers.map((user: SelectOptionRoles) => ({
-      user_id: user.value,
-      role: Role.panel_member,
-    })),
-    ...(roleName === "module_leader"
-      ? [{ user_id: setter_id, role: Role.module_leader }]
-      : [
-          {
-            user_id: existingAssessment?.setter_id || setter_id,
-            role: Role.module_leader,
-          },
-        ]),
-  ];
 
   return assigneeRolesData;
 }

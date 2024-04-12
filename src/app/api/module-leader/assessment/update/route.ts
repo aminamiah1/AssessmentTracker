@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { constructAssigneeRolesDataForUpdate } from "@/app/utils/assigneeRolesFunctions";
+import { constructAssigneeRolesData } from "@/app/utils/assigneeRolesFunctions";
 import prisma from "@/app/db";
 
 export async function POST(request: NextRequest) {
@@ -57,15 +57,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Construct assigneeRoles data for bulk updating
-    const assigneeRolesData = constructAssigneeRolesDataForUpdate(
+    // Get module leaders from assessment associated module
+    const module = await prisma.module.findUnique({
+      where: {
+        id: module_id,
+      },
+      select: {
+        module_leaders: {
+          select: {
+            // Select only the 'id'
+            id: true,
+          },
+        },
+      },
+    });
+
+    // Construct assigneeRoles data for bulk creation
+    const assigneeRolesData = constructAssigneeRolesData(
       externalExaminers,
       internalModerators,
       panelMembers,
-      setter_id,
-      existingAssessment,
-      roleName,
+      module?.module_leaders,
     );
+
+    // Send error message to frontend if assessment does not have module leaders assigned
+    if (!assigneeRolesData) {
+      return new NextResponse(
+        JSON.stringify({
+          message:
+            "Please make sure assessment module has module leaders assigned.",
+        }),
+        { status: 400 },
+      );
+    }
 
     // Get all user ids
     const allUserIds = [
@@ -95,8 +119,8 @@ export async function POST(request: NextRequest) {
         module_id,
         setter_id:
           roleName === "module_leader"
-            ? setter_id
-            : existingAssessment.setter_id, // Set new setter id only if module leader role type
+            ? setter_id // Keep the provided setter_id if role is 'module_leader'
+            : existingAssessment.setter_id || module?.module_leaders?.[0]?.id, // Use existing setter or first module leader if ps team
         assigneesRole: {
           upsert: assigneeRolesData.map((roleData) => ({
             where: {

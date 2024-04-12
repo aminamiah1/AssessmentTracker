@@ -378,10 +378,11 @@ function CreateAssessmentModuleLeaders() {
           toast.error(
             "Please make sure assessment module has module leaders assigned.",
           );
+        } else {
+          toast.error(
+            "Assessment either already exists or incorrect details entered or database server failed, please try again",
+          );
         }
-        toast.error(
-          "Assessment either already exists or incorrect details entered or database server failed, please try again",
-        );
         throw new Error(errorData || "Failed to add assessment");
       }
 

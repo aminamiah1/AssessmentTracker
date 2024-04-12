@@ -1,8 +1,6 @@
-import { Role } from "@prisma/client";
-import { SelectOption } from "@/app/types/interfaces";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { constructAssigneeRolesDataForCreate } from "@/app/utils/assigneeRolesFunctions";
+import { constructAssigneeRolesData } from "@/app/utils/assigneeRolesFunctions";
 import prisma from "@/app/db";
 
 export async function POST(request: NextRequest) {
@@ -58,7 +56,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Construct assigneeRoles data for bulk creation
-    const assigneeRolesData = constructAssigneeRolesDataForCreate(
+    const assigneeRolesData = constructAssigneeRolesData(
       externalExaminers,
       internalModerators,
       panelMembers,

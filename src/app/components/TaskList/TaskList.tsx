@@ -2,6 +2,7 @@
 
 import { useTasks } from "@/app/hooks/useAssessments";
 import dynamic from "next/dynamic";
+import { HTMLProps } from "react";
 
 const ProgressListItem = dynamic(() =>
   import("@/app/components/ListItem/ProgressListItem").then(
@@ -9,7 +10,11 @@ const ProgressListItem = dynamic(() =>
   ),
 );
 
-interface TaskListProps {
+// HTMLProps is a useful utility which allows us to extend the HTMLDivElement
+// interface with additional props.  In other words, all props that we could
+// usually pass through to a <div>, we can pass through to this TaskListProps,
+// in addition to the custom props we define here (itemTemplateName, userId).
+interface TaskListProps extends HTMLProps<HTMLDivElement> {
   /** The name of the list item to populate the TaskList with - leaving
    * this in to support future list items (e.g. detailed items, grid items
    * etc.)
@@ -20,7 +25,12 @@ interface TaskListProps {
   userId: number;
 }
 
-export function TaskList({ itemTemplateName, userId }: TaskListProps) {
+export function TaskList({
+  itemTemplateName,
+  userId,
+  className,
+  ...props
+}: TaskListProps) {
   const { tasks, isLoading, error } = useTasks(userId);
 
   if (isLoading) return <div>Loading...</div>;
@@ -39,7 +49,11 @@ export function TaskList({ itemTemplateName, userId }: TaskListProps) {
   if (!ItemTemplate) return <div>Loading...</div>;
 
   return (
-    <div data-cy="task-list-container">
+    <div
+      data-cy="task-list-container"
+      className={`flex gap-4 ${className}`}
+      {...props}
+    >
       {tasks.map((task) => {
         const { id: assessmentId } = task.assessment;
 

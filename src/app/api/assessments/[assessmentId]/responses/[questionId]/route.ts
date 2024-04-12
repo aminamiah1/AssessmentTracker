@@ -1,15 +1,9 @@
 import { saveResponse } from "@/app/utils/server/form";
+import { Session } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { handleErrors } from "../../errors";
+import prisma from "@/app/db";
 
-/**
- *
- * @param request
- * @returns
- * @todo The plan is to implement functionality so that, when a PS Team
- * member requests this endpoint without arguments, they can get ALL users'
- * todos(?)'
- */
 export async function PUT(
   request: NextRequest,
   { params }: { params: { assessmentId: string; questionId: string } },
@@ -27,7 +21,7 @@ export async function PUT(
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: "Failed to save response" },
+      { message: "Something went wrong" },
       { status: 500 },
     );
   }
@@ -37,7 +31,25 @@ async function handleAllErrors(
   assessmentId: string,
   questionId: string,
 ): Promise<NextResponse | undefined> {
-  const errorResponse = await handleErrors(assessmentId);
+  const errorResponse = await handleErrors(
+    assessmentId,
+    async (session: Session) => {
+      let message: string | undefined;
+      const part = await prisma.part.findFirst({
+        where: {
+          Question: {
+            some: {
+              id: +questionId,
+            },
+          },
+        },
+      });
+      if (!part) message = "No part found for question";
+      else if (!session.user.roles.includes(part.role))
+        message = "Unauthorised";
+      return message;
+    },
+  );
   if (errorResponse) return errorResponse;
 
   let message: string = "";

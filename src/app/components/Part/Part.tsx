@@ -1,6 +1,6 @@
 "use client";
 
-import { usePartTodo } from "@/app/hooks/useAssessments";
+import { useParts, useTasks } from "@/app/hooks/useAssessments";
 import { submitPart } from "@/app/utils/client/assessment";
 import { PartContext } from "@/app/utils/client/form";
 import { Question as IQuestion } from "@prisma/client";
@@ -99,31 +99,69 @@ export function Part({
 }
 
 export function PartTodoByFetch({ assessmentId }: PartTodoByFetchProps) {
+  const getAllParts = false;
+
   const router = useRouter();
   const pathname = usePathname();
   const { data: session } = useSession({ required: true });
-  const { partTodo, isLoading, error } = usePartTodo(assessmentId);
+  const { parts, isLoading, error } = useParts(assessmentId, getAllParts);
 
   useEffect(() => {
     if (!session) return;
 
     // We don't want to interrupt a user's navigation if they're already
     // navigating to a specific part
-    if (!partTodo || window.location.hash) return;
+    if (!parts || window.location.hash) return;
 
     // Navigate the user to the outstanding part if they have the correct role
-    if (session.user.roles.includes(partTodo[0].role))
-      router.replace(`${pathname}#${partTodo[0].id}`);
-  }, [partTodo, session]);
+    if (session.user.roles.includes(parts[0].role))
+      router.replace(`${pathname}#${parts[0].id}`);
+  }, [parts, session]);
 
   if (isLoading || !session) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
+  // `usePartTodo` returns an array of parts, but we only want to display
+  // the first one (and ONLY one, in this case, since we're not getting all
+  // of them - even though `useParts()` does have the ability to fetch all parts
+  // for an assessment)
+  const partTodo = parts[0];
+  const hasCorrectRole = session.user.roles.includes(partTodo.role);
+
   return (
-    <>
-      <Part assessmentId={assessmentId} part={partTodo[0]} />
-    </>
+    <ValidatedTodoPart
+      assessmentId={assessmentId}
+      hasCorrectRole={hasCorrectRole}
+      part={partTodo}
+      userId={+session.user.id}
+    />
   );
+}
+
+interface ValidatedTodoPartProps {
+  assessmentId: number;
+  hasCorrectRole: boolean;
+  part: PartWithQuestionsAndResponses;
+  userId: number;
+}
+
+function ValidatedTodoPart({
+  assessmentId,
+  hasCorrectRole,
+  part,
+  userId,
+}: ValidatedTodoPartProps) {
+  const { tasks, isLoading, error } = useTasks(userId);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  let isAssignee = false;
+  if (tasks.some((t) => t.assessment.id === assessmentId)) isAssignee = true;
+
+  const canEdit = hasCorrectRole && isAssignee;
+
+  return <Part assessmentId={assessmentId} part={part} readonly={!canEdit} />;
 }
 
 function verifyResponses(

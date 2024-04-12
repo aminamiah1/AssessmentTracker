@@ -8,7 +8,7 @@ const defaultOptions: AssessmentTodoOptions = {
   onlyCurrentPart: true,
 };
 
-async function fetchAllTodos(assessmentId: number) {
+async function fetchAllParts(assessmentId: number) {
   const finishedParts = await prisma.partSubmission.findMany({
     where: {
       assessment_id: assessmentId,
@@ -74,7 +74,7 @@ async function fetchCurrentTodo(assessmentId: number) {
   return [partToRender];
 }
 
-export async function todosForAssessment(
+export async function partsForAssessment(
   assessmentId: number,
   options: AssessmentTodoOptions = defaultOptions,
 ): Promise<PartWithQuestionsAndResponses[]> {
@@ -82,7 +82,7 @@ export async function todosForAssessment(
 
   if (onlyCurrentPart) {
     return fetchCurrentTodo(assessmentId);
-  } else {
-    return fetchAllTodos(assessmentId);
   }
+
+  return fetchAllParts(assessmentId);
 }

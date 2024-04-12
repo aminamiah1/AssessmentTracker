@@ -1,8 +1,9 @@
-import Link from "next/link";
 import { ProgressBar } from "../ProgressBar/ProgressBar";
 import { ListItemWrapper } from "./ListItemWrapper";
 
-interface ProgressListItemContent {
+interface ProgressListItemProps {
+  href?: string;
+
   /** The progress of the item, as a decimal */
   progress: number;
 
@@ -16,14 +17,20 @@ interface ProgressListItemContent {
   progressText?: string;
 }
 
-function ProgressListItemContent({
+export function ProgressListItem({
+  href,
   progress,
   progressText = progress * 100 + "% complete",
   subtitle,
   title,
-}: ProgressListItemContent) {
+}: ProgressListItemProps) {
+  console.assert(
+    progress >= 0 && progress <= 1,
+    "Progress must be between 0 and 1, inclusively",
+  );
+
   return (
-    <ListItemWrapper>
+    <ListItemWrapper href={href}>
       <div className="min-w-max pr-6">
         <h2 className="text-2xl">{title}</h2>
         <h3 className="text-xl">{subtitle}</h3>
@@ -33,31 +40,5 @@ function ProgressListItemContent({
         <span data-cy="progress-text">{progressText}</span>
       </div>
     </ListItemWrapper>
-  );
-}
-
-interface ProgressListItemProps extends ProgressListItemContent {
-  /** The href to link to */
-  href?: string;
-}
-
-export function ProgressListItem({ href, ...props }: ProgressListItemProps) {
-  const { progress } = props;
-
-  console.assert(
-    progress >= 0 && progress <= 1,
-    "Progress must be between 0 and 1, inclusively",
-  );
-
-  return (
-    <>
-      {href ? (
-        <Link href={href} className="hover:cursor-pointer">
-          <ProgressListItemContent {...props} />
-        </Link>
-      ) : (
-        <ProgressListItemContent {...props} />
-      )}
-    </>
   );
 }

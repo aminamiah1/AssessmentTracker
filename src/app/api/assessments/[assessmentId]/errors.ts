@@ -1,5 +1,5 @@
 import { assessmentHasAssignee } from "@/app/utils/server/assessment";
-import { getServerSession } from "next-auth";
+import { Session, getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../../auth/[...nextauth]/options";
 
@@ -11,7 +11,10 @@ import { authOptions } from "../../auth/[...nextauth]/options";
  * @param assessmentId
  * @returns If the user is not authorized, a 401 response is returned
  */
-async function handleAuth(assessmentId: number) {
+async function handleAuth(
+  assessmentId: number,
+  ...additionalCases: ((session: Session) => Promise<string | undefined>)[]
+) {
   const session = await getServerSession(authOptions);
 
   const isLoggedIn = !!session;
@@ -25,6 +28,17 @@ async function handleAuth(assessmentId: number) {
   }
 
   let message: string = "";
+
+  if (isLoggedIn) {
+    for await (const additionalCase of additionalCases) {
+      const additionalMessage = await additionalCase(session);
+      if (additionalMessage) {
+        message = additionalMessage;
+        break;
+      }
+    }
+  }
+
   switch (true) {
     case !isLoggedIn:
       message = "Must be logged in";
@@ -32,7 +46,7 @@ async function handleAuth(assessmentId: number) {
     // TODO: Do we want PS Team members to be able to edit
     // other peoples' responses?
     case !isPSTeamMember && !isAssignee:
-      message = "Unauthorized";
+      message = "Unauthorised";
       break;
     default:
       break;
@@ -48,7 +62,10 @@ async function handleAuth(assessmentId: number) {
  * @param assessmentId
  * @returns
  */
-export async function handleErrors(assessmentId: string) {
+export async function handleErrors(
+  assessmentId: string,
+  ...additionalCases: ((session: Session) => Promise<string | undefined>)[]
+) {
   let message: string = "";
   switch (true) {
     case !assessmentId:
@@ -65,6 +82,6 @@ export async function handleErrors(assessmentId: string) {
     return new NextResponse(JSON.stringify({ message }), { status: 400 });
   }
 
-  const authError = await handleAuth(+assessmentId);
+  const authError = await handleAuth(+assessmentId, ...additionalCases);
   if (authError) return authError;
 }

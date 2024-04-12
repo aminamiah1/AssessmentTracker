@@ -20,7 +20,27 @@ export default async function () {
 
 // Please do not use manual ids for the assessments as this caused errors with postgresql internal sequencing
 async function seedModules() {
-  // First module declared
+  // First  module defined
+  await prisma.module.create({
+    data: {
+      module_code: "CM6127",
+      module_name: "Example Module",
+      module_leaders: {
+        connect: [{ email: "leader@test.net" }, { email: "sudo@test.net" }],
+      },
+      assessments: {
+        create: {
+          assessment_name: "My new assessment",
+          assessment_type: Assessment_type.Portfolio,
+          hand_out_week: example_date,
+          hand_in_week: example_date,
+          setter_id: 1,
+        },
+      },
+    },
+  });
+
+  // Second module declared
   await prisma.module.create({
     data: {
       module_code: "CM3101",
@@ -62,26 +82,6 @@ async function seedModules() {
             },
           },
         ],
-      },
-    },
-  });
-
-  // Second  module defined
-  await prisma.module.create({
-    data: {
-      module_code: "CM6127",
-      module_name: "Example Module",
-      module_leaders: {
-        connect: [{ email: "leader@test.net" }, { email: "sudo@test.net" }],
-      },
-      assessments: {
-        create: {
-          assessment_name: "My new assessment",
-          assessment_type: Assessment_type.Portfolio,
-          hand_out_week: example_date,
-          hand_in_week: example_date,
-          setter_id: 1,
-        },
       },
     },
   });

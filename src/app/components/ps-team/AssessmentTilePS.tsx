@@ -111,7 +111,7 @@ const AssessmentTilePS = ({
               </p>
             </div>
             <div className="md:w-1/4 mt-4 md:mt-0">
-              <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
+              <h6 className="mb-4 text-lg text-gray-700 dark:text-white text-center">
                 Assignees
               </h6>
               {assessment.assignees.length > 0 ? (

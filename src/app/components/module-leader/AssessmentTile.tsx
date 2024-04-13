@@ -56,7 +56,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
       <div className="bg-gray-100 shadow-lg rounded-lg dark:bg-gray-700">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
           <div className="md:flex md:items-center">
-            <div className="md:w-1/6 md:mt-0  text-lg">
+            <div className="md:w-1/6 md:mt-0 text-lg mr-[2rem]">
               <div>
                 <a
                   className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
@@ -97,7 +97,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </div>
               </p>
             </div>
-            <div className="md:w-1/6 mt-4 md:mt-0">
+            <div className="md:w-1/6 mt-4 md:mt-0 text-center md:flex md:items-center">
               {assessment.assignees.length > 0 ? (
                 <div>
                   <h6 className="mb-4 text-lg text-gray-700 dark:text-white">

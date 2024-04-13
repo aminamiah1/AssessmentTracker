@@ -44,8 +44,12 @@ describe("Add or edit a assessment as module leader or ps team", () => {
         .eq(0)
         .type("Paul Panel{enter}");
 
-      cy.getByTestId("submit").click();
+      cy.getByTestId("submit").click({ force: true });
 
+      // Wait for submission
+      cy.wait(1);
+
+      // Go here as the create assessment page goes back to last page on submission automatically
       cy.visit("/module-leader/assessment-management/view-assessments");
 
       // Check assessment submitted successfully by verifying tile with attributes exists

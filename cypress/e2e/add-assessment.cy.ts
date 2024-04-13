@@ -23,11 +23,23 @@ describe("Add a assessment", () => {
       .eq(0)
       .type("Portfolio{enter}");
 
-    cy.contains("label", "Assignees")
+    cy.contains("label", "Internal Moderators")
       .next()
       .find("input")
       .eq(0)
-      .type("Liam Leader{enter}");
+      .type("Ian Internal{enter}");
+
+    cy.contains("label", "External Examiners")
+      .next()
+      .find("input")
+      .eq(0)
+      .type("External Eric{enter}");
+
+    cy.contains("label", "Panel Members")
+      .next()
+      .find("input")
+      .eq(0)
+      .type("Paul Panel{enter}");
 
     cy.getByTestId("submit").click();
 
@@ -36,6 +48,10 @@ describe("Add a assessment", () => {
     cy.getByTestId("assessmentName")
       .last()
       .should("have.text", "new assessment");
+
+    cy.getByTestId("assigneeText")
+      .last()
+      .should("have.text", "Sam Super ●module leader");
   });
 
   // Pass if they cannot submit a blank assessment name
@@ -55,11 +71,11 @@ describe("Add a assessment", () => {
       .eq(0)
       .type("Portfolio{enter}");
 
-    cy.contains("label", "Assignees")
+    cy.contains("label", "Internal Moderator")
       .next()
       .find("input")
       .eq(0)
-      .type("Carol White{enter}");
+      .type("Ian Internal{enter}");
 
     cy.contains("button", "Create Assessment").click();
 

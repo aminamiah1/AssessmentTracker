@@ -109,7 +109,10 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                       className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
                     >
                       <FaUserCircle className="mr-2 text-black" size={30} />
-                      <span className="text-lg text-black dark:text-black">
+                      <span
+                        className="text-lg text-black dark:text-black"
+                        data-cy="assigneeText"
+                      >
                         {assignee.name}
                         {" ●"}
                         {assignee.role.replaceAll("_", " ")}

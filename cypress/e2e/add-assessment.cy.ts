@@ -1,4 +1,5 @@
 describe("Add or edit a assessment as module leader or ps team", () => {
+  // Module leader assessment management scenarios
   context("Part 1 - Module leader", () => {
     // Module leader logging in, leader only used in this test to isolate
     beforeEach(() => {
@@ -10,7 +11,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
       cy.visit("/module-leader/assessment-management/create-assessment");
 
       // Enter test assessment form data
-      cy.getByTestId("name").type("new assessment");
+      cy.getByTestId("name").type("test assessment");
 
       cy.contains("label", "Module")
         .next()
@@ -50,7 +51,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
       // Check assessment submitted successfully by verifying tile with attributes exists
       cy.getByTestId("assessmentName")
         .last()
-        .should("have.text", "new assessment");
+        .should("have.text", "test assessment");
 
       cy.getByTestId("assigneeText")
         .last()
@@ -96,7 +97,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
       cy.visit("/module-leader/assessment-management/create-assessment");
 
       // Enter test assessment form data
-      cy.getByTestId("name").type("new assessment");
+      cy.getByTestId("name").type("test assessment");
 
       cy.contains("label", "Module")
         .next()
@@ -134,16 +135,16 @@ describe("Add or edit a assessment as module leader or ps team", () => {
         );
     });
   });
-
+  // PS team assessment management scenarios
   context("Part 2 - PS Team", () => {
     // PS team member logging in
     beforeEach(() => {
       cy.login("ps@test.net");
     });
 
-    it("does not allow a module leader to submit an assessment with a no module leaders module attached", () => {
+    it("does not allow ps team to submit an assessment with a no module leaders module", () => {
       // By visting the edit assessment page and typing out the details
-      cy.visit("//module-leader/assessment-management/create-assessment?id=2");
+      cy.visit("/module-leader/assessment-management/create-assessment?id=2");
 
       cy.contains("label", "Module")
         .next()
@@ -171,7 +172,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
       cy.visit("/ps-team/assessment-management");
 
       // Enter test assessment form data
-      cy.getByTestId("assessmentName").eq(1).click();
+      cy.getByTestId("assessmentName").contains("test assessment").click();
 
       cy.contains("label", "Assessment Type")
         .next()
@@ -191,7 +192,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
 
       // Assessment should be edited and have module changed to python apps 3
       cy.getByTestId("moduleTypeText")
-        .eq(1)
+        .last()
         .should("have.text", "Python Apps 3 ● Portfolio");
     });
   });

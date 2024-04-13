@@ -127,7 +127,7 @@ const AssessmentTilePS = ({
                         data-cy="assigneeText"
                       >
                         {assignee.name}
-                        {" ●"}
+                        {" ● "}
                         {assignee.role.replaceAll("_", " ")}
                       </span>
                     </div>

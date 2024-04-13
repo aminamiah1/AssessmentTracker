@@ -114,7 +114,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                         data-cy="assigneeText"
                       >
                         {assignee.name}
-                        {" ●"}
+                        {" ● "}
                         {assignee.role.replaceAll("_", " ")}
                       </span>
                     </div>

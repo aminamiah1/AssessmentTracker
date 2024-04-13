@@ -1,7 +1,7 @@
 describe("Add a assessment", () => {
-  // Module leader logging in
+  // Module leader logging in, leader only used in this test to isolate
   beforeEach(() => {
-    cy.login("leader@test.net");
+    cy.login("leader4@test.net");
   });
 
   it("allows a module leader to add a assessment", () => {
@@ -15,7 +15,7 @@ describe("Add a assessment", () => {
       .next()
       .find("input")
       .eq(0)
-      .type("Example Module{enter}");
+      .type("Python Apps 3{enter}");
 
     cy.contains("label", "Assessment Type")
       .next()
@@ -51,7 +51,7 @@ describe("Add a assessment", () => {
 
     cy.getByTestId("assigneeText")
       .last()
-      .should("have.text", "Sam Super ●module leader");
+      .should("have.text", "Lemmy Leader ● module leader");
   });
 
   // Pass if they cannot submit a blank assessment name

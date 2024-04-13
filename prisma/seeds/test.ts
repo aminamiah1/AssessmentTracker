@@ -188,6 +188,17 @@ async function seedModules() {
       },
     },
   });
+
+  // Data used in create assessment test
+  await prisma.module.create({
+    data: {
+      module_code: "CM6135",
+      module_name: "Python Apps 3",
+      module_leaders: {
+        connect: [{ email: "leader4@test.net" }],
+      },
+    },
+  });
 }
 
 async function seedUsers() {
@@ -257,6 +268,13 @@ async function seedUsers() {
       {
         email: "leader3@test.net",
         name: "Levi Leader",
+        password,
+        roles: [Role.module_leader],
+        status: "active",
+      },
+      {
+        email: "leader4@test.net",
+        name: "Lemmy Leader",
         password,
         roles: [Role.module_leader],
         status: "active",

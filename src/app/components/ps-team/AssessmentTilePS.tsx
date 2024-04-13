@@ -80,7 +80,10 @@ const AssessmentTilePS = ({
                 </Link>
               </div>
               <p className="mt-4">
-                <span className="text-lg text-gray-700 dark:text-white mb-2">
+                <span
+                  className="text-lg text-gray-700 dark:text-white mb-2"
+                  data-cy="moduleTypeText"
+                >
                   {assessment.module_name} ●{" "}
                   {assessment.assessment_type.replaceAll("_", " ")}
                 </span>

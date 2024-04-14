@@ -1,5 +1,6 @@
 # Table of Contents
 
+- [Hosting](#hosting)
 - [Local development](#local-development)
   - [PostgreSQL](#postgresql)
   - [Database migrations](#database-migrations)
@@ -15,6 +16,10 @@
 - [Cypress](#cypress)
   - [Useful Commands](#useful-commands)
 - [Contributing](#contributing)
+
+# Hosting
+
+It is recommended to run this project with the current settings, as it is currently set up with automated deployments to [production](#production) and [staging](#staging) environments. If you plan to host this app somewhere other than OpenShift, you will need to modify the `.gitlab-ci.yml` script accordingly to suit your CI needs.
 
 # Local development
 
@@ -143,11 +148,13 @@ In deployment, OpenShift will execute a pre-configured deployment config, which 
     - This Database is then downloaded to the GitLab runner and saved as an artifact (30 days by default)
   - The image's tag in the registry is updated to `:latest`, maintaining the initial commit-specific tag
 - The deployment command is sent to OpenShift when the preparation stage is finished
-  - This will pull the `:latest` tag from the container registry and spin up a container to expose on the [staging URL](https://assessment-tracker-staging-assessment-tracker.apps.openshift.cs.cf.ac.uk/)
+  - This will pull the `:latest` tag from the container registry and spin up a container to expose on the [staging URL](https://staging-assessment-tracker.apps.containers.cs.cf.ac.uk/)
 
 ## Production
 
-See [staging](#staging) setup (Will fill this in at some point)
+To seed the production database, run `npx prisma db seed`. This will create a superuser with a random email and password (both of which will be outputted to the console). The password is only available once (subject to whatever logging services may also be running on the system).
+
+You will then have access to log into the site as the superuser, and start creating users.
 
 ### Production Pipeline Summary
 
@@ -164,7 +171,7 @@ See [staging](#staging) setup (Will fill this in at some point)
     - This Database is then downloaded to the GitLab runner and saved as an artifact (30 days by default)
   - The image's tag in the registry is updated to `:stable`, maintaining the initial commit-specific tag
 - The deployment command is sent to OpenShift when the preparation stage is finished
-  - This will pull the `:stable` tag from the container registry and spin up a container to expose on the [production URL](https://assessment-tracker-prod-assessment-tracker.apps.openshift.cs.cf.ac.uk/)
+  - This will pull the `:stable` tag from the container registry and spin up a container to expose on the [production URL](https://prod-assessment-tracker.apps.containers.cs.cf.ac.uk/)
 
 ## Important links
 

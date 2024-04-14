@@ -64,7 +64,7 @@ model AssigneeRole {
   priority      Int?
 
   // Unique key used for editing assessment assignee roles
-  @@unique([user_id, assessment_id, role]) 
+  @@unique([user_id, assessment_id]) 
 }
 
 // 'PartSubmission' is for keeping track of when parts have been submitted;

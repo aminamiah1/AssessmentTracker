@@ -124,11 +124,10 @@ export async function POST(request: NextRequest) {
         assigneesRole: {
           upsert: assigneeRolesData.map((roleData) => ({
             where: {
-              // Unique identifer to check if existing assignee with role already exists for assessment
-              user_id_assessment_id_role: {
+              // Unique identifer to check if existing assignee already exists for assessment
+              user_id_assessment_id: {
                 user_id: roleData.user_id,
                 assessment_id: id,
-                role: roleData.role,
               },
             },
             update: { role: roleData.role },

@@ -160,7 +160,13 @@ describe("Add or edit a assessment as module leader or ps team", () => {
 
       // When error occurs due to module having no module leader
       cy.on("uncaught:exception", (e, runnable) => {
-        return false;
+        if (
+          e.message.includes(
+            "Please make sure assessment module has module leaders assigned",
+          )
+        ) {
+          return false;
+        }
       });
 
       // User should get error message alerting them to make sure module targeted has module leaders assigned first

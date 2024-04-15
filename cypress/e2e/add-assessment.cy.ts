@@ -44,14 +44,12 @@ describe("Add or edit a assessment as module leader or ps team", () => {
 
       cy.getByTestId("submit-button").click({ force: true });
 
-      cy.wait(1);
-
       cy.visit("/module-leader/assessment-management/");
 
-      cy.wait(1);
-
       // Go here as the create assessment page goes back to last page on submission automatically
-      cy.getByTestId("viewAssessmentsButton").click({ force: true });
+      cy.getByTestId("viewAssessmentsButton")
+        .should("be.visible")
+        .click({ force: true });
 
       // Check assessment submitted successfully by verifying tile with attributes exists
       cy.getByTestId("assessmentName")
@@ -202,7 +200,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
         .eq(0)
         .type("Software Engineering{enter}");
 
-      cy.contains("button", "Edit Assessment").click();
+      cy.getByTestId("submit-button").click();
 
       // When error occurs due to module having no module leader
       cy.on("uncaught:exception", (e, runnable) => {

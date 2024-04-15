@@ -11,9 +11,7 @@ export default async function Page() {
   return (
     <div className="flex flex-col items-center mt-10">
       <div className="text-center">
-        <h1 className={`text-3xl text-black dark:text-white hover:text-white`}>
-          Task List
-        </h1>
+        <h1 className={`text-3xl text-black dark:text-white`}>Task List</h1>
       </div>
       <TaskList
         className="md:min-w-[60vw] mt-6 flex-col"

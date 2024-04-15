@@ -11,7 +11,7 @@
     "start": "next start",
     "start:test": "set NODE_ENV=test&& next start -p 3001",
     "lint": "next lint",
-    "dev:seed": "npx prisma migrate reset",
+    "dev:seed": "set NODE_ENV=development&& npx prisma migrate reset",
     "dev:test": "set NODE_ENV=test&& next dev -p 3001",
     "test:seed": "dotenv -v NODE_ENV=test -e .env.test -- npx prisma migrate reset --force",
     "cy:open": "npm run test:seed && cypress open",

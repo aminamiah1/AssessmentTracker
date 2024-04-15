@@ -4,12 +4,10 @@ describe("Add or edit a assessment as module leader or ps team", () => {
     // Module leader logging in, leader only used in this test to isolate
     beforeEach(() => {
       cy.login("leader4@test.net");
+      cy.visit("/module-leader/assessment-management/create-assessment");
     });
 
     it("allows a module leader to add a assessment", () => {
-      // By visting the create assessments page and typing out the details
-      cy.visit("/module-leader/assessment-management/create-assessment");
-
       // Enter test assessment form data
       cy.getByTestId("name").type("test assessment");
 
@@ -63,9 +61,6 @@ describe("Add or edit a assessment as module leader or ps team", () => {
     });
 
     it("does not allow a module leader to submit an assessment with a blank name", () => {
-      // By visting the create assessments page and typing out the details
-      cy.visit("/module-leader/assessment-management/create-assessment");
-
       cy.contains("label", "Module")
         .next()
         .find("input")
@@ -140,16 +135,6 @@ describe("Add or edit a assessment as module leader or ps team", () => {
     });
 
     it("should not allow a module leader to add an assessment with an invalid proforma link", () => {
-      // Spoof getting users by retrieving them from example JSON
-      cy.intercept("GET", "/api/module-leader/users/get", {
-        fixture: "users.json",
-      }).as("getAssignees");
-
-      // Spoof getting modules by retrieving them from example JSON
-      cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
-        fixture: "modules.json",
-      }).as("getModules");
-
       // Enter test assessment form data
       cy.getByTestId("name").type("New Assessment with Proforma");
 
@@ -157,7 +142,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
         .next()
         .find("input")
         .eq(0)
-        .type("Example Module{enter}");
+        .type("Python Apps 3{enter}");
 
       cy.contains("label", "Assessment Type")
         .next()

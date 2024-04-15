@@ -396,6 +396,7 @@ function CreateAssessmentModuleLeaders() {
             "Assessment either already exists or incorrect details entered or database server failed, please try again",
           );
         }
+        throw new Error(errorData || "Failed to add assessment");
       }
 
       toast.success("Assessment edited successfully!");
@@ -432,6 +433,7 @@ function CreateAssessmentModuleLeaders() {
             "Assessment either already exists or incorrect details entered or database server failed, please try again",
           );
         }
+        throw new Error(errorData || "Failed to add assessment");
       }
 
       toast.success("Assessment added successfully!");

@@ -44,7 +44,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
         .eq(0)
         .type("Paul Panel{enter}");
 
-      cy.getByTestId("submit").click({ force: true });
+      cy.getByTestId("submit-button").click({ force: true });
 
       // Wait for submission
       cy.wait(1);
@@ -254,7 +254,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
         .eq(0)
         .type("Python Apps 3{enter}");
 
-      cy.getByTestId("submit").click();
+      cy.getByTestId("submit-button").click();
 
       cy.visit("/ps-team/assessment-management");
 

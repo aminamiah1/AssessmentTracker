@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
       proforma_link,
     } = await request.json();
 
+    console.log(proforma_link);
+
     let new_proforma_link = proforma_link;
     if (proforma_link) {
       new_proforma_link = removeQueryParams(proforma_link);
@@ -53,7 +55,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (typeof proforma_link === "string" && !isProformaLink(proforma_link)) {
+    if (
+      proforma_link &&
+      typeof proforma_link === "string" &&
+      !isProformaLink(proforma_link)
+    ) {
       return NextResponse.json(
         { message: "The link provided was not valid, please check the URL." },
         { status: 400 },
@@ -108,7 +114,7 @@ export async function POST(request: NextRequest) {
             skipDuplicates: true,
           },
         },
-        proforma_link: new_proforma_link,
+        ...(new_proforma_link && { proforma_link: new_proforma_link }), // Conditional inclusion
       },
     });
 

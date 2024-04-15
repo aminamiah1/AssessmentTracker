@@ -54,7 +54,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (typeof proforma_link === "string" && !isProformaLink(proforma_link)) {
+    if (
+      proforma_link &&
+      typeof proforma_link === "string" &&
+      !isProformaLink(proforma_link)
+    ) {
       return NextResponse.json(
         { message: "The link provided was not valid, please check the URL." },
         { status: 400 },
@@ -72,7 +76,7 @@ export async function POST(request: NextRequest) {
         hand_out_week: true,
         hand_in_week: true,
         module_id: true,
-        proforma_link: true,
+        ...(new_proforma_link && { proforma_link: new_proforma_link }), // Conditional inclusion
       },
     });
 

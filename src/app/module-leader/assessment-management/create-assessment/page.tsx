@@ -337,7 +337,7 @@ function CreateAssessmentModuleLeaders() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Check if assignees or modules are empty
+    // Validation check to make sure user selects at least one assignee for each role type box and a module for the assessment
     if (
       internalModerators.length === 0 ||
       externalExaminers.length === 0 ||

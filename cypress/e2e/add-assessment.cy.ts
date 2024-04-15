@@ -96,24 +96,21 @@ describe("Add or edit a assessment as module leader or ps team", () => {
       });
     });
 
-    it("does not allow a module leader to submit an assessment with a a assignee role type not assigned", () => {
-      // By visting the create assessments page and typing out the details
-      cy.visit("/module-leader/assessment-management/create-assessment");
-
+    it("should allow a module leader to add an assessment with a proforma link", () => {
       // Enter test assessment form data
-      cy.getByTestId("name").type("test assessment");
+      cy.getByTestId("name").type("New Assessment with Proforma");
 
       cy.contains("label", "Module")
         .next()
         .find("input")
         .eq(0)
-        .type("Python Apps 3{enter}");
+        .type("Example Module{enter}");
 
       cy.contains("label", "Assessment Type")
         .next()
         .find("input")
         .eq(0)
-        .type("Portfolio{enter}");
+        .type("Written Assessment{enter}");
 
       // Choosing a assignee for each required role type
       cy.contains("label", "Internal Moderators")
@@ -128,17 +125,78 @@ describe("Add or edit a assessment as module leader or ps team", () => {
         .eq(0)
         .type("External Eric{enter}");
 
-      cy.contains("button", "Create Assessment").click();
-
-      //  User should get error message alerting them to make sure they assign a user of each role type to submit a assessment
-      cy.get(".Toastify__toast-icon", { timeout: 10000 })
+      cy.contains("label", "Panel Members")
         .next()
-        .should(
-          "contain.text",
-          "Please select at least one assignee for each type box or module for the assessment",
-        );
+        .find("input")
+        .eq(0)
+        .type("Paul Panel{enter}");
+
+      cy.getByTestId("proforma-link").type(
+        "https://cf.sharepoint.com/:b:/r/teams/ProformaFiles/Shared%20Documents/General/Proforma%20Example.pdf?csf=1&web=1&e=dn1Fk6",
+      );
+
+      cy.getByTestId("submit-button").click();
+      // TODO: Check to see if the assessment has been created from the view-assessments page, and that it has the proforma link.
+    });
+
+    it("should not allow a module leader to add an assessment with an invalid proforma link", () => {
+      // Spoof getting users by retrieving them from example JSON
+      cy.intercept("GET", "/api/module-leader/users/get", {
+        fixture: "users.json",
+      }).as("getAssignees");
+
+      // Spoof getting modules by retrieving them from example JSON
+      cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
+        fixture: "modules.json",
+      }).as("getModules");
+
+      // Enter test assessment form data
+      cy.getByTestId("name").type("New Assessment with Proforma");
+
+      cy.contains("label", "Module")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Example Module{enter}");
+
+      cy.contains("label", "Assessment Type")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Written Assessment{enter}");
+
+      // Choosing a assignee for each required role type
+      cy.contains("label", "Internal Moderators")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Ian Internal{enter}");
+
+      cy.contains("label", "External Examiners")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("External Eric{enter}");
+
+      cy.contains("label", "Panel Members")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Paul Panel{enter}");
+
+      cy.getByTestId("proforma-link").type(
+        "https://cf.sharepoint.com/INVALID_LINK",
+      );
+
+      cy.getByTestId("submit-button").click();
+
+      cy.get(".Toastify__toast-container").should(
+        "contain",
+        "Please input a valid link for the proforma. The link to the Teams channel can be found at the bottom of the page.",
+      );
     });
   });
+
   // PS team assessment management scenarios
   context("Part 2 - PS Team", () => {
     // PS team member logging in

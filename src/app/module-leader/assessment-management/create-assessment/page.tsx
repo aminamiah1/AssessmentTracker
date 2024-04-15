@@ -8,6 +8,7 @@ import {
   SelectOptionRoles,
   User,
 } from "@/app/types/interfaces";
+import { isProformaLink } from "@/app/utils/checkProformaLink";
 import { Assessment_type } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -65,6 +66,7 @@ function CreateAssessmentModuleLeaders() {
     hand_in_week: new Date(2024, 1, 26),
     module: [],
     setter_id: setterId,
+    proforma_link: "",
   });
 
   const typesOptionsSet = new Set(Object.values(Assessment_type));
@@ -177,6 +179,7 @@ function CreateAssessmentModuleLeaders() {
             hand_in_week,
             setterId,
             assignees,
+            proforma_link,
           } = data;
 
           // Only set the fields with the types that do not need to be adapted to work with the react select boxes
@@ -188,6 +191,7 @@ function CreateAssessmentModuleLeaders() {
             hand_out_week,
             hand_in_week,
             setterId,
+            proforma_link,
           }));
 
           // Set the data to be manipulated in the effect hook to work with react select boxes
@@ -347,6 +351,15 @@ function CreateAssessmentModuleLeaders() {
       return; // Then prevent form submission
     }
 
+    // Check if proforma link is valid
+    if (assessment.proforma_link && !isProformaLink(assessment.proforma_link)) {
+      console.error("Incorrect Link");
+      toast.error(
+        "Please input a valid link for the proforma. The link to the Teams channel can be found at the bottom of the page.",
+      );
+      return;
+    }
+
     // Convert selected module value to format database is expecting i.e. the value from the selector box
     const selectedModuleValue = (assessment.module as any).value;
 
@@ -383,7 +396,6 @@ function CreateAssessmentModuleLeaders() {
             "Assessment either already exists or incorrect details entered or database server failed, please try again",
           );
         }
-        throw new Error(errorData || "Failed to add assessment");
       }
 
       toast.success("Assessment edited successfully!");
@@ -403,6 +415,7 @@ function CreateAssessmentModuleLeaders() {
           internalModerators: Array.from(internalModerators),
           externalExaminers: Array.from(externalExaminers),
           panelMembers: Array.from(panelMembers),
+          proforma_link: assessment.proforma_link,
         }),
       });
 
@@ -419,7 +432,6 @@ function CreateAssessmentModuleLeaders() {
             "Assessment either already exists or incorrect details entered or database server failed, please try again",
           );
         }
-        throw new Error(errorData || "Failed to add assessment");
       }
 
       toast.success("Assessment added successfully!");
@@ -436,7 +448,7 @@ function CreateAssessmentModuleLeaders() {
   }
 
   return isRole ? (
-    <div className="bg-white dark:bg-darkmode h-screen max-h-full">
+    <div className="bg-white dark:bg-darkmode min-h-screen">
       <ToastContainer />
       {loading ? (
         <div>Loading form...</div>
@@ -476,7 +488,7 @@ function CreateAssessmentModuleLeaders() {
                 name="assessment_name"
                 data-cy="name"
                 required
-                className="form-input w-full mb-4 border border-gray-300 p-4 border-b-4 border-black"
+                className="form-input w-full mb-4 border border-gray-300 p-4 border-b-4"
               />
             </div>
 
@@ -535,7 +547,7 @@ function CreateAssessmentModuleLeaders() {
                   dateFormat="yyyy-MM-dd"
                   placeholderText="Select date"
                   required
-                  className="form-input mb-4 border border-gray-300 border-b-4 border-black p-4"
+                  className="form-input mb-4 border border-gray-300 border-b-4 p-4"
                 />
               </div>
             </div>
@@ -551,7 +563,7 @@ function CreateAssessmentModuleLeaders() {
                   dateFormat="yyyy-MM-dd"
                   placeholderText="Select date"
                   required
-                  className="form-input w-full mb-4 border border-gray-300 border-b-4 border-black p-4"
+                  className="form-input w-full mb-4 border border-gray-300 border-b-4 p-4"
                 />
               </div>
             </div>
@@ -625,16 +637,51 @@ function CreateAssessmentModuleLeaders() {
               </div>
             </div>
 
-            <div className="h-screen">
+            <div className="mb-4">
+              <label
+                htmlFor="proformaLink"
+                className="font-bold dark:text-white"
+              >
+                Proforma Link (See Below)
+              </label>
+              <input
+                type="text"
+                id="proformaLink"
+                placeholder="Enter link to Proforma using Teams"
+                value={assessment.proforma_link}
+                onChange={handleTextChange}
+                name="proforma_link"
+                data-cy="proforma-link"
+                className="form-input w-full mb-4 border border-gray-300 p-4 border-b-4"
+              />
+            </div>
+
+            <div className="mb-8">
               <button
                 type="submit"
-                data-cy="submit"
+                data-cy="submit-button"
                 className="bg-gray-700 hover:bg-azure-700 text-white font-bold rounded w-full py-7"
               >
                 {isEdit ? "Edit Assessment" : "Create Assessment"}
               </button>
             </div>
           </form>
+
+          {/* A link here will send the user to the Teams channel that holds all the proformas for all assessments.
+          This also makes it easier to find for those who want to upload a proforma, since all proformas should be 
+          together in the same channel. */}
+          <Link
+            href={
+              "https://teams.microsoft.com/l/channel/19%3A6GTy_KjB_ltaGAcnxkXiHvV6GjK_i_9AXNDWiX5gIJo1%40thread.tacv2/General?groupId=bb16a1e9-83a5-4634-8286-8bc817f89eed&tenantId="
+            }
+            passHref={true}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button className="py-4 underline text-blue-500 hover:text-blue-400">
+              Link to Proformas Teams Channel
+            </button>
+          </Link>
         </div>
       )}
     </div>

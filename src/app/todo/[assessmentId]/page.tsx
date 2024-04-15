@@ -59,21 +59,18 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div className="text-center w-full flex flex-col items-center dark:bg-slate-800">
-      <h1 className={`text-3xl text-black dark:text-white`}></h1>
-      <div className="flex flex-col gap-24">
-        {finishedParts.map((part) => {
-          return (
-            <Part
-              key={part.id}
-              part={part}
-              assessmentId={+assessmentId}
-              readonly={true}
-            />
-          );
-        })}
+      {finishedParts.map((part) => {
+        return (
+          <Part
+            key={part.id}
+            part={part}
+            assessmentId={+assessmentId}
+            readonly={true}
+          />
+        );
+      })}
 
-        <PartTodoByFetch assessmentId={+assessmentId} />
-      </div>
+      <PartTodoByFetch assessmentId={+assessmentId} />
     </div>
   );
 }

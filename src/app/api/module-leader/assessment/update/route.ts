@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { constructAssigneeRolesData } from "@/app/utils/assigneeRolesFunctions";
 import prisma from "@/app/db";
+import {
+  isProformaLink,
+  removeQueryParams,
+} from "@/app/utils/checkProformaLink";
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,7 +27,13 @@ export async function POST(request: NextRequest) {
       internalModerators,
       panelMembers,
       roleName,
+      proforma_link,
     } = await request.json();
+
+    let new_proforma_link = proforma_link;
+    if (proforma_link) {
+      new_proforma_link = removeQueryParams(proforma_link);
+    }
 
     // Validate mandatory fields
     if (
@@ -39,7 +49,14 @@ export async function POST(request: NextRequest) {
       !roleName
     ) {
       return new NextResponse(
-        JSON.stringify({ message: "Please include all required fields" }),
+        JSON.stringify({ message: "Please include all required fields." }),
+        { status: 400 },
+      );
+    }
+
+    if (typeof proforma_link === "string" && !isProformaLink(proforma_link)) {
+      return NextResponse.json(
+        { message: "The link provided was not valid, please check the URL." },
         { status: 400 },
       );
     }
@@ -47,12 +64,22 @@ export async function POST(request: NextRequest) {
     // Locate the assessment by ID
     const existingAssessment = await prisma.assessment.findUnique({
       where: { id },
+      select: {
+        id: true,
+        setter_id: true,
+        assessment_name: true,
+        assessment_type: true,
+        hand_out_week: true,
+        hand_in_week: true,
+        module_id: true,
+        proforma_link: true,
+      },
     });
 
     // Ensure assessment exists
     if (!existingAssessment) {
       return new NextResponse(
-        JSON.stringify({ message: "Assessment not found" }),
+        JSON.stringify({ message: "Assessment not found." }),
         { status: 404 },
       );
     }
@@ -117,6 +144,7 @@ export async function POST(request: NextRequest) {
         hand_out_week,
         hand_in_week,
         module_id,
+        proforma_link: new_proforma_link,
         setter_id:
           roleName === "module_leader"
             ? setter_id // Keep the provided setter_id if role is 'module_leader'
@@ -142,7 +170,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error(error);
     return new NextResponse(
-      JSON.stringify({ message: "Internal Server Error" }),
+      JSON.stringify({ message: "Internal Server Error." }),
       { status: 500 },
     );
   }

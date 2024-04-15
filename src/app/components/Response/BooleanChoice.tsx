@@ -17,7 +17,7 @@ export function BooleanChoice({
   return (
     <div
       data-cy="response"
-      className="flex justify-evenly items-center has-[:disabled]:justify-center has-[:disabled]:font-bold"
+      className="flex lg:gap-2 justify-evenly items-center has-[:disabled]:justify-center has-[:disabled]:font-bold"
     >
       <RadioInput
         choice="Yes"

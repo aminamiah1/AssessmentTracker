@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
+import {
+  isProformaLink,
+  removeQueryParams,
+} from "@/app/utils/checkProformaLink";
 
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession();
 
     if (!session) {
-      return NextResponse.json({ error: "Must be logged in" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Must be logged in." },
+        { status: 401 },
+      );
     }
 
     const {
@@ -18,7 +25,13 @@ export async function POST(request: NextRequest) {
       module_id,
       setter_id,
       assigneesList,
+      proforma_link,
     } = await request.json();
+
+    let new_proforma_link = proforma_link;
+    if (proforma_link) {
+      new_proforma_link = removeQueryParams(proforma_link);
+    }
 
     if (
       !assessment_name ||
@@ -30,7 +43,14 @@ export async function POST(request: NextRequest) {
       !assigneesList
     ) {
       return new NextResponse(
-        JSON.stringify({ message: "Please include all required fields" }),
+        JSON.stringify({ message: "Please include all required fields." }),
+        { status: 400 },
+      );
+    }
+
+    if (typeof proforma_link === "string" && !isProformaLink(proforma_link)) {
+      return NextResponse.json(
+        { message: "The link provided was not valid, please check the URL." },
         { status: 400 },
       );
     }
@@ -48,6 +68,7 @@ export async function POST(request: NextRequest) {
         assignees: {
           connect: assigneesIds,
         },
+        proforma_link: new_proforma_link,
       },
     });
 
@@ -55,7 +76,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error(error);
     return new NextResponse(
-      JSON.stringify({ message: "Internal Server Error" }),
+      JSON.stringify({ message: "Internal Server Error." }),
       { status: 500 },
     );
   }

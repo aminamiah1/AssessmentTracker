@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
+import {
+  isProformaLink,
+  removeQueryParams,
+} from "@/app/utils/checkProformaLink";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,7 +23,13 @@ export async function POST(request: NextRequest) {
       module_id,
       setter_id,
       assigneesList,
+      proforma_link,
     } = await request.json();
+
+    let new_proforma_link = proforma_link;
+    if (proforma_link) {
+      new_proforma_link = removeQueryParams(proforma_link);
+    }
 
     // Validate mandatory fields
     if (
@@ -32,7 +42,14 @@ export async function POST(request: NextRequest) {
       !assigneesList
     ) {
       return new NextResponse(
-        JSON.stringify({ message: "Please include all required fields" }),
+        JSON.stringify({ message: "Please include all required fields." }),
+        { status: 400 },
+      );
+    }
+
+    if (typeof proforma_link === "string" && !isProformaLink(proforma_link)) {
+      return NextResponse.json(
+        { message: "The link provided was not valid, please check the URL." },
         { status: 400 },
       );
     }
@@ -50,13 +67,14 @@ export async function POST(request: NextRequest) {
         hand_in_week: true,
         module_id: true,
         assignees: { select: { id: true } },
+        proforma_link: true,
       }, // Select desired assignee field
     });
 
     // Ensure assessment exists
     if (!existingAssessment) {
       return new NextResponse(
-        JSON.stringify({ message: "Assessment not found" }),
+        JSON.stringify({ message: "Assessment not found." }),
         { status: 404 },
       );
     }
@@ -84,6 +102,7 @@ export async function POST(request: NextRequest) {
         assignees: {
           connect: assigneesIds, //Add on the new assignees
         },
+        proforma_link: new_proforma_link,
       }, // Update desired fields
     });
 
@@ -92,7 +111,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error(error);
     return new NextResponse(
-      JSON.stringify({ message: "Internal Server Error" }),
+      JSON.stringify({ message: "Internal Server Error." }),
       { status: 500 },
     );
   }

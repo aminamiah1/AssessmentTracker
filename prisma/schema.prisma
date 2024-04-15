@@ -50,6 +50,7 @@ model Assessment {
   partSubmissions PartSubmission[]
   Response        Response[]
   assignees       Users[]          @relation("AssessmentsToUsers")
+  proforma_link   String?          @unique
   // Declare the composite unique key to stop duplicate assessment details being submitted through csv
 
   @@unique([assessment_name, module_id, hand_out_week, hand_in_week])

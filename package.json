@@ -6,9 +6,9 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"next dev\" \"tsx ./scripts/AutomatedEmails.ts\"",
+    "start": "concurrently \"next start\" \"tsx ./scripts/AutomatedEmails.ts\"",
     "build": "next build",
-    "start": "next start",
     "start:test": "set NODE_ENV=test&& next start -p 3001",
     "lint": "next lint",
     "dev:seed": "set NODE_ENV=development&& npx prisma migrate reset",
@@ -24,8 +24,10 @@
   "dependencies": {
     "@babel/core": "^7.23.9",
     "@babel/plugin-transform-typescript": "^7.23.6",
+    "@headlessui/react": "^1.7.18",
     "@nextui-org/react": "^2.2.9",
     "@prisma/client": "^5.10.1",
+    "@sendgrid/mail": "^8.1.3",
     "@tanstack/react-table": "^8.11.8",
     "babel-plugin-istanbul": "^6.1.1",
     "bcrypt": "^5.1.1",
@@ -44,6 +46,7 @@
     "mdb-react-ui-kit": "^7.2.0",
     "next": "14.1.0",
     "next-auth": "^4.24.5",
+    "node-cron": "^3.0.3",
     "papaparse": "^5.4.1",
     "react": "^18",
     "react-bootstrap": "^2.10.1",
@@ -59,8 +62,7 @@
     "sonner": "^1.4.1",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7",
-    "ts-node": "^10.9.2"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.12.21",
@@ -68,7 +70,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/formidable": "^3.4.5",
-    "@types/node": "^20",
+    "@types/node-cron": "^3.0.11",
     "@types/papaparse": "^5.3.14",
     "@types/react": "^18",
     "@types/react-datepicker": "^6.0.1",
@@ -77,6 +79,7 @@
     "@types/react-table": "^7.7.19",
     "autoprefixer": "^10.0.1",
     "babel-plugin-istanbul": "^6.1.1",
+    "concurrently": "^8.2.2",
     "cypress": "^13.6.4",
     "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.4.5",
@@ -91,6 +94,7 @@
     "prisma-erd-generator": "^1.11.2",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.7.2",
     "typescript": "^5",
     "webpack": "^5.90.1"
   },

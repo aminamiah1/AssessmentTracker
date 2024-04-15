@@ -24,6 +24,7 @@ model Users {
   PartSubmission  PartSubmission[]
   status          UserStatus       @default(active)
   AssigneeRole    AssigneeRole[]
+  isOptedInForEmails Boolean @default(false)
 
   @@map("users")
 }

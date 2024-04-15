@@ -12,6 +12,7 @@ describe("/todo", () => {
   it("should not yet have a task for the internal moderator", () => {
     cy.login("internal@test.net");
     cy.visit("/todo");
+    cy.closeModal();
     cy.get("main").should("contain.text", "No tasks! 🎉");
   });
 
@@ -41,7 +42,7 @@ describe("/todo", () => {
     beforeEach(() => {
       cy.login("leader@test.net");
       cy.visit("/todo");
-
+      cy.closeModal();
       cy.intercept("PUT", "/api/assessments/*/responses/*", (req) => {
         req.continue((res) => {
           expect(res.statusCode).to.equal(200);
@@ -185,6 +186,7 @@ describe("/todo", () => {
     beforeEach(() => {
       cy.login("internal@test.net");
       cy.visit("/todo");
+      cy.closeModal();
 
       cy.intercept("PUT", "/api/users/2/todos", (req) => {
         req.continue((res) => {

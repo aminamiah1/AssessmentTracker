@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import prisma from "@/app/db";
 import { NextRequest, NextResponse } from "next/server";
+import { ModuleStatus } from "@prisma/client";
 
 export async function GET(request: Request) {
   try {
@@ -36,7 +37,12 @@ export async function GET(request: Request) {
     const modules = await prisma.users.findMany({
       where: { id: userId },
       select: {
-        modules: true,
+        modules: {
+          where: {
+            // Only get active modules showing
+            status: ModuleStatus.active,
+          },
+        },
       },
     });
 

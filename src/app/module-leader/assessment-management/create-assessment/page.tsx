@@ -345,7 +345,7 @@ function CreateAssessmentModuleLeaders() {
       assessment.module.length === 0
     ) {
       toast.error(
-        "Please select at least one assignee for each type box or module for the assessment",
+        "Please select at least one assignee for each role type box and a module for the assessment",
       );
       return; // Then prevent form submission
     }
@@ -376,9 +376,9 @@ function CreateAssessmentModuleLeaders() {
           assessment_type: selectedAssessmentTypeValue,
           module_id: selectedModuleValue,
           setter_id: setterId,
-          internalModerators: Array.from(internalModerators),
-          externalExaminers: Array.from(externalExaminers),
-          panelMembers: Array.from(panelMembers),
+          internalModerators: internalModerators,
+          externalExaminers: externalExaminers,
+          panelMembers: panelMembers,
           roleName: roleName,
         }),
       });
@@ -412,9 +412,9 @@ function CreateAssessmentModuleLeaders() {
           hand_in_week: assessment.hand_in_week,
           module_id: selectedModuleValue,
           setter_id: setterId,
-          internalModerators: Array.from(internalModerators),
-          externalExaminers: Array.from(externalExaminers),
-          panelMembers: Array.from(panelMembers),
+          internalModerators: internalModerators,
+          externalExaminers: externalExaminers,
+          panelMembers: panelMembers,
           proforma_link: assessment.proforma_link,
         }),
       });

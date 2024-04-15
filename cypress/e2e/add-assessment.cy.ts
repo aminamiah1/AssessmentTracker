@@ -48,6 +48,8 @@ describe("Add or edit a assessment as module leader or ps team", () => {
 
       cy.visit("/module-leader/assessment-management/");
 
+      cy.wait(1);
+
       // Go here as the create assessment page goes back to last page on submission automatically
       cy.getByTestId("viewAssessmentsButton").click({ force: true });
 

@@ -76,6 +76,11 @@ Cypress.Commands.add("login", (email: string = "leader@test.net") => {
   );
 });
 
+Cypress.Commands.add("closeModal", () => {
+  cy.contains("Close").as("closeButton");
+  cy.get("@closeButton").click();
+});
+
 Cypress.Commands.add("mount", (component, options) => {
   return mount(component, options);
 });

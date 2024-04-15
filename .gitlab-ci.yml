@@ -12,6 +12,8 @@ variables:
   DATABASE_URL: postgres://postgres@postgres/$POSTGRES_DB
   NEXTAUTH_URL: $NEXTAUTH_URL
   NEXTAUTH_SECRET: $NEXTAUTH_SECRET
+  SENDGRID_API_KEY: $SENDGRID_API_KEY
+  EMAIL_FROM: "Assessment Tracker <trackerassessment@gmail.com>"
 
   # For image building
   CI_COMMIT_LABEL: $CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA

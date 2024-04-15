@@ -15,4 +15,8 @@ declare namespace Cypress {
   interface Chainable {
     login(username?: string): Chainable<void>;
   }
+
+  interface Chainable {
+    closeModal(): Chainable<Element>;
+  }
 }

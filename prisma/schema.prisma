@@ -24,6 +24,7 @@ model Users {
   modules         Module[]         @relation("ModulesToUsers")
   PartSubmission  PartSubmission[]
   status          UserStatus       @default(active)
+  isOptedInForEmails Boolean @default(false)
 
   @@map("users")
 }

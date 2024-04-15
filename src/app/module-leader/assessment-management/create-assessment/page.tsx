@@ -257,7 +257,6 @@ function CreateAssessmentModuleLeaders() {
         // Stop duplicate existing users being shown in options
         setUsers((prevUsers) => [
           ...prevUsers.filter((user) => {
-            console.log("Comparing:", user.value, id);
             return user.value !== id;
           }),
         ]);

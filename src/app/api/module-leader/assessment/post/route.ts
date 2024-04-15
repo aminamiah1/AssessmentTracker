@@ -31,8 +31,6 @@ export async function POST(request: NextRequest) {
       proforma_link,
     } = await request.json();
 
-    console.log(proforma_link);
-
     let new_proforma_link = proforma_link;
     if (proforma_link) {
       new_proforma_link = removeQueryParams(proforma_link);

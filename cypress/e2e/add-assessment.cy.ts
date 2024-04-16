@@ -1,4 +1,4 @@
-describe("Add or edit a assessment as module leader or ps team", () => {
+describe("Add or edit an assessment as module leader or ps team", () => {
   // Module leader assessment management scenarios
   context("Part 1 - Module leader", () => {
     // Module leader logging in, leader only used in this test to isolate
@@ -7,7 +7,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
       cy.visit("/module-leader/assessment-management/create-assessment");
     });
 
-    it("allows a module leader to add a assessment", () => {
+    it("allows a module leader to add an assessment", () => {
       // Enter test assessment form data
       cy.getByTestId("name").type("test assessment");
 
@@ -186,7 +186,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
 
       cy.getByTestId("submit-button").click();
 
-      cy.get(".Toastify__toast-container").should(
+      cy.get(".Toastify__toast-container", { timeout: 2000 }).should(
         "contain",
         "Please input a valid link for the proforma. The link to the Teams channel can be found at the bottom of the page.",
       );
@@ -224,7 +224,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
       });
 
       // User should get error message alerting them to make sure module targeted has module leaders assigned first
-      cy.get(".Toastify__toast-icon", { timeout: 10000 })
+      cy.get(".Toastify__toast-icon", { timeout: 2000 })
         .next()
         .should(
           "contain.text",
@@ -232,7 +232,7 @@ describe("Add or edit a assessment as module leader or ps team", () => {
         );
     });
 
-    it("allows ps team to edit a assessment successfully", () => {
+    it("allows ps team to edit an assessment successfully", () => {
       cy.visit("/ps-team/assessment-management");
 
       // Enter test assessment form data

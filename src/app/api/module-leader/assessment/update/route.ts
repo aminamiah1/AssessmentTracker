@@ -121,12 +121,11 @@ export async function POST(request: NextRequest) {
       module.module_leaders,
     );
 
-    // Send error message to frontend if assessment does not have module leaders assigned
     if (!assigneeRolesData) {
       return new NextResponse(
         JSON.stringify({
           message:
-            "Please make sure assessment module has module leaders assigned.",
+            "Please make sure at least one assignee has been set for each assessment role type.",
         }),
         { status: 400 },
       );

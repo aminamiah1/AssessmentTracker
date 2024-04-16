@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       return new NextResponse(
         JSON.stringify({
           message:
-            "Please make sure assessment module has module leaders assigned.",
+            "Please make sure at least one assignee has been set for each assessment role type",
         }),
         { status: 400 },
       );

@@ -89,7 +89,7 @@ build-image:
           -p CI_NEXTAUTH_URL=$NEXTAUTHPROD_URL \
           -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
           -p SENDGRID_API_KEY=$SENDGRID_API_KEY \
-          -p EMAIL_FROM=$EMAIL_FROM \
+          -p EMAIL_FROM="$EMAIL_FROM" \
           -l name=build-$CI_COMMIT_SHORT_SHA | oc create -f -;
         oc start-build $PROD_CONFIG_NAME --follow --wait;
 
@@ -103,7 +103,7 @@ build-image:
           -p CI_NEXTAUTH_URL=$NEXTAUTHSTAGING_URL \
           -p CI_NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
           -p SENDGRID_API_KEY=$SENDGRID_API_KEY \
-          -p EMAIL_FROM=$EMAIL_FROM \
+          -p EMAIL_FROM="$EMAIL_FROM" \
           -l name=build-$CI_COMMIT_LABEL | oc create -f -;
         oc start-build $STAGING_CONFIG_NAME --follow --wait;
       fi

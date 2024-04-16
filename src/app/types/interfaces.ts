@@ -42,6 +42,7 @@ export interface AssessmentLoad {
   module_name: string;
   assignees: [];
   partSubmissions: [];
+  proforma_link: string;
 }
 // Interface for the assessment model form details presented(edit forms)
 export interface AssessmentDetails {
@@ -66,6 +67,7 @@ export interface AssessmentTiles {
   setter: { id: number; name: string; roles: [] };
   assignees: [];
   partSubmissions: []; // Last part submission associated with assessment
+  proforma_link: string;
 }
 // Interface for the assignees
 export interface Assignee {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
+import { formatAssessmentOnGet } from "@/app/utils/assigneeRolesFunctions";
 import prisma from "@/app/db";
 
 //Force api route to dynamically render
@@ -32,14 +33,24 @@ export async function GET(request: NextRequest) {
     const assessment = await prisma.assessment.findUnique({
       where: { id },
       include: {
+        // Get assessment specific role for assignees
+        assigneesRole: {
+          select: {
+            role: true,
+            user: {
+              select: { name: true, email: true, id: true },
+            },
+          },
+        },
         module: { select: { module_name: true } },
-        assignees: { select: { id: true, name: true, roles: true } },
       },
     });
 
     // Check if assessment was found and return details
     if (assessment) {
-      return NextResponse.json(assessment);
+      // Restructure assessment into the expected format with assignees
+      const formattedAssessment = formatAssessmentOnGet(assessment);
+      return NextResponse.json(formattedAssessment);
     } else {
       console.error("Error retrieving assessment");
       return new NextResponse(

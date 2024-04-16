@@ -432,9 +432,9 @@ export default function ViewAssessmentsPSTeam() {
         }`}
       >
         <div className="bg-white p-5 border border-black rounded-lg">
-          <p className="mb-4">Import CSV</p>
+          <p className="mb-4 text-black">Import CSV</p>
           <p className="text-black">
-            Please choose a import bulk assessment csv to upload
+            Please choose a import bulk assessment csv to upload.
           </p>
           <div className="mt-4">
             <input
@@ -456,22 +456,23 @@ export default function ViewAssessmentsPSTeam() {
                 Selected File: {selectedFileName}
               </p>
             )}
-            <div className="text-black mb-4">
-              <h2 className="mt-4 mb-4">Expected CSV Format</h2>
-              <Image
-                src="/images/exampleCSV.png"
-                alt="example csv image"
-                className="mb-4"
-                width={1000}
-                height={1000}
-              />
+            <div className="text-black mb-8 mt-10">
               <a
                 href="/ImportAssessments.csv"
                 download="/ImportAssessments.csv"
-                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
+                className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4 mb-4"
               >
                 Download Example CSV
               </a>
+              <div className="mt-10">
+                <a
+                  href="/images/exampleCSV.png"
+                  download="/images/exampleCSV.png"
+                  className="bg-gray-700 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
+                >
+                  Download Example Image
+                </a>
+              </div>
             </div>
             {selectedFile && (
               <div className="text-black">

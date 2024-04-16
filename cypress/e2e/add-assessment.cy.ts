@@ -1,172 +1,263 @@
-describe("Add a assessment", () => {
-  // Module leader logging in
-  beforeEach(() => {
-    cy.login("leader@test.net");
-    cy.visit("/module-leader/assessment-management/create-assessment");
-  });
+describe("Add or edit an assessment as module leader or ps team", () => {
+  // Module leader assessment management scenarios
+  context("Part 1 - Module leader", () => {
+    // Module leader logging in, leader only used in this test to isolate
+    beforeEach(() => {
+      cy.login("leader4@test.net");
+      cy.visit("/module-leader/assessment-management/create-assessment");
+    });
 
-  // Pass if they can add a assessment's details
-  it("should allow a module leader to add an assessment without a proforma link", () => {
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/users/get", {
-      fixture: "users.json",
-    }).as("getAssignees");
+    it("allows a module leader to add an assessment", () => {
+      // Enter test assessment form data
+      cy.getByTestId("name").type("test assessment");
 
-    // Spoof getting modules by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
-      fixture: "modules.json",
-    }).as("getModules");
+      cy.contains("label", "Module")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Python Apps 3{enter}");
 
-    // Enter test assessment form data
-    cy.getByTestId("name").type("New Assessment");
+      cy.contains("label", "Assessment Type")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Portfolio{enter}");
 
-    cy.contains("label", "Module")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Computing basics 1{enter}");
+      // Choosing a assignee for each required role type
+      cy.contains("label", "Internal Moderators")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Ian Internal{enter}");
 
-    cy.contains("label", "Assessment Type")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Portfolio{enter}");
+      cy.contains("label", "External Examiners")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("External Eric{enter}");
 
-    cy.contains("label", "Assignees")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Carol White{enter}");
+      cy.contains("label", "Panel Members")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Paul Panel{enter}");
 
-    // Submit the form
-    cy.getByTestId("submit-button").click();
+      cy.getByTestId("name").should("have.value", "test assessment");
 
-    // TODO: Check to see if the assessment has been created from the view-assessments page.
-  });
+      cy.intercept("POST", "/api/module-leader/assessment/post*", (req) => {
+        req.continue((res) => {
+          expect(res.statusCode).to.equal(200);
+        });
+      }).as("saveAssessment");
 
-  it("should allow a module leader to add an assessment with a proforma link", () => {
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/users/get", {
-      fixture: "users.json",
-    }).as("getAssignees");
+      cy.getByTestId("submit-button")
+        .click({ force: true })
+        .wait("@saveAssessment");
 
-    // Spoof getting modules by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
-      fixture: "modules.json",
-    }).as("getModules");
+      cy.visit("/module-leader/assessment-management/");
 
-    // Enter test assessment form data
-    cy.getByTestId("name").type("New Assessment with Proforma");
+      // Go here as the create assessment page goes back to last page on submission automatically
+      cy.getByTestId("viewAssessmentsButton")
+        .should("be.visible")
+        .click({ force: true });
 
-    cy.contains("label", "Module")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Example Module{enter}");
+      // Check assessment submitted successfully by verifying tile with attributes exists
+      cy.getByTestId("assessmentName")
+        .last()
+        .should("have.text", "test assessment");
 
-    cy.contains("label", "Assessment Type")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Written Assessment{enter}");
+      cy.getByTestId("assigneeText")
+        .last()
+        .should("have.text", "Lemmy Leader ● module leader");
+    });
 
-    cy.contains("label", "Assignees")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Bob Smith{enter}");
+    it("does not allow a module leader to submit an assessment with a blank name", () => {
+      cy.contains("label", "Module")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Computing basics 1{enter}");
 
-    cy.getByTestId("proforma-link").type(
-      "https://cf.sharepoint.com/:b:/r/teams/ProformaFiles/Shared%20Documents/General/Proforma%20Example.pdf?csf=1&web=1&e=dn1Fk6",
-    );
+      cy.contains("label", "Assessment Type")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Portfolio{enter}");
 
-    cy.getByTestId("submit-button").click();
+      cy.contains("label", "Internal Moderator")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Ian Internal{enter}");
 
-    // TODO: Check to see if the assessment has been created from the view-assessments page, and that it has the proforma link.
-  });
+      cy.contains("button", "Create Assessment").click();
 
-  // Pass if they cannot submit a blank assessment name
-  it("should not allow a module leader to submit an assessment with a blank name", () => {
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/users/get", {
-      fixture: "users.json",
-    }).as("getAssignees");
+      cy.contains("label", "Assessment Title").should("have.value", ""); // Should still be on the same page as not submitted
 
-    // Spoof getting modules by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
-      fixture: "modules.json",
-    }).as("getModules");
+      // Test validation message appears alerting them to fill in the assessment title field
+      cy.getByTestId("name").then(($input: any) => {
+        // Had to change this to be browser-agnostic (not checking entire string,
+        // just that some of the string is what we expect it to be)
+        expect($input[0].validationMessage).to.include("Please fill");
+      });
+    });
 
-    cy.contains("label", "Module")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Computing basics 1{enter}");
+    it("should allow a module leader to add an assessment with a proforma link", () => {
+      // Enter test assessment form data
+      cy.getByTestId("name").type("New Assessment with Proforma");
 
-    cy.contains("label", "Assessment Type")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Portfolio{enter}");
+      cy.contains("label", "Module")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Example Module{enter}");
 
-    cy.contains("label", "Assignees")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Carol White{enter}");
+      cy.contains("label", "Assessment Type")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Written Assessment{enter}");
 
-    cy.contains("button", "Create Assessment").click();
+      // Choosing a assignee for each required role type
+      cy.contains("label", "Internal Moderators")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Ian Internal{enter}");
 
-    cy.contains("label", "Assessment Title").should("have.value", ""); // Should still be on the same page as not submitted
+      cy.contains("label", "External Examiners")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("External Eric{enter}");
 
-    cy.getByTestId("name").then(($input: any) => {
-      // Had to change this to be browser-agnostic (not checking entire string,
-      // just that some of the string is what we expect it to be)
-      expect($input[0].validationMessage).to.include("Please fill");
+      cy.contains("label", "Panel Members")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Paul Panel{enter}");
+
+      cy.getByTestId("proforma-link").type(
+        "https://cf.sharepoint.com/:b:/r/teams/ProformaFiles/Shared%20Documents/General/Proforma%20Example.pdf?csf=1&web=1&e=dn1Fk6",
+      );
+
+      cy.getByTestId("submit-button").click();
+      // TODO: Check to see if the assessment has been created from the view-assessments page, and that it has the proforma link.
+    });
+
+    it("should not allow a module leader to add an assessment with an invalid proforma link", () => {
+      // Enter test assessment form data
+      cy.getByTestId("name").type("New Assessment with Proforma");
+
+      cy.contains("label", "Module")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Python Apps 3{enter}");
+
+      cy.contains("label", "Assessment Type")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Written Assessment{enter}");
+
+      // Choosing a assignee for each required role type
+      cy.contains("label", "Internal Moderators")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Ian Internal{enter}");
+
+      cy.contains("label", "External Examiners")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("External Eric{enter}");
+
+      cy.contains("label", "Panel Members")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Paul Panel{enter}");
+
+      cy.getByTestId("proforma-link").type(
+        "https://cf.sharepoint.com/INVALID_LINK",
+      );
+
+      cy.getByTestId("submit-button").click();
+
+      cy.get(".Toastify__toast-container", { timeout: 2000 }).should(
+        "contain",
+        "Please input a valid link for the proforma. The link to the Teams channel can be found at the bottom of the page.",
+      );
     });
   });
 
-  it("should not allow a module leader to add an assessment with an invalid proforma link", () => {
-    // Spoof getting users by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/users/get", {
-      fixture: "users.json",
-    }).as("getAssignees");
+  // PS team assessment management scenarios
+  context("Part 2 - PS Team", () => {
+    // PS team member logging in
+    beforeEach(() => {
+      cy.login("ps@test.net");
+    });
 
-    // Spoof getting modules by retrieving them from example JSON
-    cy.intercept("GET", "/api/module-leader/modules/get?id=6", {
-      fixture: "modules.json",
-    }).as("getModules");
+    it("does not allow ps team to submit an assessment with a no module leaders module", () => {
+      // By visting the edit assessment page and typing out the details
+      cy.visit("/module-leader/assessment-management/create-assessment?id=2");
 
-    // Enter test assessment form data
-    cy.getByTestId("name").type("New Assessment with Proforma");
+      cy.contains("label", "Module")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Software Engineering{enter}");
 
-    cy.contains("label", "Module")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Example Module{enter}");
+      cy.getByTestId("submit-button").click();
 
-    cy.contains("label", "Assessment Type")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Written Assessment{enter}");
+      // When error occurs due to module having no module leader
+      cy.on("uncaught:exception", (e, runnable) => {
+        if (
+          e.message.includes(
+            "Please make sure assessment module has module leaders assigned",
+          )
+        ) {
+          return false;
+        }
+      });
 
-    cy.contains("label", "Assignees")
-      .next()
-      .find("input")
-      .eq(0)
-      .type("Alice Johnson{enter}");
+      // User should get error message alerting them to make sure module targeted has module leaders assigned first
+      cy.get(".Toastify__toast-icon", { timeout: 2000 })
+        .next()
+        .should(
+          "contain.text",
+          "Please make sure assessment module has module leaders assigned.",
+        );
+    });
 
-    cy.getByTestId("proforma-link").type(
-      "https://cf.sharepoint.com/INVALID_LINK",
-    );
+    it("allows ps team to edit an assessment successfully", () => {
+      cy.visit("/ps-team/assessment-management");
 
-    cy.getByTestId("submit-button").click();
+      // Enter test assessment form data
+      cy.getByTestId("assessmentName").contains("test assessment").click();
 
-    cy.get(".Toastify__toast-container").should(
-      "contain",
-      "Please input a valid link for the proforma. The link to the Teams channel can be found at the bottom of the page.",
-    );
+      cy.contains("label", "Assessment Type")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Portfolio{enter}");
+
+      cy.contains("label", "Module")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Python Apps 3{enter}");
+
+      cy.getByTestId("submit-button").click();
+
+      cy.visit("/ps-team/assessment-management");
+
+      // Assessment should be edited and have module changed to python apps 3
+      cy.getByTestId("moduleTypeText")
+        .last()
+        .should("have.text", "Python Apps 3 ● Portfolio");
+    });
   });
 });

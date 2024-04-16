@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
+import { constructAssigneeRolesData } from "@/app/utils/assigneeRolesFunctions";
 import prisma from "@/app/db";
 import {
   isProformaLink,
@@ -22,7 +23,10 @@ export async function POST(request: NextRequest) {
       hand_in_week,
       module_id,
       setter_id,
-      assigneesList,
+      externalExaminers,
+      internalModerators,
+      panelMembers,
+      roleName,
       proforma_link,
     } = await request.json();
 
@@ -39,7 +43,10 @@ export async function POST(request: NextRequest) {
       !hand_in_week ||
       !module_id ||
       !setter_id ||
-      !assigneesList
+      !externalExaminers ||
+      !internalModerators ||
+      !panelMembers ||
+      !roleName
     ) {
       return new NextResponse(
         JSON.stringify({ message: "Please include all required fields." }),
@@ -47,28 +54,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (typeof proforma_link === "string" && !isProformaLink(proforma_link)) {
+    if (
+      proforma_link &&
+      typeof proforma_link === "string" &&
+      !isProformaLink(proforma_link)
+    ) {
       return NextResponse.json(
         { message: "The link provided was not valid, please check the URL." },
         { status: 400 },
       );
     }
 
-    const assigneesIds = assigneesList.map((userId: any) => ({ id: userId }));
-
     // Locate the assessment by ID
     const existingAssessment = await prisma.assessment.findUnique({
       where: { id },
       select: {
         id: true,
+        setter_id: true,
         assessment_name: true,
         assessment_type: true,
         hand_out_week: true,
         hand_in_week: true,
         module_id: true,
-        assignees: { select: { id: true } },
-        proforma_link: true,
-      }, // Select desired assignee field
+        ...(new_proforma_link && { proforma_link: new_proforma_link }), // Conditional inclusion
+      },
     });
 
     // Ensure assessment exists
@@ -79,12 +88,62 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Take off the existing connected assignees to the assessment
-    const takeOffExistingAssignees = await prisma.assessment.update({
-      where: { id },
-      data: {
-        assignees: {
-          disconnect: existingAssessment.assignees, // This disconnects existing assignees
+    // Get module leaders from assessment associated module
+    const module = await prisma.module.findUnique({
+      where: {
+        id: module_id,
+      },
+      select: {
+        module_leaders: {
+          select: {
+            // Select only the 'id'
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (module?.module_leaders.length === 0 || module === null) {
+      return new NextResponse(
+        JSON.stringify({
+          message:
+            "Please make sure assessment module has module leaders assigned.",
+        }),
+        { status: 400 },
+      );
+    }
+
+    // Construct assigneeRoles data for bulk creation
+    const assigneeRolesData = constructAssigneeRolesData(
+      externalExaminers,
+      internalModerators,
+      panelMembers,
+      module.module_leaders,
+    );
+
+    if (!assigneeRolesData) {
+      return new NextResponse(
+        JSON.stringify({
+          message:
+            "Please make sure at least one assignee has been set for each assessment role type.",
+        }),
+        { status: 400 },
+      );
+    }
+
+    // Get all user ids
+    const allUserIds = [
+      ...externalExaminers,
+      ...internalModerators,
+      ...panelMembers,
+    ].map((user) => user.value);
+
+    // Delete assessment roles for users outside of the sent updated assignee list
+    await prisma.assigneeRole.deleteMany({
+      where: {
+        assessment_id: id,
+        NOT: {
+          user_id: { in: allUserIds },
         },
       },
     });
@@ -98,12 +157,25 @@ export async function POST(request: NextRequest) {
         hand_out_week,
         hand_in_week,
         module_id,
-        setter_id,
-        assignees: {
-          connect: assigneesIds, //Add on the new assignees
-        },
         proforma_link: new_proforma_link,
-      }, // Update desired fields
+        setter_id:
+          roleName === "module_leader"
+            ? setter_id // Keep the provided setter_id if role is 'module_leader'
+            : existingAssessment.setter_id || module?.module_leaders?.[0]?.id, // Use existing setter or first module leader if ps team
+        assigneesRole: {
+          upsert: assigneeRolesData.map((roleData) => ({
+            where: {
+              // Unique identifer to check if existing assignee already exists for assessment
+              user_id_assessment_id: {
+                user_id: roleData.user_id,
+                assessment_id: id,
+              },
+            },
+            update: { role: roleData.role },
+            create: roleData,
+          })),
+        },
+      },
     });
 
     // Return updated assessment data

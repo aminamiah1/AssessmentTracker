@@ -40,7 +40,15 @@ export async function GET(req: NextRequest) {
         },
       },
       include: {
-        assignees: { select: { name: true, roles: true } },
+        // Get assessment specific role for assignees
+        assigneesRole: {
+          select: {
+            role: true,
+            user: {
+              select: { name: true, email: true, id: true },
+            },
+          },
+        },
         setter: { select: { name: true, id: true, roles: true } },
         partSubmissions: {
           select: { Part: true },
@@ -64,6 +72,12 @@ export async function GET(req: NextRequest) {
       module_name: moduleNames.find(
         (module: any) => module.id === assessment.module_id,
       )!.module_name,
+      // Send assignees as the front end expects with role just for this assessment
+      assignees: assessment.assigneesRole.map((assigneeRole: any) => ({
+        name: assigneeRole.user.name,
+        email: assigneeRole.user.email,
+        role: assigneeRole.role,
+      })),
     }));
 
     if (assessmentsWithModules.length === 0) {

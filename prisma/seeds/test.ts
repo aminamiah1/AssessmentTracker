@@ -20,67 +20,15 @@ export default async function () {
 
 // Please do not use manual ids for the assessments as this caused errors with postgresql internal sequencing
 async function seedModules() {
-  // First module defined, assessment not connected yet as needs to be inserted after the expected assessment with an id of 1
+  // First module declared, assessments declared later due to order needed for tests to work
   await prisma.module.create({
     data: {
       module_code: "CM3101",
       module_name: "Software Engineering",
-      assessments: {
-        create: [
-          {
-            id: 2,
-            assessment_name: "Cyber Security",
-            assessment_type: "Portfolio",
-            hand_in_week: new Date(),
-            hand_out_week: new Date(),
-            setter_id: 1,
-            assignees: {
-              connect: [
-                {
-                  email: "leader@test.net",
-                },
-                {
-                  email: "internal@test.net",
-                },
-                {
-                  email: "external@test.net",
-                },
-                {
-                  email: "panel@test.net",
-                },
-              ],
-            },
-          },
-          {
-            id: 6,
-            assessment_name: "Database Design",
-            assessment_type: Assessment_type.Practical_Based_Assessment,
-            hand_in_week: example_date,
-            hand_out_week: example_date,
-            setter_id: 1,
-            assignees: {
-              connect: [
-                {
-                  email: "leader@test.net",
-                },
-                {
-                  email: "internal@test.net",
-                },
-                {
-                  email: "external@test.net",
-                },
-                {
-                  email: "panel@test.net",
-                },
-              ],
-            },
-          },
-        ],
-      },
     },
   });
 
-  // Second module defined connects the assessment with an id assigned of 1
+  // Second module declared
   await prisma.module.create({
     data: {
       module_code: "CM6127",
@@ -90,13 +38,51 @@ async function seedModules() {
       },
       assessments: {
         create: {
-          id: 1,
           assessment_name: "My new assessment",
           assessment_type: Assessment_type.Portfolio,
           hand_out_week: example_date,
           hand_in_week: example_date,
           setter_id: 1,
         },
+      },
+    },
+  });
+
+  // Assessments for first module declared after to keep test friendly auto ids assigned
+  await prisma.assessment.create({
+    data: {
+      assessment_name: "Cyber Security",
+      assessment_type: "Portfolio",
+      hand_in_week: new Date(),
+      hand_out_week: new Date(),
+      setter_id: 1,
+      module_id: 1,
+      assigneesRole: {
+        create: [
+          { role: Role.module_leader, user_id: 1 },
+          { role: Role.internal_moderator, user_id: 2 },
+          { role: Role.external_examiner, user_id: 4 },
+          { role: Role.panel_member, user_id: 3 },
+        ],
+      },
+    },
+  });
+
+  await prisma.assessment.create({
+    data: {
+      assessment_name: "Database Design",
+      assessment_type: Assessment_type.Practical_Based_Assessment,
+      hand_in_week: example_date,
+      hand_out_week: example_date,
+      setter_id: 1,
+      module_id: 1,
+      assigneesRole: {
+        create: [
+          { role: Role.module_leader, user_id: 1 },
+          { role: Role.internal_moderator, user_id: 2 },
+          { role: Role.external_examiner, user_id: 4 },
+          { role: Role.panel_member, user_id: 3 },
+        ],
       },
     },
   });
@@ -134,7 +120,6 @@ async function seedModules() {
         createMany: {
           data: [
             {
-              id: 3,
               assessment_name: "Python Fundamentals",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -142,7 +127,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 4,
               assessment_name: "Python Advanced",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -150,7 +134,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 5,
               assessment_name: "Python Next Level",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: new Date(),
@@ -180,7 +163,6 @@ async function seedModules() {
         createMany: {
           data: [
             {
-              id: 7,
               assessment_name: "Python Fundamentals 2",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -188,7 +170,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 8,
               assessment_name: "Python Advanced 2",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -196,7 +177,6 @@ async function seedModules() {
               setter_id: 8,
             },
             {
-              id: 9,
               assessment_name: "Python Next Level 2",
               assessment_type: Assessment_type.Portfolio,
               hand_out_week: example_date,
@@ -205,6 +185,17 @@ async function seedModules() {
             },
           ],
         },
+      },
+    },
+  });
+
+  // Data used in create assessment test
+  await prisma.module.create({
+    data: {
+      module_code: "CM6135",
+      module_name: "Python Apps 3",
+      module_leaders: {
+        connect: [{ email: "leader4@test.net" }],
       },
     },
   });
@@ -277,6 +268,13 @@ async function seedUsers() {
       {
         email: "leader3@test.net",
         name: "Levi Leader",
+        password,
+        roles: [Role.module_leader],
+        status: "active",
+      },
+      {
+        email: "leader4@test.net",
+        name: "Lemmy Leader",
         password,
         roles: [Role.module_leader],
         status: "active",

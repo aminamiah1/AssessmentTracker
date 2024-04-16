@@ -20,10 +20,10 @@ model Users {
   roles           Role[]
   image           String?
   set_assessments Assessment[]
-  assessments     Assessment[]     @relation("AssessmentsToUsers")
   modules         Module[]         @relation("ModulesToUsers")
   PartSubmission  PartSubmission[]
   status          UserStatus       @default(active)
+  AssigneeRole    AssigneeRole[]
   isOptedInForEmails Boolean @default(false)
 
   @@map("users")
@@ -50,11 +50,23 @@ model Assessment {
   setter          Users?           @relation(fields: [setter_id], references: [id], onDelete: Cascade)
   partSubmissions PartSubmission[]
   Response        Response[]
-  assignees       Users[]          @relation("AssessmentsToUsers")
+  assigneesRole   AssigneeRole[]
   proforma_link   String?          @unique
   // Declare the composite unique key to stop duplicate assessment details being submitted through csv
-
   @@unique([assessment_name, module_id, hand_out_week, hand_in_week])
+}
+
+model AssigneeRole {
+  id            Int        @id @default(autoincrement())
+  user_id       Int
+  role          Role
+  assessment_id Int
+  user          Users      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  assessment    Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
+  priority      Int?
+
+  // Unique key used for editing assessment assignee roles
+  @@unique([user_id, assessment_id]) 
 }
 
 // 'PartSubmission' is for keeping track of when parts have been submitted;

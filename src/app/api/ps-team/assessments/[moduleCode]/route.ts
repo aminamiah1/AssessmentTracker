@@ -38,7 +38,15 @@ export async function GET(req: NextRequest) {
         },
       },
       include: {
-        assignees: { select: { id: true, name: true, roles: true } },
+        // Get assessment specific role for assignees
+        assigneesRole: {
+          select: {
+            role: true,
+            user: {
+              select: { name: true, email: true },
+            },
+          },
+        },
         setter: { select: { id: true, name: true, roles: true } },
         partSubmissions: {
           select: { Part: true },

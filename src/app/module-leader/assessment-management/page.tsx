@@ -36,7 +36,10 @@ export default function ManageAssessmentsModuleLeaders() {
           </Link>
         </div>
         <div className="mb-0">
-          <Link href="/module-leader/assessment-management/view-assessments">
+          <Link
+            href="/module-leader/assessment-management/view-assessments"
+            data-cy="viewAssessmentsButton"
+          >
             <button className="bg-gray-800 text-white h-32 md:h-80 w-32 md:w-80 ml-2 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
               <div>
                 <i className="bi bi-envelope-paper text-5xl md:text-9xl"></i>

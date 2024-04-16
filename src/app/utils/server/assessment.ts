@@ -9,9 +9,9 @@ export async function assessmentHasAssignee(
   const assignee = await prisma.assessment.findFirst({
     where: {
       id: assessmentId,
-      assignees: {
+      assigneesRole: {
         some: {
-          id: userId,
+          user_id: userId,
         },
       },
     },
@@ -24,9 +24,9 @@ export function getPartSubmissionsForUser(userId: number) {
   return prisma.partSubmission.findMany({
     where: {
       Assessment: {
-        assignees: {
+        assigneesRole: {
           some: {
-            id: userId,
+            user_id: userId,
           },
         },
       },

@@ -5,9 +5,9 @@ export async function getAssessmentsWithPartSubmissionsForUser(
 ): Promise<AssessmentWithPartSubmission[]> {
   return await prisma.assessment.findMany({
     where: {
-      assignees: {
+      assigneesRole: {
         some: {
-          id: userId,
+          user_id: userId,
         },
       },
     },
@@ -23,7 +23,14 @@ export async function getAssessmentWithPartSubmission(assessmentId: number) {
       id: assessmentId,
     },
     include: {
-      assignees: true,
+      assigneesRole: {
+        select: {
+          role: true,
+          user: {
+            select: { name: true, email: true, id: true },
+          },
+        },
+      },
       partSubmissions: { orderBy: { date_submitted: "desc" }, take: 1 },
     },
   });

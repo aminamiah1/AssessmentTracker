@@ -52,11 +52,11 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
   return (
     // Assessment tile layout using grid system
     <div className="mb-2 dark:text-white">
-      <ToastContainer />
+      <ToastContainer containerId="assessmentModuleLeaderTile" />
       <div className="bg-gray-100 shadow-lg rounded-lg dark:bg-gray-700">
         <div className="p-4 md:p-6">
           <div className="md:flex md:items-center">
-            <div className="md:w-1/6 md:mt-0  text-lg">
+            <div className="md:w-1/6 md:mt-0 text-lg mr-[2rem]">
               <div>
                 <a
                   className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
@@ -111,7 +111,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </div>
               </p>
             </div>
-            <div className="md:w-1/6 mt-4 md:mt-0">
+            <div className="md:w-1/6 mt-4 md:mt-0 text-center md:flex md:items-center">
               {assessment.assignees.length > 0 ? (
                 <div>
                   <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
@@ -122,15 +122,14 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                       key={assignee.id}
                       className="flex items-center bg-gray-200 dark:bg-gray-600 rounded-md p-2 mb-4"
                     >
-                      <FaUserCircle
-                        className="mr-2 text-black dark:text-white"
-                        size={30}
-                      />
-                      <span className="text-lg text-black dark:text-white">
-                        {assignee.name}{" "}
-                        {assignee.roles.map(
-                          (role: string) => " ● " + role.replaceAll("_", " "),
-                        )}
+                      <FaUserCircle className="mr-2 text-black" size={30} />
+                      <span
+                        className="text-lg text-black dark:text-black"
+                        data-cy="assigneeText"
+                      >
+                        {assignee.name}
+                        {" ● "}
+                        {assignee.role.replaceAll("_", " ")}
                       </span>
                     </div>
                   ))}

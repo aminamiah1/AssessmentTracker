@@ -1,7 +1,13 @@
 "use client";
 
 import UnauthorizedAccess from "@/app/components/authError";
-import { AssessmentForm, Module, User } from "@/app/types/interfaces";
+import {
+  AssessmentForm,
+  Assignee,
+  Module,
+  SelectOptionRoles,
+  User,
+} from "@/app/types/interfaces";
 import { isProformaLink } from "@/app/utils/checkProformaLink";
 import { Assessment_type } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -26,17 +32,30 @@ function CreateAssessmentModuleLeaders() {
 
   const [moduleId, setModuleId] = useState(null); // Variable to hold existing assessment module ID
 
-  const [users, setUsers] = useState(); // Variable to hold all users in the system
+  const [users, setUsers] = useState<SelectOptionRoles[]>([]); // Variable to hold all users in the system
+
+  const [existingAssignees, setExistingAssignees] = useState([]);
 
   const router = useRouter(); // Create next router object
 
-  const [assignees, setAssignees] = useState([]); // Variable to hold all assignees of an existing assessment
+  // State to hold the different assignee types added to the assessment
+  const [internalModerators, setInternalModerators] = useState<
+    SelectOptionRoles[]
+  >([]);
+
+  const [externalExaminers, setExternalExaminers] = useState<
+    SelectOptionRoles[]
+  >([]);
+
+  const [panelMembers, setPanelMembers] = useState<SelectOptionRoles[]>([]);
 
   const searchParams = useSearchParams(); // Create search params object
 
   const { data: session, status } = useSession(); // Use useSession to get session and status
 
   const params = searchParams?.get("id"); // Get the id of the assessment to edit from the search params object
+
+  const [updateUsers, setUpdateUsers] = useState(false); // Used to triggering updating the user arrays with existing assignees
 
   // Default assessment object used on create form mode as default
   const [assessment, setAssessment] = useState<AssessmentForm>({
@@ -47,7 +66,6 @@ function CreateAssessmentModuleLeaders() {
     hand_in_week: new Date(2024, 1, 26),
     module: [],
     setter_id: setterId,
-    assignees: [],
     proforma_link: "",
   });
 
@@ -63,6 +81,9 @@ function CreateAssessmentModuleLeaders() {
 
   const [roleName, setRoleName] = useState("");
 
+  const noModuleLeadersMessage =
+    '{"message":"Please make sure assessment module has module leaders assigned."}';
+
   // This is needed for the setter logic to work please don't remove again
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -72,10 +93,10 @@ function CreateAssessmentModuleLeaders() {
         const roles = session.user.roles;
         if (roles.includes("module_leader") || roles.includes("ps_team")) {
           setIsRole(true);
-          if (roles.includes("module_leader")) {
-            setRoleName("module_leader");
-          } else if (roles.includes("ps_team")) {
+          if (roles.includes("ps_team")) {
             setRoleName("ps_team");
+          } else if (roles.includes("module_leader")) {
+            setRoleName("module_leader");
           }
           //Set the assessment setter id to the current user
           setSetterId(parseInt(session.user.id as string, 10));
@@ -157,6 +178,7 @@ function CreateAssessmentModuleLeaders() {
             hand_out_week,
             hand_in_week,
             setterId,
+            assignees,
             proforma_link,
           } = data;
 
@@ -174,7 +196,8 @@ function CreateAssessmentModuleLeaders() {
 
           // Set the data to be manipulated in the effect hook to work with react select boxes
           setModuleId(data.module_id);
-          setAssignees(data.assignees);
+          setExistingAssignees(assignees);
+          setUpdateUsers(true);
         })
         .catch((error) => {
           // Handle network errors with toast to inform user
@@ -211,18 +234,6 @@ function CreateAssessmentModuleLeaders() {
         }));
       }
 
-      if (assignees) {
-        // Find the default assignees for the assessment and select them in the drop-down selector
-        const defaultAssignees = assignees.map((user: User) => ({
-          value: user.id,
-          label: user.name + " ● Roles: " + user.roles,
-        }));
-        setAssessment((prevState) => ({
-          ...prevState,
-          assignees: defaultAssignees,
-        }));
-      }
-
       // Populate select box with to be edited assessment type if found
       if (assessment.assessment_type.value != "") {
         const defaultAssessmentType = typesOptionsForSelect.find(
@@ -237,7 +248,47 @@ function CreateAssessmentModuleLeaders() {
         }
       }
     }
-  }, [modules, moduleId]); // Runs if editing the assessment and is a module leader
+
+    if (existingAssignees && updateUsers) {
+      // Add the existing assignees to the appropriate user type array
+      existingAssignees.forEach((assignee: Assignee) => {
+        const { role, name, id } = assignee;
+
+        // Stop duplicate existing users being shown in options
+        setUsers((prevUsers) => [
+          ...prevUsers.filter((user) => {
+            return user.value !== id;
+          }),
+        ]);
+
+        // Check the role of the assignee and add them to the corresponding role type array
+        switch (role) {
+          case "internal_moderator":
+            setInternalModerators((prevModerators) => [
+              ...prevModerators,
+              { value: id, label: `${name} ● Roles: ${role}` },
+            ]);
+            break;
+          case "external_examiner":
+            setExternalExaminers((prevExaminers) => [
+              ...prevExaminers,
+              { value: id, label: `${name} ● Roles: ${role}` },
+            ]);
+            break;
+          case "panel_member":
+            setPanelMembers((prevPanel) => [
+              ...prevPanel,
+              { value: id, label: `${name} ● Roles: ${role}` },
+            ]);
+            break;
+          default:
+            break;
+        }
+      });
+
+      setUpdateUsers(false);
+    }
+  }, [modules, moduleId, updateUsers]); // Runs if editing the assessment and is a module leader
 
   // Handle text changes for the form
   const handleTextChange = (event: any) => {
@@ -260,14 +311,41 @@ function CreateAssessmentModuleLeaders() {
     setAssessment({ ...assessment, [fieldName]: selectedOption });
   };
 
+  // Handle assignees with role from select box, have to use any due to using react-select box which uses non-standard array type
+  // Multi<never>
+  const handleSelectChangeAssignees = (
+    role: string,
+    selectedAssignees: any,
+  ) => {
+    // Add the selected assigness to the appropriate user type array
+    switch (role) {
+      case "internal":
+        setInternalModerators(selectedAssignees);
+        break;
+      case "external":
+        setExternalExaminers(selectedAssignees);
+        break;
+      case "panel":
+        setPanelMembers(selectedAssignees);
+        break;
+      default:
+        break;
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Check if assignees or modules are empty
-    if (assessment.assignees.length === 0 || assessment.module.length === 0) {
+    // Validation check to make sure user selects at least one assignee for each role type box and a module for the assessment
+    if (
+      internalModerators.length === 0 ||
+      externalExaminers.length === 0 ||
+      panelMembers.length === 0 ||
+      assessment.module.length === 0
+    ) {
       toast.error(
-        "Please select at least one asignee or module for the assessment",
+        "Please select at least one assignee for each role type box and a module for the assessment",
       );
       return; // Then prevent form submission
     }
@@ -280,11 +358,6 @@ function CreateAssessmentModuleLeaders() {
       );
       return;
     }
-
-    // Get the selected assignees from the drop-down multi-selector and get only the value property, the database is expecting
-    const selectedAssigneesValues = new Set(
-      assessment.assignees.map((assignee) => assignee["value"]),
-    );
 
     // Convert selected module value to format database is expecting i.e. the value from the selector box
     const selectedModuleValue = (assessment.module as any).value;
@@ -303,22 +376,32 @@ function CreateAssessmentModuleLeaders() {
           assessment_type: selectedAssessmentTypeValue,
           module_id: selectedModuleValue,
           setter_id: setterId,
-          assigneesList: Array.from(selectedAssigneesValues),
+          internalModerators: internalModerators,
+          externalExaminers: externalExaminers,
+          panelMembers: panelMembers,
+          roleName: roleName,
         }),
       });
 
       // Alert the user if the api response failed
       if (!response.ok) {
-        toast.error(
-          "Assessment either already exists or incorrect details entered or database server failed, please try again.",
-        );
+        const errorData = await response.text();
+        if (errorData === noModuleLeadersMessage) {
+          toast.error(
+            "Please make sure assessment module has module leaders assigned.",
+          );
+        } else {
+          toast.error(
+            "Assessment either already exists or incorrect details entered or database server failed, please try again",
+          );
+        }
         return;
       }
 
       toast.success("Assessment edited successfully!");
       router.back();
     } else {
-      // Create the assessment using the api endpoint
+      // Create the assessment using the api endpoint, send across the assignee type arrays
       const response = await fetch("/api/module-leader/assessment/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -329,16 +412,26 @@ function CreateAssessmentModuleLeaders() {
           hand_in_week: assessment.hand_in_week,
           module_id: selectedModuleValue,
           setter_id: setterId,
-          assigneesList: Array.from(selectedAssigneesValues),
+          internalModerators: internalModerators,
+          externalExaminers: externalExaminers,
+          panelMembers: panelMembers,
           proforma_link: assessment.proforma_link,
         }),
       });
 
       // Alert the user if the api response failed
       if (!response.ok) {
-        toast.error(
-          "Assessment either already exists or incorrect details entered or database server failed, please try again.",
-        );
+        const errorData = await response.text();
+        // Let the user know if the assessment module has no module leaders assigned
+        if (errorData === noModuleLeadersMessage) {
+          toast.error(
+            "Please make sure assessment module has module leaders assigned.",
+          );
+        } else {
+          toast.error(
+            "Assessment either already exists or incorrect details entered or database server failed, please try again",
+          );
+        }
         return;
       }
 
@@ -477,15 +570,68 @@ function CreateAssessmentModuleLeaders() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="assignees" className="font-bold dark:text-white">
-                Assignees
+              <label
+                htmlFor="internalModerators"
+                className="font-bold dark:text-white"
+              >
+                Internal Moderators
               </label>
               <div className="mb-4">
                 <Select
-                  onChange={(option) => handleSelectChange(option, "assignees")}
-                  options={users}
-                  id="assignees"
-                  value={assessment.assignees}
+                  onChange={(option) =>
+                    handleSelectChangeAssignees("internal", option)
+                  }
+                  options={users.filter((user: any) => {
+                    return user.label.includes("internal_moderator");
+                  })}
+                  id="internalModerators"
+                  value={internalModerators}
+                  isMulti
+                  className="react-select-container mb-6"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="externalExaminers"
+                className="font-bold dark:text-white"
+              >
+                External Examiners
+              </label>
+              <div className="mb-4">
+                <Select
+                  onChange={(option) =>
+                    handleSelectChangeAssignees("external", option)
+                  }
+                  options={users.filter((user: any) => {
+                    return user.label.includes("external_examiner");
+                  })}
+                  id="externalExaminers"
+                  value={externalExaminers}
+                  isMulti
+                  className="react-select-container mb-6"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="panelMembers"
+                className="font-bold dark:text-white"
+              >
+                Panel Members
+              </label>
+              <div className="mb-4">
+                <Select
+                  onChange={(option) =>
+                    handleSelectChangeAssignees("panel", option)
+                  }
+                  options={users.filter((user: any) => {
+                    return user.label.includes("panel_member");
+                  })}
+                  id="panelMembers"
+                  value={panelMembers}
                   isMulti
                   className="react-select-container mb-6"
                 />

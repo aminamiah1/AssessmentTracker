@@ -51,10 +51,10 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
 
   return (
     // Assessment tile layout using grid system
-    <div className="flex-grow-1 col-12 md:col-6 mb-2 dark:text-white">
+    <div className="mb-2 dark:text-white">
       <ToastContainer containerId="assessmentModuleLeaderTile" />
       <div className="bg-gray-100 shadow-lg rounded-lg dark:bg-gray-700">
-        <div className="p-4 md:p-6 border-b-2 border-gray-300">
+        <div className="p-4 md:p-6">
           <div className="md:flex md:items-center">
             <div className="md:w-1/6 md:mt-0 text-lg mr-[2rem]">
               <div>
@@ -92,8 +92,22 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </div>
                 <div className="mt-4">
                   <span className="text-lg text-gray-700 dark:text-white">
-                    Setter: {assessment.setter?.name ?? "no setter assigned"}
+                    Setter: {assessment.setter?.name ?? "No setter assigned"}
                   </span>
+                </div>
+                <div className="mt-4">
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed px-2 py-1"
+                    disabled={!assessment.proforma_link}
+                  >
+                    {assessment.proforma_link ? (
+                      <Link href={assessment.proforma_link}>
+                        Download Proforma
+                      </Link>
+                    ) : (
+                      "Proforma Unavailable"
+                    )}
+                  </button>
                 </div>
               </p>
             </div>
@@ -106,7 +120,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   {assessment.assignees.map((assignee: Assignee) => (
                     <div
                       key={assignee.id}
-                      className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
+                      className="flex items-center bg-gray-200 dark:bg-gray-600 rounded-md p-2 mb-4"
                     >
                       <FaUserCircle className="mr-2 text-black" size={30} />
                       <span

@@ -197,7 +197,7 @@ export default function ViewAssessmentsModuleLeaders() {
         </div>
         <div>
           {filteredAssessments.length > 0 ? (
-            <div className="pb-20 mb-20">
+            <div className="bg-white dark:bg-darkmode p-4">
               {filteredAssessments.map((assessment) => (
                 <AssessmentTile key={assessment.id} assessment={assessment} />
               ))}

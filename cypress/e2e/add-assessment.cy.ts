@@ -42,7 +42,17 @@ describe("Add or edit a assessment as module leader or ps team", () => {
         .eq(0)
         .type("Paul Panel{enter}");
 
-      cy.getByTestId("submit-button").click({ force: true });
+      cy.getByTestId("name").should("have.value", "test assessment");
+
+      cy.intercept("POST", "/api/module-leader/assessment/post*", (req) => {
+        req.continue((res) => {
+          expect(res.statusCode).to.equal(200);
+        });
+      }).as("saveAssessment");
+
+      cy.getByTestId("submit-button")
+        .click({ force: true })
+        .wait("@saveAssessment");
 
       cy.visit("/module-leader/assessment-management/");
 

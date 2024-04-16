@@ -456,7 +456,7 @@ export default function ViewAssessmentsPSTeam() {
                 Selected File: {selectedFileName}
               </p>
             )}
-            <div className="text-black mb-8 mt-4">
+            <div className="text-black mb-8 mt-10">
               <a
                 href="/ImportAssessments.csv"
                 download="/ImportAssessments.csv"
@@ -464,7 +464,7 @@ export default function ViewAssessmentsPSTeam() {
               >
                 Download Example CSV
               </a>
-              <div className="mt-2">
+              <div className="mt-10">
                 <a
                   href="/images/exampleCSV.png"
                   download="/images/exampleCSV.png"

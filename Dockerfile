@@ -8,7 +8,7 @@ ENV DATABASE_URL ${DATABASE_URL_BUILD}
 ENV NEXTAUTH_URL ${NEXTAUTH_URL}
 ENV NEXTAUTH_SECRET ${NEXTAUTH_SECRET}
 ENV SENDGRID_API_KEY ${SENDGRID_API_KEY}
-ENV EMAIL_FROM="Assessment Tracker <trackerassessment@gmail.com>"
+ENV EMAIL_FROM=${EMAIL_FROM}
 
 # Set the working directory inside the container
 WORKDIR /app

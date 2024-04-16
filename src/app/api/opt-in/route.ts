@@ -49,9 +49,23 @@ export async function POST(request: NextRequest) {
       JSON.stringify({ message: "Opt-in status updated", email: transaction }),
       { status: 200 },
     );
-  } catch (error) {
-    return new NextResponse(JSON.stringify({ error: "An error occurred" }), {
-      status: 500,
-    });
+  } catch (error: unknown) {
+    // Check if error is an instance of Error
+    if (error instanceof Error) {
+      return new NextResponse(
+        JSON.stringify({ error: "An error occurred: " + error.message }),
+        {
+          status: 500,
+        },
+      );
+    } else {
+      // Handle cases where error is not an Error object
+      return new NextResponse(
+        JSON.stringify({ error: "An unknown error occurred" }),
+        {
+          status: 500,
+        },
+      );
+    }
   }
 }

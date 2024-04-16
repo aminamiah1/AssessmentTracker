@@ -103,12 +103,22 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    if (module?.module_leaders.length === 0 || module === null) {
+      return new NextResponse(
+        JSON.stringify({
+          message:
+            "Please make sure assessment module has module leaders assigned.",
+        }),
+        { status: 400 },
+      );
+    }
+
     // Construct assigneeRoles data for bulk creation
     const assigneeRolesData = constructAssigneeRolesData(
       externalExaminers,
       internalModerators,
       panelMembers,
-      module?.module_leaders,
+      module.module_leaders,
     );
 
     // Send error message to frontend if assessment does not have module leaders assigned

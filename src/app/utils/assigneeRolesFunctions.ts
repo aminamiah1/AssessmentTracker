@@ -28,8 +28,8 @@ export function constructAssigneeRolesData(
   externalExaminers: SelectOptionRoles[],
   internalModerators: SelectOptionRoles[],
   panelMembers: SelectOptionRoles[],
-  module_leaders: { id: number }[] | undefined,
-): { user_id: number; role: Role }[] | null {
+  module_leaders: { id: number }[],
+): { user_id: number; role: Role }[] {
   // Allow 'null' to indicate no module leaders error
   const assigneeRolesData = [
     // Map assignee types for the assessment from the selection box data
@@ -53,11 +53,6 @@ export function constructAssigneeRolesData(
         }))
       : []),
   ];
-
-  // Flag to user that module leaders need to be added for module first before assessment can be set
-  if (!module_leaders || module_leaders.length === 0) {
-    return null;
-  }
 
   return assigneeRolesData;
 }

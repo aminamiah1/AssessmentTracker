@@ -24,7 +24,7 @@ export default async function Page() {
   return (
     <div className="flex items-center flex-col">
       <h1 className="text-2xl mb-8 mt-6">Completed tasks</h1>
-      <div data-cy="completed-tasks" className="max-w-[50%]">
+      <div data-cy="completed-tasks" className="max-w-fit mx-6">
         {userSubmissions.length ? (
           userSubmissions.map((submission) => {
             const {
@@ -57,12 +57,12 @@ export default async function Page() {
                 <GenericListItem
                   key={key}
                   href={`/todo/${assessment_id}#${part_id}`}
-                  className="!rounded-lg dark:hover:shadow-black shadow-[3px_3px_8px] hover:shadow-[4px_4px_12px] shadow-slate-800 hover:shadow-slate-700"
+                  className="!rounded-lg dark:shadow-slate-900 dark:hover:shadow-black shadow-[3px_3px_8px] hover:shadow-[4px_4px_12px] shadow-slate-800 hover:shadow-slate-700"
                   title={title}
                   subtitle={Part.part_title}
                   sideText={sideText}
                 />
-                <FaCheckCircle className="w-max ml-5 mr-2 fill-lime-500" />
+                <FaCheckCircle className="min-w-max ml-5 mr-2 fill-lime-500" />
                 <span
                   className="wrap-word-break"
                   title={`${dayjs(date_submitted)}`}

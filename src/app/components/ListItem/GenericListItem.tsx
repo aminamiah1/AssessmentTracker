@@ -17,12 +17,16 @@ export function GenericListItem({
   href,
 }: GenericListItemProps) {
   return (
-    <ListItemWrapper className={className} href={href}>
+    <ListItemWrapper className={`${className} min-w-max`} href={href}>
       <div className="min-w-max pr-6">
         <h2 className="text-2xl">{title}</h2>
         <h3 className="text-xl">{subtitle}</h3>
       </div>
-      {sideText && <span data-cy="side-text">{sideText}</span>}
+      {sideText && (
+        <span className="min-w-fit" data-cy="side-text">
+          {sideText}
+        </span>
+      )}
     </ListItemWrapper>
   );
 }

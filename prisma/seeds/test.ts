@@ -211,6 +211,7 @@ async function seedUsers() {
     data: [
       {
         email: "leader@test.net",
+        mustResetPassword: false,
         name: "Liam Leader",
         password,
         roles: [Role.module_leader],
@@ -218,6 +219,7 @@ async function seedUsers() {
       },
       {
         email: "internal@test.net",
+        mustResetPassword: false,
         name: "Ian Internal",
         password,
         roles: [Role.internal_moderator],
@@ -225,6 +227,7 @@ async function seedUsers() {
       },
       {
         email: "panel@test.net",
+        mustResetPassword: false,
         name: "Paul Panel",
         password,
         roles: [Role.panel_member],
@@ -232,6 +235,7 @@ async function seedUsers() {
       },
       {
         email: "external@test.net",
+        mustResetPassword: false,
         name: "External Eric",
         password,
         roles: [Role.external_examiner],
@@ -239,6 +243,7 @@ async function seedUsers() {
       },
       {
         email: "ps@test.net",
+        mustResetPassword: false,
         name: "PS Penelope",
         password,
         roles: [Role.ps_team],
@@ -246,6 +251,7 @@ async function seedUsers() {
       },
       {
         email: "sysadmin@test.net",
+        mustResetPassword: false,
         name: "Sarah Sys-Tem Admin",
         password,
         roles: [Role.system_admin],
@@ -253,6 +259,7 @@ async function seedUsers() {
       },
       {
         email: "sudo@test.net",
+        mustResetPassword: false,
         name: "Sam Super",
         password,
         roles: [...Object.values(Role)],
@@ -260,6 +267,7 @@ async function seedUsers() {
       },
       {
         email: "leader2@test.net",
+        mustResetPassword: false,
         name: "Larry Leader",
         password,
         roles: [...Object.values(Role)],
@@ -267,6 +275,7 @@ async function seedUsers() {
       },
       {
         email: "leader3@test.net",
+        mustResetPassword: false,
         name: "Levi Leader",
         password,
         roles: [Role.module_leader],
@@ -274,7 +283,16 @@ async function seedUsers() {
       },
       {
         email: "leader4@test.net",
+        mustResetPassword: false,
         name: "Lemmy Leader",
+        password,
+        roles: [Role.module_leader],
+        status: "active",
+      },
+      {
+        email: "newuser@test.net",
+        mustResetPassword: true,
+        name: "New User",
         password,
         roles: [Role.module_leader],
         status: "active",

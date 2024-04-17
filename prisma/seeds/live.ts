@@ -38,6 +38,7 @@ async function seedSuperUser() {
       name: "Super Admin",
       roles: ["ps_team", "system_admin"],
       password: hashedPassword,
+      mustResetPassword: false,
     },
     update: {},
     where: {

@@ -14,10 +14,10 @@ async function createUser(
   email: string,
   name: string,
   password: string,
-  roles?: Role[],
+  roles: Role[] = [],
+  mustResetPassword = false,
 ): Promise<void> {
   const hashedPassword = await hashPassword(password);
-  if (!roles) roles = [];
 
   const user = await prisma.users.create({
     data: {
@@ -25,6 +25,7 @@ async function createUser(
       name,
       password: hashedPassword,
       roles: [...roles],
+      mustResetPassword,
     },
   });
   console.log("User created:", user);

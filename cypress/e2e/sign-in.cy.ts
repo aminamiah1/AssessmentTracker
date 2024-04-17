@@ -26,4 +26,34 @@ describe("Authentication", () => {
       )
       .should("be.visible");
   });
+
+  context("password reset", () => {
+    beforeEach(() => {
+      cy.login("newuser@test.net");
+      cy.visit("/");
+    });
+
+    it("prompt should be visible for user that has 'mustResetPassword' flag enabled", () => {
+      cy.getByTestId("password-reset-form").should("exist").and("be.visible");
+      cy.getByTestId("change-password").should("be.enabled");
+    });
+
+    it("should not be allowed to use the same password", () => {
+      cy.getByTestId("change-password").type("securepassword{enter}");
+
+      cy.get("#password-reset-toast-container").should("exist");
+      cy.get("#password-reset-toast-container").contains(
+        "Failed to change password",
+      );
+    });
+
+    it("should be able to change password successfully", () => {
+      cy.getByTestId("change-password").type("differentpassword{enter}");
+
+      cy.get("#password-reset-toast-container").should("exist");
+      cy.get("#password-reset-toast-container").contains(
+        "Password successfully changed",
+      );
+    });
+  });
 });

@@ -1,8 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { Role } from "@prisma/client";
 import prisma from "@/app/db";
-import { getServerSession } from "next-auth";
+import {
+  sendPasswordResetEmail,
+  sendWelcomeEmail,
+} from "@/app/utils/emailService";
 import { hashPassword } from "@/app/utils/hashPassword";
+import { Role } from "@prisma/client";
+import bcrypt from "bcrypt";
+import { getServerSession } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
 
 const parseRoles = (rolesArray: string[]): Role[] => {
   return rolesArray
@@ -36,14 +41,26 @@ export async function POST(request: NextRequest) {
       });
 
       if (existingUser) {
+        const oldPassword = existingUser.password;
+
+        const passwordChanged = !(await bcrypt.compare(password, oldPassword));
+
         await prisma.users.update({
           where: { email },
           data: {
             name,
             password: hashedPassword,
             roles: { set: roleEnums },
+            mustResetPassword:
+              // If they already had to reset their password,
+              // we don't want to overwrite this with 'false'
+              existingUser.mustResetPassword || passwordChanged,
           },
         });
+
+        if (passwordChanged) {
+          await sendPasswordResetEmail(email, name, password);
+        }
       } else {
         await prisma.users.create({
           data: {
@@ -51,8 +68,11 @@ export async function POST(request: NextRequest) {
             name,
             password: hashedPassword,
             roles: { set: roleEnums },
+            mustResetPassword: true,
           },
         });
+
+        await sendWelcomeEmail(email, name, roleEnums, password);
       }
     }
 

@@ -13,18 +13,19 @@ datasource db {
 }
 
 model Users {
-  id              Int              @id @default(autoincrement())
-  email           String           @unique
-  name            String
-  password        String
-  roles           Role[]
-  image           String?
-  set_assessments Assessment[]
-  modules         Module[]         @relation("ModulesToUsers")
-  PartSubmission  PartSubmission[]
-  status          UserStatus       @default(active)
-  AssigneeRole    AssigneeRole[]
-  isOptedInForEmails Boolean @default(false)
+  id                 Int              @id @default(autoincrement())
+  email              String           @unique
+  name               String
+  password           String
+  roles              Role[]
+  image              String?
+  status             UserStatus       @default(active)
+  isOptedInForEmails Boolean          @default(false)
+  mustResetPassword  Boolean
+  set_assessments    Assessment[]
+  PartSubmission     PartSubmission[]
+  modules            Module[]         @relation("ModulesToUsers")
+  AssigneeRole       AssigneeRole[]
 
   @@map("users")
 }
@@ -41,7 +42,7 @@ model Module {
 model Assessment {
   id              Int              @id @default(autoincrement())
   assessment_name String
-  assessment_type Assessment_type @default(Portfolio)
+  assessment_type Assessment_type  @default(Portfolio)
   hand_out_week   DateTime
   hand_in_week    DateTime
   module_id       Int
@@ -52,6 +53,7 @@ model Assessment {
   Response        Response[]
   assigneesRole   AssigneeRole[]
   proforma_link   String?          @unique
+
   // Declare the composite unique key to stop duplicate assessment details being submitted through csv
   @@unique([assessment_name, module_id, hand_out_week, hand_in_week])
 }
@@ -66,7 +68,7 @@ model AssigneeRole {
   priority      Int?
 
   // Unique key used for editing assessment assignee roles
-  @@unique([user_id, assessment_id]) 
+  @@unique([user_id, assessment_id])
 }
 
 // 'PartSubmission' is for keeping track of when parts have been submitted;

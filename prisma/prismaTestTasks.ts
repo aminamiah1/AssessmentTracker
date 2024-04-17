@@ -17,6 +17,7 @@ export const prismaCreateUser = async (userData: PrismaUser) => {
         email: userData.email.toString(),
         password: userData.password.toString(),
         roles: userData.roles,
+        mustResetPassword: true,
       },
     });
   } catch (e) {

@@ -1,7 +1,8 @@
 import prisma from "@/app/db";
+import { sendWelcomeEmail } from "@/app/utils/emailService";
+import { hashPassword } from "@/app/utils/hashPassword";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { hashPassword } from "@/app/utils/hashPassword";
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,8 +43,16 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await hashPassword(password);
 
     const newUser = await prisma.users.create({
-      data: { name, email, password: hashedPassword, roles: roles },
+      data: {
+        name,
+        email,
+        mustResetPassword: true,
+        password: hashedPassword,
+        roles,
+      },
     });
+
+    await sendWelcomeEmail(email, name, roles, password);
 
     return new NextResponse(JSON.stringify(newUser), { status: 200 });
   } catch (error) {

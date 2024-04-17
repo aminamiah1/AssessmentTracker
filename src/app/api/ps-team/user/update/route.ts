@@ -1,7 +1,9 @@
 import prisma from "@/app/db";
+import { sendPasswordResetEmail } from "@/app/utils/emailService";
+import { hashPassword } from "@/app/utils/hashPassword";
+import bcrypt from "bcrypt";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { hashPassword } from "@/app/utils/hashPassword";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +35,8 @@ export async function POST(request: NextRequest) {
         name: true,
         email: true,
         roles: true,
+        mustResetPassword: true,
+        password: true,
       },
     });
 
@@ -43,14 +47,27 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    const oldPassword = existingUser.password;
+
+    const passwordChanged = !(await bcrypt.compare(password, oldPassword));
     // Hash the password
     const hashedPassword = await hashPassword(password);
 
     // Update user data
     const updatedUser = await prisma.users.update({
       where: { id },
-      data: { name, email, password: hashedPassword, roles }, // Update desired fields
+      data: {
+        name,
+        email,
+        mustResetPassword: existingUser.mustResetPassword || passwordChanged,
+        password: hashedPassword,
+        roles,
+      },
     });
+
+    if (passwordChanged) {
+      await sendPasswordResetEmail(email, name, password);
+    }
 
     // Return updated user data
     return new NextResponse(JSON.stringify(updatedUser), { status: 200 });

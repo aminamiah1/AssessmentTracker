@@ -106,8 +106,8 @@ export default function ModuleList() {
           Module List
         </h1>
         {/* Search bar / filtering */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between px-4 py-1">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between px-4 py-1">
+          <div className="flex flex-wrap items-center gap-4">
             <div data-cy="search-bar">
               <SearchBar onSearch={onSearch} />
             </div>
@@ -153,7 +153,7 @@ export default function ModuleList() {
           </div>
           <div data-cy="create-module-btn">
             <Link
-              className="px-4 py-2 min-w-20 border rounded transition-all bg-blue-500 hover:bg-blue-600 text-white"
+              className="px-4 py-2 min-w-24 text-nowrap border rounded transition-all bg-blue-500 hover:bg-blue-600 text-white"
               href={"/admin/module-list/create"}
             >
               Create Module

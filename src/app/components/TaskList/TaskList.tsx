@@ -51,7 +51,7 @@ export function TaskList({
   return (
     <div
       data-cy="task-list-container"
-      className={`flex gap-4 ${className}`}
+      className={`flex flex-col md:flex-row gap-4 ${className}`}
       {...props}
     >
       {tasks.map((task) => {

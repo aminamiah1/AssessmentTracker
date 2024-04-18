@@ -24,9 +24,11 @@ export function AssessmentOverallProgress({ ...props }) {
     lastCompletedPart = { part_title: "Tracking Not Started", part_number: 0 };
   }
 
-  // If the last complete part is not in the "mark and feedback" or "internal moderation" stage then render the first part progress bar
+  // If the last complete part is not in the "external feedback monitoring" or "sample availability" or "mark and feedback" or "internal moderation" stage then render the first part progress bar
   // Else render the second part progress bar
   if (
+    lastCompletedPart.part_title === "External examiner feedback monitoring" ||
+    lastCompletedPart.part_title === "Sample availability" ||
     lastCompletedPart.part_title === "Mark and feedback availability" ||
     lastCompletedPart.part_title === "Internal moderation of marked sample"
   ) {

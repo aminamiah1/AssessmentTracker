@@ -82,7 +82,7 @@ export default function AssessmentProgressPart2({
                 <div className="text-md text-gray-700 dark:text-white text-right text-wrap pl-[5em] max-[1200px]:text-sm">
                   <p>Marks And</p>
                   <p>Feedback</p>
-                  <p>Avaliability</p>
+                  <p>Release</p>
                 </div>
               </div>
             </div>

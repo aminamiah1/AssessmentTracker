@@ -55,8 +55,8 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
       <ToastContainer />
       <div className="bg-gray-100 shadow-lg rounded-lg dark:bg-gray-700">
         <div className="p-4 md:p-6">
-          <div className="md:flex md:items-center">
-            <div className="md:w-1/6 md:mt-0  text-lg">
+          <div className="md:flex md:items-center md:gap-4">
+            <div className="md:w-1/6 md:mt-0 text-lg">
               <div>
                 <a
                   className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
@@ -113,17 +113,17 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
             </div>
             <div className="md:w-1/6 mt-4 md:mt-0">
               {assessment.assignees.length > 0 ? (
-                <div>
-                  <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
+                <div className="flex flex-col gap-4">
+                  <h6 className="text-lg text-gray-700 dark:text-white">
                     Assignees
                   </h6>
                   {assessment.assignees.map((assignee: Assignee) => (
                     <div
                       key={assignee.id}
-                      className="flex items-center bg-gray-200 dark:bg-gray-600 rounded-md p-2 mb-4"
+                      className="flex items-center bg-gray-200 dark:bg-gray-600 rounded-md p-2 min-w-fit"
                     >
                       <FaUserCircle
-                        className="mr-2 text-black dark:text-white"
+                        className="mr-2 text-black dark:text-white min-w-[10px]"
                         size={30}
                       />
                       <span className="text-lg text-black dark:text-white">

@@ -19,17 +19,17 @@ export default function ManageAssessmentsModuleLeaders() {
 
   const isModuleLeader = session.user.roles.includes("module_leader");
   return isModuleLeader ? (
-    <div className="bg-white dark:bg-darkmode h-screen max-h-full">
+    <div className="bg-white dark:bg-darkmode">
       <ToastContainer />
       <div className="text-center mb-10 mt-10">
         <h1 className="text-3xl">Your Assessments</h1>
       </div>
-      <div className="flex justify-center items-center pt-38">
+      <div className="flex md:flex-row flex-col gap-6 justify-center items-center pt-38">
         <div className="mb-0">
           <Link href="/module-leader/assessment-management/create-assessment">
-            <button className="bg-gray-800 text-white h-32 md:h-80 w-32 md:w-80 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
+            <button className="bg-gray-800 text-white w-48 h-48 md:w-60 md:h-60 p-2 flex flex-col gap-2 justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
               <div>
-                <i className="bi bi-newspaper text-5xl md:text-9xl"></i>
+                <i className="bi bi-newspaper text-7xl md:text-9xl"></i>
               </div>
               <div>Create Assessment</div>
             </button>
@@ -37,9 +37,9 @@ export default function ManageAssessmentsModuleLeaders() {
         </div>
         <div className="mb-0">
           <Link href="/module-leader/assessment-management/view-assessments">
-            <button className="bg-gray-800 text-white h-32 md:h-80 w-32 md:w-80 ml-2 flex flex-col justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
+            <button className="bg-gray-800 text-white h-48 w-48 md:w-60 md:h-60 p-2 flex flex-col gap-2 justify-center items-center rounded-lg shadow-md hover:bg-gray-700 focus:outline-none">
               <div>
-                <i className="bi bi-envelope-paper text-5xl md:text-9xl"></i>
+                <i className="bi bi-envelope-paper text-7xl md:text-9xl"></i>
               </div>
               <div>View Assessments Created</div>
             </button>

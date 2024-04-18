@@ -61,27 +61,27 @@ const AssessmentTilePS = ({
   return (
     // Assessment tile for ps team layout using grid system
     <>
-      <ToastContainer containerId="assessmentPSTeamTile" />
-      <div className="bg-gray-100 mb-2 dark:bg-gray-700 shadow-lg rounded-lg">
-        <div className="p-4 md:p-6 border-b-2 border-gray-300">
-          <div className="md:flex md:items-center">
-            <div className="md:w-1/2 md:mt-0  text-lg">
+      <div className="bg-gray-100 mb-2 dark:bg-gray-700 shadow-lg rounded-lg flex flex-1">
+        <ToastContainer containerId="assessmentPSTeamTile" />
+        <div className="border-b-2 border-gray-300 w-full grid items-center">
+          <div className="md:flex md:items-center mt-2">
+            <div className="md:w-1/6 md:mt-0 text-sm mr-4 ml-2">
               <div>
                 <Link
                   href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
-                  className="flex items-center text-xl"
+                  className="flex items-center text-sm"
                 >
                   <p
-                    className="text-blue-500 hover:text-blue-700 text-lg dark:text-white"
+                    className="text-blue-500 hover:text-blue-700 text-sm dark:text-white"
                     data-cy="assessmentName"
                   >
                     {assessment.assessment_name}
                   </p>
                 </Link>
               </div>
-              <p className="mt-4">
+              <p className="mt-4 mb-2">
                 <span
-                  className="text-lg text-gray-700 dark:text-white mb-2"
+                  className="text-sm text-gray-700 dark:text-white mb-2"
                   data-cy="moduleTypeText"
                 >
                   {assessment.module_name} ●{" "}
@@ -90,7 +90,7 @@ const AssessmentTilePS = ({
                 <br />
                 <div className="mt-4">
                   <span
-                    className="text-lg text-gray-700 dark:text-white"
+                    className="text-sm text-gray-700 dark:text-white"
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand Out Week:{" "}
@@ -99,7 +99,7 @@ const AssessmentTilePS = ({
                 </div>
                 <div className="mt-4">
                   <span
-                    className="text-lg text-gray-700 dark:text-white"
+                    className="text-sm text-gray-700 dark:text-white"
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand In Week:{" "}
@@ -107,14 +107,34 @@ const AssessmentTilePS = ({
                   </span>
                 </div>
                 <div className="mt-4">
-                  <span className="text-lg text-gray-700 dark:text-white">
+                  <span className="text-sm text-gray-700 dark:text-white">
                     Setter: {assessment.setter?.name ?? "no setter assigned"}
                   </span>
                 </div>
               </p>
+              <Link
+                href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                data-cy="editAssessment"
+              >
+                <button
+                  className="px-6 mt-2 w-full py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
+                  data-cy="assignUsers"
+                >
+                  Edit
+                </button>
+              </Link>
+              <button
+                className="px-6 mt-2 mb-1 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
+                data-cy="assignUsers"
+                onClick={() => {
+                  setShowDeleteModal(true); // Open the pop-up
+                }}
+              >
+                Delete
+              </button>
             </div>
-            <div className="md:w-1/4 mt-4 md:mt-0">
-              <h6 className="mb-4 text-lg text-gray-700 dark:text-white text-center">
+            <div className="md:w-1/6 mt-4 md:mt-0">
+              <h6 className="mb-4 text-sm text-gray-700 dark:text-white text-center">
                 Assignees
               </h6>
               {assessment.assignees.length > 0 ? (
@@ -126,7 +146,7 @@ const AssessmentTilePS = ({
                     >
                       <FaUserCircle className="mr-2 text-black" size={30} />
                       <span
-                        className="text-lg text-black dark:text-black"
+                        className="text-sm text-black dark:text-black"
                         data-cy="assigneeText"
                       >
                         {assignee.name}
@@ -137,7 +157,7 @@ const AssessmentTilePS = ({
                   ))}
                 </div>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-white">
+                <p className="text-sm text-center text-gray-700 dark:text-white">
                   No assignees assigned
                 </p>
               )}
@@ -151,34 +171,12 @@ const AssessmentTilePS = ({
                 />
               ) : (
                 <h1
-                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
+                  className="mt-2 text-sm text-gray-700 dark:text-white text-center"
                   data-cy="trackingFormToBeginStatus"
                 >
                   Tracking Process Not Yet Started
                 </h1>
               )}
-            </div>
-            <div className="md:w-1/4 md:mt-0 text-center rounded">
-              <Link
-                href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
-                data-cy="editAssessment"
-              >
-                <button
-                  className="px-6 mt-2 w-full py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
-                  data-cy="assignUsers"
-                >
-                  Edit
-                </button>
-              </Link>
-              <button
-                className="px-6 mt-2 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
-                data-cy="assignUsers"
-                onClick={() => {
-                  setShowDeleteModal(true); // Open the pop-up
-                }}
-              >
-                Delete
-              </button>
             </div>
           </div>
         </div>

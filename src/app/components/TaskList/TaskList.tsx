@@ -1,57 +1,29 @@
 "use client";
 
 import { useTasks } from "@/app/hooks/useAssessments";
-import dynamic from "next/dynamic";
 import { HTMLProps } from "react";
-
-const ProgressListItem = dynamic(() =>
-  import("@/app/components/ListItem/ProgressListItem").then(
-    (m) => m.ProgressListItem,
-  ),
-);
+import { ProgressListItem } from "@/app/components/ListItem/ProgressListItem";
 
 // HTMLProps is a useful utility which allows us to extend the HTMLDivElement
 // interface with additional props.  In other words, all props that we could
 // usually pass through to a <div>, we can pass through to this TaskListProps,
-// in addition to the custom props we define here (itemTemplateName, userId).
+// in addition to the custom props we define here (userId).
 interface TaskListProps extends HTMLProps<HTMLDivElement> {
-  /** The name of the list item to populate the TaskList with - leaving
-   * this in to support future list items (e.g. detailed items, grid items
-   * etc.)
-   */
-  itemTemplateName: "ProgressListItem";
-
   /** The user whose tasks should be fetched */
   userId: number;
 }
 
-export function TaskList({
-  itemTemplateName,
-  userId,
-  className,
-  ...props
-}: TaskListProps) {
+export function TaskList({ userId, className, ...props }: TaskListProps) {
   const { tasks, isLoading, error } = useTasks(userId);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (tasks.length === 0) return <div>No tasks! 🎉</div>;
 
-  let ItemTemplate: React.ComponentType<any>;
-  switch (itemTemplateName) {
-    case "ProgressListItem":
-      ItemTemplate = ProgressListItem;
-      break;
-    default:
-      return <div>Unknown item template: {itemTemplateName}</div>;
-  }
-
-  if (!ItemTemplate) return <div>Loading...</div>;
-
   return (
     <div
       data-cy="task-list-container"
-      className={`flex gap-4 ${className}`}
+      className={`flex flex-col gap-4 ${className}`}
       {...props}
     >
       {tasks.map((task) => {
@@ -75,12 +47,13 @@ export function TaskList({
         }
 
         return (
-          <ItemTemplate
+          <ProgressListItem
             key={task.assessment.id}
             progress={progress}
             progressText={progressText}
             subtitle={task.part.part_title}
             title={task.assessment.assessment_name}
+            proforma={task.assessment.proforma_link}
             href={`/todo/${task.assessment.id}`}
           />
         );

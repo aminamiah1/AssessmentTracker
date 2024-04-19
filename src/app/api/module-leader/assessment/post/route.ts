@@ -4,7 +4,7 @@ import { constructAssigneeRolesData } from "@/app/utils/assigneeRolesFunctions";
 import prisma from "@/app/db";
 import {
   isProformaLink,
-  removeQueryParams,
+  removeAllQueryParams,
 } from "@/app/utils/checkProformaLink";
 
 export async function POST(request: NextRequest) {
@@ -33,7 +33,8 @@ export async function POST(request: NextRequest) {
 
     let new_proforma_link = proforma_link;
     if (proforma_link) {
-      new_proforma_link = removeQueryParams(proforma_link);
+      // Remove redundant query params that are provided with copy from Teams
+      new_proforma_link = removeAllQueryParams(proforma_link);
     }
 
     if (

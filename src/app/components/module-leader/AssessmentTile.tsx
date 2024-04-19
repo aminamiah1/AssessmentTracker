@@ -60,7 +60,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
             <div className="md:w-1/6 md:mt-0 text-sm mr-[2rem]">
               <div>
                 <a
-                  className="text-ble-500 hover:text-blue-700 text-sm dark:text-white"
+                  className="text-blue-500 hover:text-blue-700 text-sm dark:text-white"
                   href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
                   data-cy="assessmentName"
                 >

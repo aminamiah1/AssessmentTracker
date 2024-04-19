@@ -97,7 +97,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   </span>
                 </div>
                 <div className="flex flex-col gap-2 mt-4">
-                  <span className="text-lg text-gray-700 dark:text-white">
+                  <span className="text-md text-gray-700 dark:text-white">
                     Proforma:
                   </span>
                   <button
@@ -129,6 +129,11 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   )}
                 </div>
                 <div className="mt-4 table-caption text-center w-full">
+                  <div className="text-left mb-2">
+                    <span className="text-md text-left text-gray-700 dark:text-white">
+                      Assessment:
+                    </span>
+                  </div>
                   <div className="w-full table-caption">
                     <button
                       className="mb-2"

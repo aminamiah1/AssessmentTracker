@@ -49,7 +49,7 @@ export default function AssessmentProgressPart2({
   // Only show date progress if tracking not complete
   return (
     <div className="w-full flex justify-evenly rounded p-4 mb-4">
-      <div className="w-[60%] relative overflow-hidden text-center">
+      <div className="w-[100%] relative overflow-hidden text-center">
         {/* Display the visual date progress if not overdue or complete*/}
         <>
           {isOverdue || isComplete ? (
@@ -74,14 +74,22 @@ export default function AssessmentProgressPart2({
               <div className="justify-start w-full">
                 <div className="text-md text-gray-700 dark:text-white text-left text-wrap w-2 max-[1200px]:text-sm">
                   <h1>
-                    Post <br /> Marking <br /> Moderation
+                    Post
+                    <br />
+                    Marking
+                    <br />
+                    Moderation
                   </h1>
                 </div>
               </div>
               <div className="justify-end w-full">
                 <div className="text-md text-gray-700 dark:text-white text-right text-wrap pl-[5em] max-[1200px]:text-sm">
                   <p>
-                    Marks And <br /> Feedback <br /> Release
+                    Marks And
+                    <br />
+                    Feedback
+                    <br />
+                    Release
                   </p>
                 </div>
               </div>

@@ -407,7 +407,7 @@ export default function ViewAssessmentsPSTeam() {
           </div>
           <div>
             {filteredAssessments.length > 0 ? (
-              <div className="pb-5 mb-5 grid grid-cols-2 gap-4 max-[1650px]:grid-cols-1">
+              <div className="pb-5 mb-5 grid grid-cols-2 gap-4 max-[1500px]:grid-cols-1">
                 {filteredAssessments.map((assessment) => (
                   <AssessmentTilePS
                     key={assessment.id}

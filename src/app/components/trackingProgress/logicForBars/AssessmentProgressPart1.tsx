@@ -50,21 +50,32 @@ export default function AssessmentProgressPart1({
               <div>
                 <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm  max-[944px]:invisible">
                   <h1 data-cy="trackingStagesComplete">
-                    Internal Peer <br /> Moderation <br /> Feedback
+                    Internal Peer
+                    <br />
+                    Moderation
+                    <br />
+                    Feedback
                   </h1>
                 </div>
               </div>
               <div>
                 <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[944px]:invisible">
                   <h1 data-cy="trackingStagesComplete">
-                    Moderation <br /> Panel <br /> Comments
+                    Moderation
+                    <br />
+                    Panel <br />
+                    Comments
                   </h1>
                 </div>
               </div>
               <div>
                 <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[944px]:invisible">
                   <h1 data-cy="trackingStagesComplete">
-                    External <br /> Examiner <br /> Feedback
+                    External
+                    <br />
+                    Examiner
+                    <br />
+                    Feedback
                   </h1>
                 </div>
               </div>

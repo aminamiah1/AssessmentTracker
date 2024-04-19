@@ -28,7 +28,7 @@ describe("Assessment stage filter", () => {
     // Should be assessment in internal peer moderation stage
     cy.getByTestId("trackingStagesComplete")
       .eq(0)
-      .should("have.text", "Internal Peer");
+      .should("have.text", "Internal Peer  Moderation  Feedback");
 
     // Reset filter
     cy.getByTestId("resetFilter").click({ force: true });

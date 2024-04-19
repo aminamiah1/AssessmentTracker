@@ -10,8 +10,6 @@ const withAllResponses =
   fixture.tasksWithAllResponses as unknown as AssessmentAndPartAPIResponse[];
 
 const defaults = {
-  // To get around type assertion
-  itemTemplateName: "ProgressListItem" as "ProgressListItem",
   userId: 0,
 };
 

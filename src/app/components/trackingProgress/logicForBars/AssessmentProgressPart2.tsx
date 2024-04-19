@@ -27,7 +27,7 @@ export default function AssessmentProgressPart2({
 
   const isOverdue = daysRemaining < 0; // Check if overdue i.e. minus day difference numbers
   const isComplete =
-    lastCompletedPart.part_title === "Mark and feedback availability";
+    lastCompletedPartTitle === "Mark and feedback availability";
 
   // Calculate progress conditionally
   let progress;
@@ -73,16 +73,16 @@ export default function AssessmentProgressPart2({
             <div className="flex w-full mb-2">
               <div className="justify-start w-full">
                 <div className="text-md text-gray-700 dark:text-white text-left text-wrap w-2 max-[1200px]:text-sm">
-                  <h1>Post</h1>
-                  <h1>Marking</h1>
-                  <h1>Moderation</h1>
+                  <h1>
+                    Post <br /> Marking <br /> Moderation
+                  </h1>
                 </div>
               </div>
               <div className="justify-end w-full">
                 <div className="text-md text-gray-700 dark:text-white text-right text-wrap pl-[5em] max-[1200px]:text-sm">
-                  <p>Marks And</p>
-                  <p>Feedback</p>
-                  <p>Avaliability</p>
+                  <p>
+                    Marks And <br /> Feedback <br /> Release
+                  </p>
                 </div>
               </div>
             </div>

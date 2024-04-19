@@ -50,8 +50,8 @@ export default function Page() {
 
   return (
     <div className="flex flex-col items-center mt-10">
-      <div className="text-center">
-        <h1 className={`text-3xl text-black dark:text-white`}>Task List</h1>
+      <div className="text-center mb-5">
+        <h1 className="text-3xl text-black dark:text-white">Task List</h1>
       </div>
       {showModal && (
         <EmailOptInModal
@@ -61,12 +61,11 @@ export default function Page() {
         />
       )}
       {session && (
-        <TaskList
-          userId={+session.user.id}
-          itemTemplateName={"ProgressListItem"}
-        />
+        // Use flex-col to stack the TaskList items vertically
+        <div className="flex flex-col w-full items-center">
+          <TaskList userId={+session.user.id} />
+        </div>
       )}
-      {/* Toast Container */}
       <ToastContainer />
     </div>
   );

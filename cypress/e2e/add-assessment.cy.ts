@@ -76,7 +76,7 @@ describe("Add or edit an assessment as module leader or ps team", () => {
         .next()
         .find("input")
         .eq(0)
-        .type("Computing basics 1{enter}");
+        .type("Python Apps 3{enter}");
 
       cy.contains("label", "Assessment Type")
         .next()
@@ -110,7 +110,7 @@ describe("Add or edit an assessment as module leader or ps team", () => {
         .next()
         .find("input")
         .eq(0)
-        .type("Example Module{enter}");
+        .type("Python Apps 3{enter}");
 
       cy.contains("label", "Assessment Type")
         .next()
@@ -142,7 +142,74 @@ describe("Add or edit an assessment as module leader or ps team", () => {
       );
 
       cy.getByTestId("submit-button").click();
+
       // TODO: Check to see if the assessment has been created from the view-assessments page, and that it has the proforma link.
+      cy.visit("/module-leader/assessment-management/");
+
+      // Go here as the create assessment page goes back to last page on submission automatically
+      cy.getByTestId("viewAssessmentsButton")
+        .should("be.visible")
+        .click({ force: true });
+
+      // Check assessment submitted successfully by verifying tile with attributes exists
+      cy.getByTestId("assessmentName")
+        .last()
+        .should("have.text", "New Assessment with Proforma");
+    });
+
+    it("should allow a module leader to add an assessment with a proforma link inside a sub-directory", () => {
+      // Enter test assessment form data
+      cy.getByTestId("name").type("New Assessment with Proforma in SubDir");
+
+      cy.contains("label", "Module")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Python Apps 3{enter}");
+
+      cy.contains("label", "Assessment Type")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Written Assessment{enter}");
+
+      // Choosing a assignee for each required role type
+      cy.contains("label", "Internal Moderators")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Ian Internal{enter}");
+
+      cy.contains("label", "External Examiners")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("External Eric{enter}");
+
+      cy.contains("label", "Panel Members")
+        .next()
+        .find("input")
+        .eq(0)
+        .type("Paul Panel{enter}");
+
+      cy.getByTestId("proforma-link").type(
+        "https://cf.sharepoint.com/:b:/r/teams/ProformaFiles/Shared%20Documents/General/Proformas_23_24/Proforma%20Example.pdf?csf=1&web=1&e=8iBj5a",
+      );
+
+      cy.getByTestId("submit-button").click();
+
+      // TODO: Check to see if the assessment has been created from the view-assessments page, and that it has the proforma link.
+      cy.visit("/module-leader/assessment-management/");
+
+      // Go here as the create assessment page goes back to last page on submission automatically
+      cy.getByTestId("viewAssessmentsButton")
+        .should("be.visible")
+        .click({ force: true });
+
+      // Check assessment submitted successfully by verifying tile with attributes exists
+      cy.getByTestId("assessmentName")
+        .last()
+        .should("have.text", "New Assessment with Proforma in SubDir");
     });
 
     it("should not allow a module leader to add an assessment with an invalid proforma link", () => {
@@ -242,7 +309,7 @@ describe("Add or edit an assessment as module leader or ps team", () => {
         .next()
         .find("input")
         .eq(0)
-        .type("Portfolio{enter}");
+        .type("Written Assessment{enter}");
 
       cy.contains("label", "Module")
         .next()
@@ -257,7 +324,7 @@ describe("Add or edit an assessment as module leader or ps team", () => {
       // Assessment should be edited and have module changed to python apps 3
       cy.getByTestId("moduleTypeText")
         .last()
-        .should("have.text", "Python Apps 3 ● Portfolio");
+        .should("have.text", "Python Apps 3 ● Written Assessment");
     });
   });
 });

@@ -133,7 +133,7 @@ const AssessmentTilePS = ({
                 Delete
               </button>
             </div>
-            <div className="md:w-1/6 mt-4 md:mt-0">
+            <div className="md:w-1/2 mt-4 md:mt-0 ml-4 mr-4">
               <h6 className="mb-4 text-sm text-gray-700 dark:text-white text-center">
                 Assignees
               </h6>

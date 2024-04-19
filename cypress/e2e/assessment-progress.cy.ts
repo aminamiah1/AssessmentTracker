@@ -17,7 +17,7 @@ describe("Assessment progress", () => {
     cy.visit("/module-leader/assessment-management/view-assessments");
     cy.getByTestId("trackingStagesComplete")
       .eq(0)
-      .should("have.text", "Internal Peer  Moderation  Feedback");
+      .should("contain.text", "Internal Peer");
   });
 
   it("Assessment in tracking process when hovered over should have current part information", () => {

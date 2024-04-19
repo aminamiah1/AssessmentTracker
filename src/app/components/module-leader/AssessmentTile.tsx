@@ -9,6 +9,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { AssessmentOverallProgress } from "@/app/components/trackingProgress/AssessmentOverallProgress";
 // Import interfaces from interfaces.ts
 import { AssessmentTiles, Assignee } from "@/app/types/interfaces";
+import { addQueryParams } from "@/app/utils/checkProformaLink";
 
 // Functional component for rendering an assessment tile
 const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
@@ -95,19 +96,37 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                     Setter: {assessment.setter?.name ?? "No setter assigned"}
                   </span>
                 </div>
-                <div className="mt-4">
+                <div className="flex flex-col gap-2 mt-4">
+                  <span className="text-lg text-gray-700 dark:text-white">
+                    Proforma:
+                  </span>
                   <button
                     className="bg-blue-500 hover:bg-blue-700 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed px-2 py-1"
                     disabled={!assessment.proforma_link}
                   >
                     {assessment.proforma_link ? (
-                      <Link href={assessment.proforma_link}>
-                        Download Proforma
-                      </Link>
+                      <Link href={assessment.proforma_link}>Download</Link>
                     ) : (
                       "Proforma Unavailable"
                     )}
                   </button>
+                  {assessment.proforma_link && (
+                    <button
+                      className="bg-blue-500 hover:bg-blue-700 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed px-2 py-1"
+                      disabled={!assessment.proforma_link}
+                    >
+                      <Link
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        // Add query params to view the file from the browser
+                        href={addQueryParams(assessment.proforma_link, [
+                          { key: "web", value: "1" },
+                        ])}
+                      >
+                        View on Web
+                      </Link>
+                    </button>
+                  )}
                 </div>
               </p>
             </div>

@@ -33,10 +33,10 @@ export default function AssessmentProgressPart1({
 
   const isOverdue = daysRemaining < 0; // Check if overdue i.e. in minus day difference numbers
   const isComplete =
-    lastCompletedPart.part_title === "External examiner feedback monitoring" ||
-    lastCompletedPart.part_title === "Sample availability" ||
-    lastCompletedPart.part_title === "Internal moderation of marked sample" ||
-    lastCompletedPart.part_title === "Mark and feedback availability";
+    lastCompletedPartTitle === "External examiner feedback monitoring" ||
+    lastCompletedPartTitle === "Sample availability" ||
+    lastCompletedPartTitle === "Internal moderation of marked sample" ||
+    lastCompletedPartTitle === "Mark and feedback availability";
   // Check if complete for this part by comparing part title to the two stages after final section 4 stage
 
   return (
@@ -49,23 +49,23 @@ export default function AssessmentProgressPart1({
               {/* Show the four sections to complete above the progress bar*/}
               <div>
                 <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm  max-[944px]:invisible">
-                  <h1 data-cy="trackingStagesComplete">Internal Peer</h1>
-                  <h1>Moderation</h1>
-                  <h1>Feedback</h1>
+                  <h1 data-cy="trackingStagesComplete">
+                    Internal Peer <br /> Moderation <br /> Feedback
+                  </h1>
                 </div>
               </div>
               <div>
                 <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[944px]:invisible">
-                  <h1 data-cy="trackingStagesComplete">Moderation</h1>
-                  <h1>Panel</h1>
-                  <h1>Comments</h1>
+                  <h1 data-cy="trackingStagesComplete">
+                    Moderation <br /> Panel <br /> Comments
+                  </h1>
                 </div>
               </div>
               <div>
                 <div className="mb-4 text-md text-gray-700 dark:text-white max-[1200px]:text-sm max-[944px]:invisible">
-                  <h1 data-cy="trackingStagesComplete">External</h1>
-                  <h1>Examiner</h1>
-                  <h1>Feedback</h1>
+                  <h1 data-cy="trackingStagesComplete">
+                    External <br /> Examiner <br /> Feedback{" "}
+                  </h1>
                 </div>
               </div>
             </div>

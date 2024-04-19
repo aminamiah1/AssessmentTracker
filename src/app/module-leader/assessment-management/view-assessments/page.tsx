@@ -197,7 +197,7 @@ export default function ViewAssessmentsModuleLeaders() {
         </div>
         <div>
           {filteredAssessments.length > 0 ? (
-            <div className="bg-white dark:bg-darkmode p-4">
+            <div className="bg-white dark:bg-darkmode grid h-full grid-cols-2 gap-4 max-[1900px]:grid-cols-1">
               {filteredAssessments.map((assessment) => (
                 <AssessmentTile key={assessment.id} assessment={assessment} />
               ))}

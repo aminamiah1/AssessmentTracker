@@ -51,15 +51,15 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
 
   return (
     // Assessment tile layout using grid system
-    <div className="mb-2 dark:text-white">
-      <ToastContainer containerId="assessmentModuleLeaderTile" />
+    <div className="mb-2 dark:text-white grid h-full">
       <div className="bg-gray-100 shadow-lg rounded-lg dark:bg-gray-700">
-        <div className="p-4 md:p-6">
-          <div className="md:flex md:items-center">
-            <div className="md:w-1/6 md:mt-0 text-lg mr-[2rem]">
+        <ToastContainer containerId="assessmentModuleLeaderTile" />
+        <div className="p-4 md:p-6 flex-1">
+          <div className="md:flex md:items-center flex-1">
+            <div className="md:w-1/6 md:mt-0 text-sm mr-[2rem]">
               <div>
                 <a
-                  className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
+                  className="text-ble-500 hover:text-blue-700 tuext-sm dark:text-white"
                   href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
                   data-cy="assessmentName"
                 >
@@ -67,14 +67,14 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </a>
               </div>
               <p className="mt-4">
-                <span className="text-lg text-gray-700 dark:text-white mb-2">
+                <span className="text-sm text-gray-700 dark:text-white mb-2">
                   Module: {assessment.module_name} ● Type:{" "}
                   {assessment.assessment_type.replaceAll("_", " ")}
                 </span>
                 <br />
                 <div className="mt-4">
                   <span
-                    className="text-lg text-gray-700 dark:text-white"
+                    className="text-sm text-gray-700 dark:text-white"
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand Out Week:{" "}
@@ -83,7 +83,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </div>
                 <div className="mt-4">
                   <span
-                    className="text-lg text-gray-700 dark:text-white"
+                    className="text-sm text-gray-700 dark:text-white"
                     title="In ISO Date https://www.iso.org/iso-8601-date-and-time-format.html"
                   >
                     Hand In Week:{" "}
@@ -91,7 +91,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   </span>
                 </div>
                 <div className="mt-4">
-                  <span className="text-lg text-gray-700 dark:text-white">
+                  <span className="text-sm text-gray-700 dark:text-white">
                     Setter: {assessment.setter?.name ?? "No setter assigned"}
                   </span>
                 </div>
@@ -109,12 +109,34 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                     )}
                   </button>
                 </div>
+                <div className="mt-4 table-caption text-center w-full">
+                  <div className="w-full table-caption">
+                    <button
+                      className="mb-2"
+                      onClick={() => setShowDeleteModal(true)}
+                    >
+                      <button className="px-12 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
+                        Delete
+                      </button>
+                    </button>
+                  </div>
+                  <div>
+                    <Link
+                      href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                      data-cy="editAssessment"
+                    >
+                      <button className="px-12 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
+                        Edit
+                      </button>
+                    </Link>
+                  </div>
+                </div>
               </p>
             </div>
             <div className="md:w-1/6 mt-4 md:mt-0 text-center md:flex md:items-center">
               {assessment.assignees.length > 0 ? (
                 <div>
-                  <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
+                  <h6 className="mb-4 text-sm text-gray-700 dark:text-white">
                     Assignees
                   </h6>
                   {assessment.assignees.map((assignee: Assignee) => (
@@ -124,7 +146,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                     >
                       <FaUserCircle className="mr-2 text-black" size={30} />
                       <span
-                        className="text-lg text-black dark:text-black"
+                        className="text-sm text-black dark:text-black"
                         data-cy="assigneeText"
                       >
                         {assignee.name}
@@ -135,7 +157,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   ))}
                 </div>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-white ml-2 text-center">
+                <p className="text-sm text-gray-700 dark:text-white ml-2 text-center">
                   No assignees assigned
                 </p>
               )}
@@ -149,29 +171,12 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 />
               ) : (
                 <h1
-                  className="mt-2 text-lg text-gray-700 dark:text-white text-center"
+                  className="mt-2 text-sm text-gray-700 dark:text-white text-center"
                   data-cy="trackingFormToBeginStatus"
                 >
                   Tracking Process Not Yet Started
                 </h1>
               )}
-            </div>
-            <div className="md:w-1/6 md:mt-0 text-center">
-              <button className="mb-2" onClick={() => setShowDeleteModal(true)}>
-                <button className="px-6 py-2 mr-4 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
-                  Delete
-                </button>
-              </button>
-              <div className="inline-table">
-                <Link
-                  href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
-                  data-cy="editAssessment"
-                >
-                  <button className="px-6 py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
-                    Edit
-                  </button>
-                </Link>
-              </div>
             </div>
           </div>
         </div>

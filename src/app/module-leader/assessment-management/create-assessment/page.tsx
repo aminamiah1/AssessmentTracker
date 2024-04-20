@@ -539,7 +539,7 @@ function CreateAssessmentModuleLeaders() {
                 htmlFor="handOutWeek"
                 className="font-bold dark:text-white"
               >
-                Hand Out Week
+                Hand Out Day
               </label>
               <div className="w-full">
                 <DatePicker
@@ -555,7 +555,7 @@ function CreateAssessmentModuleLeaders() {
 
             <div className="mb-4">
               <label htmlFor="handInWeek" className="font-bold dark:text-white">
-                Hand In Week
+                Hand In Day
               </label>
               <div className="w-full">
                 <DatePicker

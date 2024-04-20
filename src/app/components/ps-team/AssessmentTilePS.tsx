@@ -122,11 +122,14 @@ const AssessmentTilePS = ({
                   {assessment.assignees.map((assignee: Assignee) => (
                     <div
                       key={assignee.id}
-                      className="flex items-center bg-gray-200 rounded-md p-2 mb-4"
+                      className="flex items-center bg-gray-200 rounded-md p-2 mb-4 dark:bg-gray-600"
                     >
-                      <FaUserCircle className="mr-2 text-black" size={30} />
+                      <FaUserCircle
+                        className="mr-2 text-black dark:text-white"
+                        size={30}
+                      />
                       <span
-                        className="text-lg text-black dark:text-black"
+                        className="text-lg text-black dark:text-white"
                         data-cy="assigneeText"
                       >
                         {assignee.name}
@@ -137,7 +140,7 @@ const AssessmentTilePS = ({
                   ))}
                 </div>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-white">
+                <p className="text-lg text-gray-700 dark:text-white text-center">
                   No assignees assigned
                 </p>
               )}

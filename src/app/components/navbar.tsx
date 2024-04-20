@@ -157,7 +157,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                   icon={<FaListAlt />}
                   isSidebarOpen={isSidebarOpen}
                   href="/ps-team/assessment-management"
-                  text="PS Team Assessments"
+                  text="Assessment Management"
                 />
               </>
             )}
@@ -167,7 +167,7 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                   icon={<FaTable />}
                   isSidebarOpen={isSidebarOpen}
                   href="/module-leader/assessment-management"
-                  text="Assessment Management"
+                  text="My Assessments"
                 />
               </>
             )}

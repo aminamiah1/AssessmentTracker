@@ -1,32 +1,33 @@
 "use client";
+import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
+import { FaSpinner } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
 
 interface UserMenuProps {
   isOpen: boolean;
 }
 
+const containerId = "toast-container-email-opt-in";
+
 const UserMenu: React.FC<UserMenuProps> = ({ isOpen }) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession({ required: true });
   const [isOptedInForEmails, setIsOptedInForEmails] = useState(false);
 
   useEffect(() => {
-    if (session?.user?.id) {
+    if (!session) return;
+
+    if (session.user.id) {
       const storageKey = `user_${session.user.id}_opted_in`;
       const optedInStatus = localStorage.getItem(storageKey);
       setIsOptedInForEmails(optedInStatus === "true");
     }
-  }, [session?.user?.id]);
+  }, [session]);
 
-  if (!isOpen || !session) {
-    return null;
-  }
+  if (!isOpen) return <></>;
 
-  const handleOptInChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const optIn = event.target.checked;
+  const handleOptInChange = async () => {
+    const optIn = !isOptedInForEmails;
     setIsOptedInForEmails(optIn);
     localStorage.setItem(`user_${session?.user.id}_opted_in`, String(optIn));
 
@@ -43,92 +44,101 @@ const UserMenu: React.FC<UserMenuProps> = ({ isOpen }) => {
       .then((response) => response.json())
       .then((data) => {
         toast.success("Your preferences have been updated.", {
+          containerId,
           position: "top-center",
         });
       })
       .catch((error) => {
         console.error("Failed to update opt-in status:", error);
         toast.error("An error occurred while updating your preferences.", {
+          containerId,
           position: "top-center",
         });
       });
   };
 
-  return session != null ? (
+  const sessionIsReady = status === "authenticated" && session;
+
+  return (
     <div
       className="fixed top-0 right-0 flex justify-end items-start z-[700] mt-20 mr-1 bg-white"
       data-cy="profileMenu"
     >
-      <div className="bg-white border border-grey-100 rounded-lg pl-4 pr-4 dark:bg-gray-800">
-        {/* User Details */}
-        <div className="border-b border-black shadow-md mt-4 mb-4 dark:border-white">
-          <p className="mb-1 font-bold">Full Name</p>
-          <p className="mb-4">{session.user.name}</p>
-        </div>
-        <div className="border-b border-black shadow-md mt-4 mb-4 dark:border-white">
-          <p className="mb-1 font-bold">Email</p>
-          <p className="mb-4">{session.user.email}</p>
-        </div>
-        <div className="border-b border-black shadow-md mt-4 mb-4 dark:border-white">
-          <p className="mb-1 font-bold">Roles</p>
-          {session.user.roles.map((role: string) => (
-            <p key={role} className="mb-2">
-              {role.replaceAll("_", " ")}
-            </p>
-          ))}
-        </div>
-        {/* Toggle Switch */}
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
-          >
-            <span style={{ marginRight: "8px", fontWeight: "bold" }}>
-              Email Reminders
-            </span>
-            <input
-              type="checkbox"
-              style={{ display: "none" }}
-              checked={isOptedInForEmails}
-              onChange={handleOptInChange}
-            />
-            <span
-              style={{
-                position: "relative",
-                width: "50px",
-                height: "24px",
-                borderRadius: "50px",
-                background: isOptedInForEmails ? "#4ade80" : "#a1a1aa",
-                transition: "background-color 0.2s",
+      <div className="bg-white border-2 shadow-md border-grey-300 dark:border-gray-700 pl-4 pr-4 dark:bg-gray-800">
+        {!sessionIsReady && <FaSpinner className="animate-spin" />}
+        {sessionIsReady && (
+          <>
+            <ToastContainer containerId={containerId} />
+            {/* User Details */}
+            <div className="my-6">
+              <p className="font-bold">Full Name</p>
+              <p className="mb-4">{session.user.name}</p>
+            </div>
+            <div className="my-6">
+              <p className="font-bold">Email</p>
+              <p className="mb-4">{session.user.email}</p>
+            </div>
+            <div className="my-6">
+              <p className="font-bold">Roles</p>
+              {session.user.roles.map((role) => (
+                <p key={role} className="mb-2">
+                  {role.replaceAll("_", " ")}
+                </p>
+              ))}
+            </div>
+            {/* Toggle Switch */}
+            <div
+              className="mb-2 flex cursor-pointer"
+              data-cy="toggle-email-reminders"
+              onClick={handleOptInChange}
+              onKeyDown={async (e) => {
+                switch (e.key) {
+                  case " ":
+                  case "Enter":
+                    await handleOptInChange();
+                  default:
+                    break;
+                }
               }}
-              data-cy="optInToggle"
+              tabIndex={0}
             >
-              <span
-                style={{
-                  position: "absolute",
-                  top: "2px",
-                  left: isOptedInForEmails ? "26px" : "2px",
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  transition: "left 0.2s",
-                  background: "white",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                }}
+              <label
+                htmlFor="opt-in-email"
+                className="mr-4 font-bold flex cursor-pointer items-center"
+              >
+                Email Reminders
+              </label>
+              <input
+                hidden
+                id="opt-in-email"
+                type="checkbox"
+                value={isOptedInForEmails ? "on" : "off"}
               />
-            </span>
-            <span style={{ marginLeft: "8px" }}>
-              {isOptedInForEmails ? "ON" : "OFF"}
-            </span>
-          </label>
-        </div>
-      </div>
-    </div>
-  ) : (
-    <div className="fixed top-0 right-0 h-screen w-1/3 flex justify-end items-start z-50 mt-20 mr-1 z-[700]">
-      <div className="bg-white border border-grey-100 rounded-lg pl-4 pr-4">
-        <div className="border-b border-black shadow-md mt-4 mb-4">
-          <p className="mb-1 font-bold">Not logged in!</p>
-        </div>
+              <span
+                className={`relative w-12 rounded-[50px] transition-colors duration-200 ${isOptedInForEmails ? "bg-green-400 dark:bg-green-500" : "bg-gray-400 dark:bg-gray-500"}`}
+                data-cy="optInToggle"
+              >
+                <span
+                  className={`absolute w-4 h-4 top-1 shadow-md bg-white rounded-full transition-transform duration-200 ${isOptedInForEmails ? "translate translate-x-7" : "translate translate-x-1"}`}
+                />
+              </span>
+              <span data-cy="email-preference" className="ml-2 min-w-[2rem]">
+                {isOptedInForEmails ? "ON" : "OFF"}
+              </span>
+            </div>
+
+            <div className="w-full flex justify-center my-6">
+              {/* Sign out button */}
+              <button
+                data-cy="sign-out-button"
+                className="bg-rose-500 hover:bg-rose-700 dark:bg-rose-600 text-white px-4 py-2 rounded-md"
+                onClick={() => signOut()}
+              >
+                Sign out
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

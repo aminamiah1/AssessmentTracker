@@ -130,9 +130,9 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </div>
               </p>
             </div>
-            <div className="md:w-1/6 mt-4 md:mt-0 text-center md:flex md:items-center">
+            <div className="md:w-1/6 mt-4 ml-4 md:mt-0 text-center md:flex md:items-center">
               {assessment.assignees.length > 0 ? (
-                <div>
+                <div className="dark:text-white">
                   <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
                     Assignees
                   </h6>
@@ -141,9 +141,12 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                       key={assignee.id}
                       className="flex items-center bg-gray-200 dark:bg-gray-600 rounded-md p-2 mb-4"
                     >
-                      <FaUserCircle className="mr-2 text-black" size={30} />
+                      <FaUserCircle
+                        className="mr-2 text-black dark:text-white"
+                        size={30}
+                      />
                       <span
-                        className="text-lg text-black dark:text-black"
+                        className="text-lg text-black dark:text-white"
                         data-cy="assigneeText"
                       >
                         {assignee.name}
@@ -177,7 +180,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
             </div>
             <div className="md:w-1/6 md:mt-0 text-center">
               <button className="mb-2" onClick={() => setShowDeleteModal(true)}>
-                <button className="px-6 py-2 mr-4 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
+                <button className="px-6 py-2 mr-2 ml-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
                   Delete
                 </button>
               </button>
@@ -186,7 +189,7 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
                   data-cy="editAssessment"
                 >
-                  <button className="px-6 py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
+                  <button className="px-8 py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
                     Edit
                   </button>
                 </Link>

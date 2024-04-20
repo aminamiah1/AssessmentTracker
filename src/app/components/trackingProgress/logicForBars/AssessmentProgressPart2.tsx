@@ -96,7 +96,7 @@ export default function AssessmentProgressPart2({
               isComplete={isComplete}
             />
             {/* Hover box showing the last completed part for more detail */}
-            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-10 hidden opacity-0 group-hover:opacity-100 group-hover:block bg-white rounded shadow p-2">
+            <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-10 hidden opacity-0 group-hover:opacity-100 group-hover:block bg-white rounded shadow p-2 dark:text-black">
               <h2 className="text-sm">
                 Tracking Stage ● {lastCompletedPartNumber}/11
               </h2>

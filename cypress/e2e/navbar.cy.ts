@@ -15,7 +15,7 @@ describe("Navbar", () => {
     cy.contains("a", "Completed Tasks").should("be.visible");
     cy.contains("a", "Module List").should("be.visible");
     cy.contains("a", "User Management").should("be.visible");
-    cy.contains("a", "PS Team Assessments").should("be.visible");
     cy.contains("a", "Assessment Management").should("be.visible");
+    cy.contains("a", "My Assessments").should("be.visible");
   });
 });

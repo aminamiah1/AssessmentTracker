@@ -64,21 +64,8 @@ const AssessmentTilePS = ({
       <ToastContainer containerId="assessmentPSTeamTile" />
       <div className="bg-gray-100 mb-2 dark:bg-gray-700 shadow-lg rounded-lg">
         <div className="p-4 md:p-6 border-b-2 border-gray-300">
-          <div className="md:flex md:items-center">
-            <div className="md:w-1/2 md:mt-0  text-lg">
-              <div>
-                <Link
-                  href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
-                  className="flex items-center text-xl"
-                >
-                  <p
-                    className="text-blue-500 hover:text-blue-700 text-lg dark:text-white"
-                    data-cy="assessmentName"
-                  >
-                    {assessment.assessment_name}
-                  </p>
-                </Link>
-              </div>
+          <div className="md:flex md:items-center mr-2">
+            <div className="md:w-1/4 md:mt-0 text-lg mr-2">
               <p className="mt-4">
                 <span
                   className="text-lg text-gray-700 dark:text-white mb-2"
@@ -113,7 +100,7 @@ const AssessmentTilePS = ({
                 </div>
               </p>
             </div>
-            <div className="md:w-1/4 mt-4 md:mt-0">
+            <div className="md:w-1/2 mt-4 md:mt-0">
               <h6 className="mb-4 text-lg text-gray-700 dark:text-white text-center">
                 Assignees
               </h6>
@@ -140,12 +127,25 @@ const AssessmentTilePS = ({
                   ))}
                 </div>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-white text-center">
+                <p className="text-lg text-gray-700 mb-2 dark:text-white text-center">
                   No assignees assigned
                 </p>
               )}
             </div>
             <div className="w-full">
+              <div className="flex text-center justify-center mb-4">
+                <Link
+                  href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                  className="flex text-xl"
+                >
+                  <p
+                    className="text-blue-500 hover:text-blue-700 text-lg dark:text-white"
+                    data-cy="assessmentName"
+                  >
+                    {assessment.assessment_name}
+                  </p>
+                </Link>
+              </div>
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress

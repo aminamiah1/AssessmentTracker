@@ -19,10 +19,10 @@ export function ListItemWrapper({
   // otherwise we just want to return the content as is
   const content = React.createElement(
     parent,
-    { href },
+    { href, className: "min-w-full" },
     <div
       data-cy="list-item"
-      className={`w-full flex ${href ? "cursor-pointer hover:dark:bg-slate-600 hover:bg-slate-200" : ""} justify-evenly rounded p-4 items-center ${className}`}
+      className={`min-w-full flex ${href ? "cursor-pointer hover:dark:bg-slate-600 hover:bg-slate-200" : ""} justify-between rounded p-4 items-center ${className}`}
     >
       {children}
     </div>,

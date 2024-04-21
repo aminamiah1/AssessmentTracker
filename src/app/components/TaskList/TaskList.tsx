@@ -27,7 +27,7 @@ export function TaskList({ userId, className, ...props }: TaskListProps) {
       {...props}
     >
       {tasks.map((task) => {
-        const { id: assessmentId } = task.assessment;
+        const { assigneesRole, id: assessmentId, module } = task.assessment;
 
         const responseCount = task.part.Question.reduce(
           (acc, question) => acc + hasResponse(question, assessmentId),
@@ -46,11 +46,51 @@ export function TaskList({ userId, className, ...props }: TaskListProps) {
             progressText = `${questionsRemaining} question${questionsRemaining === 1 ? "" : "s"} remaining`;
         }
 
+        const moduleInfo = (
+          <div className="flex items-center">
+            <span data-cy="module-info" className="w-36">
+              {module.module_code} {module.module_name}
+            </span>
+          </div>
+        );
+
+        const moduleLeaders = assigneesRole.filter((role) => {
+          return role.role === "module_leader";
+        });
+
+        const leaders = (
+          <div
+            data-cy="module-leaders"
+            className="flex flex-col pl-2 border-l h-full"
+          >
+            {moduleLeaders.length ? (
+              <>
+                <span className="font-bold text-nowrap">
+                  Module Leader{moduleLeaders.length > 1 ? "s" : ""}
+                </span>
+                <ul>
+                  {moduleLeaders.map((assignee) => {
+                    return (
+                      <li key={assignee.id} className="text-nowrap">
+                        {assignee.user.name}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            ) : (
+              <span>No module leaders assigned</span>
+            )}
+          </div>
+        );
+
         return (
           <ProgressListItem
             key={task.assessment.id}
+            leftChildren={moduleInfo}
             progress={progress}
             progressText={progressText}
+            rightChildren={leaders}
             subtitle={task.part.part_title}
             title={task.assessment.assessment_name}
             proforma={task.assessment.proforma_link}

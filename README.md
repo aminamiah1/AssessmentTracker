@@ -1,5 +1,6 @@
 # Table of Contents
 
+- [Getting started](#getting-started)
 - [Hosting](#hosting)
 - [Local development](#local-development)
   - [PostgreSQL](#postgresql)
@@ -16,6 +17,30 @@
 - [Cypress](#cypress)
   - [Useful Commands](#useful-commands)
 - [Contributing](#contributing)
+
+# Getting started
+
+To run the server locally, you can get started using the following steps:
+
+- (Optional) To update all packages to their latest version, run `npm update`
+- Populate a root-level `.env` file
+  - There will be an example `.env` file submitted alongside the .zip bundle submission
+- `npm run setup`
+- `npm start`
+
+When signing in for the first time, you will require some sort of super user to get started. The details for this super user will have been outputted to the console during the `npm run setup` step, something like:
+
+```
+Running seed command `ts-node --compiler-options {"module":"CommonJS"} prisma/seed.ts` ...
+spyplanes@su.com abondance-terrific-disenthralling-rescues-carcass-demonetise
+Seeding complete
+```
+
+And from this, your superuser email is `spyplanes@su.com`, and your password is `abondance-terrific-disenthralling-rescues-carcass-demonetise`. This user then has the ability to add other users to the system.
+
+## Prerequisites
+
+This project has been built for NodeJS version 20.11 and above.
 
 # Hosting
 

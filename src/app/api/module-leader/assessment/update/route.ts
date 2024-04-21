@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get module leaders from assessment associated module
-    const module = await prisma.module.findUnique({
+    const assessmentModule = await prisma.module.findUnique({
       where: {
         id: module_id,
       },
@@ -104,7 +104,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (module?.module_leaders.length === 0 || module === null) {
+    if (
+      assessmentModule?.module_leaders.length === 0 ||
+      assessmentModule === null
+    ) {
       return new NextResponse(
         JSON.stringify({
           message:
@@ -119,7 +122,7 @@ export async function POST(request: NextRequest) {
       externalExaminers,
       internalModerators,
       panelMembers,
-      module.module_leaders,
+      assessmentModule.module_leaders,
     );
 
     if (!assigneeRolesData) {
@@ -162,7 +165,8 @@ export async function POST(request: NextRequest) {
         setter_id:
           roleName === "module_leader"
             ? setter_id // Keep the provided setter_id if role is 'module_leader'
-            : existingAssessment.setter_id || module?.module_leaders?.[0]?.id, // Use existing setter or first module leader if ps team
+            : existingAssessment.setter_id ||
+              assessmentModule?.module_leaders?.[0]?.id, // Use existing setter or first module leader if ps team
         assigneesRole: {
           upsert: assigneeRolesData.map((roleData) => ({
             where: {

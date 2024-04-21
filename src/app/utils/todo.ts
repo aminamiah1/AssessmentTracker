@@ -12,6 +12,21 @@ export async function getAssessmentsWithPartSubmissionsForUser(
       },
     },
     include: {
+      assigneesRole: {
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      module: {
+        select: {
+          module_code: true,
+          module_name: true,
+        },
+      },
       partSubmissions: { orderBy: { date_submitted: "desc" }, take: 1 },
     },
   });

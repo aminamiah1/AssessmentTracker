@@ -16,6 +16,7 @@ interface PartTodoByFetchProps {
    * form is submitted (i.e. notifications, emails, whatever)
    */
   afterSubmit?: (e: FormEvent<HTMLFormElement>) => void;
+  disableSubmit?: boolean;
   readonly?: boolean;
 }
 
@@ -27,6 +28,7 @@ export function Part({
   assessmentId,
   part,
   afterSubmit,
+  disableSubmit = false,
   readonly = false,
 }: PartProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -88,7 +90,7 @@ export function Part({
       {!readonly && (
         <button
           className="disabled:cursor-not-allowed w-fit disabled:bg-blue-300 mt-6 mb-14 bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg"
-          disabled={isLoading}
+          disabled={isLoading || disableSubmit}
           type="submit"
         >
           Submit
@@ -98,7 +100,10 @@ export function Part({
   );
 }
 
-export function PartTodoByFetch({ assessmentId }: PartTodoByFetchProps) {
+export function PartTodoByFetch({
+  assessmentId,
+  disableSubmit,
+}: PartTodoByFetchProps) {
   const getAllParts = false;
 
   const router = useRouter();
@@ -131,6 +136,7 @@ export function PartTodoByFetch({ assessmentId }: PartTodoByFetchProps) {
   return (
     <ValidatedTodoPart
       assessmentId={assessmentId}
+      disableSubmit={disableSubmit}
       hasCorrectRole={hasCorrectRole}
       part={partTodo}
       userId={+session.user.id}
@@ -138,15 +144,14 @@ export function PartTodoByFetch({ assessmentId }: PartTodoByFetchProps) {
   );
 }
 
-interface ValidatedTodoPartProps {
-  assessmentId: number;
+interface ValidatedTodoPartProps extends PartProps {
   hasCorrectRole: boolean;
-  part: PartWithQuestionsAndResponses;
   userId: number;
 }
 
 function ValidatedTodoPart({
   assessmentId,
+  disableSubmit = false,
   hasCorrectRole,
   part,
   userId,
@@ -161,7 +166,14 @@ function ValidatedTodoPart({
 
   const canEdit = hasCorrectRole && isAssignee;
 
-  return <Part assessmentId={assessmentId} part={part} readonly={!canEdit} />;
+  return (
+    <Part
+      assessmentId={assessmentId}
+      disableSubmit={disableSubmit}
+      part={part}
+      readonly={!canEdit}
+    />
+  );
 }
 
 function verifyResponses(

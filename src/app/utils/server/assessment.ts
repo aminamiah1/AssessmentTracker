@@ -31,6 +31,9 @@ export function getPartSubmissionsForUser(userId: number) {
         },
       },
     },
+    orderBy: {
+      date_submitted: "desc",
+    },
     include: {
       Assessment: {
         include: {

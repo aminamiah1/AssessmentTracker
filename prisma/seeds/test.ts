@@ -53,6 +53,8 @@ async function seedModules() {
     data: {
       assessment_name: "Cyber Security",
       assessment_type: "Portfolio",
+      proforma_link:
+        "https://cf.sharepoint.com/:b:/r/teams/ProformaFiles/Shared%20Documents/General/Proforma%20Example%202.pdf?csf=1&web=1&e=1JYTFd",
       hand_in_week: new Date(),
       hand_out_week: new Date(),
       setter_id: 1,
@@ -76,6 +78,8 @@ async function seedModules() {
       hand_out_week: example_date,
       setter_id: 1,
       module_id: 1,
+      proforma_link:
+        "https://cf.sharepoint.com/:b:/r/teams/ProformaFiles/Shared%20Documents/General/Proforma%20Example%202.pdf?csf=1&web=1",
       assigneesRole: {
         create: [
           { role: Role.module_leader, user_id: 1 },

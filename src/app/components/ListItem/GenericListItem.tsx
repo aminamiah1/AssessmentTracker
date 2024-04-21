@@ -1,6 +1,7 @@
+import { PropsWithChildren } from "react";
 import { ListItemWrapper } from "./ListItemWrapper";
 
-interface GenericListItemProps {
+interface GenericListItemProps extends PropsWithChildren {
   title: string;
   subtitle: string;
 
@@ -10,6 +11,7 @@ interface GenericListItemProps {
 }
 
 export function GenericListItem({
+  children,
   title,
   subtitle,
   className = "",
@@ -23,6 +25,7 @@ export function GenericListItem({
         <h3 className="text-xl">{subtitle}</h3>
       </div>
       {sideText && <span data-cy="side-text">{sideText}</span>}
+      {children}
     </ListItemWrapper>
   );
 }

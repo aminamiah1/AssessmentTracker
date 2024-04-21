@@ -15,14 +15,18 @@ interface ProgressListItemProps {
   title: string;
 
   /** The text to display next to the progress bar - by default, this shows as XX% complete */
+  leftChildren?: React.ReactNode;
   progressText?: string;
   proforma?: string | null;
+  rightChildren?: React.ReactNode;
 }
 
 export function ProgressListItem({
   href,
+  leftChildren = null,
   progress,
   progressText = progress * 100 + "% complete",
+  rightChildren = null,
   subtitle,
   title,
   proforma,
@@ -32,11 +36,13 @@ export function ProgressListItem({
     "Progress must be between 0 and 1, inclusively",
   );
 
-  const displayProforma = "View Proforma" ?? "No proforma available";
-
   return (
-    <ListItemWrapper href={href} className="border p-4 rounded-md">
-      <div className="min-w-max pr-6">
+    <ListItemWrapper
+      href={href}
+      className="border rounded-md shadow-md hover:shadow-xl"
+    >
+      {leftChildren}
+      <div className={`min-w-max pr-6 ${leftChildren ? "border-l pl-4" : ""}`}>
         <h2 className="text-2xl">{title}</h2>
         <h3 className="text-xl">{subtitle}</h3>
         {proforma && (
@@ -52,10 +58,11 @@ export function ProgressListItem({
           </button>
         )}
       </div>
-      <div className="w-[60%] text-center">
+      <div className={`w-[60%] text-center ${rightChildren ? "pr-2" : ""}`}>
         <ProgressBar progress={progress} />
         <span data-cy="progress-text">{progressText}</span>
       </div>
+      {rightChildren}
     </ListItemWrapper>
   );
 }

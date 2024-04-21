@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const module = await prisma.module.findUnique({
+    const moduleData = await prisma.module.findUnique({
       where: {
         id: moduleId,
       },
@@ -29,13 +29,13 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    if (!module) {
+    if (!moduleData) {
       return new NextResponse(JSON.stringify({ error: "Module not found" }), {
         status: 404,
       });
     }
 
-    return new NextResponse(JSON.stringify(module), {
+    return new NextResponse(JSON.stringify(moduleData), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

@@ -142,7 +142,7 @@ describe("/todo", () => {
 
       cy.getByTestId("list-item").should("have.length", "1");
 
-      cy.getByTestId("side-text").and("have.text", "Part 1 of 11");
+      cy.getByTestId("submitted-date").and("contain.text", "Part 1 of 11");
     });
 
     it("should be able to finish both tasks", () => {

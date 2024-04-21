@@ -108,16 +108,6 @@ export default function SignInComponent() {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-start"></div>
-                <a
-                  href="#"
-                  className="text-sm font-medium hover:underline text-black dark:text-white"
-                >
-                  Forgot password?
-                </a>
-              </div>
-
               <button
                 type="submit"
                 id="adminSubmit"

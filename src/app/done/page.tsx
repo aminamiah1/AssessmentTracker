@@ -24,7 +24,7 @@ export default async function Page() {
   return (
     <div className="flex items-center flex-col">
       <h1 className="text-2xl mb-8 mt-6">Completed tasks</h1>
-      <div data-cy="completed-tasks" className="max-w-[50%]">
+      <div data-cy="completed-tasks" className="min-w-[50%] max-w-[80%]">
         {userSubmissions.length ? (
           userSubmissions.map((submission) => {
             const {
@@ -53,22 +53,26 @@ export default async function Page() {
             const sideText = `Part ${Part.part_number} of 11`;
 
             return (
-              <div className="flex items-center my-6">
+              <div key={key} className="flex items-center my-6 min-w-full">
                 <GenericListItem
                   key={key}
                   href={`/todo/${assessment_id}#${part_id}`}
                   className="!rounded-lg dark:hover:shadow-black shadow-[3px_3px_8px] hover:shadow-[4px_4px_12px] shadow-slate-800 hover:shadow-slate-700"
                   title={title}
                   subtitle={Part.part_title}
-                  sideText={sideText}
-                />
-                <FaCheckCircle className="w-max ml-5 mr-2 fill-lime-500" />
-                <span
-                  className="wrap-word-break"
-                  title={`${dayjs(date_submitted)}`}
                 >
-                  Submitted {dayjs(date_submitted).fromNow()} by {submitterName}
-                </span>
+                  <div className="flex items-center justify-between">
+                    <FaCheckCircle className="w-max ml-5 mr-2 fill-lime-500" />
+                    <span
+                      data-cy="submitted-date"
+                      className="wrap-word-break"
+                      title={`${dayjs(date_submitted)}`}
+                    >
+                      {sideText} submitted {dayjs(date_submitted).fromNow()} by{" "}
+                      {submitterName}
+                    </span>
+                  </div>
+                </GenericListItem>
               </div>
             );
           })

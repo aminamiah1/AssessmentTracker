@@ -10,10 +10,10 @@ export async function archiveModule(
     return { error: "There was an error accessing the Module Code." };
   }
 
-  let module;
+  let moduleToUpdate;
 
   try {
-    module = await prisma.module.findFirst({
+    moduleToUpdate = await prisma.module.findFirst({
       where: {
         module_code: moduleCode,
       },
@@ -32,15 +32,16 @@ export async function archiveModule(
     };
   }
 
-  if (!module) return { error: "Database Error: Could not find module." };
+  if (!moduleToUpdate)
+    return { error: "Database Error: Could not find module." };
 
-  if (module.status === ModuleStatus.archived)
+  if (moduleToUpdate.status === ModuleStatus.archived)
     return { error: "Database is already marked as archived." };
 
   try {
     await prisma.module.update({
       where: {
-        id: module.id,
+        id: moduleToUpdate.id,
       },
       data: {
         status: ModuleStatus.archived,

@@ -64,7 +64,7 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div className="flex flex-col pt-100px dark:bg-slate-800">
-      <div className="sticky top-1/2 right-20 transform -translate-y-1/2 flex justify-end items-center">
+      <div className="sticky top-1/2 h-0 right-20 transform -translate-y-1/2 flex justify-end items-center">
         <div className="z-10 p-4 shadow-lg text-center">
           <h1 className="text-xl font-bold mb-2">
             {assessmentExists.assessment_name}

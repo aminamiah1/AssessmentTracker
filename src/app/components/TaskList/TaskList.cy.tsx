@@ -45,6 +45,34 @@ describe("<TaskList />", () => {
     });
   });
 
+  context("Module info", () => {
+    it("contains module name and code", () => {
+      cy.intercept("GET", "/api/users/0/todos", tasks).as("getTasks");
+      cy.mountNoCache(<TaskList {...defaults} />);
+      cy.wait("@getTasks");
+      cy.getByTestId("module-info")
+        .first()
+        .should("have.text", "CM1001 The world of Cyber Security");
+
+      cy.getByTestId("module-info")
+        .last()
+        .should("have.text", "CM1002 Data Analysis and Database Design");
+    });
+
+    it("contains module leaders", () => {
+      cy.intercept("GET", "/api/users/0/todos", tasks).as("getTasks");
+      cy.mountNoCache(<TaskList {...defaults} />);
+      cy.wait("@getTasks");
+      cy.getByTestId("module-leaders")
+        .first()
+        .should("have.text", "Module LeaderJohn Doe");
+
+      cy.getByTestId("module-leaders")
+        .last()
+        .should("have.text", "No module leaders assigned");
+    });
+  });
+
   context("Without responses", () => {
     beforeEach(() => {
       cy.intercept("GET", "/api/users/0/todos", tasks).as("getTasks");

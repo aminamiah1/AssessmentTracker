@@ -181,7 +181,9 @@ export default function ModuleList() {
                   <p>AcaYear-{module.module_code}</p>
                   {module.module_leaders?.length > 0 ? (
                     module.module_leaders.map((module_leader) => (
-                      <p> Module Leader: {module_leader.name} </p>
+                      <p key={module_leader.id}>
+                        Module Leader: {module_leader.name}{" "}
+                      </p>
                     ))
                   ) : (
                     <p>No module leaders assigned.</p>

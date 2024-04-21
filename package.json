@@ -19,6 +19,7 @@
     "test:e2e:ci": "npm run test:seed && cypress run --headless --spec \"cypress/e2e/*.cy.ts\"",
     "test:component": "cypress run --component --spec \"src/app/components/**/*.cy.tsx\"",
     "coverage:e2e": "npx nyc@15.1.0 npm run test:e2e",
+    "setup": "npm install && prisma generate && prisma db push && npm run build && set NODE_ENV=production && prisma db seed",
     "prepare": "husky"
   },
   "dependencies": {

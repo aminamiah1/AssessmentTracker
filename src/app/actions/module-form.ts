@@ -120,7 +120,7 @@ export async function updateModuleLeaders(
     throw new Error("At least one new module leader must be provided.");
   }
 
-  const module = await prisma.module.findFirst({
+  const moduleToUpdate = await prisma.module.findFirst({
     where: {
       module_code: moduleCode,
     },
@@ -129,7 +129,7 @@ export async function updateModuleLeaders(
     },
   });
 
-  if (!module) {
+  if (!moduleToUpdate) {
     throw new Error("Could not find module with that code.");
   }
 
@@ -147,7 +147,7 @@ export async function updateModuleLeaders(
 
   try {
     await prisma.module.update({
-      where: { id: module.id },
+      where: { id: moduleToUpdate.id },
       data: {
         module_leaders: {
           set: [],

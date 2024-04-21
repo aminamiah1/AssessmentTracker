@@ -1,9 +1,11 @@
 import {
   Assessment,
+  AssigneeRole,
   Part,
   PartSubmission,
   Question,
   Response,
+  Users,
 } from "@prisma/client";
 
 // Manually adding these because Prisma's Type Safety doesn't seem to support
@@ -11,12 +13,18 @@ import {
 // https://www.prisma.io/docs/orm/prisma-client/type-safety
 declare global {
   interface AssessmentWithPartSubmission extends Assessment {
+    assigneesRole: AssigneeRoleWithUser[];
     partSubmissions: PartSubmission[];
+    module: { module_code: string; module_name: string };
   }
 
   interface AssessmentAndPartAPIResponse {
     assessment: AssessmentWithPartSubmission;
     part: PartWithQuestionsAndResponses;
+  }
+
+  interface AssigneeRoleWithUser extends AssigneeRole {
+    user: { name: string };
   }
 
   interface PartWithQuestions extends Part {

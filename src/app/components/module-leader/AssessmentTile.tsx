@@ -54,22 +54,16 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
     // Assessment tile layout using grid system
     <div className="mb-2 dark:text-white">
       <ToastContainer containerId="assessmentModuleLeaderTile" />
-      <div className="bg-gray-100 shadow-lg rounded-lg dark:bg-gray-700">
-        <div className="p-4 md:p-6">
-          <div className="md:flex md:items-center">
-            <div className="md:w-1/6 md:mt-0 text-lg mr-[2rem]">
-              <div>
-                <a
-                  className="text-blue-500 hover:text-blue-700 text-xl dark:text-white"
-                  href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
-                  data-cy="assessmentName"
-                >
-                  {assessment.assessment_name}
-                </a>
-              </div>
+      <div className="bg-gray-100 mb-2 dark:bg-gray-700 shadow-lg rounded-lg">
+        <div className="p-4 md:p-6 border-b-2 border-gray-300">
+          <div className="md:flex md:items-center mr-2">
+            <div className="md:w-1/4 md:mt-0 text-lg mr-2">
               <p className="mt-4">
-                <span className="text-lg text-gray-700 dark:text-white mb-2">
-                  Module: {assessment.module_name} ● Type:{" "}
+                <span
+                  className="text-lg text-gray-700 dark:text-white mb-2"
+                  data-cy="moduleTypeText"
+                >
+                  {assessment.module_name} ●{" "}
                   {assessment.assessment_type.replaceAll("_", " ")}
                 </span>
                 <br />
@@ -93,53 +87,21 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </div>
                 <div className="mt-4">
                   <span className="text-lg text-gray-700 dark:text-white">
-                    Setter: {assessment.setter?.name ?? "No setter assigned"}
+                    Setter: {assessment.setter?.name ?? "no setter assigned"}
                   </span>
-                </div>
-                <div className="flex flex-col gap-2 mt-4">
-                  <span className="text-lg text-gray-700 dark:text-white">
-                    Proforma:
-                  </span>
-                  <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed px-2 py-1"
-                    disabled={!assessment.proforma_link}
-                  >
-                    {assessment.proforma_link ? (
-                      <Link href={assessment.proforma_link}>Download</Link>
-                    ) : (
-                      "Proforma Unavailable"
-                    )}
-                  </button>
-                  {assessment.proforma_link && (
-                    <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white rounded-lg disabled:bg-gray-400 disabled:cursor-not-allowed px-2 py-1"
-                      disabled={!assessment.proforma_link}
-                    >
-                      <Link
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        // Add query params to view the file from the browser
-                        href={addQueryParams(assessment.proforma_link, [
-                          { key: "web", value: "1" },
-                        ])}
-                      >
-                        View on Web
-                      </Link>
-                    </button>
-                  )}
                 </div>
               </p>
             </div>
-            <div className="md:w-1/6 mt-4 ml-4 md:mt-0 text-center md:flex md:items-center">
+            <div className="md:w-1/2 mt-4 md:mt-0">
+              <h6 className="mb-4 text-lg text-gray-700 dark:text-white text-center">
+                Assignees
+              </h6>
               {assessment.assignees.length > 0 ? (
-                <div className="dark:text-white">
-                  <h6 className="mb-4 text-lg text-gray-700 dark:text-white">
-                    Assignees
-                  </h6>
+                <div>
                   {assessment.assignees.map((assignee: Assignee) => (
                     <div
                       key={assignee.id}
-                      className="flex items-center bg-gray-200 dark:bg-gray-600 rounded-md p-2 mb-4"
+                      className="flex items-center bg-gray-200 rounded-md p-2 mb-4 dark:bg-gray-600"
                     >
                       <FaUserCircle
                         className="mr-2 text-black dark:text-white"
@@ -157,12 +119,25 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                   ))}
                 </div>
               ) : (
-                <p className="text-lg text-gray-700 dark:text-white ml-2 text-center">
+                <p className="text-lg text-gray-700 mb-2 dark:text-white text-center">
                   No assignees assigned
                 </p>
               )}
             </div>
-            <div className="w-full md:mt-0 text-center">
+            <div className="w-full">
+              <div className="flex text-center justify-center mb-4">
+                <Link
+                  href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                  className="flex text-xl"
+                >
+                  <p
+                    className="text-blue-500 hover:text-blue-700 text-lg dark:text-white"
+                    data-cy="assessmentName"
+                  >
+                    {assessment.assessment_name}
+                  </p>
+                </Link>
+              </div>
               {assessment.partSubmissions &&
               assessment.partSubmissions.length > 0 ? (
                 <AssessmentOverallProgress
@@ -178,21 +153,57 @@ const AssessmentTile = ({ assessment }: { assessment: AssessmentTiles }) => {
                 </h1>
               )}
             </div>
-            <div className="md:w-1/6 md:mt-0 text-center">
-              <button className="mb-2" onClick={() => setShowDeleteModal(true)}>
-                <button className="px-6 py-2 mr-2 ml-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
-                  Delete
-                </button>
-              </button>
-              <div className="inline-table">
-                <Link
-                  href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
-                  data-cy="editAssessment"
+            <div className="md:w-1/4 md:mt-0 text-center rounded">
+              <Link
+                href={`/module-leader/assessment-management/create-assessment?id=${assessment.id}`}
+                data-cy="editAssessment"
+              >
+                <button
+                  className="px-6 mt-2 w-full py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
+                  data-cy="assignUsers"
                 >
-                  <button className="px-8 py-2 text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow">
-                    Edit
+                  Edit
+                </button>
+              </Link>
+              <button
+                className="px-6 mt-2 py-2 w-full text-sm font-medium bg-gray-600 text-white rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-700 shadow"
+                data-cy="assignUsers"
+                onClick={() => {
+                  setShowDeleteModal(true); // Open the pop-up
+                }}
+              >
+                Delete
+              </button>
+              <div className="flex flex-col content-start mt-6">
+                <button
+                  className="bg-blue-700 hover:bg-blue-900 text-white text-sm font-medium rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed px-2 py-1 whitespace-nowrap"
+                  disabled={!assessment.proforma_link}
+                >
+                  {assessment.proforma_link ? (
+                    <Link href={assessment.proforma_link}>
+                      Download Proforma
+                    </Link>
+                  ) : (
+                    "Proforma Unavailable"
+                  )}
+                </button>
+                {assessment.proforma_link && (
+                  <button
+                    className="bg-blue-700 hover:bg-blue-900 text-white text-sm font-medium rounded-md isabled:bg-gray-400 disabled:cursor-not-allowed px-2 py-1 whitespace-nowrap mt-2"
+                    disabled={!assessment.proforma_link}
+                  >
+                    <Link
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      // Add query params to view the file from the browser
+                      href={addQueryParams(assessment.proforma_link, [
+                        { key: "web", value: "1" },
+                      ])}
+                    >
+                      View Proforma on Web
+                    </Link>
                   </button>
-                </Link>
+                )}
               </div>
             </div>
           </div>

@@ -49,7 +49,7 @@ export default function AssessmentProgressPart2({
   // Only show date progress if tracking not complete
   return (
     <div className="w-full flex justify-evenly rounded p-4 mb-4">
-      <div className="w-[60%] relative overflow-hidden text-center">
+      <div className="w-[90%] relative overflow-hidden text-center">
         {/* Display the visual date progress if not overdue or complete*/}
         <>
           {isOverdue || isComplete ? (

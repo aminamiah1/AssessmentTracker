@@ -41,7 +41,7 @@ export default function AssessmentProgressPart1({
 
   return (
     <div className="w-full flex justify-evenly rounded p-4">
-      <div className="w-[60%] relative overflow-hidden text-left">
+      <div className="w-[90%] relative overflow-hidden text-left">
         {/* Only render if the assessment has a associated last completed part*/}
         {lastCompletedPart && (
           <>

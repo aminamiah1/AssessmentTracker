@@ -20,7 +20,7 @@ export async function sendEmail(to: string, subject: string, text: string) {
 
   try {
     await sgMail.send(msg);
-    console.log("Email sent successfully");
+    console.log("Email sent successfully to", to);
   } catch (error) {
     console.error("Error sending email:", error);
     throw error;

@@ -129,22 +129,6 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
       >
         <div className="h-full overflow-y-auto bg-white dark:bg-gray-800">
           <ul className="space-y-2 font-medium">
-            {hasTodoRelatedRole && (
-              <>
-                <NavItem
-                  icon={<FaClipboardList />}
-                  isSidebarOpen={isSidebarOpen}
-                  href="/todo"
-                  text="Todos"
-                />
-                <NavItem
-                  icon={<FaClipboardCheck />}
-                  isSidebarOpen={isSidebarOpen}
-                  href="/done"
-                  text="Completed Tasks"
-                />
-              </>
-            )}
             {isPSTeam && (
               <>
                 <NavItem
@@ -153,6 +137,20 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                   href="/ps-team/user-management"
                   text="User Management"
                 />
+              </>
+            )}
+            {moduleListRole && (
+              <>
+                <NavItem
+                  icon={<FaList />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/admin/module-list"
+                  text="Module List"
+                />
+              </>
+            )}
+            {isPSTeam && (
+              <>
                 <NavItem
                   icon={<FaListAlt />}
                   isSidebarOpen={isSidebarOpen}
@@ -171,13 +169,21 @@ export const Navbar: FC<PropsWithChildren<NavbarProps>> = ({ children }) => {
                 />
               </>
             )}
-            {moduleListRole && (
-              <NavItem
-                icon={<FaList />}
-                isSidebarOpen={isSidebarOpen}
-                href="/admin/module-list"
-                text="Module List"
-              />
+            {hasTodoRelatedRole && (
+              <>
+                <NavItem
+                  icon={<FaClipboardList />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/todo"
+                  text="Todos"
+                />
+                <NavItem
+                  icon={<FaClipboardCheck />}
+                  isSidebarOpen={isSidebarOpen}
+                  href="/done"
+                  text="Completed Tasks"
+                />
+              </>
             )}
             <NavItem
               href="/api/auth/signout"
